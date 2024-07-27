@@ -28,6 +28,14 @@ SuperTokens.init({
   },
   recipeList: [
     ThirdParty.init({
+      //TODO: add additional fields when registing
+      onHandleEvent: async (context) => {
+        if (context.action === 'SUCCESS') {
+          let { id, emails } = context.user;
+          alert('update this shit to signup in our database');
+        }
+      },
+
       signInAndUpFeature: {
         providers: [
           Github.init(),
