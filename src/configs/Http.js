@@ -4,9 +4,6 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 export const getToken = () => {
-  if (typeof window === undefined) {
-    return null;
-  }
   return Cookies.get("auth_token");
 };
 
