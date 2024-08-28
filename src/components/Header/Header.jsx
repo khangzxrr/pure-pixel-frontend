@@ -42,9 +42,8 @@ export default function Header() {
   if (!keycloak) {
     return <div>Loading...</div>;
   }
-  console.log(keycloak);
   if (keycloak.authenticated) {
-    return <AuthorizedHeader username="khang" />;
+    return <AuthorizedHeader username={keycloak.tokenParsed.name} />;
   }
 
   return <UnauthorizedHeader />;
