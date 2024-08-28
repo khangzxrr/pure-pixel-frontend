@@ -1,5 +1,6 @@
 import React from "react";
-import logo from "../../assets/logo.png";
+import { Link } from "react-router-dom";
+// import logo from "/assets/logo.png";
 const HeaderTab = [
   {
     id: 1,
@@ -29,25 +30,31 @@ const HeaderTab = [
   {
     id: 6,
     name: "Award Winners",
-    link: "/award-winners",
+    link: "/award",
   },
 ];
 
 export default function Header() {
   return (
-    <div className="flex justify-between items-center h-20 bg-gray-200">
+    <div className="flex justify-between items-center h-20">
       <div className="flex items-center">
         <div className="ml-16 mr-8 pointer-events-none">
-          <img className="w-28" src={logo} alt="Logo" />
+          <Link to="/">
+            <img
+              className="w-28 pointer-events-auto"
+              src="/assets/logo.png"
+              alt="Logo"
+            />
+          </Link>
         </div>
         {HeaderTab.map((tab) => (
           <div
             key={tab.id}
             className="text-lg  mx-6 hover:text-blue-600 hover:cursor-pointer"
           >
-            <a href={tab.link} className="">
+            <Link to={tab.link} className="">
               {tab.name}
-            </a>
+            </Link>
           </div>
         ))}
       </div>
@@ -61,6 +68,11 @@ export default function Header() {
           <div className="flex items-center px-3 py-0.25 outline outline-2 outline-offset-2 rounded-full">
             <button className="text-lg font-bold hover:text-blue-600">
               Sign up
+            </button>
+          </div>
+          <div className="flex items-center px-3 py-0.25 outline outline-2 outline-offset-2 rounded-full">
+            <button className="text-lg font-bold hover:text-blue-600">
+              <Link to="/customer">Profile</Link>
             </button>
           </div>
         </div>
