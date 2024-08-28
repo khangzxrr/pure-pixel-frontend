@@ -1,4 +1,3 @@
-import "./App.css";
 import React from "react";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloakService from "./services/Keycloak";

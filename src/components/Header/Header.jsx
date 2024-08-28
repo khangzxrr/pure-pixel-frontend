@@ -32,7 +32,7 @@ export const HeaderTab = [
   {
     id: 6,
     name: "Award Winners",
-    link: "/award-winners",
+    link: "/award",
   },
 ];
 
