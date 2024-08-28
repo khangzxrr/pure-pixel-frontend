@@ -1,20 +1,14 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage/HomePage";
-import MainLayout from "./layouts/MainLayout";
 import React from "react";
-
+import { ReactKeycloakProvider } from "@react-keycloak/web";
+import keycloakService from "./services/Keycloak";
+import { AppRouter } from "./routers/AppRouter";
+import { RouterProvider } from "react-router-dom";
 function App() {
   return (
-    <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<HomePage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ReactKeycloakProvider authClient={keycloakService}>
+      <RouterProvider router={AppRouter} />
+    </ReactKeycloakProvider>
   );
 }
 
