@@ -1,11 +1,11 @@
 import { HeaderTab } from "./Header";
-import logo from "../../assets/logo.png";
+//import logo from "../../../public/assets/logo.png";
 
 export default function HeaderTabs() {
   return (
     <div className="flex items-center">
       <div className="ml-16 mr-8 pointer-events-none">
-        <img className="w-28" src={logo} alt="Logo" />
+        <img className="w-28" src="/assets/logo.png" alt="Logo" />
       </div>
       {HeaderTab.map((tab) => (
         <div
