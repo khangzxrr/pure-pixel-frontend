@@ -6,6 +6,7 @@ import Dashboard from "../components/Dashboard/Dashboard";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
 import Following from "../components/Dashboard/Following/Following";
 import Explore from "../components/Dashboard/Explore/Explore";
+import HomePage from "./../pages/HomePage/HomePage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const AppRouter = createBrowserRouter([
         path: "/",
         element: <Dashboard />,
         children: [
+          {
+            path: "/HomePage",
+            element: <HomePage />,
+          },
           {
             path: "/following",
             element: <Following />,
