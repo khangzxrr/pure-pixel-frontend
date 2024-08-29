@@ -9,9 +9,7 @@ export default function AuthorizedLayout() {
   if (keycloak.authenticated) {
     return (
       <>
-        <Header />
         <Outlet />
-        <Footer />
       </>
     );
   } else {
