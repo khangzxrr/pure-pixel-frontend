@@ -64,7 +64,7 @@ export default function Home2() {
       <div className="relative">
         <img
           className="w-full h-64 md:h-72 lg:h-80 xl:h-96 object-cover "
-          src="https://internetviettel.vn/wp-content/uploads/2017/05/H%C3%ACnh-%E1%BA%A3nh-minh-h%E1%BB%8Da.jpg"
+          src="https://s3-alpha-sig.figma.com/img/73be/8be9/44d9c01accde0c8f1279e2da2e8d7d64?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qHR~0SJpcmMBRSKxGIhjtup~IcxU3UXaeKab8lq2CexBNVuzhzn9oCOki1X-twpTQ6ompf~kEGxipnSI3K3kGg89JQt8hXBuakRklFA4eYeakuRSguUWTHMA95VeR8mV0MkywpA9--sj91SUbfh6c6e-Zxmwdeq92OhPSJ192zVjIf4-mj8RgD3qrsd9ZkUC6DK2aJiSS8pWCbfvvOUgp0PxTxDjY8~677Yt15qV6cW0i3q70ZmrsLRpGfVAKtiMRO2BjCp5k35AU3uEMi1zUpSrffSKGr3R1UwsnWCjYK6laHRF3KViI-CZrRisG7Kj0EZACipMGdMOM83lkfHRUg__"
         />
         <div className="absolute bottom-0 left-0 w-full">
           <p className="text-center font-inter text-[25px] md:text-[30px] lg:text-[34px] xl:text-[34px]  font-extrabold leading-[66.56px]  text-shadow  text-white">
