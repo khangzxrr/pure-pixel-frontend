@@ -4,8 +4,21 @@ import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import DailyDoseItem from "./DailyDoseItem";
 import { PlayCircleOutlined, AlignLeftOutlined } from "@ant-design/icons";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchPhotos } from "../../../apis/photo/GetPhotos";
 
 const ForYou = () => {
+  const { isPending, error, data, isFetching } = useQuery({
+    queryKey: ["photos"],
+    queryFn: fetchPhotos,
+  });
+
+  if (isPending) return "Loading...";
+
+  if (error) return "An error has occurred" + error.message;
+
+  console.log(data);
+
   return (
     <div className="bg-black ">
       <div className="flex justify-between items-center text-white">
