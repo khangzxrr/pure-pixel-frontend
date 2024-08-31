@@ -1,11 +1,17 @@
 import React from "react";
-import Photos from "./Photo";
+import Photos from "./PhotoList";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import DailyDoseItem from "./DailyDoseItem";
 import { PlayCircleOutlined, AlignLeftOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const ForYou = () => {
+  const navigate = useNavigate();
+  const handlePhotoClick = (id) => {
+    navigate(`/for-you/${id}`);
+  };
+
   return (
     <div className="bg-black ">
       <div className="flex justify-between items-center text-white">
@@ -43,6 +49,7 @@ const ForYou = () => {
               src={photo.photo}
               alt={`Photo ${photo.id}`}
               className=" rounded-xl transition-transform duration-300 ease-in-out transform hover:scale-110 "
+              onClick={() => handlePhotoClick(photo.id)}
             />
           </div>
         ))}
