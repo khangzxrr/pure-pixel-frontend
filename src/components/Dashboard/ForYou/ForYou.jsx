@@ -5,12 +5,12 @@ import { Dropdown, Space } from "antd";
 import DailyDoseItem from "./DailyDoseItem";
 import { PlayCircleOutlined, AlignLeftOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPhotos } from "../../../apis/photo/GetPhotos";
+import PhotoApi from "../../../apis/PhotoApi";
 
 const ForYou = () => {
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ["photos"],
-    queryFn: fetchPhotos,
+    queryFn: PhotoApi.getPublicPhotos,
   });
 
   if (isPending) return "Loading...";
