@@ -39,15 +39,12 @@ export const HeaderTab = [
 export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
-  console.log("keycloak in header", keycloak);
 
   return (
     <div className="flex justify-between items-center h-20 bg-gray-200">
       <HeaderTabs />
       <div className="flex">
-        {!keycloak ? (
-          <div>Loading...</div>
-        ) : keycloak.authenticated ? (
+        {keycloak.authenticated ? (
           <div className="flex mr-5 items-center gap-5">
             <div>
               <button
