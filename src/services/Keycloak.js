@@ -6,4 +6,28 @@ const keycloakService = new Keycloak({
   clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
 });
 
-export default keycloakService;
+const doLogin = keycloakService.login;
+
+const getToken = () => keycloakService.token;
+
+const getTokenParsed = () => keycloakService.tokenParsed;
+
+const isLoggedIn = () => !!keycloakService.token;
+
+const updateToken = (successCallback) =>
+  keycloakService.updateToken(5).then(successCallback).catch(doLogin);
+
+const hasRole = (roles) =>
+  roles.some((role) => keycloakService.hasRealmRole(role));
+
+const UserService = {
+  doLogin,
+  getToken,
+  getTokenParsed,
+  isLoggedIn,
+  updateToken,
+  hasRole,
+
+  keycloakService,
+};
+export default UserService;

@@ -24,7 +24,7 @@ export default [
     },
   },
 
-  { languageOptions: { globals: globals.node } },
+  { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   pluginReact.configs.flat.recommended,
 ];
