@@ -1,8 +1,11 @@
 import Keycloak from "keycloak-js";
 
 const keycloakService = new Keycloak({
+  // eslint-disable-next-line no-undef
   url: process.env.REACT_APP_KEYCLOAK_URL,
+  // eslint-disable-next-line no-undef
   realm: process.env.REACT_APP_KEYCLOAK_REALM,
+  // eslint-disable-next-line no-undef
   clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
 });
 
