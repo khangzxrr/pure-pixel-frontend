@@ -14,7 +14,6 @@ import Award from "../pages/HomePage/Award";
 import Blog from "../pages/HomePage/Blog";
 import Discover from "../pages/HomePage/Discover";
 import Licensing from "../pages/HomePage/Licensing";
-import Membership from "../pages/HomePage/Membership";
 import Quest from "../pages/HomePage/Quest";
 import CustomerLayout from "../layouts/CustomerLayout";
 import Album from "../pages/Customer/Album";
@@ -35,7 +34,7 @@ export const AppRouter = createBrowserRouter([
         element: <DashboardLayout />,
         children: [
           {
-            path: "/HomePage",
+            path: "/",
             element: <HomePage />,
           },
           {
@@ -78,7 +77,7 @@ export const AppRouter = createBrowserRouter([
       },
       {
         path: "/membership",
-        element: <Membership />,
+        element: <MembershipPage />,
       },
       {
         path: "/quest",
