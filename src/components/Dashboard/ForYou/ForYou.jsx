@@ -1,13 +1,19 @@
 import React from "react";
-import Photos from "./Photo";
+import Photos from "./PhotoList";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import DailyDoseItem from "./DailyDoseItem";
 import { PlayCircleOutlined, AlignLeftOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PhotoApi from "../../../apis/PhotoApi";
+import { useNavigate } from "react-router-dom";
 
 const ForYou = () => {
+  const navigate = useNavigate();
+  const handlePhotoClick = (id) => {
+    navigate(`/for-you/${id}`);
+  };
+  
   const { isPending, error, data, isFetching } = useQuery({
     queryKey: ["photos"],
     queryFn: PhotoApi.getPublicPhotos,
@@ -58,6 +64,7 @@ const ForYou = () => {
               src={photo.thumbnailPhotoUrl}
               alt={`Photo ${photo.id}`}
               className=" rounded-xl transition-transform duration-300 ease-in-out transform hover:scale-110 "
+              onClick={() => handlePhotoClick(photo.id)}
             />
           </div>
         ))}

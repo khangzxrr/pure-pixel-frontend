@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import AuthorizedLayout from "../layouts/AuthorizedLayout";
 import MainLayout from "../layouts/MainLayout";
 import ProfilePage from "../pages/Profile/Profile";
-import Dashboard from "../components/Dashboard/Dashboard";
+import DashboardLayout from "../layouts/DashboardLayout";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
 import Following from "../components/Dashboard/Following/Following";
 import Explore from "../components/Dashboard/Explore/Explore";
@@ -18,6 +18,7 @@ import Photo from "../pages/Customer/Photo";
 import Booking from "../pages/Customer/Booking";
 import Transaction from "../pages/Customer/Transaction";
 import Profile from "../pages/Customer/Profile";
+import PhotoDetailLayout from "../layouts/PhotoDetailLayout";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -26,7 +27,7 @@ export const AppRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Dashboard />,
+        element: <DashboardLayout />,
         children: [
           {
             path: "/following",
@@ -41,6 +42,10 @@ export const AppRouter = createBrowserRouter([
             element: <Explore />,
           },
         ],
+      },
+      {
+        path: "/for-you/:id",
+        element: <PhotoDetailLayout />,
       },
       {
         path: "/award",
