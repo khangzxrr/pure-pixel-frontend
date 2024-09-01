@@ -1,7 +1,7 @@
 import { useKeycloak } from "@react-keycloak/web";
 import React from "react";
-import AuthorizedHeader from "./AuthorizedHeader";
-import UnauthorizedHeader from "./UnauthorizeHeader";
+import { useNavigate } from "react-router-dom";
+import HeaderTabs from "./HeaderTabs";
 
 export const HeaderTab = [
   {
@@ -38,13 +38,52 @@ export const HeaderTab = [
 
 export default function Header() {
   const { keycloak } = useKeycloak();
+  const navigate = useNavigate();
 
-  if (!keycloak) {
-    return <div>Loading...</div>;
-  }
-  if (keycloak.authenticated) {
-    return <AuthorizedHeader username={keycloak.tokenParsed.name} />;
-  }
-
-  return <UnauthorizedHeader />;
+  return (
+    <div className="flex justify-between items-center h-20 bg-gray-200">
+      <HeaderTabs />
+      <div className="flex">
+        {keycloak.authenticated ? (
+          <div className="flex mr-5 items-center gap-5">
+            <div>
+              <button
+                onClick={() => navigate("/customer")}
+                className="text-lg font-bold hover:text-blue-600"
+              >
+                Hello {keycloak.tokenParsed.name}!
+              </button>
+            </div>
+            <div className="flex items-center px-3 py-0.25 outline outline-2 outline-offset-2 rounded-full">
+              <button
+                className="text-lg font-bold hover:text-blue-600"
+                onClick={() => keycloak.logout()}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex mr-5 items-center gap-5">
+            <div>
+              <button
+                onClick={() => keycloak.login()}
+                className="text-lg font-bold hover:text-blue-600"
+              >
+                Log in
+              </button>
+            </div>
+            <div className="flex items-center px-3 py-0.25 outline outline-2 outline-offset-2 rounded-full">
+              <button
+                onClick={() => keycloak.login()}
+                className="text-lg font-bold hover:text-blue-600"
+              >
+                Sign up
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
