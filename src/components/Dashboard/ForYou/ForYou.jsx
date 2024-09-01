@@ -4,28 +4,37 @@ import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import DailyDoseItem from "./DailyDoseItem";
 import { PlayCircleOutlined, AlignLeftOutlined } from "@ant-design/icons";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
+import PhotographerApi from "../../../apis/PhotographerApi";
 
 const ForYou = () => {
   const navigate = useNavigate();
   const handlePhotoClick = (id) => {
     navigate(`/for-you/${id}`);
   };
-  
-  const { isPending, error, data, isFetching } = useQuery({
-    queryKey: ["photos"],
-    queryFn: PhotoApi.getPublicPhotos,
+
+  const result = useQueries({
+    queries: [
+      {
+        queryKey: ["photos"],
+        queryFn: PhotoApi.getPublicPhotos,
+      },
+      {
+        queryKey: ["presignedUploadUrl", { filename: "test.jpg" }],
+        queryFn: PhotographerApi.getPresignedUploadUrl,
+      },
+    ],
   });
 
-  if (isPending) return "Loading...";
+  if (result[0].isPending || result[1].isPending) return "Loading...";
 
-  if (error) return "An error has occurred" + error.message;
+  if (result[0].error || result[1].error)
+    return "An error has occurred" + result[0].message;
 
-  const photos = data.data;
-
-  console.log(photos);
+  console.log(result[0].data);
+  console.log(result[1].data);
 
   return (
     <div className="bg-black ">
@@ -57,7 +66,7 @@ const ForYou = () => {
       </div>
 
       <div className="w-full max-w-8xl px-5 py-2 pb-10 mx-auto mb-10 gap-5 columns-4 space-y-5">
-        {photos.map((photo) => (
+        {Photos.map((photo) => (
           <div key={photo.id} className="overflow-hidden rounded-xl">
             <img
               key={photo.id}
