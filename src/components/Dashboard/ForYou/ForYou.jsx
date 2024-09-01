@@ -17,7 +17,9 @@ const ForYou = () => {
 
   if (error) return "An error has occurred" + error.message;
 
-  console.log(data);
+  const photos = data.data;
+
+  console.log(photos);
 
   return (
     <div className="bg-black ">
@@ -49,11 +51,11 @@ const ForYou = () => {
       </div>
 
       <div className="w-full max-w-8xl px-5 py-2 pb-10 mx-auto mb-10 gap-5 columns-4 space-y-5">
-        {Photos.map((photo) => (
+        {photos.map((photo) => (
           <div key={photo.id} className="overflow-hidden rounded-xl">
             <img
               key={photo.id}
-              src={photo.photo}
+              src={photo.thumbnailPhotoUrl}
               alt={`Photo ${photo.id}`}
               className=" rounded-xl transition-transform duration-300 ease-in-out transform hover:scale-110 "
             />
