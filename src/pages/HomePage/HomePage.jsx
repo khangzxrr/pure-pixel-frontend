@@ -1,10 +1,9 @@
-import React from "react";
-import Home1 from "./Home1";
-import Home2 from "./Home2";
-import Home3 from "./Home3";
-import Home4 from "./Home4";
-import Home5 from "./Home5";
-import Home6 from "./Home6";
+import Home1 from "../../components/Guest/HomePage/Home1";
+import Home2 from "../../components/Guest/HomePage/Home2";
+import Home3 from "../../components/Guest/HomePage/Home3";
+import Home4 from "../../components/Guest/HomePage/Home4";
+import Home5 from "../../components/Guest/HomePage/Home5";
+import Home6 from "../../components/Guest/HomePage/Home6";
 
 export default function HomePage() {
   return (

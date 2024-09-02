@@ -4,10 +4,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
 import Following from "../components/Dashboard/Following/Following";
 import Explore from "../components/Dashboard/Explore/Explore";
-
 import HomePage from "./../pages/HomePage/HomePage";
-import MembershipPage from "../pages/Membership/MembershipPage";
-
 import Award from "../pages/HomePage/Award";
 import Blog from "../pages/HomePage/Blog";
 import Discover from "../pages/HomePage/Discover";
@@ -21,7 +18,7 @@ import Transaction from "../pages/Customer/Transaction";
 import Profile from "../pages/Customer/Profile";
 import PhotoDetailLayout from "../layouts/PhotoDetailLayout";
 import UploadPhoto from "../pages/Photographer/UploadPhoto";
-
+import MembershipPage from "../pages/HomePage/MembershipPage";
 
 export const AppRouter = createBrowserRouter([
   {
