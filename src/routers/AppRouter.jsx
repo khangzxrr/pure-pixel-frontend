@@ -1,7 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import AuthorizedLayout from "../layouts/AuthorizedLayout";
 import MainLayout from "../layouts/MainLayout";
-import ProfilePage from "../pages/Profile/Profile";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
 import Following from "../components/Dashboard/Following/Following";
@@ -19,6 +17,7 @@ import Booking from "../pages/Customer/Booking";
 import Transaction from "../pages/Customer/Transaction";
 import Profile from "../pages/Customer/Profile";
 import PhotoDetailLayout from "../layouts/PhotoDetailLayout";
+import UploadPhoto from "../pages/Photographer/UploadPhoto";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -72,6 +71,10 @@ export const AppRouter = createBrowserRouter([
         element: <Quest />,
       },
       {
+        path: "/upload-photo",
+        element: <UploadPhoto />,
+      },
+      {
         path: "/customer",
         element: <CustomerLayout />,
         children: [
@@ -97,42 +100,6 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/customer/profile",
-            element: <Profile />,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: "/auth",
-    element: <AuthorizedLayout />,
-    children: [
-      {
-        path: "/auth/customer",
-        element: <CustomerLayout />,
-        children: [
-          {
-            path: "/auth/customer",
-            element: <Navigate to="/customer/profile" />,
-          },
-          {
-            path: "/auth/customer/album",
-            element: <Album />,
-          },
-          {
-            path: "/auth/customer/photo",
-            element: <Photo />,
-          },
-          {
-            path: "/auth/customer/booking",
-            element: <Booking />,
-          },
-          {
-            path: "/auth/customer/transaction",
-            element: <Transaction />,
-          },
-          {
-            path: "/auth/customer/profile",
             element: <Profile />,
           },
         ],
