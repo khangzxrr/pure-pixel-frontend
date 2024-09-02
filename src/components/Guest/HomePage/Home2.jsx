@@ -1,6 +1,6 @@
 import React from "react";
-import ComButton from "./../../components/ComButton/ComButton";
-import ComText from "../../components/ComText/ComText";
+import ComButton from "../../ComButton/ComButton";
+import ComText from "../../ComText/ComText";
 
 export default function Home2() {
   return (

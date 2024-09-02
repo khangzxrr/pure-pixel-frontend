@@ -1,16 +1,20 @@
 import { Steps, Input, Select } from "antd";
-import { CloudUploadOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  CloudUploadOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import React from "react";
 import useUploadPhotoStore from "../../zustand/UploadPhotoState";
-import { ImageList } from "../../fakejson/ImageList";
 import UploadPhotoForm from "../../components/Photographer/UploadPhoto/UploadPhotoForm";
 import UploadPhotoExtraOption from "../../components/Photographer/UploadPhoto/UploadPhotoExtraOption";
 
 export default function UploadPhoto() {
-  const { currentStep, setCurrentStep } = useUploadPhotoStore();
+  const { currentStep, setCurrentStep, photoList, deleteImageById } =
+    useUploadPhotoStore();
 
   const imageListContainerClasses = `w-1/2 px-3 flex flex-wrap gap-2 ${
-    ImageList.length > 6 ? "h-[90%] overflow-y-scroll" : ""
+    photoList.length > 6 ? "h-[90%] overflow-y-scroll" : ""
   }`;
 
   return (
@@ -22,17 +26,30 @@ export default function UploadPhoto() {
         </div>
         <div className="w-full flex pt-9 px-6">
           <div className={imageListContainerClasses}>
-            <div className="relative w-[30%] pb-[30%] bg-slate-500 flex justify-center items-center">
+            <div
+              className={`relative w-[30%] bg-slate-500 flex justify-center items-center ${
+                photoList.length <= 3 ? "h-1/2" : "pb-[30%]"
+              }`}
+            >
               <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
                 <PlusOutlined style={{ fontSize: "48px" }} />
               </div>
             </div>
-            {ImageList.map((image) => (
-              <div className="relative w-[30%] pb-[30%]" key={image.id}>
+            {photoList.map((image) => (
+              <div
+                className={`relative w-[30%] ${
+                  photoList.length <= 3 ? "h-1/2" : "pb-[30%]"
+                }`}
+                key={image.id}
+              >
                 <img
                   src={image.image}
                   alt={image.id}
                   className="absolute top-0 left-0 w-full h-full object-cover"
+                />
+                <DeleteOutlined
+                  className="absolute top-2 right-2 text-white text-xl cursor-pointer hover:text-red-500"
+                  onClick={() => deleteImageById(image.id)}
                 />
               </div>
             ))}
