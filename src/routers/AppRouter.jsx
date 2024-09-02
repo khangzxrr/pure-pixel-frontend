@@ -1,7 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import AuthorizedLayout from "../layouts/AuthorizedLayout";
 import MainLayout from "../layouts/MainLayout";
-import ProfilePage from "../pages/Profile/Profile";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
 import Following from "../components/Dashboard/Following/Following";
