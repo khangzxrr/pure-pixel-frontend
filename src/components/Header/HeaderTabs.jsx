@@ -1,5 +1,37 @@
 import { Link } from "react-router-dom";
-import { HeaderTab } from "./Header";
+
+export const HeaderTab = [
+  {
+    id: 1,
+    name: "Discover",
+    link: "/discover",
+  },
+  {
+    id: 2,
+    name: "Licensing",
+    link: "/licensing",
+  },
+  {
+    id: 3,
+    name: "Membership",
+    link: "/membership",
+  },
+  {
+    id: 4,
+    name: "Quest",
+    link: "/quest",
+  },
+  {
+    id: 5,
+    name: "Blog",
+    link: "/blog",
+  },
+  {
+    id: 6,
+    name: "Award Winners",
+    link: "/award",
+  },
+];
 
 export default function HeaderTabs() {
   return (
