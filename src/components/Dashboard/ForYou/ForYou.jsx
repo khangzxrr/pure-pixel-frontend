@@ -1,13 +1,11 @@
 import React from "react";
-import Photos from "./PhotoList";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import DailyDoseItem from "./DailyDoseItem";
 import { PlayCircleOutlined, AlignLeftOutlined } from "@ant-design/icons";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
-import PhotographerApi from "../../../apis/PhotographerApi";
 
 const ForYou = () => {
   const navigate = useNavigate();
@@ -15,26 +13,20 @@ const ForYou = () => {
     navigate(`/for-you/${id}`);
   };
 
-  const result = useQueries({
-    queries: [
-      {
-        queryKey: ["photos"],
-        queryFn: PhotoApi.getPublicPhotos,
-      },
-      {
-        queryKey: ["presignedUploadUrl", { filename: "test.jpg" }],
-        queryFn: PhotographerApi.getPresignedUploadUrl,
-      },
-    ],
+  const result = useQuery({
+    queryKey: "public-photo",
+    queryFn: PhotoApi.getPublicPhotos,
   });
 
-  if (result[0].isPending || result[1].isPending) return "Loading...";
+  if (result.isLoading) {
+    return <div>loading...</div>;
+  }
 
-  if (result[0].error || result[1].error)
-    return "An error has occurred" + result[0].message;
+  if (result.error) {
+    return <div>error {result.error}</div>;
+  }
 
-  console.log(result[0].data);
-  console.log(result[1].data);
+  const photos = result.data;
 
   return (
     <div className="bg-black ">
@@ -66,7 +58,7 @@ const ForYou = () => {
       </div>
 
       <div className="w-full max-w-8xl px-5 py-2 pb-10 mx-auto mb-10 gap-5 columns-4 space-y-5">
-        {Photos.map((photo) => (
+        {photos.map((photo) => (
           <div key={photo.id} className="overflow-hidden rounded-xl">
             <img
               key={photo.id}
