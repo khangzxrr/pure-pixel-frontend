@@ -8,7 +8,7 @@ const getPresignedUploadUrl = async ({ queryKey }) => {
     crossdomain: true,
   });
 
-  return response;
+  return response.data;
 };
 
 const PhotographerApi = {
