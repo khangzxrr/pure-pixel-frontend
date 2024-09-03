@@ -19,6 +19,15 @@ import Profile from "../pages/Customer/Profile";
 import PhotoDetailLayout from "../layouts/PhotoDetailLayout";
 import UploadPhoto from "../pages/Photographer/UploadPhoto";
 import MembershipPage from "../pages/HomePage/MembershipPage";
+import MyPhoto from "../layouts/MyPhoto";
+import MyPhotoContent from "../components/MyPhoto/MyPhotoComponent/MyPhotoContent";
+import MyPhotoLicensing from "../components/MyPhoto/MyPhotoLicensing/MyPhotoLicensing";
+import MyPhotoStories from "../components/MyPhoto/MyPhotoStories/MyPhotoStories";
+import MyPhotoGalleries from "../components/MyPhoto/MyPhotoGalleries/MyPhotoGalleries";
+import MyPhotoLikes from "../components/MyPhoto/MyPhotoLikes/MyPhotoLikes";
+import MyPhotoStatistics from "../components/MyPhoto/MyPhotoStatistics/MyPhotoStatistics";
+import MyPhotoAll from "../components/MyPhoto/MyPhotoAll/MyPhotoAll";
+import MyPhotoPrivate from "../components/MyPhoto/MyPhotoPrivate/MyPhotoPrivate";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -82,6 +91,46 @@ export const AppRouter = createBrowserRouter([
       {
         path: "/upload-photo",
         element: <UploadPhoto />,
+      },
+      {
+        path: "/my-photo/",
+        element: <MyPhoto />,
+        children: [
+          {
+            path: "/my-photo/photo",
+            element: <MyPhotoContent />,
+            children: [
+              {
+                path: "/my-photo/photo/all",
+                element: <MyPhotoAll />,
+              },
+              {
+                path: "/my-photo/photo/private",
+                element: <MyPhotoPrivate />,
+              },
+            ],
+          },
+          {
+            path: "/my-photo/licensing",
+            element: <MyPhotoLicensing />,
+          },
+          {
+            path: "/my-photo/stories",
+            element: <MyPhotoStories />,
+          },
+          {
+            path: "/my-photo/galleries",
+            element: <MyPhotoGalleries />,
+          },
+          {
+            path: "/my-photo/likes",
+            element: <MyPhotoLikes />,
+          },
+          {
+            path: "/my-photo/statistics",
+            element: <MyPhotoStatistics />,
+          },
+        ],
       },
       {
         path: "/customer",
