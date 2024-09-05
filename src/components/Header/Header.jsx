@@ -2,6 +2,7 @@ import React from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import { useNavigate } from "react-router-dom";
 import HeaderTabs from "./HeaderTabs";
+import { Dropdown } from "antd";
 
 export default function Header() {
   const { keycloak } = useKeycloak();
@@ -30,6 +31,14 @@ export default function Header() {
           className="text-lg font-bold hover:text-blue-600"
         >
           Hello {keycloak.tokenParsed.name}!
+          <Dropdown overlay={menu} trigger={["click"]}>
+            <Link
+              to={role === 0 ? "/admin" : "/user"}
+              className="h-6 w-6 flex items-center justify-center border border-black rounded-full"
+            >
+              <FontAwesomeIcon size="1x" className="text-black" icon={faUser} />
+            </Link>
+          </Dropdown>
         </button>
         <button
           onClick={() => handleAuthAction("logout")}

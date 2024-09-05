@@ -84,6 +84,50 @@ export const AppRouter = createBrowserRouter([
         element: <UploadPhoto />,
       },
       {
+        path: "/my-photo/",
+        element: <MyPhoto />,
+        children: [
+          {
+            path: "/my-photo/photo",
+            element: <MyPhotoContent />,
+            children: [
+              {
+                path: "/my-photo/photo",
+                element: <Navigate to="/my-photo/photo/all" />,
+              },
+              {
+                path: "/my-photo/photo/all",
+                element: <MyPhotoAll />,
+              },
+              {
+                path: "/my-photo/photo/private",
+                element: <MyPhotoPrivate />,
+              },
+            ],
+          },
+          {
+            path: "/my-photo/licensing",
+            element: <MyPhotoLicensing />,
+          },
+          {
+            path: "/my-photo/stories",
+            element: <MyPhotoStories />,
+          },
+          {
+            path: "/my-photo/galleries",
+            element: <MyPhotoGalleries />,
+          },
+          {
+            path: "/my-photo/likes",
+            element: <MyPhotoLikes />,
+          },
+          {
+            path: "/my-photo/statistics",
+            element: <MyPhotoStatistics />,
+          },
+        ],
+      },
+      {
         path: "/customer",
         element: <CustomerLayout />,
         children: [
