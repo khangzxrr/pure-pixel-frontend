@@ -101,6 +101,10 @@ export const AppRouter = createBrowserRouter([
             element: <MyPhotoContent />,
             children: [
               {
+                path: "/my-photo/photo",
+                element: <Navigate to="/my-photo/photo/all" />,
+              },
+              {
                 path: "/my-photo/photo/all",
                 element: <MyPhotoAll />,
               },
