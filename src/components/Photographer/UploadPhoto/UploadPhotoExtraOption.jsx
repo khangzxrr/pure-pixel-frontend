@@ -1,22 +1,65 @@
 import { Select, Checkbox } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import useUploadPhotoStore from "../../../zustand/UploadPhotoState";
 import { LoadingOutlined } from "@ant-design/icons";
 
 export default function UploadPhotoExtraOption() {
-  const { currentStep, setCurrentStep, setPhotoExtraOption } =
+  const { setCurrentStep, updatePhotoList, selectedPhoto, photoList } =
     useUploadPhotoStore();
+
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      private: selectedPhoto.private,
+      addWatermark: selectedPhoto.addWatermark,
+      includeEXIF: selectedPhoto.includeEXIF,
+    },
+  });
+  useEffect(() => {
+    reset({
+      private: selectedPhoto.private,
+      addWatermark: selectedPhoto.addWatermark,
+      includeEXIF: selectedPhoto.includeEXIF,
+    });
+    console.log("selectedPhoto", selectedPhoto);
+  }, [selectedPhoto, reset]);
+
+  const handlePrivateChange = (value) => {
+    updatePhotoList({
+      ...selectedPhoto,
+      private: value,
+    });
+
+    console.log("Private changed to:", value);
+  };
+
+  const handleAddWatermarkChange = (e) => {
+    updatePhotoList({
+      ...selectedPhoto,
+      addWatermark: e.target.checked,
+    });
+
+    console.log("Add Watermark changed to:", e.target.checked);
+  };
+
+  const handleIncludeEXIFChange = (e) => {
+    updatePhotoList({
+      ...selectedPhoto,
+      includeEXIF: e.target.checked,
+    });
+
+    console.log("Include EXIF Data changed to:", e.target.checked);
+  };
 
   const onSubmit = (data) => {
     console.log(data);
-    setPhotoExtraOption(data);
-    setCurrentStep(currentStep + 1);
+    console.log("selectedPhoto", photoList);
+    setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep + 1);
   };
 
   return (
@@ -36,6 +79,11 @@ export default function UploadPhotoExtraOption() {
                   { label: "Only who had link", value: "link" },
                 ]}
                 className="w-1/3 m-2"
+                onChange={(value) => {
+                  field.onChange(value);
+                  handlePrivateChange(value);
+                }}
+                disabled={selectedPhoto.currentStep === 3}
               />
             )}
           />
@@ -48,7 +96,16 @@ export default function UploadPhotoExtraOption() {
             name="addWatermark"
             control={control}
             render={({ field }) => (
-              <Checkbox {...field} className="m-2">
+              <Checkbox
+                {...field}
+                className="m-2"
+                checked={field.value}
+                onChange={(e) => {
+                  field.onChange(e.target.checked);
+                  handleAddWatermarkChange(e);
+                }}
+                disabled={selectedPhoto.currentStep === 3}
+              >
                 Add Watermark
               </Checkbox>
             )}
@@ -64,7 +121,16 @@ export default function UploadPhotoExtraOption() {
             name="includeEXIF"
             control={control}
             render={({ field }) => (
-              <Checkbox {...field} className="m-2">
+              <Checkbox
+                {...field}
+                className="m-2"
+                checked={field.value}
+                onChange={(e) => {
+                  field.onChange(e.target.checked);
+                  handleIncludeEXIFChange(e);
+                }}
+                disabled={selectedPhoto.currentStep === 3}
+              >
                 Include EXIF Data
               </Checkbox>
             )}
@@ -76,19 +142,23 @@ export default function UploadPhotoExtraOption() {
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={() => setCurrentStep(currentStep - 1)}
-          className="mt-4 px-4 py-2 bg-gray-500 text-white rounded disabled:opacity-50 float-left"
-        >
-          Back
-        </button>
+        {selectedPhoto.currentStep !== 3 && (
+          <button
+            type="button"
+            onClick={() =>
+              setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep - 1)
+            }
+            className="mt-4 px-4 py-2 bg-gray-500 text-white rounded disabled:opacity-50 float-left"
+          >
+            Back
+          </button>
+        )}
         <button
           type="submit"
-          disabled={currentStep === 3}
+          disabled={selectedPhoto.currentStep === 3}
           className="mt-4 px-4 py-2  bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
-          {currentStep === 3 ? <LoadingOutlined /> : "Save"}
+          {selectedPhoto.currentStep === 3 ? <LoadingOutlined /> : "Save"}
         </button>
       </form>
     </div>

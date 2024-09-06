@@ -1,5 +1,5 @@
 import { Input, Select } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
 import useUploadPhotoStore from "../../../zustand/UploadPhotoState";
@@ -9,33 +9,61 @@ import { SelectType } from "../../../fakejson/SelectType";
 import { SelectTag } from "../../../fakejson/SelectTag";
 
 export default function UploadPhotoForm() {
-  const { currentStep, photoDetails, setCurrentStep, setPhotoDetails } =
+  const { updatePhotoList, selectedPhoto, setCurrentStep, photoList } =
     useUploadPhotoStore();
+
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(uploadPhotoInputSchema),
+    defaultValues: {
+      imageDetails: selectedPhoto.imageDetails || "",
+      additionalDetails: selectedPhoto.additionalDetails || "",
+      type: selectedPhoto.type || "",
+      tag: selectedPhoto.tag || [],
+      location: selectedPhoto.location || "",
+    },
   });
 
   const handleTagChange = (value) => {
     console.log(`selected ${value}`);
     console.log(`Type of value: ${typeof value}`);
   };
+
   const onSubmit = (data) => {
-    console.log("photo detail", data);
-    setPhotoDetails(data);
-    console.log("photo detail", photoDetails);
-    setCurrentStep(currentStep + 1);
+    console.log("photo detail", data, selectedPhoto.id);
+    // Include the id of the selectedPhoto in the form data
+    const updatedData = {
+      ...data,
+      id: selectedPhoto.id,
+      private: selectedPhoto.private,
+      addWatermark: selectedPhoto.addWatermark,
+      includeEXIF: selectedPhoto.includeEXIF,
+    };
+    updatePhotoList(updatedData);
+    console.log("photo detail", selectedPhoto, photoList);
+    setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep + 1);
   };
+
+  useEffect(() => {
+    reset({
+      imageDetails: selectedPhoto.imageDetails || "",
+      additionalDetails: selectedPhoto.additionalDetails || "",
+      type: selectedPhoto.type || "",
+      tag: selectedPhoto.tag || [],
+      location: selectedPhoto.location || "",
+    });
+  }, [selectedPhoto, reset]);
+
   return (
     <div className="px-6">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="imageDetails"
           control={control}
-          defaultValue={photoDetails.imageDetails} // Set your default value here
           render={({ field }) => (
             <Input
               {...field}
@@ -56,7 +84,6 @@ export default function UploadPhotoForm() {
         <Controller
           name="additionalDetails"
           control={control}
-          defaultValue={photoDetails.additionalDetails} // Set your default value here
           render={({ field }) => (
             <TextArea
               {...field}
@@ -75,7 +102,6 @@ export default function UploadPhotoForm() {
         <Controller
           name="type"
           control={control}
-          defaultValue={photoDetails.type} // Set your default value here
           render={({ field }) => (
             <Select
               {...field}
@@ -97,7 +123,6 @@ export default function UploadPhotoForm() {
         <Controller
           name="tag"
           control={control}
-          defaultValue={photoDetails.tag} // Set your default value here
           render={({ field }) => (
             <Select
               {...field}
@@ -121,7 +146,6 @@ export default function UploadPhotoForm() {
         <Controller
           name="location"
           control={control}
-          defaultValue={photoDetails.location} // Set your default value here
           render={({ field }) => (
             <Input
               {...field}
