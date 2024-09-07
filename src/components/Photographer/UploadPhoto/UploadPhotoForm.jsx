@@ -1,4 +1,4 @@
-import { Input, Select } from "antd";
+import { Input, Select, Checkbox } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
@@ -7,9 +7,10 @@ import TextArea from "antd/es/input/TextArea";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectType } from "../../../fakejson/SelectType";
 import { SelectTag } from "../../../fakejson/SelectTag";
+import { LoadingOutlined } from "@ant-design/icons";
 
-export default function UploadPhotoForm() {
-  const { updatePhotoList, selectedPhoto, setCurrentStep, photoList } =
+export default function CombinedForm() {
+  const { updatePhotoList, selectedPhoto, setCurrentStep, updateField } =
     useUploadPhotoStore();
 
   const {
@@ -25,6 +26,9 @@ export default function UploadPhotoForm() {
       type: selectedPhoto.type || "",
       tag: selectedPhoto.tag || [],
       location: selectedPhoto.location || "",
+      private: selectedPhoto.private,
+      addWatermark: selectedPhoto.addWatermark,
+      includeEXIF: selectedPhoto.includeEXIF,
     },
   });
 
@@ -35,17 +39,8 @@ export default function UploadPhotoForm() {
 
   const onSubmit = (data) => {
     console.log("photo detail", data, selectedPhoto.id);
-    // Include the id of the selectedPhoto in the form data
-    const updatedData = {
-      ...data,
-      id: selectedPhoto.id,
-      private: selectedPhoto.private,
-      addWatermark: selectedPhoto.addWatermark,
-      includeEXIF: selectedPhoto.includeEXIF,
-    };
-    updatePhotoList(updatedData);
-    console.log("photo detail", selectedPhoto, photoList);
     setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep + 1);
+    console.log("photo detail", selectedPhoto);
   };
 
   useEffect(() => {
@@ -55,6 +50,9 @@ export default function UploadPhotoForm() {
       type: selectedPhoto.type || "",
       tag: selectedPhoto.tag || [],
       location: selectedPhoto.location || "",
+      private: selectedPhoto.private,
+      addWatermark: selectedPhoto.addWatermark,
+      includeEXIF: selectedPhoto.includeEXIF,
     });
   }, [selectedPhoto, reset]);
 
@@ -72,6 +70,10 @@ export default function UploadPhotoForm() {
               } focus:outline-none focus:border-[#e0e0e0]`}
               type="text"
               placeholder="Enter image details"
+              onChange={(e) => {
+                field.onChange(e);
+                updateField(selectedPhoto.id, "imageDetails", e.target.value);
+              }}
             />
           )}
         />
@@ -91,6 +93,14 @@ export default function UploadPhotoForm() {
                 errors.additionalDetails ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:border-[#e0e0e0]`}
               placeholder="Enter additional details"
+              onChange={(e) => {
+                field.onChange(e);
+                updateField(
+                  selectedPhoto.id,
+                  "additionalDetails",
+                  e.target.value
+                );
+              }}
             />
           )}
         />
@@ -99,6 +109,7 @@ export default function UploadPhotoForm() {
             {errors.additionalDetails.message}
           </p>
         )}
+
         <Controller
           name="type"
           control={control}
@@ -114,6 +125,10 @@ export default function UploadPhotoForm() {
               }
               options={SelectType}
               className="w-3/5 max-w-full m-2"
+              onChange={(value) => {
+                field.onChange(value);
+                updateField(selectedPhoto.id, "type", value);
+              }}
             />
           )}
         />
@@ -135,6 +150,7 @@ export default function UploadPhotoForm() {
               onChange={(value) => {
                 field.onChange(value); // Ensure the form state is updated
                 handleTagChange(value); // Call your custom handler
+                updateField(selectedPhoto.id, "tag", value);
               }}
               options={SelectTag}
             />
@@ -154,18 +170,93 @@ export default function UploadPhotoForm() {
               } focus:outline-none focus:border-[#e0e0e0]`}
               type="text"
               placeholder="Enter location"
+              onChange={(e) => {
+                field.onChange(e);
+                updateField(selectedPhoto.id, "location", e.target.value);
+              }}
             />
           )}
         />
         {errors.location && (
           <p className=" text-red-500 text-sm p-1">{errors.location.message}</p>
         )}
+        <Controller
+          name="private"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              placeholder="Photo privacy"
+              options={[
+                { label: "Public", value: "public" },
+                { label: "Private", value: "private" },
+                { label: "Only who had link", value: "link" },
+              ]}
+              className="w-1/3 m-2"
+              onChange={(value) => {
+                field.onChange(value);
+                updateField(selectedPhoto.id, "private", value);
+              }}
+              disabled={selectedPhoto.currentStep === 3}
+            />
+          )}
+        />
+        {errors.private && (
+          <p className="text-red-500 text-sm p-1">{errors.private.message}</p>
+        )}
+        <Controller
+          name="addWatermark"
+          control={control}
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              className="m-2"
+              checked={field.value}
+              onChange={(e) => {
+                field.onChange(e.target.checked);
+                updateField(selectedPhoto.id, "addWatermark", e.target.checked);
+              }}
+              disabled={selectedPhoto.currentStep === 3}
+            >
+              Add Watermark
+            </Checkbox>
+          )}
+        />
+        {errors.addWatermark && (
+          <p className="text-red-500 text-sm p-1">
+            {errors.addWatermark.message}
+          </p>
+        )}
+        <Controller
+          name="includeEXIF"
+          control={control}
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              className="m-2"
+              checked={field.value}
+              onChange={(e) => {
+                field.onChange(e.target.checked);
+                updateField(selectedPhoto.id, "includeEXIF", e.target.checked);
+              }}
+              disabled={selectedPhoto.currentStep === 3}
+            >
+              Include EXIF Data
+            </Checkbox>
+          )}
+        />
+        {errors.includeEXIF && (
+          <p className="text-red-500 text-sm p-1">
+            {errors.includeEXIF.message}
+          </p>
+        )}
 
         <button
           type="submit"
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 float-right"
+          disabled={selectedPhoto.currentStep === 3}
+          className="mt-4 px-4 py-2  bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
-          Next
+          Next{" "}
         </button>
       </form>
     </div>

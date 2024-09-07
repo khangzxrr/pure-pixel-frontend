@@ -7,6 +7,7 @@ const initialPhotoList = ImageList.map((image) => ({
 }));
 
 const useUploadPhotoStore = create((set) => ({
+  isUploading: false,
   photoList: initialPhotoList,
   selectedPhoto: initialPhotoList[0] || {}, // Initialize with the first element
   photoDetails: {},
@@ -39,63 +40,51 @@ const useUploadPhotoStore = create((set) => ({
           private: "",
           addWatermark: true,
           includeEXIF: true,
+          camera: "Leica Q2",
+          lens: "Summilux 28mm f/1.7 ASPH",
+          focalLength: 28,
+          shutterSpeed: "1/1000",
+          aperture: 1.7,
+          iso: 100,
+          shootDate: "2023-01-01",
           currentStep: 1, // Add currentStep to the new image
         },
       ],
     })),
   setSelectedPhoto: (photo) => set({ selectedPhoto: photo }),
-  updatePhotoList: (photo) =>
-    set((state) => {
-      const updatedPhotoList = state.photoList.map((image) => {
-        if (image.id === photo.id) {
-          console.log("photo", photo, image);
-          return {
-            ...image,
-            imageDetails:
-              photo.imageDetails !== image.imageDetails
-                ? photo.imageDetails
-                : image.imageDetails,
-            additionalDetails:
-              photo.additionalDetails !== image.additionalDetails
-                ? photo.additionalDetails
-                : image.additionalDetails,
-            type: photo.type !== image.type ? photo.type : image.type,
-            tag: photo.tag !== image.tag ? photo.tag : image.tag,
-            location:
-              photo.location !== image.location
-                ? photo.location
-                : image.location,
-            private:
-              photo.private !== image.private ? photo.private : image.private,
-            addWatermark:
-              photo.addWatermark !== image.addWatermark
-                ? photo.addWatermark
-                : image.addWatermark,
-            includeEXIF:
-              photo.includeEXIF !== image.includeEXIF
-                ? photo.includeEXIF
-                : image.includeEXIF,
-            currentStep:
-              photo.currentStep !== image.currentStep
-                ? photo.currentStep
-                : image.currentStep,
-          };
-        }
-        return image;
-      });
-
-      return { photoList: updatedPhotoList, selectedPhoto: photo };
-    }),
   setCurrentStep: (id, step) =>
-    set((state) => ({
-      photoList: state.photoList.map((image) =>
-        image.id === id ? { ...image, currentStep: step } : image
-      ),
-      selectedPhoto:
+    set((state) => {
+      const photoList = [...state.photoList]; // Create a shallow copy of the array
+      const photoIndex = photoList.findIndex((image) => image.id === id);
+
+      if (photoIndex !== -1) {
+        photoList[photoIndex] = { ...photoList[photoIndex], currentStep: step };
+      }
+
+      const selectedPhoto =
         state.selectedPhoto.id === id
           ? { ...state.selectedPhoto, currentStep: step }
-          : state.selectedPhoto,
-    })),
+          : state.selectedPhoto;
+
+      return { photoList, selectedPhoto };
+    }),
+  updateField: (id, field, value) =>
+    set((state) => {
+      const photoList = [...state.photoList];
+      const photoIndex = photoList.findIndex((image) => image.id === id);
+
+      if (photoIndex !== -1) {
+        photoList[photoIndex] = { ...photoList[photoIndex], [field]: value };
+      }
+
+      const selectedPhoto =
+        state.selectedPhoto.id === id
+          ? { ...state.selectedPhoto, [field]: value }
+          : state.selectedPhoto;
+
+      return { photoList, selectedPhoto };
+    }),
+  setIsUploading: (isUploading) => set({ isUploading }),
 }));
 
 export default useUploadPhotoStore;
