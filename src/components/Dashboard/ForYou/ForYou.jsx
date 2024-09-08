@@ -19,7 +19,7 @@ const ForYou = () => {
   });
 
   if (result.error) {
-    return <div>error {result.error}</div>;
+    return <div>error {JSON.stringify(result.error)}</div>;
   }
 
   const photos = result.data;
