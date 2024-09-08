@@ -8,6 +8,7 @@ import { uploadPhotoExtraOptionInputSchema } from "../../../yup/UploadPhotoExtra
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
 import { useMutation } from "@tanstack/react-query";
 import PhotoApi from "../../../apis/PhotoApi";
+import { useNavigate } from "react-router-dom";
 
 export default function CombinedForm() {
   const {
@@ -29,6 +30,8 @@ export default function CombinedForm() {
     defaultValues: getDefaultPhoto(selectedPhoto),
   });
 
+  const navigate = useNavigate();
+
   const updatePhotos = useMutation({
     mutationKey: "update-photo",
     mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
@@ -41,6 +44,8 @@ export default function CombinedForm() {
 
     console.log(result);
     message.success("saved all uploaded photos!");
+
+    navigate("/my-photo/photo/all");
   };
 
   useEffect(() => {

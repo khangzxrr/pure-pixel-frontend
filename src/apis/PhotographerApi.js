@@ -11,8 +11,15 @@ const getPresignedUploadUrls = async ({ queryKey }) => {
   return response.data;
 };
 
+const getMyPhotos = async () => {
+  const response = await http.get(`/photographer/me/photo`);
+
+  return response.data;
+};
+
 const PhotographerApi = {
   getPresignedUploadUrls,
+  getMyPhotos,
 };
 
 export default PhotographerApi;

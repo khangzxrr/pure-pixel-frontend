@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import MyPhotoItem from "./../MyPhotoAll/MyPhotoItem";
 const MyPhotoContent = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.pathname);
@@ -13,7 +12,6 @@ const MyPhotoContent = () => {
     <div className="col-span-10 ">
       <div className="flex flex-col justify-center gap-3 h-48 pl-8 ">
         <div className="text-2xl font-bold">Ảnh của tôi</div>
-        <div className="font-bold text-[#0870d1]">{MyPhotoItem.length} ảnh</div>
       </div>
       <div className="">
         <div className="flex gap-10 pl-10 h-9 place-items-end">
