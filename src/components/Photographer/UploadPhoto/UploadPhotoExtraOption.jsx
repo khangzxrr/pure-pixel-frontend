@@ -41,9 +41,7 @@ export default function CombinedForm() {
   const onSubmit = async (data) => {
     setIsUpdating(true);
 
-    const result = await updatePhotos.mutateAsync(photoList);
-
-    console.log(result);
+    await updatePhotos.mutateAsync(photoList);
 
     clearState();
 

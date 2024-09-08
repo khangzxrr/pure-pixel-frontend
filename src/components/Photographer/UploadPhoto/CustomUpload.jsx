@@ -8,7 +8,7 @@ import useUploadPhotoStore from "../../../states/UploadPhotoState";
 export default function CustomUpload() {
   const [loading, setLoading] = useState(false);
 
-  const { photoList, deleteImageById, addSingleImage } = useUploadPhotoStore();
+  const { addSingleImage } = useUploadPhotoStore();
 
   const processPhotos = useMutation({
     mutationFn: (presignedData) => PhotoApi.processPhotos(presignedData),
@@ -60,8 +60,6 @@ export default function CustomUpload() {
   );
 
   const handleChange = (info) => {
-    console.log(info);
-
     if (info.file.status === "done") {
       addSingleImage(info.file.response.data[0]);
     }

@@ -13,7 +13,6 @@ export default function UploadPhoto() {
   const imageListContainerClasses = `w-1/2 px-3 flex flex-wrap gap-2 ${
     photoList.length > 6 ? "h-[90%] overflow-y-scroll" : ""
   }`;
-  console.log("selectedPhoto", selectedPhoto);
   return (
     <div className="flex py-9 h-screen">
       <div className="flex flex-col w-5/6 mx-auto bg-white rounded-lg border-[1px]">

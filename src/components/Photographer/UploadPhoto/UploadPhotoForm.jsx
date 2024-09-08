@@ -28,13 +28,10 @@ export default function CombinedForm() {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
     setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep + 1);
   };
 
   useEffect(() => {
-    console.log("trigger effect");
-    console.log(selectedPhoto);
     reset(selectedPhoto);
   }, [selectedPhoto, reset]);
 
