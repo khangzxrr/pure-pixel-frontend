@@ -30,11 +30,20 @@ const processPhotos = async (presignedData) => {
   return response;
 };
 
+const updatePhotos = async (photos) => {
+  const response = await http.patch(`photo/update`, {
+    photos,
+  });
+
+  return response;
+};
+
 const PhotoApi = {
   getPublicPhotos,
   getPresignedUploadUrls,
   uploadPhotoUsingPresignedUrl,
   processPhotos,
+  updatePhotos,
 };
 
 export default PhotoApi;

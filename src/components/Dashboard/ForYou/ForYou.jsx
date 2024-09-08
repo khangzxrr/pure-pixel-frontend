@@ -14,13 +14,9 @@ const ForYou = () => {
   };
 
   const result = useQuery({
-    queryKey: "public-photo",
+    queryKey: ["public-photo"],
     queryFn: PhotoApi.getPublicPhotos,
   });
-
-  if (result.isLoading) {
-    return <div>loading...</div>;
-  }
 
   if (result.error) {
     return <div>error {result.error}</div>;
@@ -58,17 +54,19 @@ const ForYou = () => {
       </div>
 
       <div className="w-full max-w-8xl px-5 py-2 pb-10 mx-auto mb-10 gap-5 columns-4 space-y-5">
-        {photos.map((photo) => (
-          <div key={photo.id} className="overflow-hidden rounded-xl">
-            <img
-              key={photo.id}
-              src={photo.thumbnailPhotoUrl}
-              alt={`Photo ${photo.id}`}
-              className=" rounded-xl transition-transform duration-300 ease-in-out transform hover:scale-110 "
-              onClick={() => handlePhotoClick(photo.id)}
-            />
-          </div>
-        ))}
+        {result.isFetching
+          ? "loading..."
+          : photos.map((photo) => (
+              <div key={photo.id} className="overflow-hidden rounded-xl">
+                <img
+                  key={photo.id}
+                  src={photo.signedUrl.thumbnail}
+                  alt={`Photo ${photo.id}`}
+                  className=" rounded-xl transition-transform duration-300 ease-in-out transform hover:scale-110 "
+                  onClick={() => handlePhotoClick(photo.id)}
+                />
+              </div>
+            ))}
       </div>
     </div>
   );
