@@ -1,10 +1,10 @@
 import http from "../configs/Http";
 
-const getPresignedUploadUrl = async ({ queryKey }) => {
+const getPresignedUploadUrls = async ({ queryKey }) => {
   // eslint-disable-next-line no-unused-vars
   const [_key, { filename }] = queryKey;
 
-  const response = await http.get(`/photographer/me/upload/${filename}`, {
+  const response = await http.post(`/photographer/me/upload`, {
     crossdomain: true,
   });
 
@@ -12,7 +12,7 @@ const getPresignedUploadUrl = async ({ queryKey }) => {
 };
 
 const PhotographerApi = {
-  getPresignedUploadUrl,
+  getPresignedUploadUrls,
 };
 
 export default PhotographerApi;
