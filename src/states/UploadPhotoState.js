@@ -8,6 +8,12 @@ const useUploadPhotoStore = create((set) => ({
   photoExtraOption: {},
   isUpdatingPhotos: false,
 
+  clearState: () => {
+    set({
+      photoList: [],
+      selectedPhoto: {},
+    });
+  },
   setIsUpdating: (isUpdating) => {
     set({ isUpdatingPhotos: isUpdating });
   },

@@ -18,6 +18,7 @@ export default function CombinedForm() {
     isUpdating,
     setIsUpdating,
     photoList,
+    clearState,
   } = useUploadPhotoStore();
 
   const {
@@ -43,6 +44,9 @@ export default function CombinedForm() {
     const result = await updatePhotos.mutateAsync(photoList);
 
     console.log(result);
+
+    clearState();
+
     message.success("saved all uploaded photos!");
 
     navigate("/my-photo/photo/all");
