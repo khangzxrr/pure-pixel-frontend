@@ -1,18 +1,21 @@
-import { Input } from "antd";
+import { Input, message } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import useUploadPhotoStore from "../../../zustand/UploadPhotoState";
+import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingOutlined } from "@ant-design/icons";
-import { uploadPhotoExtraOptionInputSchema } from "../../../yup/uploadPhotoExtraInputSchema";
+import { uploadPhotoExtraOptionInputSchema } from "../../../yup/UploadPhotoExtraInputSchema";
+import getDefaultPhoto from "../../../entities/DefaultPhoto";
+import { useMutation } from "@tanstack/react-query";
+import PhotoApi from "../../../apis/PhotoApi";
 
 export default function CombinedForm() {
   const {
     selectedPhoto,
     setCurrentStep,
     updateField,
-    isUploading,
-    setIsUploading,
+    isUpdating,
+    setIsUpdating,
     photoList,
   } = useUploadPhotoStore();
 
@@ -23,40 +26,32 @@ export default function CombinedForm() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(uploadPhotoExtraOptionInputSchema),
-    defaultValues: {
-      camera: selectedPhoto.camera || "",
-      lens: selectedPhoto.lens || "",
-      focalLength: selectedPhoto.focalLength || "",
-      shutterSpeed: selectedPhoto.shutterSpeed || "",
-      aperture: selectedPhoto.aperture || "",
-      iso: selectedPhoto.iso || "",
-      shootDate: selectedPhoto.shootDate || "",
-    },
+    defaultValues: getDefaultPhoto(selectedPhoto),
   });
 
-  const onSubmit = (data) => {
-    setIsUploading(true);
+  const updatePhotos = useMutation({
+    mutationKey: "update-photo",
+    mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
+  });
 
-    console.log(photoList);
+  const onSubmit = async (data) => {
+    setIsUpdating(true);
+
+    const result = await updatePhotos.mutateAsync(photoList);
+
+    console.log(result);
+    message.success("saved all uploaded photos!");
   };
 
   useEffect(() => {
-    reset({
-      camera: selectedPhoto.camera || "",
-      lens: selectedPhoto.lens || "",
-      focalLength: selectedPhoto.focalLength || "",
-      shutterSpeed: selectedPhoto.shutterSpeed || "",
-      aperture: selectedPhoto.aperture || "",
-      iso: selectedPhoto.iso || "",
-      shootDate: selectedPhoto.shootDate || "",
-    });
+    reset(getDefaultPhoto(selectedPhoto));
   }, [selectedPhoto, reset]);
 
   return (
     <div className="px-6">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
-          name="camera"
+          name="exif.Model"
           control={control}
           render={({ field }) => (
             <Input
@@ -65,10 +60,10 @@ export default function CombinedForm() {
                 errors.camera ? "border-red-500" : "border-[#e0e0e0]"
               } focus:outline-none focus:border-[#e0e0e0]`}
               type="text"
-              placeholder="Camera"
+              placeholder="Camera model"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "camera", e.target.value);
+                updateField(selectedPhoto.id, "exif.Model", e.target.value);
               }}
             />
           )}
@@ -78,7 +73,7 @@ export default function CombinedForm() {
         )}
 
         <Controller
-          name="lens"
+          name="exif.FocalLength"
           control={control}
           render={({ field }) => (
             <Input
@@ -90,7 +85,11 @@ export default function CombinedForm() {
               placeholder="Lens"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "lens", e.target.value);
+                updateField(
+                  selectedPhoto.id,
+                  "exif.FocalLength",
+                  e.target.value,
+                );
               }}
             />
           )}
@@ -100,31 +99,7 @@ export default function CombinedForm() {
         )}
 
         <Controller
-          name="focalLength"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
-                errors.focalLength ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="number"
-              placeholder="Focal Length (mm)"
-              onChange={(e) => {
-                field.onChange(e);
-                updateField(selectedPhoto.id, "focalLength", e.target.value);
-              }}
-            />
-          )}
-        />
-        {errors.focalLength && (
-          <p className="text-red-500 text-sm p-1">
-            {errors.focalLength.message}
-          </p>
-        )}
-
-        <Controller
-          name="shutterSpeed"
+          name="exif.ShutterSpeedValue"
           control={control}
           render={({ field }) => (
             <Input
@@ -136,7 +111,11 @@ export default function CombinedForm() {
               placeholder="Shutter Speed (s)"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "shutterSpeed", e.target.value);
+                updateField(
+                  selectedPhoto.id,
+                  "exif.ShutterSpeedValue",
+                  e.target.value,
+                );
               }}
             />
           )}
@@ -148,7 +127,7 @@ export default function CombinedForm() {
         )}
 
         <Controller
-          name="aperture"
+          name="exif.ApertureValue"
           control={control}
           render={({ field }) => (
             <Input
@@ -160,7 +139,11 @@ export default function CombinedForm() {
               placeholder="Aperture (f)"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "aperture", e.target.value);
+                updateField(
+                  selectedPhoto.id,
+                  "exif.ApertureValue",
+                  e.target.value,
+                );
               }}
             />
           )}
@@ -170,7 +153,7 @@ export default function CombinedForm() {
         )}
 
         <Controller
-          name="iso"
+          name="exif.ISO"
           control={control}
           render={({ field }) => (
             <Input
@@ -182,35 +165,13 @@ export default function CombinedForm() {
               placeholder="ISO"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "iso", e.target.value);
+                updateField(selectedPhoto.id, "exif.ISO", e.target.value);
               }}
             />
           )}
         />
         {errors.iso && (
           <p className="text-red-500 text-sm p-1">{errors.iso.message}</p>
-        )}
-
-        <Controller
-          name="shootDate"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
-                errors.shootDate ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="date"
-              placeholder="Shoot Date"
-              onChange={(e) => {
-                field.onChange(e);
-                updateField(selectedPhoto.id, "shootDate", e.target.value);
-              }}
-            />
-          )}
-        />
-        {errors.shootDate && (
-          <p className="text-red-500 text-sm p-1">{errors.shootDate.message}</p>
         )}
 
         {selectedPhoto.currentStep !== 3 && (
@@ -228,7 +189,7 @@ export default function CombinedForm() {
           type="submit"
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
-          {isUploading ? <LoadingOutlined /> : "Save"}
+          {isUpdating ? <LoadingOutlined /> : "Save"}
         </button>
       </form>
     </div>

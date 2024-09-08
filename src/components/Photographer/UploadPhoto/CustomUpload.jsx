@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { message, Upload } from "antd";
 import { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
-import useUploadPhotoStore from "../../../zustand/UploadPhotoState";
+import useUploadPhotoStore from "../../../states/UploadPhotoState";
 
 export default function CustomUpload() {
   const [loading, setLoading] = useState(false);

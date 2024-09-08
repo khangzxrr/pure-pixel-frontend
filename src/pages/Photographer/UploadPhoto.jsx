@@ -1,7 +1,7 @@
 import { Steps, Input, Select } from "antd";
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import useUploadPhotoStore from "../../zustand/UploadPhotoState";
+import useUploadPhotoStore from "../../states/UploadPhotoState";
 import UploadPhotoForm from "../../components/Photographer/UploadPhoto/UploadPhotoForm";
 import UploadPhotoExtraOption from "../../components/Photographer/UploadPhoto/UploadPhotoExtraOption";
 import CustomUpload from "../../components/Photographer/UploadPhoto/CustomUpload";
@@ -13,7 +13,7 @@ export default function UploadPhoto() {
   const imageListContainerClasses = `w-1/2 px-3 flex flex-wrap gap-2 ${
     photoList.length > 6 ? "h-[90%] overflow-y-scroll" : ""
   }`;
-  // console.log("selectedPhoto", selectedPhoto);
+  console.log("selectedPhoto", selectedPhoto);
   return (
     <div className="flex py-9 h-screen">
       <div className="flex flex-col w-5/6 mx-auto bg-white rounded-lg border-[1px]">
