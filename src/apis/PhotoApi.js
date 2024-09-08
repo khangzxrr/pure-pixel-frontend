@@ -8,15 +8,9 @@ const getPublicPhotos = async () => {
 };
 
 const getPresignedUploadUrls = async ({ filenames }) => {
-  const response = await http.post(
-    `/photo/upload`,
-    {
-      filenames,
-    },
-    {
-      crossdomain: true,
-    },
-  );
+  const response = await http.post(`/photo/upload`, {
+    filenames,
+  });
 
   return response.data;
 };

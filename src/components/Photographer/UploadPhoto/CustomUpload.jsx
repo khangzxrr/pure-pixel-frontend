@@ -8,8 +8,7 @@ import useUploadPhotoStore from "../../../zustand/UploadPhotoState";
 export default function CustomUpload() {
   const [loading, setLoading] = useState(false);
 
-  const { photoList, deleteImageById, setSelectedPhoto, selectedPhoto } =
-    useUploadPhotoStore();
+  const { photoList, deleteImageById, addSingleImage } = useUploadPhotoStore();
 
   const processPhotos = useMutation({
     mutationFn: (presignedData) => PhotoApi.processPhotos(presignedData),
@@ -60,6 +59,60 @@ export default function CustomUpload() {
     </button>
   );
 
+  const handleChange = (info) => {
+    console.log(info);
+
+    if (info.file.status === "done") {
+      addSingleImage(info.file.response.data[0]);
+    }
+  };
+
+  const customRequest = async ({ file, onError, onSuccess, onProgress }) => {
+    try {
+      setLoading(true);
+
+      const fileName = file.name;
+
+      //turn file name into an array of filenames
+      //because this method support creating multiple presigned urls
+      //but we only need to supply 1 filename
+      const fileNames = [fileName];
+
+      const presignedData = await getPresignedUploadUrls.mutateAsync(fileNames);
+
+      const signedUploadUrl = presignedData.signedUploads[0].uploadUrl;
+
+      const result = await uploadPhoto.mutateAsync({
+        url: signedUploadUrl,
+        file,
+        options: {
+          onUploadProgress: (event) => {
+            const { loaded, total } = event;
+
+            onProgress({
+              percent: Math.round((loaded / total) * 100),
+            });
+          },
+          headers: {
+            "Content-Type": file.type,
+          },
+        },
+      });
+
+      const photos = await processPhotos.mutateAsync(presignedData);
+
+      message.success("uploaded!");
+
+      onSuccess(photos, file);
+    } catch (e) {
+      message.error("something wrong! please try again");
+      console.log(e);
+      onError(e);
+    }
+
+    setLoading(false);
+  };
+
   return (
     <Upload
       name="avatar"
@@ -68,59 +121,8 @@ export default function CustomUpload() {
       showUploadList={false}
       multiple={true}
       beforeUpload={beforeUpload}
-      onChange={(files) => {
-        console.log(files);
-      }}
-      customRequest={async ({ file, onError, onSuccess, onProgress }) => {
-        try {
-          setLoading(true);
-
-          const fileName = file.name;
-
-          //turn file name into an array of filenames
-          //because this method support creating multiple presigned urls
-          //but we only need to supply 1 filename
-          const fileNames = [fileName];
-
-          const presignedData =
-            await getPresignedUploadUrls.mutateAsync(fileNames);
-
-          console.log(presignedData);
-
-          const signedUploadUrl = presignedData.signedUploads[0].uploadUrl;
-
-          const result = await uploadPhoto.mutateAsync({
-            url: signedUploadUrl,
-            file,
-            options: {
-              onUploadProgress: (event) => {
-                const { loaded, total } = event;
-
-                console.log(event);
-
-                onProgress({
-                  percent: Math.round((loaded / total) * 100),
-                });
-              },
-              headers: {
-                "Content-Type": file.type,
-              },
-            },
-          });
-
-          const photos = await processPhotos.mutateAsync(presignedData);
-
-          message.success("uploaded!");
-
-          onSuccess(photos, file);
-        } catch (e) {
-          message.error("something wrong! please try again");
-          console.log(e);
-          onError(e);
-        }
-
-        setLoading(false);
-      }}
+      onChange={handleChange}
+      customRequest={customRequest}
     >
       {uploadButton}
     </Upload>

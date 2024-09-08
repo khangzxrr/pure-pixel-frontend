@@ -21,28 +21,12 @@ const useUploadPhotoStore = create((set) => ({
           : state.selectedPhoto,
       };
     }),
-  addSingleImage: () =>
+  addSingleImage: (photo) =>
     set((state) => ({
       photoList: [
         ...state.photoList,
         {
-          id: state.photoList.length + 1,
-          image: "https://picsum.photos/200/300",
-          imageDetails: "",
-          additionalDetails: "",
-          type: "",
-          tag: [],
-          location: "",
-          private: "",
-          addWatermark: true,
-          includeEXIF: true,
-          camera: "Leica Q2",
-          lens: "Summilux 28mm f/1.7 ASPH",
-          focalLength: 28,
-          shutterSpeed: "1/1000",
-          aperture: 1.7,
-          iso: 100,
-          shootDate: "2023-01-01",
+          ...photo,
           currentStep: 1, // Add currentStep to the new image
         },
       ],
