@@ -37,7 +37,7 @@ export default function UploadPhoto() {
                 onClick={() => setSelectedPhoto(image)}
               >
                 <img
-                  src={image.thumbnailPhotoUrl}
+                  src={image.signedUrl.thumbnail}
                   alt={image.id}
                   className="absolute top-0 left-0 w-full h-full object-cover"
                 />
