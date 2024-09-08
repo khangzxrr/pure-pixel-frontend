@@ -1,27 +1,18 @@
 import { Steps, Input, Select } from "antd";
-import {
-  CloudUploadOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-import React from "react";
-import useUploadPhotoStore from "../../zustand/UploadPhotoState";
+import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import useUploadPhotoStore from "../../states/UploadPhotoState";
 import UploadPhotoForm from "../../components/Photographer/UploadPhoto/UploadPhotoForm";
 import UploadPhotoExtraOption from "../../components/Photographer/UploadPhoto/UploadPhotoExtraOption";
+import CustomUpload from "../../components/Photographer/UploadPhoto/CustomUpload";
 
 export default function UploadPhoto() {
-  const {
-    photoList,
-    deleteImageById,
-    setSelectedPhoto,
-    selectedPhoto,
-    addSingleImage,
-  } = useUploadPhotoStore();
+  const { photoList, deleteImageById, setSelectedPhoto, selectedPhoto } =
+    useUploadPhotoStore();
 
   const imageListContainerClasses = `w-1/2 px-3 flex flex-wrap gap-2 ${
     photoList.length > 6 ? "h-[90%] overflow-y-scroll" : ""
   }`;
-  console.log("selectedPhoto", selectedPhoto);
   return (
     <div className="flex py-9 h-screen">
       <div className="flex flex-col w-5/6 mx-auto bg-white rounded-lg border-[1px]">
@@ -31,16 +22,7 @@ export default function UploadPhoto() {
         </div>
         <div className="w-full flex overflow-hidden pt-9 px-6">
           <div className={imageListContainerClasses}>
-            <div
-              className={`relative w-[30%] bg-slate-500 flex justify-center items-center hover:bg-blue-400 transition-all duration-200 ${
-                photoList.length <= 3 ? "h-1/2" : "pb-[30%]"
-              }`}
-              onClick={() => addSingleImage()}
-            >
-              <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center hover:text-white transition-all duration-200">
-                <PlusOutlined style={{ fontSize: "48px" }} />
-              </div>
-            </div>
+            <CustomUpload />
             {photoList.map((image) => (
               <div
                 className={`relative w-[30%] cursor-pointer ${
@@ -54,7 +36,7 @@ export default function UploadPhoto() {
                 onClick={() => setSelectedPhoto(image)}
               >
                 <img
-                  src={image.image}
+                  src={image.signedUrl.thumbnail}
                   alt={image.id}
                   className="absolute top-0 left-0 w-full h-full object-cover"
                 />

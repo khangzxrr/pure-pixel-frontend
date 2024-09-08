@@ -2,16 +2,15 @@ import { Input, Select, Checkbox } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
-import useUploadPhotoStore from "../../../zustand/UploadPhotoState";
+import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import TextArea from "antd/es/input/TextArea";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectType } from "../../../fakejson/SelectType";
 import { SelectTag } from "../../../fakejson/SelectTag";
-import { LoadingOutlined } from "@ant-design/icons";
+import getDefaultPhoto from "../../../entities/DefaultPhoto";
 
 export default function CombinedForm() {
-  const { updatePhotoList, selectedPhoto, setCurrentStep, updateField } =
-    useUploadPhotoStore();
+  const { selectedPhoto, setCurrentStep, updateField } = useUploadPhotoStore();
 
   const {
     control,
@@ -20,16 +19,7 @@ export default function CombinedForm() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(uploadPhotoInputSchema),
-    defaultValues: {
-      imageDetails: selectedPhoto.imageDetails || "",
-      additionalDetails: selectedPhoto.additionalDetails || "",
-      type: selectedPhoto.type || "",
-      tag: selectedPhoto.tag || [],
-      location: selectedPhoto.location || "",
-      private: selectedPhoto.private,
-      addWatermark: selectedPhoto.addWatermark,
-      includeEXIF: selectedPhoto.includeEXIF,
-    },
+    defaultValues: getDefaultPhoto(selectedPhoto),
   });
 
   const handleTagChange = (value) => {
@@ -38,80 +28,63 @@ export default function CombinedForm() {
   };
 
   const onSubmit = (data) => {
-    console.log("photo detail", data, selectedPhoto.id);
     setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep + 1);
-    console.log("photo detail", selectedPhoto);
   };
 
   useEffect(() => {
-    reset({
-      imageDetails: selectedPhoto.imageDetails || "",
-      additionalDetails: selectedPhoto.additionalDetails || "",
-      type: selectedPhoto.type || "",
-      tag: selectedPhoto.tag || [],
-      location: selectedPhoto.location || "",
-      private: selectedPhoto.private,
-      addWatermark: selectedPhoto.addWatermark,
-      includeEXIF: selectedPhoto.includeEXIF,
-    });
+    reset(selectedPhoto);
   }, [selectedPhoto, reset]);
 
   return (
     <div className="px-6">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
-          name="imageDetails"
+          name="title"
           control={control}
           render={({ field }) => (
             <Input
               {...field}
               className={`w-full px-2 m-2 border-[1px] ${
-                errors.imageDetails ? "border-red-500" : "border-[#e0e0e0]"
+                errors.title ? "border-red-500" : "border-[#e0e0e0]"
               } focus:outline-none focus:border-[#e0e0e0]`}
               type="text"
-              placeholder="Enter image details"
+              placeholder="Enter image title"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "imageDetails", e.target.value);
+                updateField(selectedPhoto.id, "title", e.target.value);
               }}
             />
           )}
         />
-        {errors.imageDetails && (
-          <p className=" text-red-500 text-sm p-1">
-            {errors.imageDetails.message}
-          </p>
+        {errors.title && (
+          <p className=" text-red-500 text-sm p-1">{errors.title.message}</p>
         )}
 
         <Controller
-          name="additionalDetails"
+          name="description"
           control={control}
           render={({ field }) => (
             <TextArea
               {...field}
               className={`w-full p-2 m-2 border-[1px] ${
-                errors.additionalDetails ? "border-red-500" : "border-gray-300"
+                errors.description ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:border-[#e0e0e0]`}
-              placeholder="Enter additional details"
+              placeholder="Enter description"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(
-                  selectedPhoto.id,
-                  "additionalDetails",
-                  e.target.value
-                );
+                updateField(selectedPhoto.id, "description", e.target.value);
               }}
             />
           )}
         />
-        {errors.additionalDetails && (
+        {errors.description && (
           <p className=" text-red-500 text-sm p-1">
-            {errors.additionalDetails.message}
+            {errors.description.message}
           </p>
         )}
 
         <Controller
-          name="type"
+          name="photoType"
           control={control}
           render={({ field }) => (
             <Select
@@ -127,7 +100,7 @@ export default function CombinedForm() {
               className="w-3/5 max-w-full m-2"
               onChange={(value) => {
                 field.onChange(value);
-                updateField(selectedPhoto.id, "type", value);
+                updateField(selectedPhoto.id, "photoType", value);
               }}
             />
           )}
@@ -136,7 +109,7 @@ export default function CombinedForm() {
           <p className=" text-red-500 text-sm p-1">{errors.type.message}</p>
         )}
         <Controller
-          name="tag"
+          name="photoTags"
           control={control}
           render={({ field }) => (
             <Select
@@ -150,14 +123,16 @@ export default function CombinedForm() {
               onChange={(value) => {
                 field.onChange(value); // Ensure the form state is updated
                 handleTagChange(value); // Call your custom handler
-                updateField(selectedPhoto.id, "tag", value);
+                updateField(selectedPhoto.id, "photoTags", value);
               }}
               options={SelectTag}
             />
           )}
         />
-        {errors.tag && (
-          <p className=" text-red-500 text-sm p-1">{errors.tag.message}</p>
+        {errors.photoTags && (
+          <p className=" text-red-500 text-sm p-1">
+            {errors.photoTags.message}
+          </p>
         )}
         <Controller
           name="location"
@@ -181,31 +156,34 @@ export default function CombinedForm() {
           <p className=" text-red-500 text-sm p-1">{errors.location.message}</p>
         )}
         <Controller
-          name="private"
+          name="visibility"
           control={control}
           render={({ field }) => (
             <Select
               {...field}
               placeholder="Photo privacy"
               options={[
-                { label: "Public", value: "public" },
-                { label: "Private", value: "private" },
-                { label: "Only who had link", value: "link" },
+                { label: "Public", value: "PUBLIC" },
+                { label: "Private", value: "PRIVATE" },
+                { label: "Only who had link", value: "SHARE_LINK" },
               ]}
               className="w-1/3 m-2"
               onChange={(value) => {
                 field.onChange(value);
-                updateField(selectedPhoto.id, "private", value);
+                updateField(selectedPhoto.id, "visibility", value);
               }}
               disabled={selectedPhoto.currentStep === 3}
             />
           )}
         />
-        {errors.private && (
-          <p className="text-red-500 text-sm p-1">{errors.private.message}</p>
+        {errors.visibility && (
+          <p className="text-red-500 text-sm p-1">
+            {errors.visibility.message}
+          </p>
         )}
+
         <Controller
-          name="addWatermark"
+          name="watermark"
           control={control}
           render={({ field }) => (
             <Checkbox
@@ -214,7 +192,7 @@ export default function CombinedForm() {
               checked={field.value}
               onChange={(e) => {
                 field.onChange(e.target.checked);
-                updateField(selectedPhoto.id, "addWatermark", e.target.checked);
+                updateField(selectedPhoto.id, "watermark", e.target.checked);
               }}
               disabled={selectedPhoto.currentStep === 3}
             >
@@ -222,13 +200,11 @@ export default function CombinedForm() {
             </Checkbox>
           )}
         />
-        {errors.addWatermark && (
-          <p className="text-red-500 text-sm p-1">
-            {errors.addWatermark.message}
-          </p>
+        {errors.watermark && (
+          <p className="text-red-500 text-sm p-1">{errors.watermark.message}</p>
         )}
         <Controller
-          name="includeEXIF"
+          name="showExif"
           control={control}
           render={({ field }) => (
             <Checkbox
@@ -237,7 +213,7 @@ export default function CombinedForm() {
               checked={field.value}
               onChange={(e) => {
                 field.onChange(e.target.checked);
-                updateField(selectedPhoto.id, "includeEXIF", e.target.checked);
+                updateField(selectedPhoto.id, "showExif", e.target.checked);
               }}
               disabled={selectedPhoto.currentStep === 3}
             >
@@ -245,18 +221,18 @@ export default function CombinedForm() {
             </Checkbox>
           )}
         />
-        {errors.includeEXIF && (
-          <p className="text-red-500 text-sm p-1">
-            {errors.includeEXIF.message}
-          </p>
+        {errors.showExif && (
+          <p className="text-red-500 text-sm p-1">{errors.showExif.message}</p>
         )}
+
+        {JSON.stringify(errors)}
 
         <button
           type="submit"
-          disabled={selectedPhoto.currentStep === 3}
+          // disabled={selectedPhoto.currentStep === 3}
           className="mt-4 px-4 py-2  bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
-          Next{" "}
+          Next
         </button>
       </form>
     </div>
