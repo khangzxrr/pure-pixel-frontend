@@ -34,7 +34,6 @@ function App() {
           silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
         }}
         onEvent={async (event, error) => {
-          console.log({ event, error });
           if (event === "onAuthSuccess") {
             console.log(UserService.getTokenParsed());
 

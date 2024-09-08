@@ -1,10 +1,6 @@
-import create from "zustand";
-import { ImageList } from "../fakejson/ImageList";
+import { create } from "zustand";
 
-const initialPhotoList = ImageList.map((image) => ({
-  ...image,
-  currentStep: 1, // Add currentStep to each photo
-}));
+const initialPhotoList = [];
 
 const useUploadPhotoStore = create((set) => ({
   isUploading: false,
@@ -15,7 +11,7 @@ const useUploadPhotoStore = create((set) => ({
   deleteImageById: (id) =>
     set((state) => {
       const updatedPhotoList = state.photoList.filter(
-        (image) => image.id !== id
+        (image) => image.id !== id,
       );
       const isDeletedSelected = state.selectedPhoto.id === id;
       return {
