@@ -7,11 +7,9 @@ import TextArea from "antd/es/input/TextArea";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectType } from "../../../fakejson/SelectType";
 import { SelectTag } from "../../../fakejson/SelectTag";
-import { LoadingOutlined } from "@ant-design/icons";
 
 export default function CombinedForm() {
-  const { updatePhotoList, selectedPhoto, setCurrentStep, updateField } =
-    useUploadPhotoStore();
+  const { selectedPhoto, setCurrentStep, updateField } = useUploadPhotoStore();
 
   const {
     control,
@@ -98,7 +96,7 @@ export default function CombinedForm() {
                 updateField(
                   selectedPhoto.id,
                   "additionalDetails",
-                  e.target.value
+                  e.target.value,
                 );
               }}
             />

@@ -1,7 +1,6 @@
-import { Input, Checkbox } from "antd";
+import { Input } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
 import useUploadPhotoStore from "../../../zustand/UploadPhotoState";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -9,12 +8,12 @@ import { uploadPhotoExtraOptionInputSchema } from "../../../yup/uploadPhotoExtra
 
 export default function CombinedForm() {
   const {
-    updatePhotoList,
     selectedPhoto,
     setCurrentStep,
     updateField,
     isUploading,
     setIsUploading,
+    photoList,
   } = useUploadPhotoStore();
 
   const {
@@ -37,9 +36,8 @@ export default function CombinedForm() {
 
   const onSubmit = (data) => {
     setIsUploading(true);
-    console.log("photo detail", data, selectedPhoto.id);
-    setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep + 1);
-    console.log("photo detail", selectedPhoto);
+
+    console.log(photoList);
   };
 
   useEffect(() => {

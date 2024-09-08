@@ -1,3 +1,4 @@
+import axios from "axios";
 import http from "../configs/Http";
 
 const getPublicPhotos = async () => {
@@ -7,8 +8,6 @@ const getPublicPhotos = async () => {
 };
 
 const getPresignedUploadUrls = async ({ filenames }) => {
-  console.log(filenames);
-
   const response = await http.post(
     `/photo/upload`,
     {
@@ -22,25 +21,26 @@ const getPresignedUploadUrls = async ({ filenames }) => {
   return response.data;
 };
 
-const uploadPhotoUsingPresignedUrl = async (url, file) => {
+const uploadPhotoUsingPresignedUrl = async (url, file, options) => {
   //FUCK AXIOS
   //waste me 2 hour just for a fucking upload feature???
-
-  const response = await fetch(url, {
-    method: "PUT",
-    body: file,
-    headers: {
-      "Content-Type": file.typ,
-    },
-  });
+  //using the RAW axios instead of modified one, or you will get CORS
+  const response = await axios.put(url, file, options);
 
   return response.data;
+};
+
+const processPhotos = async (presignedData) => {
+  const response = await http.post(`photo/process`, presignedData);
+
+  return response;
 };
 
 const PhotoApi = {
   getPublicPhotos,
   getPresignedUploadUrls,
   uploadPhotoUsingPresignedUrl,
+  processPhotos,
 };
 
 export default PhotoApi;
