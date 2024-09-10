@@ -1,9 +1,9 @@
 import React from "react";
 import ExplorePhotos from "./ExplorePhotos";
 import PhotoCards from "./PhotoCards";
-
 import FeaturedGalleriesComp from "./FeaturedGalleriesComp";
 import FeaturedPhotographersComp from "./FeaturedPhotographersComp";
+import TopCategories from "./TopCategories";
 
 const Explore = () => {
   return (
@@ -39,6 +39,12 @@ const Explore = () => {
         description="Hãy là một trong những người đầu tiên khám phá những bức ảnh vừa được thêm vào PurePixel"
         linkText="Xem tất cả"
         PhotoCardsComponent={PhotoCards}
+      />
+      <ExplorePhotos
+        title="Các danh mục hàng đầu"
+        description="Các danh mục này được sắp xếp theo mức độ phổ biến"
+        linkText="Xem tất cả"
+        PhotoCardsComponent={TopCategories}
       />
       <div>
         <ExplorePhotos

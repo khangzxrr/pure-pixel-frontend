@@ -19,7 +19,7 @@ const PhotographerCard = () => {
     .sort(() => Math.random() - 0.5)
     .slice(0, 4);
   return (
-    <div className="flex w-[340px] h-[450px] rounded-lg outline outline-1 bg-white outline-gray-300 shadow-xl group hover:cursor-pointer">
+    <div className="flex w-[340px] h-[450px] rounded-lg outline outline-1 bg-white outline-gray-300  group hover:cursor-pointer">
       <div className="flex flex-col gap-3 p-5">
         <div className="grid grid-cols-2 grid-rows-2 gap-2 relative">
           {randomPhotos.map((item, index) => (
