@@ -15,7 +15,9 @@ const ForYou = () => {
 
   const result = useQuery({
     queryKey: ["public-photo"],
-    queryFn: PhotoApi.getPublicPhotos,
+    //20 is the limit of API returns
+    //handle infinity scroll takes 20 elements each time
+    queryFn: () => PhotoApi.getPublicPhotos(0, 20),
   });
 
   if (result.error) {
@@ -25,8 +27,8 @@ const ForYou = () => {
   const photos = result.data;
 
   return (
-    <div className="bg-black ">
-      <div className="flex justify-between items-center text-white">
+    <div className=" ">
+      <div className="flex justify-between items-center ">
         <div className="ml-6 hover:cursor-pointer hover:font-bold">
           <Dropdown
             className="hover:cursor-pointer"

@@ -4,14 +4,6 @@ import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 
 export const DropdownMenu = ({ handleAuthAction }) => (
   <Menu style={{ padding: 0, width: "120%" }}>
-    <Menu.Item key="1" style={{ padding: 0 }}>
-      <div className="flex items-center text-black hover:text-blue-600 cursor-pointer w-full py-2">
-        <NavLink to="/my-photo/" className=" flex ml-10">
-          <UserOutlined className="mr-2" />
-          Ảnh của tôi
-        </NavLink>
-      </div>
-    </Menu.Item>
     <Menu.Item key="2" style={{ padding: 0 }}>
       <div className="flex items-center text-black hover:text-blue-600 cursor-pointer w-full py-2">
         <NavLink to="/customer" className=" flex ml-10">
@@ -20,6 +12,15 @@ export const DropdownMenu = ({ handleAuthAction }) => (
         </NavLink>
       </div>
     </Menu.Item>
+    <Menu.Item key="1" style={{ padding: 0 }}>
+      <div className="flex items-center text-black hover:text-blue-600 cursor-pointer w-full py-2">
+        <NavLink to="/my-photo/photo/all" className=" flex ml-10">
+          <UserOutlined className="mr-2" />
+          Ảnh của tôi
+        </NavLink>
+      </div>
+    </Menu.Item>
+
     <Menu.Item key="3" style={{ padding: 0 }}>
       <div className="flex items-center text-black hover:text-blue-600 cursor-pointer w-full py-2">
         <NavLink to="/booking" className=" flex ml-10">

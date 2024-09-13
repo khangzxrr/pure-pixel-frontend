@@ -1,8 +1,10 @@
 import axios from "axios";
 import http from "../configs/Http";
 
-const getPublicPhotos = async () => {
-  const response = await http.get("/photo/public", { crossdomain: true });
+const getPublicPhotos = async (skip, take) => {
+  const response = await http.get(`/photo/public?skip=${skip}&take=${take}`, {
+    crossdomain: true,
+  });
 
   return response.data;
 };
@@ -38,12 +40,19 @@ const updatePhotos = async (photos) => {
   return response;
 };
 
+const getPhotoById = async (id) => {
+  const response = await http.get(`photo/${id}`);
+
+  return response;
+};
+
 const PhotoApi = {
   getPublicPhotos,
   getPresignedUploadUrls,
   uploadPhotoUsingPresignedUrl,
   processPhotos,
   updatePhotos,
+  getPhotoById,
 };
 
 export default PhotoApi;

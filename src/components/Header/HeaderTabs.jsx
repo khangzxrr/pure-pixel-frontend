@@ -1,39 +1,19 @@
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export const HeaderTab = [
-  {
-    id: 1,
-    name: "Discover",
-    link: "/discover",
-  },
-  {
-    id: 2,
-    name: "Licensing",
-    link: "/licensing",
-  },
-  {
-    id: 3,
-    name: "Membership",
-    link: "/membership",
-  },
-  {
-    id: 4,
-    name: "Quest",
-    link: "/quest",
-  },
-  {
-    id: 5,
-    name: "Blog",
-    link: "/blog",
-  },
-  {
-    id: 6,
-    name: "Award Winners",
-    link: "/award",
-  },
+  { id: 1, name: "Khám phá", link: "/discover/for-you" },
+  // { id: 2, name: "Licensing", link: "/licensing" },
+  { id: 3, name: "Nâng cấp", link: "/membership" },
+  // { id: 4, name: "Quest", link: "/quest" },
+  { id: 5, name: "Blog", link: "/blog" },
+  // { id: 6, name: "Award Winners", link: "/award" },
 ];
 
 export default function HeaderTabs() {
+  const location = useLocation();
+  const [activeLink, setActiveLink] = useState(location.pathname);
+
   return (
     <div className="flex items-center">
       <div className="ml-16 mr-8">
@@ -44,9 +24,15 @@ export default function HeaderTabs() {
       {HeaderTab.map((tab) => (
         <div
           key={tab.id}
-          className="text-lg  mx-6 hover:text-blue-600 hover:cursor-pointer"
+          className={`text-lg mx-6 cursor-pointer ${
+            activeLink === tab.link ? "text-blue-600" : "hover:text-blue-600"
+          }`}
         >
-          <Link to={tab.link} className="">
+          <Link
+            to={tab.link}
+            onClick={() => setActiveLink(tab.link)}
+            className="w-full"
+          >
             {tab.name}
           </Link>
         </div>

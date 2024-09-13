@@ -3,17 +3,18 @@ import React from "react";
 export const NavigateTab = [
   {
     id: 1,
-    name: "Following",
-    link: "/following",
+    name: "Dành cho bạn",
+    link: "/discover/for-you",
   },
   {
     id: 2,
-    name: "For you",
-    link: "/for-you",
+    name: "Đang theo dõi",
+    link: "/discover/following",
   },
-  {
-    id: 3,
-    name: "Explore",
-    link: "/explore",
-  },
+
+  // {
+  //   id: 3,
+  //   name: "Khám phá",
+  //   link: "/discover/explore",
+  // },
 ];
