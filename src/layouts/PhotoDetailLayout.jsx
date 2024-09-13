@@ -1,6 +1,6 @@
 import React from "react";
-import DetailLayout from "../components/PhotoDetail/Detail/DetailLayout";
-import PhotoNCommentLayout from "../components/PhotoDetail/PhotoNComment/PhotoNCommentLayout";
+import PhotoNCommentLayout from "./PhotoNCommentLayout";
+import DetailLayout from "./DetailLayout";
 
 const PhotoDetailLayout = () => {
   return (

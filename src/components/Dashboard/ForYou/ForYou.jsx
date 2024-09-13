@@ -25,8 +25,8 @@ const ForYou = () => {
   const photos = result.data;
 
   return (
-    <div className="bg-black ">
-      <div className="flex justify-between items-center text-white">
+    <div className=" ">
+      <div className="flex justify-between items-center ">
         <div className="ml-6 hover:cursor-pointer hover:font-bold">
           <Dropdown
             className="hover:cursor-pointer"

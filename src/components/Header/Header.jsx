@@ -4,11 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import HeaderTabs from "./HeaderTabs";
 import { Dropdown } from "antd";
 import { DropdownMenu, menu } from "./DropdownMenu";
-import { UserOutlined } from "@ant-design/icons";
+import { useQueries } from "@tanstack/react-query";
+import UserApi from "../../apis/UserApi";
+import UserService from "../../services/Keycloak";
 
 export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
+  const userData = UserService.getTokenParsed();
 
   const handleAuthAction = (action) => {
     if (action === "login") keycloak.login();
@@ -28,18 +31,24 @@ export default function Header() {
             trigger={["click"]}
             placement="bottomRight"
           >
-            <div className="h-6 w-6 flex items-center justify-center border border-black rounded-full">
-              <UserOutlined />
+            <div className="flex items-center gap-2 hover:cursor-pointer">
+              <div className="h-8 w-8 overflow-hidden rounded-full outline outline-2">
+                <img
+                  className="w-full h-full  object-cover  "
+                  src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+                  alt=""
+                />
+              </div>
+              <div>{userData.name}</div>
             </div>
           </Dropdown>
         </div>
 
-        <button
-          onClick={() => handleAuthAction("upload-photo")}
-          className="text-lg font-bold hover:text-blue-600"
-        >
-          Upload Photo
-        </button>
+        <div className=" font-bold hover:text-blue-600 outline outline-2 outline-offset-2 rounded-full px-3 py-1">
+          <button onClick={() => handleAuthAction("upload-photo")}>
+            Upload Photo
+          </button>
+        </div>
       </>
     ) : (
       <>
