@@ -40,12 +40,19 @@ const updatePhotos = async (photos) => {
   return response;
 };
 
+const getPhotoById = async (id) => {
+  const response = await http.get(`photo/${id}`);
+
+  return response;
+};
+
 const PhotoApi = {
   getPublicPhotos,
   getPresignedUploadUrls,
   uploadPhotoUsingPresignedUrl,
   processPhotos,
   updatePhotos,
+  getPhotoById,
 };
 
 export default PhotoApi;
