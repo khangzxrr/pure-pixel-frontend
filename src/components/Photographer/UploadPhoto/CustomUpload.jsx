@@ -116,6 +116,7 @@ export default function CustomUpload() {
       name="avatar"
       listType="picture-card"
       className="avatar-uploader"
+      maxCount={10}
       showUploadList={false}
       multiple={true}
       beforeUpload={beforeUpload}
