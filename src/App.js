@@ -35,7 +35,7 @@ function App() {
         }}
         onEvent={async (event, error) => {
           if (event === "onAuthSuccess") {
-            console.log(UserService.getTokenParsed());
+            // console.log(UserService.getTokenParsed());
 
             const id = UserService.getUserId();
             await OneSignal.login(id);
