@@ -6,7 +6,8 @@ import PhotographerApi from "../../../apis/PhotographerApi";
 const MyPhotoAll = () => {
   const { data, isFetching, isError, error } = useQuery({
     queryKey: ["my-photo"],
-    queryFn: PhotographerApi.getMyPhotos,
+    //0 is skip, 100 is take
+    queryFn: () => PhotographerApi.getMyPhotos(0, 20),
   });
 
   return (
