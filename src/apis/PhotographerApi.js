@@ -11,8 +11,10 @@ const getPresignedUploadUrls = async ({ queryKey }) => {
   return response.data;
 };
 
-const getMyPhotos = async () => {
-  const response = await http.get(`/photographer/me/photo`);
+const getMyPhotos = async (skip, take) => {
+  const response = await http.get(
+    `/photographer/me/photo?skip=${skip}&take=${take}`,
+  );
 
   return response.data;
 };
