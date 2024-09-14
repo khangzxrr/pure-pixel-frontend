@@ -1,19 +1,17 @@
-import { useQueries } from "@tanstack/react-query";
+import { useQueries } from "react-query"; // Change the import to react-query
 import UserApi from "../../apis/UserApi";
 
 export default function Profile() {
-  const result = useQueries({
-    queries: [
-      {
-        queryKey: ["keycloak", 1],
-        queryFn: UserApi.getKeycloakProfile,
-      },
-      {
-        queryKey: ["application", 2],
-        queryFn: UserApi.getApplicationProfile,
-      },
-    ],
-  });
+  const result = useQueries([
+    {
+      queryKey: ["keycloak", 1],
+      queryFn: UserApi.getKeycloakProfile,
+    },
+    {
+      queryKey: ["application", 2],
+      queryFn: UserApi.getApplicationProfile,
+    },
+  ]);
 
   if (result[0].isLoading) {
     return <div>Loading keycloak profile...</div>;

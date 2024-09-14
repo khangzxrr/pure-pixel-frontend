@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "react-query";
 import React from "react";
 import { FaArrowUp } from "react-icons/fa6";
 import PhotographerApi from "../../../apis/PhotographerApi";
@@ -32,7 +32,7 @@ const MyPhotoAll = () => {
         {isError ? JSON.stringify(error) : ""}
         {isFetching
           ? "loading.."
-          : data.map((item) => (
+          : data?.map((item) => (
               <div className="flex flex-col gap-3 w-[360px] h-[420px] transition-shadow duration-200 bg-white hover:shadow-xl hover:cursor-pointer">
                 <div>
                   <img key={item.id} src={item.signedUrl.thumbnail} alt="" />
