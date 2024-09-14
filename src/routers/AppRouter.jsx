@@ -28,6 +28,9 @@ import MyPhotoLikes from "../components/MyPhoto/MyPhotoLikes/MyPhotoLikes";
 import MyPhotoStatistics from "../components/MyPhoto/MyPhotoStatistics/MyPhotoStatistics";
 import MyPhotoAll from "../components/MyPhoto/MyPhotoAll/MyPhotoAll";
 import MyPhotoPrivate from "../components/MyPhoto/MyPhotoPrivate/MyPhotoPrivate";
+import UserProfile from "../pages/UserProfile/UserProfile";
+import Photos from "../components/UserProfile/Photos";
+import Galleries from "../components/UserProfile/Galleries";
 import ProfileDetailLayout from "./../layouts/ProfileDetailLayout";
 
 export const AppRouter = createBrowserRouter([
@@ -46,6 +49,42 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/membership",
             element: <MembershipPage />,
+          },
+          {
+            path: "/following",
+            element: <Following />,
+          },
+          {
+            path: "/for-you",
+            element: <ForYou />,
+          },
+          {
+            path: "/explore",
+            element: <Explore />,
+          },
+        ],
+      },
+
+      {
+        path: "/profile/:userId",
+        element: <UserProfile />,
+
+        children: [
+          {
+            path: "/profile/:userId",
+            element: <Navigate to="/profile/:userId/photos" />,
+          },
+          {
+            path: "/profile/:userId/photos",
+            element: <Photos />,
+          },
+          {
+            path: "/profile/:userId/galleries",
+            element: <Galleries />,
+          },
+          {
+            path: "/profile/:userId/licensing",
+            element: <Licensing />,
           },
         ],
       },
