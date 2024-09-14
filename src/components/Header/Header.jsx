@@ -12,6 +12,7 @@ export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const userData = UserService.getTokenParsed();
+  console.log(keycloak, userData, "keycloak");
 
   const handleAuthAction = (action) => {
     if (action === "login") keycloak.login();
@@ -27,7 +28,12 @@ export default function Header() {
       <>
         <div className="text-lg font-bold hover:text-blue-600">
           <Dropdown
-            overlay={<DropdownMenu handleAuthAction={handleAuthAction} />}
+            overlay={
+              <DropdownMenu
+                handleAuthAction={handleAuthAction}
+                userId={UserService.getUserId()}
+              />
+            }
             trigger={["click"]}
             placement="bottomRight"
           >

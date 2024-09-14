@@ -1,5 +1,5 @@
 import React from "react";
-import PhotoNCommentLayout from "./PhotoNCommentLayout";
+import PhotoNCommentLayout from "../layouts/PhotoNCommentLayout";
 import DetailLayout from "./DetailLayout";
 
 const PhotoDetailLayout = () => {

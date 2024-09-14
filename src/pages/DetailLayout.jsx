@@ -1,9 +1,9 @@
 import React from "react";
-import Information from "./../components/PhotoDetail/Detail/Information/Information";
-import LocationDetail from "./../components/PhotoDetail/Detail/Location/LocationDetail";
+import Information from "../components/PhotoDetail/Detail/Information/Information";
+import LocationDetail from "../components/PhotoDetail/Detail/Location/LocationDetail";
 import CameraSpecification from "../components/PhotoDetail/Detail/CameraSpecification/CameraSpecification";
-import Category from "./../components/PhotoDetail/Detail/Category/Category";
-import Selling from "./../components/PhotoDetail/Detail/Selling/Selling";
+import Category from "../components/PhotoDetail/Detail/Category/Category";
+import Selling from "../components/PhotoDetail/Detail/Selling/Selling";
 
 const DetailLayout = () => {
   return (

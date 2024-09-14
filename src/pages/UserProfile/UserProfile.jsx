@@ -3,11 +3,23 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import ProfileLayout from "../../layouts/ProfileLayout";
 import { useParams } from "react-router-dom";
-import { useGetUserProfileById } from "../../apis/UserProfile";
+import { useQuery } from "@tanstack/react-query";
+import UserProfileApi from "../../apis/UserProfile";
+import { HiOutlineLocationMarker } from "react-icons/hi";
+import { FaFacebook, FaInstagram } from "react-icons/fa6";
+import { CiGlobe } from "react-icons/ci";
+import UserService from "../../services/Keycloak";
 
 const UserProfile = () => {
   const { userId } = useParams();
-  const { data: userData } = useGetUserProfileById(userId);
+  const userDataKeyCloak = UserService.getTokenParsed();
+
+  const { data: userData } = useQuery({
+    queryKey: ["user-profile", userId],
+    queryFn: () => UserProfileApi.getUserProfileById(userId),
+  });
+  console.log(userDataKeyCloak, "userData");
+
   const [scrollY, setScrollY] = useState(0);
   // Adjust this to set a higher default height
   const defaultHeight = 350; // Set the default height here (e.g., 500px)
@@ -27,12 +39,12 @@ const UserProfile = () => {
     if (num >= 1000000) {
       // For numbers greater than or equal to 1 million
       return (
-        (num / 1000000).toFixed(2).replace(".", ",").replace(/,00$/, "") + "tr"
+        (num / 1000000).toFixed(2).replace(".", ",").replace(/,00$/, "") + " tr"
       ); // Replace dot with comma and remove trailing ,00
     } else if (num >= 1000) {
       // For numbers greater than or equal to 1 thousand
       return (
-        (num / 1000).toFixed(2).replace(".", ",").replace(/,00$/, "") + "k"
+        (num / 1000).toFixed(2).replace(".", ",").replace(/,00$/, "") + " ng"
       ); // Replace dot with comma and remove trailing ,00
     }
     return num?.toString(); // Return the number as a string if it's less than 1000
@@ -68,7 +80,10 @@ const UserProfile = () => {
           className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
         />
         <h1 className="text-2xl font-bold text-center">{userData?.username}</h1>
-        <p className="text-gray-600 text-center">{userData?.location}</p>
+        <p className="text-gray-600 text-center flex">
+          <HiOutlineLocationMarker className="m-1" />
+          {userData?.location}
+        </p>
         <p className="mt-2 text-gray-800 text-center">
           {userData?.bio} {/* Use bio from userData */}
           <br />
@@ -81,22 +96,38 @@ const UserProfile = () => {
             {userData?.contactEmail}
           </a>
         </p>
-        <div className="mt-4 flex justify-center">
-          <span className="font-semibold">
-            {formatNumber(userData?.followers)} Followers
-          </span>
-          <span className="mx-2">|</span>
-          <span className="font-semibold">
-            {formatNumber(userData?.following)} Following
-          </span>
-          <span className="mx-2">|</span>
-          <span className="font-semibold">
-            {formatNumber(userData?.photoLikes)} Photo Likes
-          </span>
-          <span className="mx-2">|</span>
-          <span className="font-semibold">
-            {formatNumber(userData?.photoImpressions)} Photo impressions
-          </span>
+        <div className="flex flex-col items-center gap-3 mt-3 bg-black text-white rounded-xl px-10 py-4">
+          <div className="flex gap-5">
+            <div className="flex items-center gap-1">
+              <div className="font-bold">
+                {formatNumber(userData?.photoLikes)}
+              </div>
+              <div>ảnh yêu thích</div>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="font-bold">
+                {formatNumber(userData?.followers)}
+              </div>
+              <div>người theo dõi</div>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="font-bold">
+                {formatNumber(userData?.photoImpressions)}
+              </div>
+              <div>ảnh ấn tượng</div>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="font-bold">
+                {formatNumber(userData?.following)}
+              </div>
+              <div>đang theo dõi</div>
+            </div>
+          </div>
+          <div className="flex gap-10">
+            <FaFacebook className="w-6 h-6 hover:cursor-pointer" />
+            <FaInstagram className="w-6 h-6 hover:cursor-pointer" />
+            <CiGlobe className="w-6 h-6 hover:cursor-pointer" />
+          </div>
         </div>
       </div>
       <ProfileLayout />
