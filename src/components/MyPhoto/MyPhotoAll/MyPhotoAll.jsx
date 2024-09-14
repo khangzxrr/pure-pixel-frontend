@@ -9,7 +9,6 @@ const MyPhotoAll = () => {
     //0 is skip, 100 is take
     queryFn: () => PhotographerApi.getMyPhotos(0, 20),
   });
-
   return (
     <div className="flex flex-col">
       <div className="p-10">
@@ -32,7 +31,7 @@ const MyPhotoAll = () => {
         {isError ? JSON.stringify(error) : ""}
         {isFetching
           ? "loading.."
-          : data.map((item) => (
+          : data?.map((item) => (
               <div className="flex flex-col gap-3 w-[360px] h-[420px] transition-shadow duration-200 bg-white hover:shadow-xl hover:cursor-pointer">
                 <div>
                   <img key={item.id} src={item.signedUrl.thumbnail} alt="" />
