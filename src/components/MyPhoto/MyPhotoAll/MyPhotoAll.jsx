@@ -1,8 +1,15 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { FaArrowUp } from "react-icons/fa6";
-import MyPhotoItem from "./MyPhotoItem";
+import PhotographerApi from "../../../apis/PhotographerApi";
 
 const MyPhotoAll = () => {
+  const { data, isFetching, isError, error } = useQuery({
+    queryKey: ["my-photo"],
+    //0 is skip, 100 is take
+    queryFn: () => PhotographerApi.getMyPhotos(0, 20),
+  });
+
   return (
     <div className="flex flex-col">
       <div className="p-10">
@@ -22,17 +29,20 @@ const MyPhotoAll = () => {
             </button>
           </div>
         </div>
-        {MyPhotoItem.map((item) => (
-          <div className="flex flex-col gap-3 w-[360px] h-[420px] transition-shadow duration-200 bg-white hover:shadow-xl hover:cursor-pointer">
-            <div>
-              <img key={item.id} src={item.link} alt="" />
-            </div>
-            <div className="flex justify-between items-center px-3">
-              <div className="text-xl font-bold">{item.name}</div>
-              <div className="text-gray-500 ">{item.privacy}</div>
-            </div>
-          </div>
-        ))}
+        {isError ? JSON.stringify(error) : ""}
+        {isFetching
+          ? "loading.."
+          : data.map((item) => (
+              <div className="flex flex-col gap-3 w-[360px] h-[420px] transition-shadow duration-200 bg-white hover:shadow-xl hover:cursor-pointer">
+                <div>
+                  <img key={item.id} src={item.signedUrl.thumbnail} alt="" />
+                </div>
+                <div className="flex justify-between items-center px-3">
+                  <div className="text-xl font-bold">{item.title}</div>
+                  <div className="text-gray-500 ">{item.description}</div>
+                </div>
+              </div>
+            ))}
       </div>
     </div>
   );

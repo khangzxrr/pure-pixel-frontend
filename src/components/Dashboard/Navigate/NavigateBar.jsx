@@ -1,23 +1,35 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { NavigateTab } from "./NavigateTab";
 
 const NavigateBar = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState(null);
 
+  useEffect(() => {
+    // Cập nhật activeTab khi đường dẫn thay đổi
+    const currentTab = NavigateTab.find(
+      (tab) => tab.link === location.pathname
+    );
+    if (currentTab) {
+      setActiveTab(currentTab.id);
+    }
+  }, [location.pathname]);
+
   return (
-    <div className="flex justify-center items-center gap-4 h-12 bg-black">
+    <div className="flex justify-center items-center gap-3 h-12">
       {NavigateTab.map((tab) => (
         <div
-          className={`text-lg mx-6 min-w-20 text-center text-white hover:underline hover:underline-offset-4 hover:decoration-2 active:underline active:underline-offset-4 active:decoration-2 hover:cursor-pointer ${
-            activeTab === tab.id
-              ? "underline underline-offset-4 decoration-2 font-bold"
-              : ""
-          }`}
           key={tab.id}
-          onClick={() => setActiveTab(tab.id)}
+          className={`text-lg font-bold mx-6 max-w-32 text-center cursor-pointer hover:text-black transition-colors duration-300
+            ${
+              activeTab === tab.id
+                ? "text-black underline decoration-[3px] underline-offset-8 "
+                : "text-gray-400"
+            }
+          `}
         >
-          <Link to={tab.link} className="">
+          <Link to={tab.link} className="w-full">
             {tab.name}
           </Link>
         </div>

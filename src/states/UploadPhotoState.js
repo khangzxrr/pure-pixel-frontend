@@ -1,21 +1,26 @@
-import create from "zustand";
-import { ImageList } from "../fakejson/ImageList";
+import { create } from "zustand";
 
-const initialPhotoList = ImageList.map((image) => ({
-  ...image,
-  currentStep: 1, // Add currentStep to each photo
-}));
+const initialPhotoList = [];
 
 const useUploadPhotoStore = create((set) => ({
-  isUploading: false,
   photoList: initialPhotoList,
   selectedPhoto: initialPhotoList[0] || {}, // Initialize with the first element
-  photoDetails: {},
   photoExtraOption: {},
+  isUpdatingPhotos: false,
+
+  clearState: () => {
+    set({
+      photoList: [],
+      selectedPhoto: {},
+    });
+  },
+  setIsUpdating: (isUpdating) => {
+    set({ isUpdatingPhotos: isUpdating });
+  },
   deleteImageById: (id) =>
     set((state) => {
       const updatedPhotoList = state.photoList.filter(
-        (image) => image.id !== id
+        (image) => image.id !== id,
       );
       const isDeletedSelected = state.selectedPhoto.id === id;
       return {
@@ -25,33 +30,20 @@ const useUploadPhotoStore = create((set) => ({
           : state.selectedPhoto,
       };
     }),
-  addSingleImage: () =>
+
+  addSingleImage: (photo) =>
     set((state) => ({
       photoList: [
         ...state.photoList,
         {
-          id: state.photoList.length + 1,
-          image: "https://picsum.photos/200/300",
-          imageDetails: "",
-          additionalDetails: "",
-          type: "",
-          tag: [],
-          location: "",
-          private: "",
-          addWatermark: true,
-          includeEXIF: true,
-          camera: "Leica Q2",
-          lens: "Summilux 28mm f/1.7 ASPH",
-          focalLength: 28,
-          shutterSpeed: "1/1000",
-          aperture: 1.7,
-          iso: 100,
-          shootDate: "2023-01-01",
+          ...photo,
           currentStep: 1, // Add currentStep to the new image
         },
       ],
     })),
+
   setSelectedPhoto: (photo) => set({ selectedPhoto: photo }),
+
   setCurrentStep: (id, step) =>
     set((state) => {
       const photoList = [...state.photoList]; // Create a shallow copy of the array
@@ -68,23 +60,24 @@ const useUploadPhotoStore = create((set) => ({
 
       return { photoList, selectedPhoto };
     }),
+
   updateField: (id, field, value) =>
     set((state) => {
       const photoList = [...state.photoList];
       const photoIndex = photoList.findIndex((image) => image.id === id);
 
-      if (photoIndex !== -1) {
-        photoList[photoIndex] = { ...photoList[photoIndex], [field]: value };
+      if (photoIndex === -1) {
+        return;
       }
 
+      const photo = photoList[photoIndex];
+      photo[field] = value;
+
       const selectedPhoto =
-        state.selectedPhoto.id === id
-          ? { ...state.selectedPhoto, [field]: value }
-          : state.selectedPhoto;
+        state.selectedPhoto.id === id ? photo : state.selectedPhoto;
 
       return { photoList, selectedPhoto };
     }),
-  setIsUploading: (isUploading) => set({ isUploading }),
 }));
 
 export default useUploadPhotoStore;

@@ -15,6 +15,8 @@ const getToken = () => keycloakService.token;
 
 const getTokenParsed = () => keycloakService.tokenParsed;
 
+const getUserId = () => keycloakService.tokenParsed.sub;
+
 const isLoggedIn = () => !!keycloakService.token;
 
 const updateToken = (successCallback) =>
@@ -24,6 +26,7 @@ const hasRole = (roles) =>
   roles.some((role) => keycloakService.hasRealmRole(role));
 
 const UserService = {
+  getUserId,
   doLogin,
   getToken,
   getTokenParsed,

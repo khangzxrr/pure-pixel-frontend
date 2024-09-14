@@ -31,6 +31,7 @@ import MyPhotoPrivate from "../components/MyPhoto/MyPhotoPrivate/MyPhotoPrivate"
 import UserProfile from "../pages/UserProfile/UserProfile";
 import Photos from "../components/UserProfile/Photos";
 import Galleries from "../components/UserProfile/Galleries";
+import ProfileDetailLayout from "./../layouts/ProfileDetailLayout";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -102,6 +103,20 @@ export const AppRouter = createBrowserRouter([
       {
         path: "/discover",
         element: <Discover />,
+        children: [
+          {
+            path: "/discover/following",
+            element: <Following />,
+          },
+          {
+            path: "/discover/for-you",
+            element: <ForYou />,
+          },
+          {
+            path: "/discover/explore",
+            element: <Explore />,
+          },
+        ],
       },
       {
         path: "/licensing",
@@ -189,7 +204,10 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/customer/profile",
-            element: <Profile />,
+            element: (
+              // <Profile />,
+              <ProfileDetailLayout />
+            ),
           },
         ],
       },
