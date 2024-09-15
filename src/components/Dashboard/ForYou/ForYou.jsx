@@ -58,7 +58,7 @@ const ForYou = () => {
       <div className="w-full max-w-8xl px-5 py-2 pb-10 mx-auto mb-10 gap-5 columns-4 space-y-5">
         {result.isFetching
           ? "loading..."
-          : photos.map((photo) => (
+          : photos?.map((photo) => (
               <div key={photo.id} className="overflow-hidden rounded-xl">
                 <img
                   key={photo.id}
