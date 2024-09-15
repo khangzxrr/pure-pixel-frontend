@@ -1,47 +1,57 @@
 import React from "react";
-import { Outlet, NavLink, useParams } from "react-router-dom";
-
+import { Outlet, NavLink, useParams, Navigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import UserProfileApi from "../apis/UserProfile";
 export default function ProfileLayout() {
   const { userId } = useParams(); // Get userId from the URL parameters
+  const {
+    data: userData,
+    isFetching,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["user-profile", userId],
+    queryFn: () => UserProfileApi.getUserProfileById(userId),
+  });
+  console.log(userData);
 
   return (
     <div className="flex">
-      <div className="mx-auto">
-        <ul className="flex space-x-4">
-          <li>
+      <div className="flex flex-col w-full mt-4">
+        <div className="flex justify-center mx-auto gap-10 hover:cursor-default">
+          <div className="flex items-center gap-1">
             <NavLink
               to={`/profile/${userId}/photos`}
-              className={({ isActive }) =>
-                isActive ? "font-bold text-blue-500" : "text-gray-700"
-              }
+              className="flex items-center gap-1"
             >
-              Photos
+              <div className="font-bold">Ảnh</div>
+              <div className="">{userData?.tabs[0].images.length}</div>
             </NavLink>
-          </li>
-          <li>
+          </div>
+          <div className="flex flex-row items-center gap-1">
             <NavLink
-              to={`/profile/${userId}/galleries`}
-              className={({ isActive }) =>
-                isActive ? "font-bold text-blue-500" : "text-gray-700"
-              }
+              to={`/profile/${userId}/completed`}
+              className="flex items-center gap-1"
             >
-              Galleries
+              <div className="font-bold">Công việc hoàn thành</div>
+              <span>{userData?.tabs[1].images?.length}</span>
             </NavLink>
-          </li>
-          <li>
+          </div>
+          <div className="flex items-center gap-1">
             <NavLink
-              to={`/profile/${userId}/licensing`}
-              className={({ isActive }) =>
-                isActive ? "font-bold text-blue-500" : "text-gray-700"
-              }
+              to={`/profile/${userId}/packages`}
+              className="flex items-center gap-1"
             >
-              Licensing
+              <div className="font-bold">Gói</div>
+              <div className="">{userData?.tabs[2].booking_list?.length}</div>
             </NavLink>
-          </li>
-        </ul>
+          </div>
+        </div>
+        <Outlet />
       </div>
-
-      <Outlet />
+      {window.location.pathname === `/profile/${userId}` && (
+        <Navigate to={`/profile/${userId}/photos`} replace />
+      )}
     </div>
   );
 }

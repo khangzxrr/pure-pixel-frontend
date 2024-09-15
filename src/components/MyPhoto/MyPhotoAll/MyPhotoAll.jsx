@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { FaArrowUp } from "react-icons/fa6";
 import PhotographerApi from "../../../apis/PhotographerApi";
@@ -9,7 +9,6 @@ const MyPhotoAll = () => {
     //0 is skip, 100 is take
     queryFn: () => PhotographerApi.getMyPhotos(0, 20),
   });
-
   return (
     <div className="flex flex-col">
       <div className="p-10">

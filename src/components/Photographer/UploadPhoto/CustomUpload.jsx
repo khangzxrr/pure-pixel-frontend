@@ -1,6 +1,6 @@
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { message, Upload } from "antd";
+import { Image, message, Upload } from "antd";
 import { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
@@ -8,7 +8,8 @@ import RandomIntFromTo from "../../../utils/Utils";
 
 export default function CustomUpload() {
   const { addSingleImage } = useUploadPhotoStore();
-
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
   const poolingIntervals = {};
 
   const uploadPhoto = useMutation({
@@ -129,7 +130,7 @@ export default function CustomUpload() {
           }
         },
         //random interval to prevent request all at the same time
-        RandomIntFromTo(1000, 3000),
+        RandomIntFromTo(1000, 3000)
       );
     } catch (e) {
       message.error("something wrong! please try again");
@@ -137,20 +138,51 @@ export default function CustomUpload() {
       onError(e);
     }
   };
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  const handlePreview = async (file) => {
+    console.log("file", file);
 
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
   return (
-    <Upload
-      name="avatar"
-      listType="picture-card"
-      className="avatar-uploader"
-      maxCount={10}
-      showUploadList={false}
-      multiple={true}
-      beforeUpload={beforeUpload}
-      onChange={handleChange}
-      customRequest={customRequest}
-    >
-      {uploadButton}
-    </Upload>
+    <div>
+      <Upload
+        name="avatar"
+        listType="picture-card"
+        className="avatar-uploader"
+        maxCount={10}
+        showUploadList={false}
+        multiple={true}
+        beforeUpload={beforeUpload}
+        onChange={handleChange}
+        customRequest={customRequest}
+        onPreview={handlePreview}
+      >
+        {uploadButton}
+      </Upload>
+      {previewImage && (
+        <Image
+          wrapperStyle={{
+            display: "none",
+          }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
+    </div>
   );
 }

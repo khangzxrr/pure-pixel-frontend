@@ -43,15 +43,12 @@ export default function CustomerLayout() {
             </div>
           </div> */}
 
-          {/* <div className="visible lg:invisible lg:w-0">
+        {/* <div className="visible lg:invisible lg:w-0">
           <UserNavMobi />
         </div> */}
 
-          <Outlet />
-        </div>
-      </>
-    );
-  } else {
-    return <Navigate to={"/"} />;
-  }
+        <Outlet />
+      </div>
+    </>
+  );
 }

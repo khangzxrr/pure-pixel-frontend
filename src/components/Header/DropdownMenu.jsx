@@ -2,11 +2,11 @@ import { Menu } from "antd";
 import { NavLink } from "react-router-dom";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 
-export const DropdownMenu = ({ handleAuthAction }) => (
+export const DropdownMenu = ({ handleAuthAction, userId }) => (
   <Menu style={{ padding: 0, width: "120%" }}>
     <Menu.Item key="2" style={{ padding: 0 }}>
       <div className="flex items-center text-black hover:text-blue-600 cursor-pointer w-full py-2">
-        <NavLink to="/customer" className=" flex ml-10">
+        <NavLink to={`/profile/${userId}`} className="flex ml-10">
           <UserOutlined className="mr-2" />
           Trang cá nhân
         </NavLink>
