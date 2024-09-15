@@ -7,7 +7,6 @@ const NavigateBar = () => {
   const [activeTab, setActiveTab] = useState(null);
 
   useEffect(() => {
-    // Cập nhật activeTab khi đường dẫn thay đổi
     const currentTab = NavigateTab.find(
       (tab) => tab.link === location.pathname
     );

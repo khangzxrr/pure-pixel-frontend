@@ -24,7 +24,7 @@ export default function HeaderTabs() {
       {HeaderTab.map((tab) => (
         <div
           key={tab.id}
-          className={`text-lg mx-6 cursor-pointer ${
+          className={`text-lg mx-6 cursor-pointer transition-colors duration-200 ${
             activeLink === tab.link ? "text-blue-600" : "hover:text-blue-600"
           }`}
         >
