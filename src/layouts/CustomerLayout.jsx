@@ -29,7 +29,7 @@ export default function CustomerLayout() {
     return (
       <>
         <div className="flex flex-col w-full lg:w-5/6 lg:pt-5 mx-auto">
-          <div className="flex w-full pb-3">
+          {/* <div className="flex w-full pb-3">
             <div className="h-fit lg:w-1/4 invisible lg:visible">
               <CustomerNav />
             </div>
@@ -41,7 +41,7 @@ export default function CustomerLayout() {
                 {renderContent()}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* <div className="visible lg:invisible lg:w-0">
           <UserNavMobi />

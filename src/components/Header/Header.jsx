@@ -25,7 +25,7 @@ export default function Header() {
 
     return keycloak.authenticated ? (
       <>
-        <div className="text-lg font-bold hover:text-blue-600">
+        <div className="text-lg font-bold hover:text-blue-600 transition-colors duration-200">
           <Dropdown
             overlay={<DropdownMenu handleAuthAction={handleAuthAction} />}
             trigger={["click"]}
@@ -44,7 +44,7 @@ export default function Header() {
           </Dropdown>
         </div>
 
-        <div className=" font-bold hover:text-blue-600 outline outline-2 outline-offset-2 rounded-full px-3 py-1">
+        <div className=" font-bold hover:text-blue-600 outline outline-2 outline-offset-2 rounded-full px-3 py-1 transition-colors duration-200">
           <button onClick={() => handleAuthAction("upload-photo")}>
             Upload Photo
           </button>
@@ -54,13 +54,13 @@ export default function Header() {
       <>
         <button
           onClick={() => handleAuthAction("login")}
-          className="text-lg font-bold hover:text-blue-600"
+          className="text-lg font-bold hover:text-blue-600 transition-colors duration-200"
         >
           Log in
         </button>
         <button
           onClick={() => handleAuthAction("login")}
-          className="text-lg font-bold hover:text-blue-600 ml-5 px-3 py-0.25 outline outline-2 outline-offset-2 rounded-full"
+          className="text-lg font-bold hover:text-blue-600 ml-5 px-3 py-0.25 outline outline-2 outline-offset-2 rounded-full transition-colors duration-200"
         >
           Sign up
         </button>

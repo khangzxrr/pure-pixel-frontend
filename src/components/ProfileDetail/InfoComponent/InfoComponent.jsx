@@ -3,10 +3,12 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { FaFacebook, FaInstagram } from "react-icons/fa6";
 import { CiGlobe } from "react-icons/ci";
 import Profile from "../../../pages/Customer/Profile";
+import UserService from "../../../services/Keycloak";
 const InfoComponent = () => {
+  const userData = UserService.getTokenParsed();
   return (
     <div className="flex flex-col items-center">
-      <Profile />
+      {/* <Profile /> */}
       <div className="relative">
         <img className="" src="https://random.imagecdn.app/1900/300" alt="" />
         <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full overflow-hidden outline-[#f7f8fa] outline outline-4">
@@ -17,7 +19,7 @@ const InfoComponent = () => {
           />
         </div>
       </div>
-      <div className="pt-14 text-2xl font-bold">Nguyễn Thành Trung</div>
+      <div className="pt-14 text-2xl font-bold">{userData.name || "null"}</div>
       <div className="flex items-center gap-1">
         <HiOutlineLocationMarker /> Đồng Nai
       </div>
