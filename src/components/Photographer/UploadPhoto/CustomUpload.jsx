@@ -27,6 +27,8 @@ export default function CustomUpload() {
     photoList,
     isPhotoExistByUid,
     selectedPhoto,
+    photoList,
+    isPhotoExistByUid,
   } = useUploadPhotoStore();
 
   const poolingIntervals = {};
@@ -176,6 +178,7 @@ export default function CustomUpload() {
         fileList={fileList}
         actions={actions}
         selectedPhoto={selectedPhoto}
+
         handleDoubleClick={handleDoubleClick}
         setSelectedPhoto={setSelectedPhoto}
       />

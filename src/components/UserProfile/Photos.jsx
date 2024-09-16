@@ -8,8 +8,8 @@ import UserService from "../../services/Keycloak";
 
 export default function Photos() {
   const { userId } = useParams();
-  const isCurrentUser =
-    UserService.isLoggedIn() && userId === UserService.getUserId(); // Get userId from the URL parameters
+  // const isCurrentUser =
+  //   UserService.isLoggedIn() && userId === UserService.getUserId(); // Get userId from the URL parameters
   const {
     data: userData,
     isFetching,
@@ -39,7 +39,7 @@ export default function Photos() {
   ];
   return (
     <div className="">
-      {isCurrentUser ? (
+      {/* {isCurrentUser ? (
         <div className="w-full max-w-[1500px] px-5 mx-auto ">
           <Dropdown
             className="hover:cursor-pointer"
@@ -58,7 +58,7 @@ export default function Photos() {
         </div>
       ) : (
         ""
-      )}
+      )} */}
       <div className="w-full max-w-[1500px] px-5 py-2 pb-10 mx-auto mb-10 gap-5 columns-4 space-y-5">
         {userData?.tabs[0].images.map((photo) => (
           <div className="overflow-hidden rounded-xl hover:cursor-pointer">

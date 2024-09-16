@@ -21,19 +21,26 @@ const useUploadPhotoStore = create((set) => ({
     set({ isUpdatingPhotos: isUpdating });
   },
 
-  // Add a single photo to the photoList with currentStep default set to 1
+
+  setIsUpdating: (isUpdating) => {
+    set({ isUpdatingPhotos: isUpdating });
+  },
+  
+    // Add a single photo to the photoList with currentStep default set to 1
   addSingleImage: (photo) =>
     set((state) => ({
       photoList: [
         ...(Array.isArray(state.photoList) ? state.photoList : []),
         {
           ...photo,
+
           currentStep: 1, // Assign currentStep to the new image
         },
       ],
     })),
 
   // Check if a photo with the given UID exists in the list
+
   isPhotoExistByUid: (uid) => {
     const state = useUploadPhotoStore.getState();
     return state.photoList.some((photo) => photo.uid === uid);
@@ -60,6 +67,7 @@ const useUploadPhotoStore = create((set) => ({
     }),
 
   // Delete photo by ID
+
   deleteImageById: (id) =>
     set((state) => {
       const updatedPhotoList = state.photoList.filter(
@@ -102,6 +110,7 @@ const useUploadPhotoStore = create((set) => ({
     }),
 
   // Update the current step of a photo by ID
+
   setCurrentStep: (id, step) =>
     set((state) => {
       const photoList = [...state.photoList]; // Shallow copy of photoList
