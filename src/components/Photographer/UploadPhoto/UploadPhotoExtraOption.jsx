@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
 
-export default function CombinedForm() {
+export default function UploadPhotoExtraOption() {
   const {
     selectedPhoto,
     setCurrentStep,
@@ -95,7 +95,7 @@ export default function CombinedForm() {
                 updateField(
                   selectedPhoto.id,
                   "exif.FocalLength",
-                  e.target.value,
+                  e.target.value
                 );
               }}
             />
@@ -121,7 +121,7 @@ export default function CombinedForm() {
                 updateField(
                   selectedPhoto.id,
                   "exif.ShutterSpeedValue",
-                  e.target.value,
+                  e.target.value
                 );
               }}
             />
@@ -149,7 +149,7 @@ export default function CombinedForm() {
                 updateField(
                   selectedPhoto.id,
                   "exif.ApertureValue",
-                  e.target.value,
+                  e.target.value
                 );
               }}
             />
