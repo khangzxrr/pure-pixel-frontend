@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import PhotoApi from "./../../../../apis/PhotoApi";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
+import { useQuery } from "@tanstack/react-query";
 
 const PhotoComponent = () => {
   const { id } = useParams();
@@ -9,22 +10,12 @@ const PhotoComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchPhoto = async () => {
-      try {
-        const response = await PhotoApi.getPhotoById(id);
-        setPhoto(response.data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const getPhotoById = useQuery({
+    queryKey: ["get-photo-by-id"],
+    queryFn: () => PhotoApi.getPhotoById(id),
+  });
 
-    fetchPhoto();
-  }, [id]);
-
-  if (isLoading) {
+  if (getPhotoById.isFetching) {
     return (
       <div className="flex justify-center items-center">
         <LoadingSpinner />
@@ -32,21 +23,19 @@ const PhotoComponent = () => {
     ); //
   }
 
-  if (error) {
+  if (getPhotoById.error) {
     return (
       <div className="text-red-500">Error loading photo: {error.message}</div>
     );
   }
 
-  if (!photo || !photo.signedUrl) {
-    return <div className="text-red-500">Không tìm thấy ảnh</div>;
-  }
+  console.log(getPhotoById.data);
 
   return (
     <div className="flex justify-center items-center">
       <img
-        src={photo.signedUrl.url}
-        alt={`Photo ${photo.id}`}
+        src={getPhotoById.data.signedUrl.url}
+        alt={`Photo ${getPhotoById.data.id}`}
         className="rounded-lg w-[500px] "
       />
     </div>
