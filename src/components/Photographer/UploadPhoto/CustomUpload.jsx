@@ -5,11 +5,28 @@ import { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import RandomIntFromTo from "../../../utils/Utils";
+import SinglePhotoUpload from "./SinglePhotoUpload";
+import { set } from "react-hook-form";
+
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 export default function CustomUpload() {
-  const { addSingleImage } = useUploadPhotoStore();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const {
+    addSingleImage,
+    setSelectedPhoto,
+    updatePhotoByUid,
+    photoList,
+    isPhotoExistByUid,
+  } = useUploadPhotoStore();
+
   const poolingIntervals = {};
 
   const uploadPhoto = useMutation({
@@ -65,36 +82,26 @@ export default function CustomUpload() {
     </button>
   );
 
-  const handleChange = (info) => {
-    console.log(info);
-    if (info.file.status === "done") {
-      addSingleImage(info.file.response.data);
-    }
-  };
+  // const handleChange = (info) => {
+  //   console.log(info);
+  //   if (info.file.status === "done") {
+  //     addSingleImage(info.file.response.data);
+  //   }
+  // };
 
   const customRequest = async ({ file, onError, onSuccess, onProgress }) => {
     try {
-      //turn file name into an array of filenames
-      //because this method support creating multiple presigned urls
-      //but we only need to supply 1 filename
       const fileNames = [file.name];
-
-      //get presigned PUT upload url first
       const presignedData = await getPresignedUploadUrls.mutateAsync(fileNames);
-
-      //extract upload url from payload
       const signedUploadUrl = presignedData.signedUploads[0].uploadUrl;
-
       const photoId = presignedData.signedUploads[0].photoId;
 
-      //upload
       await uploadPhoto.mutateAsync({
         url: signedUploadUrl,
         file,
         options: {
           onUploadProgress: (event) => {
             const { loaded, total } = event;
-
             onProgress({
               percent: Math.round((loaded / total) * 100),
             });
@@ -109,50 +116,62 @@ export default function CustomUpload() {
 
       message.info("upload success, start to parse photo metadata...");
 
-      poolingIntervals[photoId] = setInterval(
-        async () => {
-          try {
-            const photo = await getProcessedPhoto.mutateAsync(photoId);
+      poolingIntervals[photoId] = setInterval(async () => {
+        try {
+          const photo = await getProcessedPhoto.mutateAsync(photoId);
 
-            if (photo.data.status == "PARSED") {
-              addSingleImage(photo.data);
+          if (photo.data.status == "PARSED") {
+            message.success("parsed photo!");
 
-              message.success("parsed photo!");
+            clearInterval(poolingIntervals[photoId]);
 
-              clearInterval(poolingIntervals[photoId]);
-            }
-          } catch (e) {
-            //this is fine becuase when image is not parsed yet it will throw 400
-            //we only show what is not this exception
-            if (e.response.data.message != "PhotoIsPendingStateException") {
-              console.log(e);
-            }
+            // Call onSuccess to update the file status
+            onSuccess(photo.data);
           }
-        },
-        //random interval to prevent request all at the same time
-        RandomIntFromTo(1000, 3000)
-      );
+        } catch (e) {
+          if (e.response.data.message != "PhotoIsPendingStateException") {
+            console.log(e);
+          }
+        }
+      }, RandomIntFromTo(1000, 3000));
     } catch (e) {
       message.error("something wrong! please try again");
       console.log(e);
       onError(e);
     }
   };
-  const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
   const handlePreview = async (file) => {
-    console.log("file", file);
-
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
+  };
+  const handleChange = (info) => {
+    console.log("Upload onChange:", info);
+    if (!isPhotoExistByUid(info.file.uid)) {
+      addSingleImage(info.file);
+    } else if (info.file.status === "done") {
+      console.log("Upload done:", info, photoList);
+      updatePhotoByUid(info.file.uid, info.file.response);
+      setSelectedPhoto({ ...info.file.response, currentStep: 1 });
+    }
+  };
+  const handleDoubleClick = (file) => {
+    handlePreview(file);
+  };
+
+  const itemRender = (originNode, file, fileList, actions) => {
+    return (
+      <SinglePhotoUpload
+        originNode={originNode}
+        file={file}
+        fileList={fileList}
+        actions={actions}
+        handleDoubleClick={handleDoubleClick}
+        setSelectedPhoto={setSelectedPhoto}
+      />
+    );
   };
   return (
     <div>
@@ -161,15 +180,33 @@ export default function CustomUpload() {
         listType="picture-card"
         className="avatar-uploader"
         maxCount={10}
-        showUploadList={false}
+        // showUploadList={false}
         multiple={true}
         beforeUpload={beforeUpload}
         onChange={handleChange}
         customRequest={customRequest}
         onPreview={handlePreview}
+        itemRender={itemRender}
+        fileList={photoList}
+
+        // action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
       >
         {uploadButton}
       </Upload>
+      {/* <Upload
+        customRequest={customRequest}
+        // action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+        listType="picture-card"
+        fileList={fileList}
+        maxCount={10}
+        multiple={true}
+        beforeUpload={beforeUpload}
+        onPreview={handlePreview}
+        onChange={handleChange}
+        itemRender={itemRender}
+      >
+        {uploadButton}
+      </Upload> */}
       {previewImage && (
         <Image
           wrapperStyle={{

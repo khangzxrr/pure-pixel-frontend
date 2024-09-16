@@ -14,13 +14,39 @@ const useUploadPhotoStore = create((set) => ({
       selectedPhoto: {},
     });
   },
+
   setIsUpdating: (isUpdating) => {
     set({ isUpdatingPhotos: isUpdating });
   },
+  addSingleImage: (photo) =>
+    set((state) => ({
+      photoList: [
+        ...(Array.isArray(state.photoList) ? state.photoList : []),
+        {
+          ...photo,
+          currentStep: 1, // Add currentStep to the new image
+        },
+      ],
+    })),
+  isPhotoExistByUid: (uid) => {
+    const state = useUploadPhotoStore.getState();
+    return state.photoList.some((photo) => photo.uid === uid);
+  },
+  updatePhotoByUid: (uid, newPhoto) =>
+    set((state) => {
+      console.log("Update photo by uid:", uid);
+      return {
+        photoList: state.photoList.map((photo) =>
+          photo.uid === uid
+            ? { ...photo, ...newPhoto, currentStep: photo.currentStep }
+            : photo
+        ),
+      };
+    }),
   deleteImageById: (id) =>
     set((state) => {
       const updatedPhotoList = state.photoList.filter(
-        (image) => image.id !== id,
+        (image) => image.id !== id
       );
       const isDeletedSelected = state.selectedPhoto.id === id;
       return {
@@ -31,19 +57,11 @@ const useUploadPhotoStore = create((set) => ({
       };
     }),
 
-  addSingleImage: (photo) =>
-    set((state) => ({
-      photoList: [
-        ...state.photoList,
-        {
-          ...photo,
-          currentStep: 1, // Add currentStep to the new image
-        },
-      ],
-    })),
-
-  setSelectedPhoto: (photo) => set({ selectedPhoto: photo }),
-
+  setSelectedPhoto: (photo) =>
+    set((state) => {
+      console.log("Set selected photo:", photo);
+      return { selectedPhoto: photo };
+    }),
   setCurrentStep: (id, step) =>
     set((state) => {
       const photoList = [...state.photoList]; // Create a shallow copy of the array
