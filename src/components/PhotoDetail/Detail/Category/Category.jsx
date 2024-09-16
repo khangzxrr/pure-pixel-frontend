@@ -7,13 +7,13 @@ const Category = () => {
         Danh mục: <span className="font-bold">Phong cảnh</span>
       </p>
       <div className="flex gap-3">
-        <div className="text-sm bg-gray-200 px-3 py-1 rounded-sm hover:cursor-pointer hover:bg-gray-400">
+        <div className="text-sm bg-gray-200 px-3 py-1 rounded-sm hover:cursor-pointer transition-colors duration-200 hover:bg-gray-400">
           Thẻ 1
         </div>
-        <div className="text-sm bg-gray-200 px-3 py-1 rounded-sm hover:cursor-pointer hover:bg-gray-400">
+        <div className="text-sm bg-gray-200 px-3 py-1 rounded-sm hover:cursor-pointer transition-colors duration-200 hover:bg-gray-400">
           Thẻ 2
         </div>
-        <div className="text-sm bg-gray-200 px-3 py-1 rounded-sm hover:cursor-pointer hover:bg-gray-400">
+        <div className="text-sm bg-gray-200 px-3 py-1 rounded-sm hover:cursor-pointer transition-colors duration-200 hover:bg-gray-400">
           Thẻ 3
         </div>
       </div>

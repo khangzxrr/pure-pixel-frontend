@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import PhotoApi from "./../../../../apis/PhotoApi";
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 
 const PhotoComponent = () => {
   const { id } = useParams();
@@ -11,8 +12,8 @@ const PhotoComponent = () => {
   useEffect(() => {
     const fetchPhoto = async () => {
       try {
-        const response = await PhotoApi.getPresignedUploadUrls(id); // Gọi API lấy ảnh theo ID
-        setPhoto(response);
+        const response = await PhotoApi.getPhotoById(id);
+        setPhoto(response.data);
       } catch (err) {
         setError(err);
       } finally {
@@ -24,25 +25,29 @@ const PhotoComponent = () => {
   }, [id]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Hiển thị khi đang tải ảnh
+    return (
+      <div className="flex justify-center items-center">
+        <LoadingSpinner />
+      </div>
+    ); //
   }
 
   if (error) {
     return (
       <div className="text-red-500">Error loading photo: {error.message}</div>
-    ); // Hiển thị lỗi
+    );
   }
 
-  if (!photo) {
-    return <div className="text-red-500">Photo not found</div>; // Hiển thị nếu không tìm thấy ảnh
+  if (!photo || !photo.signedUrl) {
+    return <div className="text-red-500">Không tìm thấy ảnh</div>;
   }
 
   return (
     <div className="flex justify-center items-center">
       <img
-        src={photo.signedUrl.full}
+        src={photo.signedUrl.url}
         alt={`Photo ${photo.id}`}
-        className="rounded-lg"
+        className="rounded-lg w-[500px] "
       />
     </div>
   );

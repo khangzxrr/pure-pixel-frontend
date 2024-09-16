@@ -2,49 +2,48 @@ import React, { useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import DailyDoseItem from "./DailyDoseItem";
-import { PlayCircleOutlined, AlignLeftOutlined } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
-import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import PhotoApi from "../../../apis/PhotoApi";
 
 const ForYou = () => {
   const navigate = useNavigate();
-  const [photoList, setPhotoList] = useState([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const limit = 30; // Giới hạn 60 ảnh
-  const pageSize = 10; // Số lượng ảnh mỗi lần load
+  const limit = 60; // Giới hạn tổng số ảnh
+  const take = 20; // Số lượng ảnh mỗi lần load
 
-  // Fetch data for the current page
-  const fetchPhotos = async () => {
-    const response = await PhotoApi.getPublicPhotos(page, pageSize);
-    const totalPhotos = photoList.length + response.length;
+  // Sử dụng useInfiniteQuery từ react-query (v5) với object form
+  const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
+    useInfiniteQuery({
+      queryKey: ["public-photos"],
+      queryFn: async ({ pageParam = 0 }) => {
+        // Gọi API để lấy ảnh dựa trên skip (pageParam) và take
+        const response = await PhotoApi.getPublicPhotos(pageParam, take);
+        return response;
+      },
+      getNextPageParam: (lastPage, allPages) => {
+        const totalLoadedPhotos = allPages.flat().length;
+        if (totalLoadedPhotos >= limit) return undefined;
+        return totalLoadedPhotos;
+      },
+    });
 
-    if (totalPhotos >= limit) {
-      setHasMore(false);
-      setPhotoList((prevPhotos) => [
-        ...prevPhotos,
-        ...response.slice(0, limit - prevPhotos.length),
-      ]);
-    } else {
-      setPhotoList((prevPhotos) => [...prevPhotos, ...response]);
-      setPage((prevPage) => prevPage + 1);
-    }
-    console.log(response);
-  };
-
-  // Fetch initial photos
-  const result = useQuery({
-    queryKey: ["public-photo", page],
-    queryFn: fetchPhotos,
-    enabled: photoList.length === 0,
-  });
-
-  if (result.error) {
-    return <div>error {JSON.stringify(result.error)}</div>;
+  // Kiểm tra nếu đang loading hoặc có lỗi
+  if (isLoading) {
+    return (
+      <div className="flex justify-center mt-4">
+        <LoadingSpinner />
+      </div>
+    );
   }
+
+  if (isError) {
+    return <div>Lỗi: {error.message}</div>;
+  }
+
+  // Lấy danh sách các ảnh đã tải
+  const photoList = data.pages.flat();
 
   return (
     <div className=" ">
@@ -65,20 +64,12 @@ const ForYou = () => {
             </a>
           </Dropdown>
         </div>
-        {/* <div className="flex mr-6 gap-5">
-          <div className="hover:cursor-pointer hover:font-bold">
-            Slide show <PlayCircleOutlined />
-          </div>
-          <div className="hover:cursor-pointer hover:font-bold">
-            Layout <AlignLeftOutlined />{" "}
-          </div>
-        </div> */}
       </div>
 
       <InfiniteScroll
         dataLength={photoList.length}
-        next={fetchPhotos}
-        hasMore={hasMore}
+        next={fetchNextPage}
+        hasMore={hasNextPage}
         loader={
           <div className="flex justify-center mt-4">
             <LoadingSpinner />

@@ -33,8 +33,13 @@ const MyPhotoAll = () => {
           ? "loading.."
           : data?.map((item) => (
               <div className="flex flex-col gap-3 w-[360px] h-[420px] transition-shadow duration-200 bg-white hover:shadow-xl hover:cursor-pointer">
-                <div>
-                  <img key={item.id} src={item.signedUrl.thumbnail} alt="" />
+                <div className="w-full h-[360px] overflow-hidden">
+                  <img
+                    key={item.id}
+                    src={item.signedUrl.thumbnail}
+                    alt=""
+                    className="w-full h-full object-cover "
+                  />
                 </div>
                 <div className="flex justify-between items-center px-3">
                   <div className="text-xl font-bold">{item.title}</div>
