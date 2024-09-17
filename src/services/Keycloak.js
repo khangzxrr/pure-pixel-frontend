@@ -23,7 +23,17 @@ const updateToken = (successCallback) =>
   keycloakService.updateToken(5).then(successCallback).catch(doLogin);
 
 const hasRole = (roles) =>
-  roles.some((role) => keycloakService.hasRealmRole(role));
+  roles?.some((role) => keycloakService.hasRealmRole(role));
+
+const getUserRoles = () => {
+  if (
+    !keycloakService.tokenParsed ||
+    !keycloakService.tokenParsed.realm_access
+  ) {
+    return [];
+  }
+  return keycloakService.resourceAccess;
+};
 
 const UserService = {
   getUserId,
@@ -33,7 +43,7 @@ const UserService = {
   isLoggedIn,
   updateToken,
   hasRole,
-
+  getUserRoles,
   keycloakService,
 };
 export default UserService;

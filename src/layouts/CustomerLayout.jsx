@@ -25,6 +25,7 @@ export default function CustomerLayout() {
         return <div>Album</div>;
     }
   };
+
   if (keycloak.authenticated) {
     return (
       <>
@@ -33,7 +34,7 @@ export default function CustomerLayout() {
             <div className="h-fit lg:w-1/4 invisible lg:visible">
               <CustomerNav />
             </div>
-            <div className=" flex flex-col lg:w-full lg:text-3xl py-0 bg-red-300">
+            <div className="flex flex-col lg:w-full lg:text-3xl py-0 bg-red-300">
               <div className="w-full h-3/5">
                 <p className="text-center">My Account</p>
               </div>
@@ -43,15 +44,16 @@ export default function CustomerLayout() {
             </div>
           </div>
 
-          {/* <div className="visible lg:invisible lg:w-0">
-          <UserNavMobi />
-        </div> */}
+          <div className="visible lg:invisible lg:w-0">
+            {/* If you have UserNavMobi component */}
+            {/* <UserNavMobi /> */}
+          </div>
 
           <Outlet />
         </div>
       </>
     );
-  } else {
-    return <Navigate to={"/"} />;
   }
+
+  return <Navigate to="/login" />;
 }
