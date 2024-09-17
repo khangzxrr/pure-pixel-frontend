@@ -20,7 +20,7 @@ const NavigateBar = () => {
       {NavigateTab.map((tab) => (
         <div
           key={tab.id}
-          className={`text-lg font-bold mx-6 max-w-32 text-center cursor-pointer hover:text-black transition-colors duration-300
+          className={`text-lg mx-6 max-w-32 text-center cursor-pointer hover:text-black transition-colors duration-300
             ${
               activeTab === tab.id
                 ? "text-black underline decoration-[3px] underline-offset-8 "
