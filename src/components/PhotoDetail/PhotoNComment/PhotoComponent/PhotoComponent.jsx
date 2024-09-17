@@ -4,8 +4,7 @@ import PhotoApi from "./../../../../apis/PhotoApi";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { useQuery } from "@tanstack/react-query";
 
-const PhotoComponent = () => {
-  const { id } = useParams();
+const PhotoComponent = ({ id }) => {
   const [photo, setPhoto] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,7 +19,7 @@ const PhotoComponent = () => {
       <div className="flex justify-center items-center">
         <LoadingSpinner />
       </div>
-    ); //
+    );
   }
 
   if (getPhotoById.error) {
@@ -29,14 +28,12 @@ const PhotoComponent = () => {
     );
   }
 
-  console.log(getPhotoById.data);
-
   return (
     <div className="flex justify-center items-center">
       <img
         src={getPhotoById.data.signedUrl.url}
         alt={`Photo ${getPhotoById.data.id}`}
-        className="rounded-lg w-[500px] "
+        className="rounded-lg w-[800px] "
       />
     </div>
   );

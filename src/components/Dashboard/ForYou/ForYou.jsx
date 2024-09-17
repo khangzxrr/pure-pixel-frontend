@@ -1,36 +1,36 @@
-import React, { useState } from "react";
+import React from "react";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import DailyDoseItem from "./DailyDoseItem";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import PhotoApi from "../../../apis/PhotoApi";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Masonry from "react-masonry-css";
 
 const ForYou = () => {
   const navigate = useNavigate();
-  const limit = 60; // Giới hạn tổng số ảnh
-  const take = 20; // Số lượng ảnh mỗi lần load
+  const queryClient = useQueryClient();
+  const limit = 90; // Tổng số ảnh
+  const take = 10; // Số lượng ảnh load mỗi lần
 
-  // Sử dụng useInfiniteQuery từ react-query (v5) với object form
-  const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
+  const fetchPhotos = async ({ pageParam = 0 }) => {
+    const response = await PhotoApi.getPublicPhotos(pageParam, take);
+    return response;
+  };
+
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
       queryKey: ["public-photos"],
-      queryFn: async ({ pageParam = 0 }) => {
-        // Gọi API để lấy ảnh dựa trên skip (pageParam) và take
-        const response = await PhotoApi.getPublicPhotos(pageParam, take);
-        return response;
-      },
+      queryFn: fetchPhotos,
       getNextPageParam: (lastPage, allPages) => {
-        const totalLoadedPhotos = allPages.flat().length;
-        if (totalLoadedPhotos >= limit) return undefined;
-        return totalLoadedPhotos;
+        const nextSkip = allPages.length * take;
+        return nextSkip < limit ? nextSkip : undefined;
       },
     });
 
-  // Kiểm tra nếu đang loading hoặc có lỗi
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="flex justify-center mt-4">
         <LoadingSpinner />
@@ -42,23 +42,35 @@ const ForYou = () => {
     return <div>Lỗi: {error.message}</div>;
   }
 
-  // Lấy danh sách các ảnh đã tải
+  // Merge all pages' results
   const photoList = data.pages.flat();
 
+  // Breakpoint columns for screen size
+  const breakpointColumnsObj = {
+    default: 5,
+    1100: 3,
+    700: 2,
+    500: 1,
+  };
+
+  const handleOnClick = (id) => {
+    //clear cache before navigate to photo detail
+    queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
+    navigate(`/for-you/${id}`);
+  };
+
   return (
-    <div className=" ">
-      <div className="flex justify-between items-center px-6">
-        <div className="ml-6 hover:cursor-pointer hover:font-bold">
+    <div className="py-5">
+      <div className="flex justify-between items-center px-2 pb-3">
+        <div className="ml-6 hover:cursor-pointer">
           <Dropdown
             className="hover:cursor-pointer"
-            menu={{
-              items: DailyDoseItem,
-            }}
+            menu={{ items: DailyDoseItem }}
             trigger={["click"]}
           >
             <a onClick={(e) => e.preventDefault()}>
               <Space>
-                Daily dose
+                Ảnh hằng ngày
                 <DownOutlined />
               </Space>
             </a>
@@ -75,27 +87,44 @@ const ForYou = () => {
             <LoadingSpinner />
           </div>
         }
-        endMessage={
-          <p style={{ textAlign: "center", marginTop: "20px" }}>
-            <b>Bạn đã xem hết ảnh ngày hôm nay</b>
-          </p>
-        }
+        endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
       >
-        <div className="max-w-8xl px-12 py-2 pb-10 mx-auto mb-10 gap-5 columns-4 space-y-5 relative">
-          {photoList.map((photo) => (
-            <div
-              key={photo.id}
-              className="overflow-hidden rounded-xl hover:cursor-pointer "
-            >
-              <img
+        <div className="px-6">
+          <Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {photoList.map((photo) => (
+              <div
                 key={photo.id}
-                src={photo.signedUrl.thumbnail}
-                alt={`Photo ${photo.id}`}
-                className="rounded-xl transition-transform duration-300 ease-in-out transform hover:scale-110 w-full h-full object-cover"
-                onClick={() => navigate(`/for-you/${photo.id}`)}
-              />
-            </div>
-          ))}
+                className="relative overflow-hidden rounded-xl hover:cursor-pointer group"
+                onClick={() => handleOnClick(photo.id)}
+              >
+                {/* Image */}
+                <img
+                  src={photo.signedUrl.thumbnail}
+                  alt={`Photo ${photo.id}`}
+                  className="rounded-xl w-full h-auto object-cover transition-transform duration-300 ease-in-out transform group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-[30px] h-[30px] overflow-hidden rounded-full">
+                        <img
+                          src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>{photo.title || "Tên tác giả"}</div>
+                    </div>
+                    <div>{photo.title || "Tiêu đề"}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Masonry>
         </div>
       </InfiniteScroll>
     </div>
