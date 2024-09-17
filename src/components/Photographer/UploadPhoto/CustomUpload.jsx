@@ -1,12 +1,13 @@
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Image, message, Upload } from "antd";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import RandomIntFromTo from "../../../utils/Utils";
 import SinglePhotoUpload from "./SinglePhotoUpload";
-import { set } from "react-hook-form";
+import { io } from "socket.io-client";
+import UserService from "../../../services/Keycloak";
+import { useKeycloak } from "@react-keycloak/web";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -27,7 +28,30 @@ export default function CustomUpload() {
     isPhotoExistByUid,
   } = useUploadPhotoStore();
 
-  const poolingIntervals = {};
+  //use keycloak to trigger refresh component when new token comes
+  const { keycloak } = useKeycloak();
+
+  const userToken = UserService.getToken();
+
+  //using ref to NOT cause re-render when socketRef is change
+  const socketRef = useRef();
+
+  useEffect(() => {
+    if (!userToken) {
+      return;
+    }
+
+    //init connection to socket.io backend
+    socketRef.current = io(process.env.REACT_APP_WEBSOCKET_UPLOAD_PHOTO, {
+      autoConnect: true,
+      extraHeaders: {
+        Authorization: `bearer ${UserService.getToken()}`,
+      },
+    });
+
+    //emit join event to join photo process gateway
+    socketRef.current.emit("join");
+  }, [userToken]);
 
   const uploadPhoto = useMutation({
     mutationFn: ({ url, file, options }) =>
@@ -36,10 +60,6 @@ export default function CustomUpload() {
 
   const getPresignedUploadUrls = useMutation({
     mutationFn: (filenames) => PhotoApi.getPresignedUploadUrls({ filenames }),
-  });
-
-  const getProcessedPhoto = useMutation({
-    mutationFn: (id) => PhotoApi.getPhotoById(id),
   });
 
   const processPhoto = useMutation({
@@ -82,13 +102,6 @@ export default function CustomUpload() {
     </button>
   );
 
-  // const handleChange = (info) => {
-  //   console.log(info);
-  //   if (info.file.status === "done") {
-  //     addSingleImage(info.file.response.data);
-  //   }
-  // };
-
   const customRequest = async ({ file, onError, onSuccess, onProgress }) => {
     try {
       const fileNames = [file.name];
@@ -116,24 +129,13 @@ export default function CustomUpload() {
 
       message.info("upload success, start to parse photo metadata...");
 
-      poolingIntervals[photoId] = setInterval(async () => {
-        try {
-          const photo = await getProcessedPhoto.mutateAsync(photoId);
-
-          if (photo.data.status == "PARSED") {
-            message.success("parsed photo!");
-
-            clearInterval(poolingIntervals[photoId]);
-
-            // Call onSuccess to update the file status
-            onSuccess(photo.data);
-          }
-        } catch (e) {
-          if (e.response.data.message != "PhotoIsPendingStateException") {
-            console.log(e);
-          }
+      socketRef.current.on("finish-process-photos", (data) => {
+        //only call back onSuccess if the data return is equal photoId
+        //this prevent all photos in pending state trigger onSuccess when ONLY ONE DATA is received
+        if (data[0].id == photoId) {
+          onSuccess(data[0]);
         }
-      }, RandomIntFromTo(1000, 3000));
+      });
     } catch (e) {
       message.error("something wrong! please try again");
       console.log(e);
@@ -148,11 +150,9 @@ export default function CustomUpload() {
     setPreviewOpen(true);
   };
   const handleChange = (info) => {
-    console.log("Upload onChange:", info);
     if (!isPhotoExistByUid(info.file.uid)) {
       addSingleImage(info.file);
     } else if (info.file.status === "done") {
-      console.log("Upload done:", info, photoList);
       updatePhotoByUid(info.file.uid, info.file.response);
       setSelectedPhoto({ ...info.file.response, currentStep: 1 });
     }
@@ -179,7 +179,6 @@ export default function CustomUpload() {
         name="avatar"
         listType="picture-card"
         className="avatar-uploader"
-        maxCount={10}
         // showUploadList={false}
         multiple={true}
         beforeUpload={beforeUpload}
