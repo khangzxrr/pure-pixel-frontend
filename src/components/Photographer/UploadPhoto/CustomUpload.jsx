@@ -25,8 +25,6 @@ export default function CustomUpload() {
     setSelectedPhoto,
     updatePhotoByUid,
     removePhotoByUid,
-    photoList,
-    isPhotoExistByUid,
     selectedPhoto,
     photoList,
     isPhotoExistByUid,
@@ -170,7 +168,6 @@ export default function CustomUpload() {
         title: info.file.name,
         currentStep: 1,
       });
-
     }
   };
   const handleRemove = (file) => {
@@ -189,7 +186,6 @@ export default function CustomUpload() {
         fileList={fileList}
         actions={actions}
         selectedPhoto={selectedPhoto}
-
         handleDoubleClick={handleDoubleClick}
         setSelectedPhoto={setSelectedPhoto}
       />
