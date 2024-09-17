@@ -6,8 +6,6 @@ const SinglePhotoUpload = ({
   handleDoubleClick,
   setSelectedPhoto,
 }) => {
-  console.log(file);
-
   return (
     <div
       className="hover:border-2 rounded-xl border-gray-300"
