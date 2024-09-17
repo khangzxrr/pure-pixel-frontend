@@ -9,7 +9,7 @@ import { SelectType } from "../../../fakejson/SelectType";
 import { SelectTag } from "../../../fakejson/SelectTag";
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
 
-export default function CombinedForm() {
+export default function UploadPhotoForm() {
   const { selectedPhoto, setCurrentStep, updateField } = useUploadPhotoStore();
 
   const {
