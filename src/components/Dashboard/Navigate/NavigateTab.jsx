@@ -3,12 +3,12 @@ import React from "react";
 export const NavigateTab = [
   {
     id: 1,
-    name: "Dành cho bạn",
+    name: "Chia sẻ",
     link: "/discover/for-you",
   },
   {
     id: 2,
-    name: "Đang theo dõi",
+    name: "Theo dõi",
     link: "/discover/following",
   },
 

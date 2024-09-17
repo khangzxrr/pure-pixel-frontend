@@ -48,12 +48,10 @@ export default function CustomerLayout() {
             {/* If you have UserNavMobi component */}
             {/* <UserNavMobi /> */}
           </div>
-
           <Outlet />
         </div>
       </>
     );
   }
-
   return <Navigate to="/login" />;
 }

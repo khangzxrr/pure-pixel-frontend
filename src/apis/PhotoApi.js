@@ -43,7 +43,7 @@ const updatePhotos = async (photos) => {
 const getPhotoById = async (id) => {
   const response = await http.get(`photo/${id}`);
 
-  return response;
+  return response.data;
 };
 
 const PhotoApi = {
