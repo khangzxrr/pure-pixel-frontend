@@ -19,13 +19,6 @@ export default function Photos() {
     queryKey: ["user-profile", userId],
     queryFn: () => UserProfileApi.getUserProfileById(userId),
   });
-  // console.log(userId, currentUser);
-  // useEffect(() => {
-  //   console.log(UserService.isLoggedIn(), UserService.getUserId());
-
-  //   UserService.isLoggedIn();
-  // }, []);
-  // console.log(UserService.isLoggedIn(), UserService.getUserId());
 
   const DailyDoseItem = [
     {
