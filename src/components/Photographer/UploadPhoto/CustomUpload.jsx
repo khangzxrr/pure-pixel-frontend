@@ -24,6 +24,10 @@ export default function CustomUpload() {
     addSingleImage,
     setSelectedPhoto,
     updatePhotoByUid,
+    removePhotoByUid,
+    photoList,
+    isPhotoExistByUid,
+    selectedPhoto,
     photoList,
     isPhotoExistByUid,
   } = useUploadPhotoStore();
@@ -149,13 +153,29 @@ export default function CustomUpload() {
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
   };
-  const handleChange = (info) => {
-    if (!isPhotoExistByUid(info.file.uid)) {
+
+  const handleChange = async (info) => {
+    console.log("Upload onChange:", info);
+    if (!isPhotoExistByUid(info.file.uid) && info.file.status !== "removed") {
       addSingleImage(info.file);
     } else if (info.file.status === "done") {
-      updatePhotoByUid(info.file.uid, info.file.response);
-      setSelectedPhoto({ ...info.file.response, currentStep: 1 });
+      console.log("Upload done:", info, photoList);
+      await updatePhotoByUid(info.file.uid, {
+        ...info.file.response,
+        title: info.file.name,
+      });
+      setSelectedPhoto({
+        ...info.file.response,
+        uid: info.file.uid,
+        title: info.file.name,
+        currentStep: 1,
+      });
+
     }
+  };
+  const handleRemove = (file) => {
+    console.log("onRemove", file);
+    useUploadPhotoStore.getState().removePhotoByUid(file.uid);
   };
   const handleDoubleClick = (file) => {
     handlePreview(file);
@@ -165,16 +185,18 @@ export default function CustomUpload() {
     return (
       <SinglePhotoUpload
         originNode={originNode}
-        file={file}
+        file={{ ...file, percent: 33 }}
         fileList={fileList}
         actions={actions}
+        selectedPhoto={selectedPhoto}
+
         handleDoubleClick={handleDoubleClick}
         setSelectedPhoto={setSelectedPhoto}
       />
     );
   };
   return (
-    <div>
+    <div className="h-full">
       <Upload
         name="avatar"
         listType="picture-card"
@@ -185,6 +207,7 @@ export default function CustomUpload() {
         onChange={handleChange}
         customRequest={customRequest}
         onPreview={handlePreview}
+        onRemove={handleRemove}
         itemRender={itemRender}
         fileList={photoList}
 
