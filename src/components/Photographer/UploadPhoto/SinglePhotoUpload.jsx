@@ -1,3 +1,4 @@
+
 import { message, Progress } from "antd";
 
 const SinglePhotoUpload = ({
@@ -7,6 +8,7 @@ const SinglePhotoUpload = ({
   setSelectedPhoto,
   selectedPhoto,
 }) => {
+
   const handleSelect = () => {
     if (file.status === "PARSED") {
       setSelectedPhoto(file);
@@ -14,6 +16,7 @@ const SinglePhotoUpload = ({
       message.loading("File is not ready yet.");
     }
   };
+
   return (
     <div
       className={` ${

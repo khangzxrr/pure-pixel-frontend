@@ -26,7 +26,7 @@ export default function Header() {
 
     return keycloak.authenticated ? (
       <>
-        <div className="text-lg font-bold hover:text-blue-600 transition-colors duration-200">
+        <div className="text-lg  hover:text-blue-600 transition-colors duration-200">
           <Dropdown
             overlay={
               <DropdownMenu
@@ -50,7 +50,7 @@ export default function Header() {
           </Dropdown>
         </div>
 
-        <div className=" font-bold hover:text-blue-600 outline outline-2 outline-offset-2 rounded-full px-3 py-1 transition-colors duration-200">
+        <div className="  hover:text-blue-600 outline outline-1 outline-offset-2 rounded-full px-3 py-1 transition-colors duration-200">
           <button onClick={() => handleAuthAction("upload-photo")}>
             Upload Photo
           </button>

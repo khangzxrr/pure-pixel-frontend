@@ -7,7 +7,7 @@ const Selling = () => {
       <p className="text-sm">
         Bạn có thể kiếm lợi nhuận bằng cách bán hình ảnh của mình cho người khác
       </p>
-      <button className="bg-blue-500 text-white rounded-md px-5 py-1 hover:opacity-80">
+      <button className="bg-blue-500 text-white rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200">
         Bán ảnh này
       </button>
     </div>
