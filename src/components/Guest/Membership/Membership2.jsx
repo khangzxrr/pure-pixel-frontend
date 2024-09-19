@@ -29,7 +29,7 @@ export default function Membership2() {
         <div className="flex flex-wrap  p-6 gap-6 justify-center items-center ">
           <img
             className="object-cover h-auto w-auto"
-            src="https://s3-alpha-sig.figma.com/img/4964/8d84/ac095bdd3fdac2853488211f352a03e0?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=pQOq31Dn2JHE7xVENUWCs2H3NCKXi4cFHl7uPOggaLKcfHAhCwXcIj-uzRGVAHO5YQPjF9vPI~Ih4dRazA9NsPibRxBNGxYKr8srIkvVmDJqA3JUKVGvjf~ZNuj-Q8SrhAyAvGAyB8S0pPVqcfullIpjhkqM4rMafOHd~IZCYQnLWt~Y0vR~kfK7v8cfaOHeXY-KqRBJeBM-9rnDsUISyLRvf~Nyd6bBwXuX9NvFLSmvj36BQIKDQLc55qzIYjPpUdbcq36k1B24s0Xru7QADBROJ6Y2CgtnbUCe3vEchEvhYxIATdYCSadTRnb0o1yqKwXEE3b03o2K8zoHk0GYcQ__"
+            src="https://firebasestorage.googleapis.com/v0/b/careconnect-2d494.appspot.com/o/fima%2Fimage%202.png?alt=media&token=4f58fd95-d1fd-4050-afab-c8dae771ee70"
           />
         </div>
       </div>

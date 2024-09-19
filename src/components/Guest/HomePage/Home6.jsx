@@ -9,7 +9,7 @@ export default function Home6() {
         <div className="flex flex-wrap  p-6 gap-6 justify-center items-center ">
           <img
             className="object-cover h-auto w-auto"
-            src="https://s3-alpha-sig.figma.com/img/4958/c1bb/9e94e4e7b46972c3fa25f504a0c44e8f?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=SkZFZBnsLDQOAYvfwVytYoVKRuUWrbvh5q85sa6PKtdMhFsFZDMIqFzjBPSZPa0QG5y9y-7i23cZm62vt5JirD0qDtVOwvgEWrXa4wY5Xr2C8kpBOMWu0YlRDQG59-ekB22-ngZTPpeumk1SkMThUfwYdPw-Asqh-HAxVowtiFqCmQT9AT4ZJ6omlR1KL-bAt7srzX5FW0yVdp~8hbsceo13xGs5m8ls~cMKE~~Y~aQP9CWhxwv7dJCaZ90EX3jQiSAXNa-S7UhWqBXHusxOgp3rAd42h8XsYicpYWFoMlfKU7qIVdiXrPKlEw7MJuLrkSlQBBu66Hz9ss1dMwvhlw__"
+            src="https://firebasestorage.googleapis.com/v0/b/careconnect-2d494.appspot.com/o/fima%2FRectangle%20722.png?alt=media&token=28ddc790-c781-402d-81a1-a153b4c361fb"
           />
         </div>
         <div className="pt-10 flex flex-col gap-5 p-6  justify-center">
