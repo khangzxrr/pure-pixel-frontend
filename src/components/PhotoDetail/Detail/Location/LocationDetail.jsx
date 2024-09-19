@@ -1,10 +1,17 @@
 import React from "react";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { IoCalendarOutline } from "react-icons/io5";
-import { FaRegHeart } from "react-icons/fa6";
-import { FaRegEye } from "react-icons/fa";
+import { FaRegHeart, FaRegComments } from "react-icons/fa6";
+import { BiCommentDetail } from "react-icons/bi";
 
-const LocationDetail = ({ location, dateTime, title, description }) => {
+const LocationDetail = ({
+  location,
+  dateTime,
+  title,
+  description,
+  vote,
+  comment,
+}) => {
   const date = new Date(dateTime);
   const day = date.getDate();
   const month = date.getMonth() + 1;
@@ -31,11 +38,11 @@ const LocationDetail = ({ location, dateTime, title, description }) => {
         </div>
         <div className="flex items-center">
           <FaRegHeart className="text-xl" />
-          <p className="ml-2">216 yêu thích</p>
+          <p className="ml-2">{vote} yêu thích</p>
         </div>
         <div className="flex items-center">
-          <FaRegEye className="text-xl" />
-          <p className="ml-2">3.9k lượt xem</p>
+          <FaRegComments className="text-xl" />
+          <p className="ml-2">{comment} bình luận</p>
         </div>
       </div>
     </div>

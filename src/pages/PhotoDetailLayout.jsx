@@ -41,6 +41,9 @@ const PhotoDetailLayout = () => {
   const categoryName = getPhotoById.data.category.name;
   const location = getPhotoById.data.location;
   const exifPhoto = getPhotoById.data.exif;
+  const quoteUser = getPhotoById.data.photographer.quote;
+  const votePhoto = getPhotoById.data._count.votes;
+  const commentPhoto = getPhotoById.data._count.comments;
   console.log(getPhotoById.data);
 
   return (
@@ -53,12 +56,18 @@ const PhotoDetailLayout = () => {
       </div>
       <div className="col-span-3 bg-gray-100 p-5">
         <div className="flex flex-col gap-5">
-          <Information name={photographerName} avatar={photographerAvatar} />
+          <Information
+            name={photographerName}
+            avatar={photographerAvatar}
+            quote={quoteUser}
+          />
           <LocationDetail
             location={location}
             title={titleT}
             dateTime={dateTime}
             description={description}
+            vote={votePhoto}
+            comment={commentPhoto}
           />
           <CameraSpecification exif={exifPhoto} />
           <Category category={categoryName} tag={photoTag} />
