@@ -90,41 +90,41 @@ const ForYou = () => {
         endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
       >
         <div className="px-6">
-          <Masonry
+          {/* <Masonry
             breakpointCols={breakpointColumnsObj}
             className="my-masonry-grid"
             columnClassName="my-masonry-grid_column"
-          >
-            {photoList.map((photo) => (
-              <div
-                key={photo.id}
-                className="relative overflow-hidden rounded-xl hover:cursor-pointer group"
-                onClick={() => handleOnClick(photo.id)}
-              >
-                {/* Image */}
-                <img
-                  src={photo.signedUrl.thumbnail}
-                  alt={`Photo ${photo.id}`}
-                  className="rounded-xl w-full h-auto object-cover transition-transform duration-300 ease-in-out transform group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-[30px] h-[30px] overflow-hidden rounded-full">
-                        <img
-                          src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>{photo.title || "Tên tác giả"}</div>
+          > */}
+          {photoList.map((photo) => (
+            <div
+              key={photo.id}
+              className="relative overflow-hidden rounded-xl hover:cursor-pointer group"
+              onClick={() => handleOnClick(photo.id)}
+            >
+              {/* Image */}
+              <img
+                src={photo.signedUrl.thumbnail}
+                alt={`Photo ${photo.id}`}
+                className="rounded-xl w-full h-auto object-cover transition-transform duration-300 ease-in-out transform group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-[30px] h-[30px] overflow-hidden rounded-full">
+                      <img
+                        src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                    <div>{photo.title || "Tiêu đề"}</div>
+                    <div>{photo.title || "Tên tác giả"}</div>
                   </div>
+                  <div>{photo.title || "Tiêu đề"}</div>
                 </div>
               </div>
-            ))}
-          </Masonry>
+            </div>
+          ))}
+          {/* </Masonry> */}
         </div>
       </InfiniteScroll>
     </div>
