@@ -1,5 +1,4 @@
 import React from "react";
-import ComButton from "../../ComButton/ComButton";
 import ComText from "../../ComText/ComText";
 
 export default function Home4() {

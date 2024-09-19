@@ -32,6 +32,7 @@ import Photos from "../components/UserProfile/Photos";
 import Galleries from "../components/UserProfile/Galleries";
 import Completed from "../components/UserProfile/Completed";
 import Packages from "../components/UserProfile/Packages";
+import Upgrade from "../pages/Manager/UpgradeAccount/Upgrade";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/",
             element: <HomePage />,
+          },
+          {
+            path: "/admin/upgrade",
+            element: <Upgrade />,
           },
           {
             path: "/membership",
