@@ -86,7 +86,7 @@ export const AppRouter = createBrowserRouter([
       },
 
       {
-        path: "/for-you/:id",
+        path: "/photo/:id",
         element: <PhotoDetailLayout />,
       },
       {
