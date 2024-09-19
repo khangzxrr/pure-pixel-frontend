@@ -12,7 +12,7 @@ export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const userData = UserService.getTokenParsed();
-  console.log(keycloak, userData, "keycloak");
+  // console.log(keycloak, userData, "keycloak");
 
   const handleAuthAction = (action) => {
     if (action === "login") keycloak.login();
@@ -45,7 +45,7 @@ export default function Header() {
                   alt=""
                 />
               </div>
-              <div>{userData.name}</div>
+              <div className="hidden lg:block">{userData.name}</div>
             </div>
           </Dropdown>
         </div>
