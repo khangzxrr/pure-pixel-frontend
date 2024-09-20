@@ -1,21 +1,30 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { FaArrowUp } from "react-icons/fa6";
 import PhotographerApi from "../../../apis/PhotographerApi";
+import { useNavigate } from "react-router-dom";
 
 const MyPhotoAll = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data, isFetching, isError, error } = useQuery({
     queryKey: ["my-photo"],
     //0 is skip, 100 is take
     queryFn: () => PhotographerApi.getMyPhotos(0, 20),
   });
+
+  const handleOnClick = (id) => {
+    //clear cache before navigate to photo detail
+    queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
+    navigate(`/photo/${id}`);
+  };
   return (
     <div className="flex flex-col">
-      <div className="p-10">
+      {/* <div className="p-10">
         <button className="bg-white  outline outline-1 outline-gray-300 rounded-sm px-5 py-1 hover:bg-blue-100">
           Chọn
         </button>
-      </div>
+      </div> */}
       <div className="flex flex-wrap pl-10 pt-5 gap-5 ">
         <div className="flex flex-col gap-3 justify-center items-center w-[360px] h-[420px] transition-shadow duration-200 bg-white hover:shadow-xl hover:cursor-pointer">
           <div>
@@ -32,7 +41,10 @@ const MyPhotoAll = () => {
         {isFetching
           ? "loading.."
           : data?.map((item) => (
-              <div className="flex flex-col gap-3 w-[360px] h-[420px] transition-shadow duration-200 bg-white hover:shadow-xl hover:cursor-pointer">
+              <div
+                className="flex flex-col gap-3 w-[360px] h-[420px] transition-shadow duration-200 bg-white hover:shadow-xl hover:cursor-pointer"
+                onClick={() => handleOnClick(item.id)}
+              >
                 <div className="w-full h-[360px] overflow-hidden">
                   <img
                     key={item.id}

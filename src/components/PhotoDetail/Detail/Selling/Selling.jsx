@@ -3,7 +3,7 @@ import React from "react";
 const Selling = () => {
   return (
     <div className="flex flex-col bg-white p-5 gap-3 shadow-lg rounded-lg">
-      <p>Buôn bán</p>
+      <p className="font-bold">Bán ảnh</p>
       <p className="text-sm">
         Bạn có thể kiếm lợi nhuận bằng cách bán hình ảnh của mình cho người khác
       </p>

@@ -12,8 +12,8 @@ import Masonry from "react-masonry-css";
 const ForYou = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const limit = 90; // Tổng số ảnh
-  const take = 10; // Số lượng ảnh load mỗi lần
+  const limit = 99; // Tổng số ảnh
+  const take = 20; // Số lượng ảnh load mỗi lần
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const response = await PhotoApi.getPublicPhotos(pageParam, take);
@@ -56,7 +56,7 @@ const ForYou = () => {
   const handleOnClick = (id) => {
     //clear cache before navigate to photo detail
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    navigate(`/for-you/${id}`);
+    navigate(`/photo/${id}`);
   };
 
   return (
@@ -110,14 +110,16 @@ const ForYou = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                   <div className="flex items-center justify-between w-full">
                     <div className="flex items-center justify-center gap-2">
-                      <div className="w-[30px] h-[30px] overflow-hidden rounded-full">
+                      <div className="w-[30px] h-[30px] overflow-hidden rounded-full outline outline-2 outline-white">
                         <img
-                          src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+                          src={photo.photographer.avatar}
                           alt=""
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div>{photo.title || "Tên tác giả"}</div>
+                      <div className="font-bold">
+                        {photo.photographer.name || "Tên tác giả"}
+                      </div>
                     </div>
                     <div>{photo.title || "Tiêu đề"}</div>
                   </div>
