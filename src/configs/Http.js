@@ -20,17 +20,14 @@ export const testHttp = axios.create({
     "Content-Type": "application/json",
   },
 });
-// Add interceptor for request
-http.interceptors.request.use(
-  (config) => {
-    if (UserService.isLoggedIn()) {
-      const successCallback = () => {
-        config.headers.Authorization = `Bearer ${UserService.getToken()}`;
 
-        return Promise.resolve(config);
-      };
-      return UserService.updateToken(successCallback);
+http.interceptors.request.use(
+  async (config) => {
+    if (UserService.isLoggedIn()) {
+      await UserService.updateToken();
+      config.headers.Authorization = `Bearer ${UserService.getToken()}`;
     }
+    return config;
   },
   (error) => {
     console.log("error: ", error);

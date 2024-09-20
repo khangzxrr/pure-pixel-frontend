@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { NavigateTab } from "./NavigateTab";
+import UserService from "../../../services/Keycloak";
 
 const NavigateBar = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(null);
+
+  const userData = UserService.getTokenParsed();
 
   useEffect(() => {
     const currentTab = NavigateTab.find(
@@ -17,7 +20,7 @@ const NavigateBar = () => {
 
   return (
     <div className="flex justify-center items-center gap-3 h-12">
-      {NavigateTab.map((tab) => (
+      {NavigateTab.filter((tab) => !(tab.id === 2 && !userData)).map((tab) => (
         <div
           key={tab.id}
           className={`text-lg mx-6 max-w-32 text-center cursor-pointer hover:text-black transition-colors duration-300

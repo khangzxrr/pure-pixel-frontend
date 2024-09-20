@@ -32,6 +32,7 @@ import Photos from "../components/UserProfile/Photos";
 import Galleries from "../components/UserProfile/Galleries";
 import Completed from "../components/UserProfile/Completed";
 import Packages from "../components/UserProfile/Packages";
+import ProtectedRoute from "../authorize/ProtectedRoute";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -50,18 +51,18 @@ export const AppRouter = createBrowserRouter([
             path: "/membership",
             element: <MembershipPage />,
           },
-          {
-            path: "/following",
-            element: <Following />,
-          },
-          {
-            path: "/for-you",
-            element: <ForYou />,
-          },
-          {
-            path: "/explore",
-            element: <Explore />,
-          },
+          // {
+          //   path: "/following",
+          //   element: <Following />,
+          // },
+          // {
+          //   path: "/for-you",
+          //   element: <ForYou />,
+          // },
+          // {
+          //   path: "/explore",
+          //   element: <Explore />,
+          // },
         ],
       },
       {
@@ -89,10 +90,10 @@ export const AppRouter = createBrowserRouter([
         path: "/photo/:id",
         element: <PhotoDetailLayout />,
       },
-      {
-        path: "/award",
-        element: <Award />,
-      },
+      // {
+      //   path: "/award",
+      //   element: <Award />,
+      // },
       {
         path: "/blog",
         element: <Blog />,
@@ -109,24 +110,24 @@ export const AppRouter = createBrowserRouter([
             path: "/discover/for-you",
             element: <ForYou />,
           },
-          {
-            path: "/discover/explore",
-            element: <Explore />,
-          },
+          // {
+          //   path: "/discover/explore",
+          //   element: <Explore />,
+          // },
         ],
       },
-      {
-        path: "/licensing",
-        element: <Licensing />,
-      },
+      // {
+      //   path: "/licensing",
+      //   element: <Licensing />,
+      // },
       {
         path: "/membership",
         element: <MembershipPage />,
       },
-      {
-        path: "/quest",
-        element: <Quest />,
-      },
+      // {
+      //   path: "/quest",
+      //   element: <Quest />,
+      // },
       {
         path: "/upload-photo",
         element: <UploadPhoto />,

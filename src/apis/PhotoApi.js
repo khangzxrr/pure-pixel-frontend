@@ -1,10 +1,10 @@
 import axios from "axios";
-import http from "../configs/Http";
+import http from "./../configs/Http";
 
 const getPublicPhotos = async (skip, take) => {
-  const response = await http.get(`/photo/public?skip=${skip}&take=${take}`, {
-    crossdomain: true,
-  });
+  //go 1 chu no nhay chung 1000 cai suggest
+  //AI SUCKK
+  const response = await http.get(`/photo/public?skip=${skip}&take=${take}`);
 
   return response.data;
 };

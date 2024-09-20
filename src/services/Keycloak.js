@@ -19,11 +19,16 @@ const getUserId = () => keycloakService.tokenParsed.sub;
 
 const isLoggedIn = () => !!keycloakService.token;
 
-const updateToken = (successCallback) =>
-  keycloakService.updateToken(5).then(successCallback).catch(doLogin);
+const updateToken = async () => {
+  try {
+    return await keycloakService.updateToken(5);
+  } catch (e) {
+    doLogin();
+  }
+};
 
 const hasRole = (roles) =>
-  roles?.some((role) => keycloakService.hasRealmRole(role));
+  roles?.some((role) => keycloakService.hasResourceRole(role));
 
 const getUserRoles = () => {
   if (
