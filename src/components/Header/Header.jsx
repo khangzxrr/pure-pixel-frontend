@@ -60,13 +60,13 @@ export default function Header() {
       <>
         <button
           onClick={() => handleAuthAction("login")}
-          className="text-lg font-bold hover:text-blue-600 transition-colors duration-200"
+          className="text-lg  hover:text-blue-600 transition-colors duration-200"
         >
           Đăng nhập
         </button>
         <button
           onClick={() => handleAuthAction("login")}
-          className="text-lg font-bold hover:text-blue-600 ml-5 px-3 py-0.25 outline outline-2 outline-offset-2 rounded-full transition-colors duration-200"
+          className="text-lg  hover:text-blue-600 ml-5 px-3 py-0.25 outline outline-1 outline-offset-2 rounded-full transition-colors duration-200"
         >
           Đăng ký
         </button>
