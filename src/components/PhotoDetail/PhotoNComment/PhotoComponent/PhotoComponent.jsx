@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import PhotoApi from "./../../../../apis/PhotoApi";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { useQuery } from "@tanstack/react-query";
+import UserService from "./../../../../services/Keycloak";
+import { useKeycloak } from "@react-keycloak/web";
 
 const PhotoComponent = ({ id }) => {
   const [photo, setPhoto] = useState(null);
