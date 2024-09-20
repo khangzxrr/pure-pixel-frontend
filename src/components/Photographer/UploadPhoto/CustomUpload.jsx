@@ -168,6 +168,13 @@ export default function CustomUpload() {
         title: info.file.name,
         currentStep: 1,
       });
+    } else if (info.file.status === "uploading") {
+      if (!info.file.url && !info.file.preview) {
+        info.file.preview = await getBase64(info.file.originFileObj);
+      }
+      updatePhotoByUid(info.file.uid, {
+        upload_url: info.file.url || info.file.preview,
+      });
     }
   };
   const handleRemove = (file) => {
@@ -188,6 +195,7 @@ export default function CustomUpload() {
         selectedPhoto={selectedPhoto}
         handleDoubleClick={handleDoubleClick}
         setSelectedPhoto={setSelectedPhoto}
+        handlePreview={handlePreview}
       />
     );
   };
@@ -211,20 +219,6 @@ export default function CustomUpload() {
       >
         {uploadButton}
       </Upload>
-      {/* <Upload
-        customRequest={customRequest}
-        // action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-        listType="picture-card"
-        fileList={fileList}
-        maxCount={10}
-        multiple={true}
-        beforeUpload={beforeUpload}
-        onPreview={handlePreview}
-        onChange={handleChange}
-        itemRender={itemRender}
-      >
-        {uploadButton}
-      </Upload> */}
       {previewImage && (
         <Image
           wrapperStyle={{

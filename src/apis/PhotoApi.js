@@ -46,6 +46,28 @@ const getPhotoById = async (id) => {
   return response.data;
 };
 
+const getPhotoComments = async (id) => {
+  const response = await http.get(`photo/${id}/comment`);
+  return response.data;
+};
+
+const commentPhoto = async (id, content, onProgress) => {
+  const response = await http.post(`photo/${id}/comment`, content, {
+    onUploadProgress: (progressEvent) => {
+      console.log("progressEvent", progressEvent);
+
+      if (onProgress) {
+        // const percentCompleted = Math.round(
+        //   (progressEvent.loaded * 100) / progressEvent.total
+        // );
+        onProgress(true);
+      }
+    },
+  });
+
+  return response.data;
+};
+
 const PhotoApi = {
   getPublicPhotos,
   getPresignedUploadUrls,
@@ -53,6 +75,8 @@ const PhotoApi = {
   processPhotos,
   updatePhotos,
   getPhotoById,
+  getPhotoComments,
+  commentPhoto,
 };
 
 export default PhotoApi;

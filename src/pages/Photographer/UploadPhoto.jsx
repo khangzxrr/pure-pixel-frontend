@@ -21,16 +21,6 @@ export default function UploadPhoto() {
         <div className="w-full flex overflow-hidden pt-9 px-6">
           <div className={imageListContainerClasses}>
             <CustomUpload />
-            {/* {photoList.map((image) => (
-              <PhotoCard
-                key={image.id}
-                image={image}
-                deleteImageById={deleteImageById}
-                setSelectedPhoto={setSelectedPhoto}
-                length={photoList.length}
-                selectedPhoto={selectedPhoto}
-              />
-            ))} */}
           </div>
           <div className="w-1/2 px-3">
             <UploadPhotoInfoBar />
