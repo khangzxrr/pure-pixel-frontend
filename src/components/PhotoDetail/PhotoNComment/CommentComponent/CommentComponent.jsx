@@ -64,7 +64,7 @@ const CommentComponent = () => {
 
       {/* Nút đăng nhập nếu người dùng chưa đăng nhập */}
       {!userData && (
-        <div className="absolute top-[-140px] left-50 w-full h-full flex justify-center items-center z-10">
+        <div className="absolute top-[-50px] left-50 w-full h-full flex justify-center items-center z-10">
           <button
             onClick={handleLogin}
             className="px-4 py-2 outline outline-1 outline-[#3b82f6] text-[#3b82f6] rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-200 z-20"
