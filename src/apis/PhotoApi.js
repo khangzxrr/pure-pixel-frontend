@@ -40,6 +40,12 @@ const updatePhotos = async (photos) => {
   return response;
 };
 
+const deletePhoto = async (id) => {
+  const response = await http.delete(`photo/${id}`);
+
+  return response;
+};
+
 const getPhotoById = async (id) => {
   const response = await http.get(`photo/${id}`);
 
@@ -74,6 +80,7 @@ const PhotoApi = {
   uploadPhotoUsingPresignedUrl,
   processPhotos,
   updatePhotos,
+  deletePhoto,
   getPhotoById,
   getPhotoComments,
   commentPhoto,

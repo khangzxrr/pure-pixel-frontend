@@ -1,5 +1,5 @@
 import { Input, Select, Checkbox } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
@@ -8,10 +8,25 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectType } from "../../../fakejson/SelectType";
 import { SelectTag } from "../../../fakejson/SelectTag";
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
+import { useMutation } from "@tanstack/react-query";
+import { CategoryApi } from "../../../apis/CategoryApi";
 
 export default function UploadPhotoForm() {
   const { selectedPhoto, setCurrentStep, updateField } = useUploadPhotoStore();
+  const [categories, setCategories] = useState([]);
+  const getAllCategories = useMutation({
+    mutationFn: () => CategoryApi.getAllCategories(),
+    onSuccess: (data) => {
+      console.log("data", data);
 
+      setCategories(
+        data.map((category) => ({ label: category.name, value: category.id }))
+      );
+    },
+    onError: (error) => {
+      console.error("Error posting comment:", error);
+    },
+  });
   const {
     control,
     handleSubmit,
@@ -33,6 +48,7 @@ export default function UploadPhotoForm() {
 
   useEffect(() => {
     reset(selectedPhoto);
+    getAllCategories.mutate();
   }, [selectedPhoto, reset]);
 
   return (
@@ -125,7 +141,7 @@ export default function UploadPhotoForm() {
                 handleTagChange(value); // Call your custom handler
                 updateField(selectedPhoto.id, "photoTags", value);
               }}
-              options={SelectTag}
+              options={categories}
             />
           )}
         />
@@ -183,27 +199,6 @@ export default function UploadPhotoForm() {
         )}
 
         <Controller
-          name="watermark"
-          control={control}
-          render={({ field }) => (
-            <Checkbox
-              {...field}
-              className="m-2"
-              checked={field.value}
-              onChange={(e) => {
-                field.onChange(e.target.checked);
-                updateField(selectedPhoto.id, "watermark", e.target.checked);
-              }}
-              disabled={selectedPhoto.currentStep === 3}
-            >
-              Add Watermark
-            </Checkbox>
-          )}
-        />
-        {errors.watermark && (
-          <p className="text-red-500 text-sm p-1">{errors.watermark.message}</p>
-        )}
-        <Controller
           name="showExif"
           control={control}
           render={({ field }) => (
@@ -224,8 +219,6 @@ export default function UploadPhotoForm() {
         {errors.showExif && (
           <p className="text-red-500 text-sm p-1">{errors.showExif.message}</p>
         )}
-
-        {JSON.stringify(errors)}
 
         <button
           type="submit"

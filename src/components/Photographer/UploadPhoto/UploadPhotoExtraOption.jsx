@@ -1,4 +1,4 @@
-import { Input, message } from "antd";
+import { Checkbox, Input, message, Tooltip } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
@@ -17,9 +17,7 @@ export default function UploadPhotoExtraOption() {
     setCurrentStep,
     updateField,
     isUpdating,
-    setIsUpdating,
-    photoList,
-    clearState,
+    setIsOpenDraftModal,
   } = useUploadPhotoStore();
 
   const {
@@ -31,24 +29,10 @@ export default function UploadPhotoExtraOption() {
     resolver: yupResolver(uploadPhotoExtraOptionInputSchema),
     defaultValues: getDefaultPhoto(selectedPhoto),
   });
-
-  const navigate = useNavigate();
-
-  const updatePhotos = useMutation({
-    mutationKey: "update-photo",
-    mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
-  });
+  console.log("UploadPhotoExtraOption", selectedPhoto);
 
   const onSubmit = async (data) => {
-    setIsUpdating(true);
-
-    await updatePhotos.mutateAsync(photoList);
-
-    clearState();
-
-    message.success("saved all uploaded photos!");
-
-    navigate("/my-photo/photo/all");
+    setIsOpenDraftModal(true);
   };
 
   useEffect(() => {
@@ -56,10 +40,11 @@ export default function UploadPhotoExtraOption() {
   }, [selectedPhoto, reset]);
 
   return (
-    <div className="px-6">
+    <div className="px-6 ">
       <form onSubmit={handleSubmit(onSubmit)}>
         {PhotoDataFields.map((field) => (
           <div key={field.name}>
+            <p>{field.placeholder}</p>
             <Controller
               name={field.name}
               control={control}
@@ -85,6 +70,78 @@ export default function UploadPhotoExtraOption() {
             )}
           </div>
         ))}
+        <div className="flex flex-row w-full mt-1">
+          <Controller
+            name="isWatermark"
+            control={control}
+            render={({ field: controllerField }) => (
+              <Tooltip
+                placement="left"
+                color="geekblue"
+                title={selectedPhoto.isWatermark ? "Gỡ nhãn" : "Gắn nhãn"}
+              >
+                <Checkbox
+                  {...controllerField}
+                  className="m-2"
+                  checked={selectedPhoto.isWatermark}
+                  onChange={(e) => {
+                    controllerField.onChange(e.target.checked);
+                    console.log(
+                      "isWatermark",
+                      e.target.checked,
+                      controllerField.value,
+                      selectedPhoto.id
+                    );
+                    updateField(
+                      selectedPhoto.id,
+                      "isWatermark",
+                      e.target.checked
+                    );
+                  }}
+                  disabled={selectedPhoto.currentStep === 3}
+                >
+                  <p>Thêm Nhãn</p>
+                </Checkbox>
+              </Tooltip>
+            )}
+          />
+          {errors.isWatermark && (
+            <p className="text-red-500 text-sm p-1">
+              {errors.isWatermark.message}
+            </p>
+          )}
+          {selectedPhoto.isWatermark && (
+            <div key="watermark">
+              <Controller
+                name="watermark"
+                control={control}
+                render={({ field: controllerField }) => (
+                  <Input
+                    {...controllerField}
+                    className={`w-full px-2 border-[1px] ${
+                      errors.watermark ? "border-red-500" : "border-[#e0e0e0]"
+                    } focus:outline-none focus:border-[#e0e0e0]`}
+                    type="text"
+                    placeholder="Nhập nhãn cho ảnh"
+                    onChange={(e) => {
+                      controllerField.onChange(e);
+                      updateField(
+                        selectedPhoto.id,
+                        "watermark",
+                        e.target.value
+                      );
+                    }}
+                  />
+                )}
+              />
+              {errors.watermark && (
+                <p className="text-red-500 text-sm p-1">
+                  {errors.watermark.message}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
 
         {selectedPhoto.currentStep !== 3 && (
           <button
@@ -101,7 +158,7 @@ export default function UploadPhotoExtraOption() {
           type="submit"
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
-          {isUpdating ? <LoadingOutlined /> : "Save"}
+          {isUpdating ? <LoadingOutlined /> : "Next"}
         </button>
       </form>
     </div>

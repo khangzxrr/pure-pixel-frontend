@@ -7,6 +7,7 @@ const useUploadPhotoStore = create((set) => ({
   selectedPhoto: initialPhotoList[0] || {}, // Initialize with the first photo if it exists
   photoExtraOption: {},
   isUpdatingPhotos: false,
+  isOpenDraftModal: false,
 
   // Clear all state (reset photoList and selectedPhoto)
   clearState: () => {
@@ -21,19 +22,18 @@ const useUploadPhotoStore = create((set) => ({
     set({ isUpdatingPhotos: isUpdating });
   },
 
-
-  setIsUpdating: (isUpdating) => {
-    set({ isUpdatingPhotos: isUpdating });
+  setIsOpenDraftModal: (status) => {
+    set({ isOpenDraftModal: status });
   },
-  
-    // Add a single photo to the photoList with currentStep default set to 1
+
+  // Add a single photo to the photoList with currentStep default set to 1
   addSingleImage: (photo) =>
     set((state) => ({
       photoList: [
         ...(Array.isArray(state.photoList) ? state.photoList : []),
         {
           ...photo,
-
+          isWatermark: true, // Default isWatermark to true
           currentStep: 1, // Assign currentStep to the new image
         },
       ],
@@ -147,6 +147,21 @@ const useUploadPhotoStore = create((set) => ({
 
         return { photoList, selectedPhoto };
       }
+    }),
+  // Toggle isWatermark field for all photos
+  toggleWatermark: (status) =>
+    set((state) => {
+      const photoList = state.photoList.map((photo) => ({
+        ...photo,
+        isWatermark: status,
+      }));
+
+      const selectedPhoto = {
+        ...state.selectedPhoto,
+        isWatermark: status,
+      };
+
+      return { photoList, selectedPhoto };
     }),
 }));
 

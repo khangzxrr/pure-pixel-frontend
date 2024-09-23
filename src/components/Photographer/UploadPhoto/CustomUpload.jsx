@@ -1,6 +1,6 @@
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Image, message, Upload } from "antd";
+import { Image, message, Upload, Progress } from "antd";
 import { useEffect, useRef, useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
@@ -33,7 +33,8 @@ export default function CustomUpload() {
   //use keycloak to trigger refresh component when new token comes
   const { keycloak } = useKeycloak();
 
-  const userToken = UserService.getToken();
+  const userToken = UserService ? UserService.getTokenParsed() : "";
+  console.log("userToken", userToken);
 
   //using ref to NOT cause re-render when socketRef is change
   const socketRef = useRef();
@@ -58,6 +59,9 @@ export default function CustomUpload() {
   const uploadPhoto = useMutation({
     mutationFn: ({ url, file, options }) =>
       PhotoApi.uploadPhotoUsingPresignedUrl(url, file, options),
+  });
+  const deletePhoto = useMutation({
+    mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
   });
 
   const getPresignedUploadUrls = useMutation({
@@ -144,6 +148,7 @@ export default function CustomUpload() {
       onError(e);
     }
   };
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -155,17 +160,27 @@ export default function CustomUpload() {
   const handleChange = async (info) => {
     console.log("Upload onChange:", info);
     if (!isPhotoExistByUid(info.file.uid) && info.file.status !== "removed") {
-      addSingleImage(info.file);
+      addSingleImage({
+        ...info.file,
+        title: info.file.name.replace(/\.(png|jpg)$/i, ""),
+      });
     } else if (info.file.status === "done") {
       console.log("Upload done:", info, photoList);
       await updatePhotoByUid(info.file.uid, {
         ...info.file.response,
-        title: info.file.name,
+        title: info.file.name.replace(/\.(png|jpg)$/i, ""), // Remove file extension
+        watermark: userToken
+          ? userToken.preferred_username.split("@")[0]
+          : "Pure Pixel",
       });
       setSelectedPhoto({
         ...info.file.response,
         uid: info.file.uid,
-        title: info.file.name,
+        title: info.file.name.replace(/\.(png|jpg)$/i, ""), // Remove file extension
+        watermark: userToken
+          ? userToken.preferred_username.split("@")[0]
+          : "Pure Pixel",
+        isWatermark: true,
         currentStep: 1,
       });
     } else if (info.file.status === "uploading") {
@@ -174,13 +189,31 @@ export default function CustomUpload() {
       }
       updatePhotoByUid(info.file.uid, {
         upload_url: info.file.url || info.file.preview,
+        percent: info.file.percent,
       });
+    } else if (info.file.status === "PARSED") {
+      console.log("PARSED", info.file);
     }
   };
+
   const handleRemove = (file) => {
     console.log("onRemove", file);
-    useUploadPhotoStore.getState().removePhotoByUid(file.uid);
+    deletePhoto.mutateAsync(
+      { id: file.id },
+      {
+        onSuccess: () => {
+          message.success("Xóa ảnh thành công");
+          removePhotoByUid(file.uid);
+          // Additional logic to handle the successful deletion of the photo
+        },
+        onError: (error) => {
+          message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
+          // Additional logic to handle the error
+        },
+      }
+    );
   };
+
   const handleDoubleClick = (file) => {
     handlePreview(file);
   };
@@ -189,7 +222,8 @@ export default function CustomUpload() {
     return (
       <SinglePhotoUpload
         originNode={originNode}
-        file={{ ...file, percent: 33 }}
+        file={{ ...file }}
+        event={file.event}
         fileList={fileList}
         actions={actions}
         selectedPhoto={selectedPhoto}
@@ -199,6 +233,7 @@ export default function CustomUpload() {
       />
     );
   };
+
   return (
     <div className="h-full">
       <Upload
@@ -214,7 +249,6 @@ export default function CustomUpload() {
         onRemove={handleRemove}
         itemRender={itemRender}
         fileList={photoList}
-
         // action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
       >
         {uploadButton}
