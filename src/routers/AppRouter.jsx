@@ -36,6 +36,8 @@ import InspirationPhoto from "../components/Inspiration/InspirationPhoto/Inspira
 import HotPhoto from "../components/Hot/HotPhoto";
 import DashboardLayoutF from "../layouts/DashboardLayoutF";
 import Explore from "./../components/Explore/Explore";
+import Upload from "../components/Upload/Upload";
+import PublicUpload from "../components/Upload/PublicUpload";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -222,6 +224,16 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/test/explorer/hot",
             element: <HotPhoto />,
+          },
+        ],
+      },
+      {
+        path: "/test/upload",
+        element: <Upload />,
+        children: [
+          {
+            path: "/test/upload/public",
+            element: <PublicUpload />,
           },
         ],
       },

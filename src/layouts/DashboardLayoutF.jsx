@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import ServerSide from "../components/Inspiration/ServerSide/ServerSide";
 import UseInspirationStore from "../states/UseInspirationStore";
+import UseUploadStore from "../states/UseUploadStore";
 // Import Zustand store
 
 const DashboardLayoutF = () => {

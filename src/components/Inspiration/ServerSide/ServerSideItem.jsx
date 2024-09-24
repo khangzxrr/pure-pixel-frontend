@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import UseExplorerStore from "../../../states/UseExplorerStore";
 
-const ServerSideItem = ({ id, link, icon }) => {
+const ServerSideItem = ({ id, link, icon, show }) => {
   const { activeItem, setActiveItem } = UseExplorerStore();
 
   const handleClick = () => {

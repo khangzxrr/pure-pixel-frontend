@@ -5,7 +5,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
-
+import { FaRegHeart } from "react-icons/fa6";
+import { FiShare2 } from "react-icons/fi";
 const InspirationPhoto = () => {
   const navigate = useNavigate();
   const limit = 99; // Tổng số ảnh
@@ -98,7 +99,16 @@ const InspirationPhoto = () => {
                         </div>
                         <div>{photo.photographer.name || "Tên tác giả"}</div>
                       </div>
-                      <div>{photo.title || "Không tên"}</div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <FaRegHeart className="size-7" />
+                          {photo._count?.votes || 0}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <FiShare2 className="size-7" />
+                          {0}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

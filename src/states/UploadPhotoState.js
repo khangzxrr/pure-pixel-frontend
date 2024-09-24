@@ -21,12 +21,11 @@ const useUploadPhotoStore = create((set) => ({
     set({ isUpdatingPhotos: isUpdating });
   },
 
-
   setIsUpdating: (isUpdating) => {
     set({ isUpdatingPhotos: isUpdating });
   },
-  
-    // Add a single photo to the photoList with currentStep default set to 1
+
+  // Add a single photo to the photoList with currentStep default set to 1
   addSingleImage: (photo) =>
     set((state) => ({
       photoList: [
