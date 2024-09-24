@@ -56,7 +56,7 @@ export default function Package() {
     }
   };
   return (
-    <div className="bg-black">
+    <div className="bg-black py-20">
       <p className="text-center font-inter text-[25px] md:text-[30px] lg:text-[34px] xl:text-[34px]  font-extrabold leading-[66.56px]  text-shadow  text-white">
         Take Advantage of This Exclusive Offer - 50% OFF
       </p>
@@ -69,21 +69,21 @@ export default function Package() {
         {dataUpgrade.map((e, i) => (
           <div
             key={i}
-            className="w-[340px]  flex flex-col justify-between gap-6"
+            className="w-[340px]  flex flex-col justify-between gap-6 "
           >
-            <div className="bg-white rounded-[20px] h-full">
-              <div className="flex justify-between px-8  py-4 ">
+            <div className="bg-white rounded-[20px] h-full p-4">
+              <div className="flex justify-between px-4  py-4 ">
                 <p className="font-inter text-[16px] md:text-[16px]  font-extrabold">
                   {e.name}
                   <p className="text-red-600">{e.minOrderMonth} tháng</p>
                 </p>
                 <div>
                   <p className="font-inter text-[#6bce8e] text-[16px] md:text-[16px] ] font-extrabold bg-[#cdf8d3] p-1 rounded-[10px]">
-                    <ComPriceConverter>{e.price}</ComPriceConverter>
+                    <ComPriceConverter>{e.price}</ComPriceConverter>/tháng
                   </p>
                 </div>
               </div>
-              <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px]">
+              <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px] ">
                 {e.text} Nhiếp ảnh gia đam mê muốn nâng cao kỹ năng và khả năng
                 tiếp xúc với hình ảnh của mình
               </div>

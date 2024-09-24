@@ -12,13 +12,13 @@ export default function MembershipPage() {
   return (
     <>
       <Membership1 />
+      <Package />
       <Membership2 />
       <Membership3 />
       <Membership4 />
       <Membership5 />
       <Membership6 />
       <Membership7 />
-      <Package />
     </>
   );
 }
