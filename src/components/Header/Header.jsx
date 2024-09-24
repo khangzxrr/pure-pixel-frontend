@@ -12,7 +12,6 @@ export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const userData = UserService.getTokenParsed();
-  // console.log(keycloak, userData, "keycloak");
 
   const handleAuthAction = (action) => {
     if (action === "login") keycloak.login();

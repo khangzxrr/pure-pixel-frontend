@@ -20,9 +20,12 @@ const useUploadPhotoStore = create((set) => ({
     set({ isUpdatingPhotos: isUpdating });
   },
 
+  // Add a single photo to the photoList with currentStep default set to 1
+
   setIsOpenDraftModal: (status) => {
     set({ isOpenDraftModal: status });
   },
+
 
   addSingleImage: (photo) =>
     set((state) => ({
