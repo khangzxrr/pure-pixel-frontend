@@ -40,7 +40,7 @@ export default function UploadPhotoExtraOption() {
   }, [selectedPhoto, reset]);
 
   return (
-    <div className="px-6 ">
+    <div className="px-6 text-white">
       <form onSubmit={handleSubmit(onSubmit)}>
         {PhotoDataFields.map((field) => (
           <div key={field.name}>
@@ -57,8 +57,15 @@ export default function UploadPhotoExtraOption() {
                   type={field.type}
                   placeholder={field.placeholder}
                   onChange={(e) => {
-                    controllerField.onChange(e);
-                    updateField(selectedPhoto.id, field.name, e.target.value);
+                    let value = e.target.value;
+                    if (
+                      field.name === "exif.ShutterSpeedValue" ||
+                      field.name === "exif.ApertureValue"
+                    ) {
+                      value = parseFloat(value).toFixed(2);
+                    }
+                    controllerField.onChange(value);
+                    updateField(selectedPhoto.id, field.name, value);
                   }}
                 />
               )}
@@ -100,7 +107,7 @@ export default function UploadPhotoExtraOption() {
                   }}
                   disabled={selectedPhoto.currentStep === 3}
                 >
-                  <p>Thêm Nhãn</p>
+                  <p className="text-white">Thêm Nhãn</p>
                 </Checkbox>
               </Tooltip>
             )}
@@ -143,23 +150,12 @@ export default function UploadPhotoExtraOption() {
           )}
         </div>
 
-        {selectedPhoto.currentStep !== 3 && (
-          <button
-            type="button"
-            onClick={() =>
-              setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep - 1)
-            }
-            className="mt-4 px-4 py-2 bg-gray-500 text-white rounded disabled:opacity-50 float-left"
-          >
-            Back
-          </button>
-        )}
-        <button
+        {/* <button
           type="submit"
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
           {isUpdating ? <LoadingOutlined /> : "Next"}
-        </button>
+        </button> */}
       </form>
     </div>
   );

@@ -52,8 +52,9 @@ export default function UploadPhotoForm() {
   }, [selectedPhoto, reset]);
 
   return (
-    <div className="px-6">
+    <div className="px-6 text-white">
       <form onSubmit={handleSubmit(onSubmit)}>
+        <p>Tựa đề</p>
         <Controller
           name="title"
           control={control}
@@ -75,6 +76,7 @@ export default function UploadPhotoForm() {
         {errors.title && (
           <p className=" text-red-500 text-sm p-1">{errors.title.message}</p>
         )}
+        <p>Mô tả </p>
 
         <Controller
           name="description"
@@ -98,6 +100,7 @@ export default function UploadPhotoForm() {
             {errors.description.message}
           </p>
         )}
+        <p>Thể loại</p>
 
         <Controller
           name="photoType"
@@ -124,6 +127,8 @@ export default function UploadPhotoForm() {
         {errors.type && (
           <p className=" text-red-500 text-sm p-1">{errors.type.message}</p>
         )}
+        <p>Gắn thẻ</p>
+
         <Controller
           name="photoTags"
           control={control}
@@ -150,6 +155,8 @@ export default function UploadPhotoForm() {
             {errors.photoTags.message}
           </p>
         )}
+        <p>Vị trí</p>
+
         <Controller
           name="location"
           control={control}
@@ -179,9 +186,9 @@ export default function UploadPhotoForm() {
               {...field}
               placeholder="Photo privacy"
               options={[
-                { label: "Public", value: "PUBLIC" },
-                { label: "Private", value: "PRIVATE" },
-                { label: "Only who had link", value: "SHARE_LINK" },
+                { label: "Công khai", value: "PUBLIC" },
+                { label: "Riêng tư", value: "PRIVATE" },
+                { label: "Liên kết riêng tư", value: "SHARE_LINK" },
               ]}
               className="w-1/3 m-2"
               onChange={(value) => {
@@ -220,13 +227,13 @@ export default function UploadPhotoForm() {
           <p className="text-red-500 text-sm p-1">{errors.showExif.message}</p>
         )}
 
-        <button
+        {/* <button
           type="submit"
           // disabled={selectedPhoto.currentStep === 3}
           className="mt-4 px-4 py-2  bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
           Next
-        </button>
+        </button> */}
       </form>
     </div>
   );

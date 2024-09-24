@@ -24,8 +24,7 @@ const UserProfile = () => {
   console.log(userDataKeyCloak, userData, "userData");
 
   const [scrollY, setScrollY] = useState(0);
-  // Adjust this to set a higher default height
-  const defaultHeight = 350; // Set the default height here (e.g., 500px)
+  const defaultHeight = 350;
 
   // Calculate container height based on scroll position
   const containerHeight = scrollY < 400 ? defaultHeight - scrollY * 0.5 : 0;
