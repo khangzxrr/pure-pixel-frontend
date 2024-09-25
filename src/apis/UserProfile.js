@@ -1,7 +1,9 @@
-import { testHttp } from "../configs/Http";
+import http from "../configs/Http";
 
 const getUserProfileById = async (id) => {
-  const response = await testHttp.get(id);
+  const response = await http.get(
+    `me?id=${id}&transactions=false&upgradeOrders=false`
+  );
 
   return response.data;
 };

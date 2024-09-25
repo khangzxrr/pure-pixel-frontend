@@ -3,13 +3,13 @@ import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
 import Following from "../components/Dashboard/Following/Following";
-import Explore from "../components/Dashboard/Explore/Explore";
+// import Explore from "../components/Dashboard/Explore/Explore";
 import HomePage from "./../pages/HomePage/HomePage";
-import Award from "../pages/HomePage/Award";
+// import Award from "../pages/HomePage/Award";
 import Blog from "../pages/HomePage/Blog";
 import Discover from "../pages/HomePage/Discover";
 import Licensing from "../pages/HomePage/Licensing";
-import Quest from "../pages/HomePage/Quest";
+// import Quest from "../pages/HomePage/Quest";
 import CustomerLayout from "../layouts/CustomerLayout";
 import Album from "../pages/Customer/Album";
 import Photo from "../pages/Customer/Photo";
@@ -32,8 +32,15 @@ import Photos from "../components/UserProfile/Photos";
 import Galleries from "../components/UserProfile/Galleries";
 import Completed from "../components/UserProfile/Completed";
 import Packages from "../components/UserProfile/Packages";
-import ProtectedRoute from "../authorize/ProtectedRoute";
+import ProtectedRoute from "../authorize/";
 import DetailPhoto from "../pages/DetailPhoto/DetailPhoto";
+import InspirationPhoto from "../components/Inspiration/InspirationPhoto/InspirationPhoto";
+import HotPhoto from "../components/Hot/HotPhoto";
+import DashboardLayoutF from "../layouts/DashboardLayoutF";
+import Explore from "./../components/Explore/Explore";
+import Upload from "../components/Upload/Upload";
+import PublicUpload from "../components/Upload/PublicUpload";
+
 
 export const AppRouter = createBrowserRouter([
   {
@@ -204,6 +211,36 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/customer/transaction",
             element: <Transaction />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/test",
+    element: <DashboardLayoutF />,
+    children: [
+      {
+        path: "/test/explorer",
+        element: <Explore />,
+        children: [
+          {
+            path: "/test/explorer/inspiration",
+            element: <InspirationPhoto />,
+          },
+          {
+            path: "/test/explorer/hot",
+            element: <HotPhoto />,
+          },
+        ],
+      },
+      {
+        path: "/test/upload",
+        element: <Upload />,
+        children: [
+          {
+            path: "/test/upload/public",
+            element: <PublicUpload />,
           },
         ],
       },

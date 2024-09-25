@@ -41,6 +41,7 @@ const PhotoDetailLayout = () => {
       </div>
     );
   }
+  console.log(getPhotoById.data);
 
   const photographerId = getPhotoById.data?.photographer?.id;
   const titleT = getPhotoById.data?.title;
