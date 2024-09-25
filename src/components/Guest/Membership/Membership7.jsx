@@ -7,7 +7,7 @@ export default function Membership7() {
         <div className="flex flex-wrap  p-6 gap-6 justify-center items-center ">
           <img
             className="object-cover h-auto w-auto"
-            src="https://s3-alpha-sig.figma.com/img/f9cd/ef3f/b9356dfcf8debb6b044043183ea0ab23?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=h1S1G97BjJnetbD7BiuAjbCOfrKalOOv7zX9fXdEgPqeH0ElUXrOTIgyIipXrAfLULCTPdq2Ua5K~PGhg4~6JnUGEaICOfu5ChU~sK4DoOzLe-NiSXUl7ZzHlYm~SUsNTZ-sxAY049-j~yE4VP3-XEf9UyTDmjy4zBE9Icc5760VTbCO6~YoMWQXXU0-jnmFKMefXxp80U959SsE8G8wQoYwneuYiNeJUKvXsoW3J0Jwcn5u5wSVbI3AJkuN5RrI98Ex-wLWZ86rg2XPo6UhvsUbRsMfRfVfXZi-vVFqQs30AXGxRptbvEV1YZBAiCsaWmblGcvou74hW3OjqtT3mg__"
+            src="https://firebasestorage.googleapis.com/v0/b/careconnect-2d494.appspot.com/o/fima%2Fimage%202%20(4).png?alt=media&token=a7245c38-dd90-444b-9810-f637e572a0d9"
           />
         </div>
         <div className="pt-10 flex flex-col gap-5 p-6  justify-center">

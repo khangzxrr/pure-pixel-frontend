@@ -67,7 +67,7 @@ export default function Home3() {
       <div className="relative">
         <img
           className="w-full h-64 md:h-72 lg:h-80 xl:h-96 object-cover "
-          src="https://s3-alpha-sig.figma.com/img/a9e9/e7b3/2523be5689822aa362048686b085d7c3?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=PU52IyzinYUXyZwVe5Rc7hsXqqcoihILWsD3mKxvUxEKEqCUTxshQHTzYJWbvr0Ys0qXwKgwjZ9VUBh3OGQhpTxnQbOEuvTPjLQCkbXeE4f4~846s~r~jEaHuonRP7OUkN67mxUHnny-WLYtJi5fkW4lvLXojRPDNlWAo7a6tLAvQSJ9LuSwXiaQ5C8UTN5otc~PGbb4r5N0m8mi6jEKfaNMxv79lbqYTD-bqqymSXzczrKZPRaPsOTB-bx1csudYSYElU3hLClhwqMcKBEi0p-8ZmQIoHzyO2oYFTsoNaDDA8Ueywlcev2-iok8L~T8RM2q8PfQD3V7MKX9JJZ10Q__"
+          src="https://firebasestorage.googleapis.com/v0/b/careconnect-2d494.appspot.com/o/fima%2FRectangle%20704.png?alt=media&token=2d870be2-0360-4f85-87a3-f08da70466ac"
         />
         <div className="absolute bottom-0 left-0 w-full">
           <p className="text-center font-inter text-[25px] md:text-[30px] lg:text-[34px] xl:text-[34px]  font-extrabold leading-[66.56px]  text-shadow  text-white">

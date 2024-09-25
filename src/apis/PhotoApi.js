@@ -1,10 +1,10 @@
 import axios from "axios";
-import http from "../configs/Http";
+import http from "./../configs/Http";
 
 const getPublicPhotos = async (skip, take) => {
-  const response = await http.get(`/photo/public?skip=${skip}&take=${take}`, {
-    crossdomain: true,
-  });
+  //go 1 chu no nhay chung 1000 cai suggest
+  //AI SUCKK
+  const response = await http.get(`/photo/public?skip=${skip}&take=${take}`);
 
   return response.data;
 };
@@ -40,8 +40,36 @@ const updatePhotos = async (photos) => {
   return response;
 };
 
+const deletePhoto = async (id) => {
+  const response = await http.delete(`photo/${id}`);
+
+  return response;
+};
+
 const getPhotoById = async (id) => {
   const response = await http.get(`photo/${id}`);
+
+  return response.data;
+};
+
+const getPhotoComments = async (id) => {
+  const response = await http.get(`photo/${id}/comment`);
+  return response.data;
+};
+
+const commentPhoto = async (id, content, onProgress) => {
+  const response = await http.post(`photo/${id}/comment`, content, {
+    onUploadProgress: (progressEvent) => {
+      console.log("progressEvent", progressEvent);
+
+      if (onProgress) {
+        // const percentCompleted = Math.round(
+        //   (progressEvent.loaded * 100) / progressEvent.total
+        // );
+        onProgress(true);
+      }
+    },
+  });
 
   return response.data;
 };
@@ -52,7 +80,10 @@ const PhotoApi = {
   uploadPhotoUsingPresignedUrl,
   processPhotos,
   updatePhotos,
+  deletePhoto,
   getPhotoById,
+  getPhotoComments,
+  commentPhoto,
 };
 
 export default PhotoApi;

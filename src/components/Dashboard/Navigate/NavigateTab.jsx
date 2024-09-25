@@ -11,7 +11,6 @@ export const NavigateTab = [
     name: "Theo dõi",
     link: "/discover/following",
   },
-
   // {
   //   id: 3,
   //   name: "Khám phá",

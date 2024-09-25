@@ -28,7 +28,7 @@ export default function Home1() {
         <div className="md:w-1/2 w-full">
           <img
             className="w-full h-[586px] object-cover"
-            src="https://s3-alpha-sig.figma.com/img/c6cb/7820/5b541b7b861572984b768a8512080cad?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nb4Rs~Ls-pD6UtNKaV3vFxv8xXW-O9cQRp9uCosk3NhMktOhW5vmQUQyn7TVhvP2c7M2nZurJq6Bq5~sbjYZSUIRZZeARwcQsfvaNSuLGP5h1dRNr7ByWK8zn3IOhrYdvbTis0ngSEGFgvzHQeevYd18dWVh3b9zJKglVGGnyT3hoVREVBOcBixxg05yQtAdXO-dDii0KxELIhgawciA~UATt5lNABWvyV0aumlvgHhe7RIFHpRMX9zLVVDoAvuhsx4z4ktehxp1JK4N8V3XTtDY4IyVxod-X77qlW3tY0m5HFwyCsAbWjk1BVLp-5sZMow2~yPMFXOBNFb-bKopqg__"
+            src="https://firebasestorage.googleapis.com/v0/b/careconnect-2d494.appspot.com/o/fima%2FAnhcho.png?alt=media&token=296a0b0f-7a27-464b-b0fe-83e3fe233b95"
           />
         </div>
       </div>

@@ -29,7 +29,7 @@ const MyPhotoNav = () => {
 
       <div className="flex flex-col mt-3 ">
         {MyPhotoNavItem.map((item) => (
-          <Link to={item.link} key={item.name} className="flex flex-col ">
+          <Link to={item.link} key={item.name} className="flex flex-col">
             <div
               className={`flex lg:flex-row flex-col items-center gap-5 lg:pl-10 pl-0 py-5 transition-colors duration-200 ${
                 activeTab === item.link

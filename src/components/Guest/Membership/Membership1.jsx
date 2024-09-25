@@ -31,7 +31,7 @@ export default function Membership1() {
         <div className="md:w-1/2 w-full">
           <img
             className="w-full h-[586px] object-cover"
-            src="https://s3-alpha-sig.figma.com/img/5d2c/5a89/683b814303afa5b16729f5bbbfd32226?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=aEHTK7E~5dWxw~J1fJ6LJRrff-vVJ2BDwlmPuiL7QjSBv~FI~6HwPv8aVKQ23EiTwQimSMt2Rp506kutK4EkLuzFkGc5b9qANEEahWEtAmpzEXyDcgbHble3vKx7BXQbu1Mh23v8FvSC978SrrY5io~brzr5zStjtbdY2XVAVNDtMEfAYj7vNw5eQouBza4-mmAxEO~T1oIYQkxGKyS0QZIGMl1cxU9Ua~ecN-pDtoLp4o-5LPCcT8FHhpxwBb0sqNREFQbtwRmXUEQYBLsRNigROYt9q21BRckdRMupcgwgpxuCOS0zZEM18A8Dh~wHwGVEqlqoL2AWx2U5Iia3Dg__"
+            src="https://firebasestorage.googleapis.com/v0/b/careconnect-2d494.appspot.com/o/fima%2Fheader_mobile.193da92a%201%20(3).png?alt=media&token=6d9f39b9-3e8f-4ecb-9e0f-191119322fc8"
           />
         </div>
       </div>

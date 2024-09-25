@@ -12,7 +12,6 @@ export default function Header() {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const userData = UserService.getTokenParsed();
-  console.log(keycloak, userData, "keycloak");
 
   const handleAuthAction = (action) => {
     if (action === "login") keycloak.login();
@@ -45,14 +44,14 @@ export default function Header() {
                   alt=""
                 />
               </div>
-              <div>{userData.name}</div>
+              <div className="hidden lg:block">{userData.name}</div>
             </div>
           </Dropdown>
         </div>
 
         <div className="  hover:text-blue-600 outline outline-1 outline-offset-2 rounded-full px-3 py-1 transition-colors duration-200">
           <button onClick={() => handleAuthAction("upload-photo")}>
-            Upload Photo
+            Tải lên ảnh
           </button>
         </div>
       </>
@@ -60,15 +59,15 @@ export default function Header() {
       <>
         <button
           onClick={() => handleAuthAction("login")}
-          className="text-lg font-bold hover:text-blue-600 transition-colors duration-200"
+          className="text-lg  hover:text-blue-600 transition-colors duration-200"
         >
-          Log in
+          Đăng nhập
         </button>
         <button
           onClick={() => handleAuthAction("login")}
-          className="text-lg font-bold hover:text-blue-600 ml-5 px-3 py-0.25 outline outline-2 outline-offset-2 rounded-full transition-colors duration-200"
+          className="text-lg  hover:text-blue-600 ml-5 px-3 py-0.25 outline outline-1 outline-offset-2 rounded-full transition-colors duration-200"
         >
-          Sign up
+          Đăng ký
         </button>
       </>
     );
