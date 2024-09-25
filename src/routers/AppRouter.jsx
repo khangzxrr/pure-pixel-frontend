@@ -41,6 +41,7 @@ import DashboardLayoutF from "../layouts/DashboardLayoutF";
 import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
+import ProfilePage from "../pages/DetailUser/DetailUser";
 
 
 export const AppRouter = createBrowserRouter([
@@ -107,6 +108,10 @@ export const AppRouter = createBrowserRouter([
         path: "/photos/:id",
         element: <DetailPhoto />,
       },
+      {
+        path: "/ProfilePage",
+        element: <ProfilePage />,
+      },
       // {
       //   path: "/award",
       //   element: <Award />,
@@ -127,6 +132,7 @@ export const AppRouter = createBrowserRouter([
             path: "/discover/for-you",
             element: <ForYou />,
           },
+
           // {
           //   path: "/discover/explore",
           //   element: <Explore />,

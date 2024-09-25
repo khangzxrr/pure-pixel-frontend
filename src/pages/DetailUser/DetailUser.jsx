@@ -1,0 +1,266 @@
+import React, { useRef, useEffect } from "react";
+import { Camera, Users, Image, Flame } from "lucide-react";
+
+export default function ProfilePage() {
+  const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    const slider = scrollContainerRef.current;
+    if (!slider) return;
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    const onMouseDown = (e) => {
+      isDown = true;
+      slider.classList.add("active");
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    };
+
+    const onMouseLeave = () => {
+      isDown = false;
+      slider.classList.remove("active");
+    };
+
+    const onMouseUp = () => {
+      isDown = false;
+      slider.classList.remove("active");
+    };
+
+    const onMouseMove = (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 2; // Scroll speed
+      slider.scrollLeft = scrollLeft - walk;
+    };
+
+    slider.addEventListener("mousedown", onMouseDown);
+    slider.addEventListener("mouseleave", onMouseLeave);
+    slider.addEventListener("mouseup", onMouseUp);
+    slider.addEventListener("mousemove", onMouseMove);
+
+    return () => {
+      slider.removeEventListener("mousedown", onMouseDown);
+      slider.removeEventListener("mouseleave", onMouseLeave);
+      slider.removeEventListener("mouseup", onMouseUp);
+      slider.removeEventListener("mousemove", onMouseMove);
+    };
+  }, []);
+
+  return (
+    <div className="bg-black text-white min-h-screen">
+      {/* Header */}
+      <div className="relative h-48">
+        <img
+          src="https://img.pikbest.com/ai/illus_our/20230418/64e0e89c52dec903ce07bb1821b4bcc8.jpg!w700wp"
+          alt="Profile banner"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+        <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/2 flex items-center">
+          <Camera className="w-5 h-5 mr-1" />
+          <img
+            src="https://img.pikbest.com/ai/illus_our/20230418/64e0e89c52dec903ce07bb1821b4bcc8.jpg!w700wp"
+            alt="Dopa"
+            className="w-24 h-24 rounded-full border-4 border-black"
+          />
+          <div className="ml-2 flex">
+            <Flame className="w-5 h-5 text-orange-500" />
+          </div>
+        </div>
+      </div>
+
+      {/* Profile Info */}
+      <div className="relative px-4 pt-16 pb-6">
+        <h1 className="text-2xl font-bold text-center">Dopa</h1>
+        <p className="text-gray-400 text-center">@Dopamontage2019</p>
+        <div className="flex justify-center items-center mt-2 space-x-4">
+          <div className="flex items-center">
+            <Users className="w-5 h-5 mr-1" />
+            <span>12,953</span>
+          </div>
+          <div className="flex items-center">
+            <Image className="w-5 h-5 mr-1" />
+            <span>153</span>
+          </div>
+          <button className="bg-white text-black px-4 py-1 rounded-full font-medium">
+            + Follow
+          </button>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex border-b border-gray-800">
+        <button className="flex-1 py-2 px-4 text-center bg-white bg-opacity-10 font-medium">
+          1. Packages{" "}
+          <span className="ml-1 px-1.5 py-0.5 bg-gray-700 rounded-full text-xs">
+            06
+          </span>
+        </button>
+        <button className="flex-1 py-2 px-4 text-center">
+          Photos <span className="text-gray-400">2,095</span>
+        </button>
+        <button className="flex-1 py-2 px-4 text-center">
+          Albums <span className="text-gray-400">12</span>
+        </button>
+      </div>
+
+      {/* Packages */}
+      <div className="p-4">
+        <h2 className="text-2xl font-bold mb-2 text-center px-8">
+          DISCOVER OUR SIX PACKAGES
+        </h2>
+        <p className="text-gray-400 mb-6 text-center px-8">
+          Grand Opening. Voucher 15% for the first 10 Customers. Come with Us
+        </p>
+
+        <div className="relative">
+          <div
+            ref={scrollContainerRef}
+            className="flex overflow-x-auto space-x-4 pb-4 cursor-grab active:cursor-grabbing"
+            style={{
+              scrollBehavior: "smooth",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
+            {/* Package 1 */}
+            {[1, 2, 3, 4, 5, 6].map(() => (
+              <div className="flex-shrink-0 w-64 bg-gray-900 rounded-lg overflow-hidden select-none">
+                <img
+                  src="https://img.pikbest.com/ai/illus_our/20230418/64e0e89c52dec903ce07bb1821b4bcc8.jpg!w700wp"
+                  alt="Gói chụp Cá nhân"
+                  draggable="false"
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Gói chụp Cá nhân
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-4">
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry...
+                  </p>
+                  <button className="text-blue-400 flex items-center">
+                    <span className="mr-2">Book a Call</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+            <div className="flex-shrink-0 w-64 bg-gray-900 rounded-lg overflow-hidden select-none">
+              <img
+                src="https://img.pikbest.com/ai/illus_our/20230418/64e0e89c52dec903ce07bb1821b4bcc8.jpg!w700wp"
+                alt="Gói chụp Cá nhân"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2">Gói chụp Cá nhân</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typesetting industry...
+                </p>
+                <button className="text-blue-400 flex items-center">
+                  <span className="mr-2">Book a Call</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Package 2 */}
+            <div className="flex-shrink-0 w-64 bg-gray-900 rounded-lg overflow-hidden select-none">
+              <img
+                src="https://img.pikbest.com/ai/illus_our/20230418/64e0e89c52dec903ce07bb1821b4bcc8.jpg!w700wp"
+                alt="Gói chụp Kỷ yếu"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2">Gói chụp Kỷ yếu</h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typeset...
+                </p>
+                <button className="text-blue-400 flex items-center">
+                  <span className="mr-2">Book a Call</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Package 3 */}
+            <div className="flex-shrink-0 w-64 bg-gray-900 rounded-lg overflow-hidden select-none">
+              <img
+                src="https://img.pikbest.com/ai/illus_our/20230418/64e0e89c52dec903ce07bb1821b4bcc8.jpg!w700wp"
+                alt="Gói chụp Sản phẩm"
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2">
+                  Gói chụp Sản phẩm
+                </h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typeset...
+                </p>
+                <button className="text-blue-400 flex items-center">
+                  <span className="mr-2">Book a Call</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Add more packages here */}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
