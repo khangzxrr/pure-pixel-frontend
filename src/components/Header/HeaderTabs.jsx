@@ -8,6 +8,7 @@ export const HeaderTab = [
   // { id: 4, name: "Quest", link: "/quest" },
   { id: 5, name: "Blog", link: "/blog" },
   // { id: 6, name: "Award Winners", link: "/award" },
+  { id: 7, name: "Layout rebuild", link: "test" },
 ];
 
 export default function HeaderTabs() {

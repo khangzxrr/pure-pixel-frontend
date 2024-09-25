@@ -19,22 +19,22 @@ const InspirationTrendItem = [
     id: "T5",
     title: "núi",
   },
-  {
-    id: "T6",
-    title: "biển",
-  },
-  {
-    id: "T7",
-    title: "đại dương",
-  },
-  {
-    id: "T8",
-    title: "nghệ thuật",
-  },
-  {
-    id: "T9",
-    title: "thành phố",
-  },
+  // {
+  //   id: "T6",
+  //   title: "biển",
+  // },
+  // {
+  //   id: "T7",
+  //   title: "đại dương",
+  // },
+  // {
+  //   id: "T8",
+  //   title: "nghệ thuật",
+  // },
+  // {
+  //   id: "T9",
+  //   title: "thành phố",
+  // },
 ];
 
 export default InspirationTrendItem;
