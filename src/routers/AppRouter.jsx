@@ -32,12 +32,15 @@ import Photos from "../components/UserProfile/Photos";
 import Galleries from "../components/UserProfile/Galleries";
 import Completed from "../components/UserProfile/Completed";
 import Packages from "../components/UserProfile/Packages";
+import ProtectedRoute from "../authorize/";
+import DetailPhoto from "../pages/DetailPhoto/DetailPhoto";
 import InspirationPhoto from "../components/Inspiration/InspirationPhoto/InspirationPhoto";
 import HotPhoto from "../components/Hot/HotPhoto";
 import DashboardLayoutF from "../layouts/DashboardLayoutF";
 import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
+
 
 export const AppRouter = createBrowserRouter([
   {
@@ -94,6 +97,10 @@ export const AppRouter = createBrowserRouter([
       {
         path: "/photo/:id",
         element: <PhotoDetailLayout />,
+      },
+      {
+        path: "/photos/:id",
+        element: <DetailPhoto />,
       },
       // {
       //   path: "/award",
