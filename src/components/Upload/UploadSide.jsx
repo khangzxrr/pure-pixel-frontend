@@ -4,6 +4,7 @@ import UserService from "../../services/Keycloak";
 import SideBar from "../Explore/SideBar";
 import UploadSideItem from "./UploadSideItem";
 import UseUploadStore from "../../states/UseUploadStore";
+import UploadSidebar from "./UploadSidebar";
 
 const UploadSide = () => {
   const { activeItem, setActiveItem } = UseUploadStore();
@@ -16,7 +17,7 @@ const UploadSide = () => {
   const handleClick = (id, title, icon, quote) =>
     setActiveItem(id, title, icon, quote);
   return (
-    <SideBar
+    <UploadSidebar
       sideItems={UploadSideItem}
       activeItem={activeItem}
       handleClick={handleClick}

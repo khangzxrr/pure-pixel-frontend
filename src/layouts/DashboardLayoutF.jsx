@@ -1,12 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import ServerSide from "../components/Inspiration/ServerSide/ServerSide";
-import UseInspirationStore from "../states/UseInspirationStore";
-import UseUploadStore from "../states/UseUploadStore";
+import UseSidebarStore from "../states/UseSidebarStore";
 // Import Zustand store
 
 const DashboardLayoutF = () => {
-  const { isSidebarOpen, toggleSidebar } = UseInspirationStore();
+  const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
 
   return (
     <div className="flex bg-[#43474e] text-white font-semibold">
@@ -19,7 +18,7 @@ const DashboardLayoutF = () => {
         <ServerSide />
       </div>
       {/* Main content */}
-      <div className="flex flex-grow h-screen">
+      <div className="flex flex-grow max-h-screen">
         <Outlet />
       </div>
     </div>
