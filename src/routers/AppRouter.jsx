@@ -33,6 +33,7 @@ import Galleries from "../components/UserProfile/Galleries";
 import Completed from "../components/UserProfile/Completed";
 import Packages from "../components/UserProfile/Packages";
 import ProtectedRoute from "../authorize/ProtectedRoute";
+import DetailPhoto from "../pages/DetailPhoto/DetailPhoto";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -89,6 +90,10 @@ export const AppRouter = createBrowserRouter([
       {
         path: "/photo/:id",
         element: <PhotoDetailLayout />,
+      },
+      {
+        path: "/photos/:id",
+        element: <DetailPhoto />,
       },
       // {
       //   path: "/award",
