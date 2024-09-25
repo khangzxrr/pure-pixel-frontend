@@ -1,91 +1,62 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import UserService from "../../../services/Keycloak";
+import { useKeycloak } from "@react-keycloak/web";
+import { getData, postData } from "../../../apis/api";
+import ComPriceConverter from "../../ComPriceConverter/ComPriceConverter";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
+import { useModalState } from "../../../hooks/useModalState";
+import ComModal from "../../ComModal/ComModal";
 export default function Package() {
-  const [data, setData] = useState([
-    {
-      name: "Explorer",
-      money: "Free",
-      text: "Ideal for hobbyists and those new to photography, seeking to develop their skills and creativity.",
-      data: [
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-      ],
-    },
-    {
-      name: "Explorer",
-      money: "Free",
-      text: "Ideal for hobbyists and those new to photography, seeking to develop their skills and creativity.",
-      data: [
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-      ],
-    },
-    {
-      name: "Explorer",
-      money: "Free",
-      text: "Ideal for hobbyists and those new to photography, seeking to develop their skills and creativity.",
-      data: [
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-        {
-          title: "Daily inspiration",
-          context: "Personalized photo recommendations each day",
-        },
-      ],
-    },
-  ]);
+  const [dataUpgrade, setDataUpgrade] = useState([]);
+  const [selectUpgrade, setselectUpgrade] = useState({});
+  const userData = UserService.getTokenParsed();
+  const token = UserService.getToken();
+  const { keycloak } = useKeycloak();
+  const modal = useModalState();
+  const [dataBuy, setDataBuy] = useState({});
+
+  const CallApiUser = () => {
+    getData(`/me/current-upgrade-package`)
+      .then((e) => {
+        console.log("====================================");
+        console.log(e);
+        console.log("====================================");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    getData(`/upgrade`)
+      .then((e) => {
+        setDataUpgrade(e.data);
+        console.log(e.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    CallApiUser();
+  }, []);
+  const CallApiUpgrade = (data) => {
+    postData(`/upgrade`, data)
+      .then((e) => {
+        console.log(e);
+        setDataBuy(e)
+        modal.handleOpen()
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handIcon = (number) => {
+    if (number > 0) {
+      return <AiOutlineCheck style={{ color: "green", fontSize: "24px" }} />;
+    } else {
+      return <AiOutlineClose style={{ color: "red", fontSize: "24px" }} />;
+    }
+  };
   return (
-    <div className="bg-black">
+    <div className="bg-black py-20">
       <p className="text-center font-inter text-[25px] md:text-[30px] lg:text-[34px] xl:text-[34px]  font-extrabold leading-[66.56px]  text-shadow  text-white">
         Take Advantage of This Exclusive Offer - 50% OFF
       </p>
@@ -95,50 +66,217 @@ export default function Package() {
         journey without any constraints.
       </p>
       <div className="grid gap-14  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-6 justify-items-center  ">
-        {data.map((e, i) => (
+        {dataUpgrade.map((e, i) => (
           <div
             key={i}
-            className="w-[340px]  flex flex-col justify-between gap-6"
+            className="w-[340px]  flex flex-col justify-between gap-6 "
           >
-            <div className="bg-white rounded-[20px] h-full">
-              <div className="flex justify-between px-8  py-4 ">
+            <div className="bg-white rounded-[20px] h-full p-4">
+              <div className="flex justify-between px-4  py-4 ">
                 <p className="font-inter text-[16px] md:text-[16px]  font-extrabold">
                   {e.name}
+                  <p className="text-red-600">{e.minOrderMonth} tháng</p>
                 </p>
-                <p className="font-inter text-[16px] md:text-[16px] ] font-extrabold">
-                  {e.money}
-                </p>
+                <div>
+                  <p className="font-inter text-[#6bce8e] text-[16px] md:text-[16px] ] font-extrabold bg-[#cdf8d3] p-1 rounded-[10px]">
+                    <ComPriceConverter>{e.price}</ComPriceConverter>/tháng
+                  </p>
+                </div>
               </div>
-              <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px]">
-                {e.text}
+              <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px] ">
+                {e.text} Nhiếp ảnh gia đam mê muốn nâng cao kỹ năng và khả năng
+                tiếp xúc với hình ảnh của mình
               </div>
-              <table className="p-2">
+              <table className="p-2 w-full">
                 <tbody className="">
-                  {e?.data.map((value, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-2 mx-4 font-medium">
-                        <l className=" text-black font-extrabold">
-                          {value.title}:
-                        </l>
-                        {value.context}
-                        <div
-                          className={` ${
-                            e?.data.length === index + 1 ? "" : "border-b "
-                          }`}
-                        ></div>
-                      </td>
-                    </tr>
-                  ))}
+                  <tr>
+                    <td className="px-4 py-2 mx-4 font-medium">
+                      <div className="flex gap-4">
+                        {handIcon(e.maxPackageCount)}
+                        {e.maxPackageCount} Gói dịch vụ
+                      </div>
+                      <div className={`border-b`}></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 mx-4 font-medium">
+                      <div className="flex gap-4">
+                        {handIcon(e.maxBookingPhotoCount)}
+                        {e.maxBookingPhotoCount} ảnh/album
+                      </div>
+                      <div className={`border-b`}></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 mx-4 font-medium">
+                      <div className="flex gap-4">
+                        {handIcon(e.maxBookingPhotoCount)}
+                        {e.maxBookingVideoCount} video/album
+                      </div>
+                      <div className={`border-b`}></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 mx-4 font-medium">
+                      <div className="flex gap-4">
+                        {handIcon(e.maxPhotoCount)}
+                        {e.maxPhotoCount} ảnh có thể bán
+                      </div>
+                      <div className={`border-b`}></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 mx-4 font-medium">
+                      <div className="flex gap-4">
+                        {handIcon(e.maxPackageCount)}
+                        {e.maxPackageCount} Gói dịch vụ
+                      </div>
+                      <div className={`border-b`}></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 mx-4 font-medium"></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-            <p className="text-black px-6 py-2 text-center rounded-[20px] bg-white font-extrabold ">
-              {" "}
+            <button
+              onClick={() => {
+                CallApiUpgrade({
+                  acceptTransfer: true,
+                  acceptRemovePendingUpgradeOrder: true,
+                  upgradePackageId: e.id,
+                  totalMonths: e.minOrderMonth,
+                });
+                setselectUpgrade(e);
+              }}
+              className="text-black px-6 py-2 text-center rounded-[20px] bg-white font-extrabold "
+            >
               Basic Account
-            </p>
+            </button>
           </div>
         ))}
       </div>
+
+      <ComModal
+        width={600}
+        isOpen={modal?.isModalOpen}
+        onClose={modal?.handleClose}
+      >
+        <div className="flex justify-center items-center">
+          <div className="p-4">
+            <h2 className="text-center font-bold text-lg">Payment Details</h2>
+
+            <div className="mt-4">
+              <p className="font-medium">Thanh toán cho đơn hàng ID:</p>
+              <p className="text-sm text-gray-600">{dataBuy?.transactionId}</p>
+            </div>
+            <div className="mt-4 flex justify-center">
+              <img
+                src={dataBuy?.mockQrcode}
+                alt="QR Code"
+                className="w-48 h-48"
+              />
+            </div>
+
+            <div className="mt-4 text-center">
+              <a
+                href={dataBuy?.paymentQrcodeUrl}
+                className="text-blue-600 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Pay Now via QR Code
+              </a>
+            </div>
+            <div className="mt-4">
+              <div className="w-[340px]  flex flex-col justify-between gap-6 ">
+                <div className="bg-white rounded-[20px] h-full border-black border-2">
+                  <div className="flex justify-between px-8  py-4 ">
+                    <p className="font-inter text-[16px] md:text-[16px]  font-extrabold">
+                      {selectUpgrade.name}
+                      <p className="text-red-600">
+                        {selectUpgrade.minOrderMonth} tháng
+                      </p>
+                    </p>
+                    <div>
+                      <p className="font-inter text-[#6bce8e] text-[16px] md:text-[16px] ] font-extrabold bg-[#cdf8d3] p-1 rounded-[10px]">
+                        <ComPriceConverter>
+                          {selectUpgrade.price}
+                        </ComPriceConverter>
+                      </p>
+                    </div>
+                  </div>
+                  <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px]">
+                    {selectUpgrade.text} Nhiếp ảnh gia đam mê muốn nâng cao kỹ
+                    năng và khả năng tiếp xúc với hình ảnh của mình
+                  </div>
+                  <table className="p-2 w-full">
+                    <tbody className="">
+                      <tr>
+                        <td className="px-4 py-2 mx-4 font-medium">
+                          <div className="flex gap-4">
+                            {handIcon(selectUpgrade.maxPackageCount)}
+                            {selectUpgrade.maxPackageCount} Gói dịch vụ
+                          </div>
+                          <div className={`border-b`}></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-2 mx-4 font-medium">
+                          <div className="flex gap-4">
+                            {handIcon(selectUpgrade.maxBookingPhotoCount)}
+                            {selectUpgrade.maxBookingPhotoCount} ảnh/album
+                          </div>
+                          <div className={`border-b`}></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-2 mx-4 font-medium">
+                          <div className="flex gap-4">
+                            {handIcon(selectUpgrade.maxBookingPhotoCount)}
+                            {selectUpgrade.maxBookingVideoCount} video/album
+                          </div>
+                          <div className={`border-b`}></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-2 mx-4 font-medium">
+                          <div className="flex gap-4">
+                            {handIcon(selectUpgrade.maxPhotoCount)}
+                            {selectUpgrade.maxPhotoCount} ảnh có thể bán
+                          </div>
+                          <div className={`border-b`}></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-2 mx-4 font-medium">
+                          <div className="flex gap-4">
+                            {handIcon(selectUpgrade.maxPackageCount)}
+                            {selectUpgrade.maxPackageCount} Gói dịch vụ
+                          </div>
+                          <div className={`border-b`}></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-4 py-2 mx-4 font-medium"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 text-center">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={modal?.handleClose}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      </ComModal>
     </div>
   );
 }

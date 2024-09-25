@@ -19,7 +19,7 @@ const ComButton = React.forwardRef(
         type="default"
         size="large"
         className={`flex w-44 mg mx-auto justify-center  px-3 py-1.5 text-sm font-semibold leading-6 
-          shadow-sm focus-visible:outline focus-visible:outline-2
+          shadow-sm bg-black focus-visible:outline focus-visible:outline-2
           focus-visible:outline-offset-2 focus-visible:bg-[#080808] ${textColor} ${className}`}
         {...props}
         onClick={endIcon ? undefined : onClick}
