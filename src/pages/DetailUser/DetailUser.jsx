@@ -51,7 +51,7 @@ export default function DetailUser() {
   }, []);
 
   return (
-    <div className="bg-[#373737] text-white min-h-screen">
+    <div className="bg-[#373737] text-white max-h-screen overflow-y-auto">
       {/* Header */}
       <div className="relative h-48 ">
         <img
@@ -78,7 +78,7 @@ export default function DetailUser() {
         <h1 className="text-2xl font-bold text-center">Dopa</h1>
         <p className="text-gray-400 text-center">@Dopamontage2019</p>
         <div className="flex justify-center items-center mt-2 space-x-4">
-          <div className="flex bg-[#4d4d4d] border-[#4c4c4c] px-4 py-1 justify-center border border-inherit items-center rounded-lg space-x-4">
+          <div className="flex bg-[#4d4d4d] border-[#4c4c4c] px-4 py-1 justify-center border  items-center rounded-lg space-x-4">
             <div className="flex items-center">
               <Users className="w-5 h-5 mr-1" />
               <span>12,953</span>
@@ -95,22 +95,22 @@ export default function DetailUser() {
       </div>
 
       {/* Navigation */}
-      <div className="mx-3 bg-[#424242] rounded-lg p-2 ">
-        <div className="flex border-b border-gray-800 bg-[#232325] rounded-lg p-1 ">
+      <div className="mx-3 bg-[#424242] rounded-lg pl-2 pt-2 ">
+        <div className="flex border-b mr-2 mt-2 border-gray-800 bg-[#232325] rounded-lg p-1 ">
           <button className="rounded-lg  flex-1 py-2 px-4 text-center bg-[#fefefe] bg-opacity-10 font-medium">
-            1. Packages{" "}
+            1. Packages
             <span className="ml-1 px-1.5 py-1 bg-[#b7b7b7] rounded-lg text-xs">
               06
             </span>
           </button>
           <button className="flex-1 py-2 px-4 text-center">
-            Photos{" "}
+            Photos
             <span className="ml-1 px-1.5 py-1 bg-[#2c2c2c] rounded-lg text-xs">
               2,095
             </span>
           </button>
           <button className="flex-1 py-2 px-4 text-center">
-            Albums{" "}
+            Albums
             <span className="ml-1 px-1.5 py-1 bg-[#2c2c2c] rounded-lg text-xs">
               12
             </span>
@@ -118,7 +118,7 @@ export default function DetailUser() {
         </div>
 
         {/* Packages */}
-        <div className="p-4">
+        <div className="ml-4">
           <h2 className="text-2xl font-bold mb-2 text-center px-8">
             DISCOVER OUR SIX PACKAGES
           </h2>

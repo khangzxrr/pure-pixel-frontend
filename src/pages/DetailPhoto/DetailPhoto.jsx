@@ -6,6 +6,7 @@ import UserService from "../../services/Keycloak";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import { useParams } from "react-router-dom";
 import DetailUser from "../DetailUser/DetailUser";
+import { useModalState } from "./../../hooks/useModalState";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -37,8 +38,8 @@ const getNavigation = (idImg, listImg) => {
 };
 export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const [selectedImage, setSelectedImage] = useState(idImg);
-
   const { id } = useParams();
+  const popup = useModalState();
   const { prevId, nextId } = getNavigation(selectedImage, listImg);
   const getPhotoById = useQuery({
     queryKey: ["get-getPhotoById-by-id", selectedImage],
@@ -71,7 +72,6 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   console.log(idImg);
   console.log(listImg);
   console.log("====================================");
-
 
   const photographerId = getPhotoById.data?.photographer?.id;
   const titleT = getPhotoById.data?.title;
@@ -144,10 +144,16 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 <img
                   src={photographerAvatar}
                   alt="GueM"
-                  className="w-10 h-10 rounded-full"
+                  onClick={popup.handleOpen}
+                  className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
                 />
                 <div>
-                  <h2 className="font-semibold">{photographerName}</h2>
+                  <h2
+                    className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
+                    onClick={popup.handleOpen}
+                  >
+                    {photographerName}
+                  </h2>
                   <p className="text-sm text-gray-400">1 day ago</p>
                 </div>
               </div>
@@ -344,10 +350,17 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
           </div>
         </div>
       </div>
-      <div className="fixed inset-0 flex justify-between z-50 overflow-y-auto">
-        <div className="w-max"> </div>
-        <div className="w-[500px]"><DetailUser /></div>
-      </div>
+      {popup.isModalOpen && (
+        <div className="fixed inset-0 flex items-stretch justify-between z-50 overflow-y-auto">
+          <div
+            className="w-full h-auto bg-[rgba(0,0,0,0.5)]"
+            onClick={popup.handleClose}
+          ></div>
+          <div className="w-[700px]">
+            <DetailUser />
+          </div>
+        </div>
+      )}
     </>
   );
 }
