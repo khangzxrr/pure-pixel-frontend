@@ -1,9 +1,13 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Camera, Users, Image, Flame } from "lucide-react";
 
 export default function DetailUser() {
   const scrollContainerRef = useRef(null);
+  const [selectedButton, setSelectedButton] = useState(null);
 
+  const handleButtonClick = (buttonIndex) => {
+    setSelectedButton(buttonIndex);
+  };
   useEffect(() => {
     const slider = scrollContainerRef.current;
     if (!slider) return;
@@ -96,22 +100,55 @@ export default function DetailUser() {
 
       {/* Navigation */}
       <div className="mx-3 bg-[#424242] rounded-lg pl-2 pt-2 ">
-        <div className="flex border-b mr-2 mt-2 border-gray-800 bg-[#232325] rounded-lg p-1 ">
-          <button className="rounded-lg  flex-1 py-2 px-4 text-center bg-[#fefefe] bg-opacity-10 font-medium">
+        <div className="flex border-b mr-2 mt-2 border-gray-800 bg-[#232325] rounded-lg p-1">
+          <button
+            className={`rounded-lg flex-1 py-2 px-4 text-center font-medium ${
+              selectedButton === 1
+                ? "bg-[#fefefe] bg-opacity-10"
+                : "bg-transparent"
+            }`}
+            onClick={() => handleButtonClick(1)}
+          >
             1. Packages
-            <span className="ml-1 px-1.5 py-1 bg-[#b7b7b7] rounded-lg text-xs">
+            <span
+              className={`ml-1 px-1.5 py-1 rounded-lg text-xs ${
+                selectedButton === 1 ? "bg-[#b7b7b7]" : "bg-[#2c2c2c]"
+              }`}
+            >
               06
             </span>
           </button>
-          <button className="flex-1 py-2 px-4 text-center">
+          <button
+            className={`rounded-lg flex-1 py-2 px-4 text-center font-medium ${
+              selectedButton === 2
+                ? "bg-[#fefefe] bg-opacity-10"
+                : "bg-transparent"
+            }`}
+            onClick={() => handleButtonClick(2)}
+          >
             Photos
-            <span className="ml-1 px-1.5 py-1 bg-[#2c2c2c] rounded-lg text-xs">
+            <span
+              className={`ml-1 px-1.5 py-1 rounded-lg text-xs ${
+                selectedButton === 2 ? "bg-[#b7b7b7]" : "bg-[#2c2c2c]"
+              }`}
+            >
               2,095
             </span>
           </button>
-          <button className="flex-1 py-2 px-4 text-center">
+          <button
+            className={`rounded-lg flex-1 py-2 px-4 text-center font-medium ${
+              selectedButton === 3
+                ? "bg-[#fefefe] bg-opacity-10"
+                : "bg-transparent"
+            }`}
+            onClick={() => handleButtonClick(3)}
+          >
             Albums
-            <span className="ml-1 px-1.5 py-1 bg-[#2c2c2c] rounded-lg text-xs">
+            <span
+              className={`ml-1 px-1.5 py-1 rounded-lg text-xs ${
+                selectedButton === 3 ? "bg-[#b7b7b7]" : "bg-[#2c2c2c]"
+              }`}
+            >
               12
             </span>
           </button>
