@@ -9,6 +9,7 @@ import DetailUser from "../DetailUser/DetailUser";
 import { useModalState } from "./../../hooks/useModalState";
 import ComModal from "../../components/ComModal/ComModal";
 import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
+import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -90,7 +91,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const votePhoto = getPhotoById.data?._count?.votes;
   const commentPhoto = getPhotoById.data?._count?.comments;
   console.log("====================================");
-  console.log(getPhotoById.photographer);
+  console.log(getPhotoById.data);
   console.log("====================================");
 
   return (
@@ -200,13 +201,13 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 <Icon className="mr-2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </Icon>
-                <span>264</span>
+                <span>{votePhoto}</span>
               </button>
               <button className="flex items-center hover:text-blue-500">
                 <Icon className="mr-2">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                 </Icon>
-                <span>27</span>
+                <span>{commentPhoto}</span>
               </button>
               <button
                 className="hover:text-green-500"
@@ -311,57 +312,10 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             </div>
 
             <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-2">3 Comments</h2>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <img
-                    src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
-                    alt="Gianni Meini"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div>
-                    <div className="flex items-center">
-                      <span className="font-medium">Gianni Meini</span>
-                      <span className="text-xs text-gray-400 ml-2">
-                        2024-09-23 14:07
-                      </span>
-                    </div>
-                    <p className="text-sm">Bravo Gue</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3 pl-8">
-                  <img
-                    src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
-                    alt="GueM"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div>
-                    <div className="flex items-center">
-                      <span className="font-medium">GueM</span>
-                      <span className="text-xs text-gray-400 ml-2">
-                        Yesterday at 14:55
-                      </span>
-                    </div>
-                    <p className="text-sm">Grazie !!</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <img
-                    src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
-                    alt="Gianni Meini"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div>
-                    <div className="flex items-center">
-                      <span className="font-medium">Gianni Meini</span>
-                      <span className="text-xs text-gray-400 ml-2">
-                        2024-09-23 14:06
-                      </span>
-                    </div>
-                    <p className="text-sm">Congrats, gorgeous image!</p>
-                  </div>
-                </div>
-              </div>
+              <h2 className="text-lg font-semibold mb-2">
+                {commentPhoto} Comments
+              </h2>
+              <CommentPhoto id={selectedImage} />
             </div>
           </div>
         </div>
