@@ -1,10 +1,12 @@
+import { useKeycloak } from "@react-keycloak/web";
 import React from "react";
 import { Outlet } from "react-router-dom";
-import ServerSide from "../components/Inspiration/ServerSide/ServerSide";
+import ServerSide from "../components/ServerSide/ServerSide";
 import UseSidebarStore from "../states/UseSidebarStore";
 // Import Zustand store
 
 const DashboardLayoutF = () => {
+  const { keycloak } = useKeycloak();
   const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
 
   return (

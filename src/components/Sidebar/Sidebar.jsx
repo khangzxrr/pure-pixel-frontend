@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import UseSidebarStore from "../../states/UseSidebarStore";
 
 const Sidebar = ({
   sideItems,

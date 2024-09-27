@@ -1,7 +1,7 @@
 import React from "react";
 import ServerSideItems from "./ServerSideItems";
 import ServerSideItem from "./ServerSideItem";
-import UserService from "../../../services/Keycloak";
+import UserService from "../../services/Keycloak";
 
 const userData = UserService.getTokenParsed();
 

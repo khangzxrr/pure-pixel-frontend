@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import UseSidebarStore from "../../../states/UseSidebarStore";
+import UseSidebarStore from "../../states/UseSidebarStore";
+import { useKeycloak } from "@react-keycloak/web";
 
 const ServerSideItem = ({ id, link, icon }) => {
+  const { keycloak } = useKeycloak();
   const { activeLink, setActiveLink } = UseSidebarStore();
 
   const handleClick = () => {

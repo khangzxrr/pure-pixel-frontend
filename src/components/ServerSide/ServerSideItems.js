@@ -1,8 +1,11 @@
 import { MdHomeFilled } from "react-icons/md";
 import { FaCompass } from "react-icons/fa6";
-import UserService from "../../../services/Keycloak";
+import UserService from "../../services/Keycloak";
 import { FiUpload } from "react-icons/fi";
+import { IoMailSharp } from "react-icons/io5";
 const userData = UserService.getTokenParsed();
+
+console.log(userData);
 
 const ServerSideItems = [
   {
@@ -30,17 +33,17 @@ const ServerSideItems = [
     id: "upload",
     link: "/test/upload",
     icon: <FiUpload className="text-3xl" />,
-    // authen: true,
   },
+  {
+    id: "message",
+    link: "/test/message",
+    icon: <IoMailSharp className="text-3xl" />,
+  },
+  //   userData && {
+  //     id: "upload",
+  //     link: "/test/upload",
+  //     icon: <FiUpload className="text-3xl" />,
+  //   },
+  // ].filter(Boolean);
 ];
-
-// Chỉ thêm mục upload nếu userData tồn tại
-// if (userData) {
-//   ServerSideItems.push({
-//     id: "upload",
-//     link: "/test/upload",
-//     icon: <FiUpload className="text-3xl" />,
-//   });
-// }
-
 export default ServerSideItems;

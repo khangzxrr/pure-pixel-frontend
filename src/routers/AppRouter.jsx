@@ -42,7 +42,6 @@ import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
 
-
 export const AppRouter = createBrowserRouter([
   {
     path: "/",
@@ -226,25 +225,33 @@ export const AppRouter = createBrowserRouter([
     element: <DashboardLayoutF />,
     children: [
       {
-        path: "/test/explorer",
+        path: "", // Đường dẫn trống để xử lý điều hướng từ "/test"
+        element: <Navigate to="/test/explorer" replace={true} />,
+      },
+      {
+        path: "explorer", // Đường dẫn tương đối cho "/test/explorer"
         element: <Explore />,
         children: [
           {
-            path: "/test/explorer/inspiration",
+            path: "", // Đường dẫn trống để xử lý điều hướng từ "/test/explorer"
+            element: <Navigate to="inspiration" replace={true} />,
+          },
+          {
+            path: "inspiration", // Đường dẫn tương đối cho "/test/explorer/inspiration"
             element: <InspirationPhoto />,
           },
           {
-            path: "/test/explorer/hot",
+            path: "hot", // Đường dẫn tương đối cho "/test/explorer/hot"
             element: <HotPhoto />,
           },
         ],
       },
       {
-        path: "/test/upload",
+        path: "upload", // Đường dẫn tương đối cho "/test/upload"
         element: <Upload />,
         children: [
           {
-            path: "/test/upload/public",
+            path: "public", // Đường dẫn tương đối cho "/test/upload/public"
             element: <PublicUpload />,
           },
         ],

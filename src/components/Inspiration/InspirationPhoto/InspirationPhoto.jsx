@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
 import { FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
+import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
 const InspirationPhoto = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const limit = 99; // Tổng số ảnh
   const take = 20; // Số lượng ảnh load mỗi lần
-
+  const [selectedImage, setSelectedImage] = useState(null);
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const response = await PhotoApi.getPublicPhotos(pageParam, take);
     return response;
@@ -51,11 +53,23 @@ const InspirationPhoto = () => {
   };
 
   const handleOnClick = (id) => {
-    navigate(`/photo/${id}`);
+    queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
+    setSelectedImage(id);
   };
 
   return (
-    <div className="">
+    <>
+      {selectedImage && (
+        <DetailedPhotoView
+          idImg={selectedImage}
+          onClose={() => {
+            navigate(`/test/explorer/inspiration`);
+            setSelectedImage(null);
+          }}
+          listImg={photoList}
+        />
+      )}
+
       <div>
         <InfiniteScroll
           dataLength={photoList.length}
@@ -80,12 +94,12 @@ const InspirationPhoto = () => {
                 <div
                   key={photo.id}
                   className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
-                  onClick={() => handleOnClick(photo.id)}
                 >
                   <img
                     src={photo.signedUrl.thumbnail}
                     alt={`Photo ${photo.id}`}
                     className="w-full h-auto object-cover"
+                    onClick={() => handleOnClick(photo.id)}
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
                     <div className="flex justify-between w-full px-3">
@@ -117,7 +131,7 @@ const InspirationPhoto = () => {
           </div>
         </InfiniteScroll>
       </div>
-    </div>
+    </>
   );
 };
 

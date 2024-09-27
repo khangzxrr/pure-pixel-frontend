@@ -91,9 +91,21 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const quoteUser = getPhotoById.data?.photographer?.quote;
   const votePhoto = getPhotoById.data?._count?.votes;
   const commentPhoto = getPhotoById.data?._count?.comments;
+
   console.log("====================================");
   console.log(getPhotoById.photographer);
+  console.log(getPhotoById.data);
+
   console.log("====================================");
+
+  const date = new Date(dateTime);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  const formattedDate = ` ${hours}:${minutes} ${day}/${month}/${year}`;
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
       <div className="flex flex-col md:flex-row bg-black text-white md:h-screen w-screen">
@@ -185,13 +197,13 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               <Icon className="mr-2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </Icon>
-              <span>264</span>
+              <span>{votePhoto}</span>
             </button>
             <button className="flex items-center hover:text-blue-500">
               <Icon className="mr-2">
                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
               </Icon>
-              <span>27</span>
+              <span>{commentPhoto}</span>
             </button>
             <button className="hover:text-green-500">
               <Icon>
@@ -238,7 +250,9 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             )}
           </div>
 
-          <h1 className="text-2xl font-bold mb-4">Traunfall</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            {titleT || "Không xác định"}
+          </h1>
 
           <div className="space-y-2 mb-6">
             <div className="flex items-center">
@@ -260,7 +274,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 <line x1="8" y1="2" x2="8" y2="6" />
                 <line x1="3" y1="10" x2="21" y2="10" />
               </Icon>
-              <span>Taken 22/9/2024</span>
+              <span>Thời gian: {formattedDate}</span>
             </div>
             <div className="flex items-center">
               <span className="px-2 py-1 bg-gray-800 rounded-full text-sm mr-2">
@@ -275,7 +289,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                 <circle cx="12" cy="13" r="4" />
               </Icon>
-              <span>SONY ILCE-7CR</span>
+              <span>{exifPhoto?.Model || "Không xác định"}</span>
             </div>
             <div className="flex items-center">
               <Icon className="mr-2">
