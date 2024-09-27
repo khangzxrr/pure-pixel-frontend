@@ -7,6 +7,8 @@ import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import { useParams } from "react-router-dom";
 import DetailUser from "../DetailUser/DetailUser";
 import { useModalState } from "./../../hooks/useModalState";
+import ComModal from "../../components/ComModal/ComModal";
+import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -40,6 +42,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const [selectedImage, setSelectedImage] = useState(idImg);
   const { id } = useParams();
   const popup = useModalState();
+  const popupShare = useModalState();
   const { prevId, nextId } = getNavigation(selectedImage, listImg);
   const getPhotoById = useQuery({
     queryKey: ["get-getPhotoById-by-id", selectedImage],
@@ -89,9 +92,19 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   console.log("====================================");
   console.log(getPhotoById.photographer);
   console.log("====================================");
+
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
+        <ComModal
+          isOpen={popupShare.isModalOpen}
+          onClose={popupShare.handleClose}
+          // width={800}
+          // className={"bg-black"}
+        >
+          <ComSharePhoto />
+        </ComModal>
+
         <div className="flex flex-col md:flex-row bg-black text-white md:h-screen w-screen">
           {/* Left side - Image */}
           <div className="flex-1 md:relative h-screen">
@@ -166,7 +179,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               </button>
             </div>
 
-            <div className="flex items-center space-x-4 mb-6 justify-center">
+            <div className="flex items-center space-x-4 mb-6 justify-between">
               <div className="flex items-center">
                 <Icon className="mr-2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -195,7 +208,10 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 </Icon>
                 <span>27</span>
               </button>
-              <button className="hover:text-green-500">
+              <button
+                className="hover:text-green-500"
+                onClick={popupShare.handleOpen}
+              >
                 <Icon>
                   <circle cx="18" cy="5" r="3" />
                   <circle cx="6" cy="12" r="3" />
