@@ -11,8 +11,8 @@ import getDefaultPhoto from "../../../entities/DefaultPhoto";
 import { useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../../apis/CategoryApi";
 
-export default function UploadPhotoForm() {
-  const { selectedPhoto, setCurrentStep, updateField } = useUploadPhotoStore();
+export default function UploadPhotoForm({ selectedPhoto }) {
+  const { updateField } = useUploadPhotoStore();
   const [categories, setCategories] = useState([]);
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
@@ -42,9 +42,7 @@ export default function UploadPhotoForm() {
     console.log(`Type of value: ${typeof value}`);
   };
 
-  const onSubmit = (data) => {
-    setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep + 1);
-  };
+  const onSubmit = (data) => {};
 
   useEffect(() => {
     reset(selectedPhoto);
@@ -195,7 +193,6 @@ export default function UploadPhotoForm() {
                 field.onChange(value);
                 updateField(selectedPhoto.id, "visibility", value);
               }}
-              disabled={selectedPhoto.currentStep === 3}
             />
           )}
         />
@@ -217,7 +214,6 @@ export default function UploadPhotoForm() {
                 field.onChange(e.target.checked);
                 updateField(selectedPhoto.id, "showExif", e.target.checked);
               }}
-              disabled={selectedPhoto.currentStep === 3}
             >
               Include EXIF Data
             </Checkbox>
@@ -229,7 +225,6 @@ export default function UploadPhotoForm() {
 
         {/* <button
           type="submit"
-          // disabled={selectedPhoto.currentStep === 3}
           className="mt-4 px-4 py-2  bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
           Next

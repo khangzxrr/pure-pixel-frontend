@@ -9,9 +9,9 @@ const getPublicPhotos = async (skip, take) => {
   return response.data;
 };
 
-const getPresignedUploadUrls = async ({ filenames }) => {
+const getPresignedUploadUrls = async ({ filename }) => {
   const response = await http.post(`/photo/upload`, {
-    filenames,
+    filename,
   });
 
   return response.data;

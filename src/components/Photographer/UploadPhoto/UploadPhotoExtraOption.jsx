@@ -11,14 +11,9 @@ import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
 import { PhotoDataFields } from "./PhotoDataFields";
 
-export default function UploadPhotoExtraOption() {
-  const {
-    selectedPhoto,
-    setCurrentStep,
-    updateField,
-    isUpdating,
-    setIsOpenDraftModal,
-  } = useUploadPhotoStore();
+export default function UploadPhotoExtraOption({ selectedPhoto }) {
+  const { updateField, isUpdating, setIsOpenDraftModal } =
+    useUploadPhotoStore();
 
   const {
     control,
@@ -42,114 +37,84 @@ export default function UploadPhotoExtraOption() {
   return (
     <div className="px-6 text-white">
       <form onSubmit={handleSubmit(onSubmit)}>
-        {PhotoDataFields.map((field) => (
-          <div key={field.name}>
-            <p>{field.placeholder}</p>
-            <Controller
-              name={field.name}
-              control={control}
-              render={({ field: controllerField }) => (
-                <Input
-                  {...controllerField}
-                  className={`w-full px-2 m-2 border-[1px] ${
-                    errors[field.name] ? "border-red-500" : "border-[#e0e0e0]"
-                  } focus:outline-none focus:border-[#e0e0e0]`}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                  onChange={(e) => {
-                    let value = e.target.value;
-                    if (
-                      field.name === "exif.ShutterSpeedValue" ||
-                      field.name === "exif.ApertureValue"
-                    ) {
-                      value = parseFloat(value).toFixed(2);
-                    }
-                    controllerField.onChange(value);
-                    updateField(selectedPhoto.id, field.name, value);
-                  }}
-                />
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+          {PhotoDataFields.map((field) => (
+            <div key={field.name}>
+              <p>{field.placeholder}</p>
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field: controllerField }) => (
+                  <Input
+                    {...controllerField}
+                    className={`w-full px-2 m-2 font-light border-[1px] ${
+                      errors[field.name] ? "border-red-500" : "border-[#e0e0e0]"
+                    } focus:outline-none focus:border-[#e0e0e0]`}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      if (
+                        field.name === "exif.ShutterSpeedValue" ||
+                        field.name === "exif.ApertureValue"
+                      ) {
+                        value = parseFloat(value).toFixed(2);
+                      }
+                      controllerField.onChange(value);
+                      updateField(selectedPhoto.id, field.name, value);
+                    }}
+                  />
+                )}
+              />
+              {errors[field.name] && (
+                <p className="text-red-500 text-sm p-1">
+                  {errors[field.name].message}
+                </p>
               )}
-            />
-            {errors[field.name] && (
-              <p className="text-red-500 text-sm p-1">
-                {errors[field.name].message}
-              </p>
-            )}
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
         <div className="flex flex-row w-full mt-1">
           <Controller
-            name="isWatermark"
+            name="watermark"
             control={control}
             render={({ field: controllerField }) => (
               <Tooltip
                 placement="left"
                 color="geekblue"
-                title={selectedPhoto.isWatermark ? "Gỡ nhãn" : "Gắn nhãn"}
+                title={selectedPhoto?.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
               >
                 <Checkbox
                   {...controllerField}
                   className="m-2"
-                  checked={selectedPhoto.isWatermark}
+                  checked={selectedPhoto?.watermark}
                   onChange={(e) => {
                     controllerField.onChange(e.target.checked);
                     console.log(
-                      "isWatermark",
+                      "watermark",
                       e.target.checked,
                       controllerField.value,
                       selectedPhoto.id
                     );
                     updateField(
                       selectedPhoto.id,
-                      "isWatermark",
+                      "watermark",
                       e.target.checked
                     );
                   }}
-                  disabled={selectedPhoto.currentStep === 3}
                 >
                   <p className="text-white">Thêm Nhãn</p>
                 </Checkbox>
               </Tooltip>
             )}
           />
-          {errors.isWatermark && (
+          {errors.watermark && (
             <p className="text-red-500 text-sm p-1">
-              {errors.isWatermark.message}
+              {errors.watermark.message}
             </p>
           )}
-          {selectedPhoto.isWatermark && (
-            <div key="watermark">
-              <Controller
-                name="watermark"
-                control={control}
-                render={({ field: controllerField }) => (
-                  <Input
-                    {...controllerField}
-                    className={`w-full px-2 border-[1px] ${
-                      errors.watermark ? "border-red-500" : "border-[#e0e0e0]"
-                    } focus:outline-none focus:border-[#e0e0e0]`}
-                    type="text"
-                    placeholder="Nhập nhãn cho ảnh"
-                    onChange={(e) => {
-                      controllerField.onChange(e);
-                      updateField(
-                        selectedPhoto.id,
-                        "watermark",
-                        e.target.value
-                      );
-                    }}
-                  />
-                )}
-              />
-              {errors.watermark && (
-                <p className="text-red-500 text-sm p-1">
-                  {errors.watermark.message}
-                </p>
-              )}
-            </div>
-          )}
         </div>
-
+        <div className="h-24"></div>{" "}
         {/* <button
           type="submit"
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 float-right"

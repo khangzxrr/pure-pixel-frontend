@@ -94,7 +94,7 @@ const Upload = () => {
       </div>
       <div
         id="inspiration"
-        className="flex flex-col flex-grow overflow-y-auto 
+        className="flex flex-col flex-grow overflow-y-hidden overflow-x-hidden 
      scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
       >
         <div className="sticky top-0 px-2 z-50 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">

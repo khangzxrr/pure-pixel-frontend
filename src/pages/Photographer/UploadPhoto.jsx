@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomUpload from "../../components/Photographer/UploadPhoto/CustomUpload";
 import UploadPhotoInfoBar from "../../components/Photographer/UploadPhoto/UploadPhotoInfoBar";
 import { Spin, Switch, Tooltip } from "antd";
@@ -13,17 +13,23 @@ export default function UploadPhoto() {
     setNextSelectedPhoto,
     setPreviousSelectedPhoto,
   } = useUploadPhotoStore();
-
+  const currentPhoto =
+    photoList && photoList.find((photo) => photo.uid === selectedPhoto);
+  useEffect(() => {}, [selectedPhoto]);
   return (
     <div className="flex h-screen justify-end">
-      <div className="flex flex-col w-5/6 bg-gray-500">
-        <div className={`w-full ${photoList.length > 0 ? "h-1/3" : "h-full"}`}>
+      <div className="flex flex-col w-full ">
+        <div
+          className={`w-full ${
+            photoList && photoList.length > 0 ? "h-1/3" : "h-1/2"
+          }`}
+        >
           <CustomUpload />
         </div>
-        {photoList.length > 0 && (
+        {photoList && photoList.length > 0 && (
           <div className="w-full flex overflow-hidden">
-            <div className="w-2/3 bg-gray-800 p-7 relative flex justify-center items-center">
-              {photoList.length > 1 && (
+            <div className="w-2/3 bg-[#292b2f] p-7 relative flex justify-center items-center">
+              {photoList && photoList.length > 1 && (
                 <div
                   className="absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer"
                   onClick={() => setPreviousSelectedPhoto()}
@@ -31,21 +37,19 @@ export default function UploadPhoto() {
                   <ArrowLeftOutlined />
                 </div>
               )}
-              {selectedPhoto.status === "PARSED" ? (
-                <img
-                  src={
-                    selectedPhoto?.upload_url || selectedPhoto?.signedUrl?.url
-                  }
-                  className="max-w-full max-h-full shadow-gray-600 shadow-xl drop-shadow-none"
-                  alt="Selected Photo"
-                />
-              ) : (
+              {/* {currentPhoto?.status === "PARSED" ? ( */}
+              <img
+                src={currentPhoto?.reviewUrl}
+                className="max-w-full max-h-full shadow-gray-600 shadow-xl drop-shadow-none"
+                alt="Selected Photo"
+              />
+              {/* ) : (
                 <div>
                   <Spin size="large" />
                 </div>
-              )}
+              )} */}
 
-              {photoList.length > 1 && (
+              {photoList && photoList.length > 1 && (
                 <div
                   className="absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer"
                   onClick={() => setNextSelectedPhoto()}
@@ -55,7 +59,7 @@ export default function UploadPhoto() {
               )}
             </div>
 
-            <div className="w-1/3 overflow-y-auto px-3 bg-gray-700">
+            <div className="w-1/3 overflow-y-auto px-3 bg-[#2f3136]">
               <UploadPhotoInfoBar />
             </div>
           </div>

@@ -32,7 +32,7 @@ export default function OverviewModal() {
     setIsOpenDraftModal(false);
   };
 
-  console.log(photoList);
+  // console.log(photoList);
 
   return (
     <div>

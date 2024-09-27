@@ -4,7 +4,6 @@ import { Image, message, Upload, Progress, Flex, Tooltip, Switch } from "antd";
 import { useEffect, useRef, useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import SinglePhotoUpload from "./SinglePhotoUpload";
 import { io } from "socket.io-client";
 import UserService from "../../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
@@ -12,16 +11,13 @@ import PhotoCard from "./PhotoCard";
 import ScrollingBar from "./ScrollingBar";
 import { useNavigate } from "react-router-dom";
 import "./UploadPhoto.css";
+import {
+  getExifData,
+  validateExifData,
+  getBase64,
+} from "../../../utils/HandleUploadPhoto";
 
 const { Dragger } = Upload;
-
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
 
 export default function CustomUpload() {
   const [isWatermarkAll, setIsWatermarkAll] = useState(true);
@@ -44,7 +40,7 @@ export default function CustomUpload() {
   const { keycloak } = useKeycloak();
 
   const userToken = UserService ? UserService.getTokenParsed() : "";
-  console.log("userToken", userToken);
+  // console.log("userToken", userToken);
 
   //using ref to NOT cause re-render when socketRef is change
   const socketRef = useRef();
@@ -72,11 +68,16 @@ export default function CustomUpload() {
   });
 
   const getPresignedUploadUrls = useMutation({
-    mutationFn: (filenames) => PhotoApi.getPresignedUploadUrls({ filenames }),
+    mutationFn: (filename) => PhotoApi.getPresignedUploadUrls({ filename }),
   });
 
   const processPhoto = useMutation({
     mutationFn: (signedUploads) => PhotoApi.processPhotos(signedUploads),
+  });
+
+  const updatePhotos = useMutation({
+    mutationKey: "update-photo",
+    mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
   });
 
   const beforeUpload = async (file) => {
@@ -98,10 +99,25 @@ export default function CustomUpload() {
 
   const customRequest = async ({ file, onError, onSuccess, onProgress }) => {
     try {
-      const fileNames = [file.name];
-      const presignedData = await getPresignedUploadUrls.mutateAsync(fileNames);
-      const signedUploadUrl = presignedData.signedUploads[0].uploadUrl;
-      const photoId = presignedData.signedUploads[0].photoId;
+      // Extract EXIF data from the file
+      const exifData = await getExifData(file);
+      console.log("EXIF Data:", exifData);
+
+      // Validate EXIF data
+      const isValidExif = validateExifData(exifData);
+
+      // If EXIF data is invalid, show error and cancel the upload
+      if (!isValidExif) {
+        message.error(
+          "Ảnh không hợp lệ. Thiếu dữ liệu EXIF cần thiết (Model, ISO, FNumber, ShutterSpeedValue, ApertureValue)."
+        );
+        onError(new Error("Invalid EXIF data")); // Call onError callback to indicate failure
+        return; // Stop further processing and don't call the upload API
+      }
+      const fileName = file.name;
+      const presignedData = await getPresignedUploadUrls.mutateAsync(fileName);
+      const signedUploadUrl = presignedData.signedUpload.uploadUrl;
+      const photoId = presignedData.signedUpload.photoId;
       const uid = file.uid;
       console.log(file, "customRequest");
 
@@ -109,31 +125,44 @@ export default function CustomUpload() {
         url: signedUploadUrl,
         file,
         uid,
-        options: {
-          onUploadProgress: (event) => {
-            const { loaded, total } = event;
-            console.log(event, uid);
-            const percent = Math.round((loaded / total) * 100);
-            onProgress({ percent });
-            updateFieldByUid(uid, "upload_percent", percent);
-          },
-          headers: {
-            "Content-Type": file.type,
-          },
-        },
+        // options: {
+        //   onUploadProgress: (event) => {
+        //     const { loaded, total } = event;
+        //     // console.log(event, uid);
+        //     const percent = Math.round((loaded / total) * 100);
+        //     onProgress({ percent });
+        //     updateFieldByUid(uid, "upload_percent", percent);
+        //   },
+
+        //   onSuccess: (data) => {
+        //     console.log("before onSuccess call", data);
+        //     onSuccess(data);
+        //     console.log("after onSuccess call");
+        //   },
+        //   onError: (e) => {
+        //     console.log("upload error", e);
+        //     onError(e); // Ensure you call the passed onError callback
+        //   },
+        //   headers: {
+        //     "Content-Type": file.type,
+        //   },
+        // },
       });
 
-      await processPhoto.mutateAsync(presignedData);
+      message.info("Tải ảnh lên thành công, bắt đầu xử lý ảnh...");
 
-      message.info("upload success, start to parse photo metadata...");
+      onSuccess({ status: "done" }, presignedData.signedUpload); // Set status to 'done'
 
-      socketRef.current.on("finish-process-photos", (data) => {
-        //only call back onSuccess if the data return is equal photoId
-        //this prevent all photos in pending state trigger onSuccess when ONLY ONE DATA is received
-        if (data[0].id == photoId) {
-          onSuccess(data[0]);
-        }
-      });
+      // Then process the photo
+      const processedPhotoData = await processPhoto.mutateAsync(
+        presignedData.signedUpload
+      );
+
+      // After successful processing, set status to 'parsed'
+      message.success("Xử lý ảnh thành công");
+
+      // Set status to 'parsed' in onSuccess callback
+      onSuccess({ status: "parsed", data: processedPhotoData });
     } catch (e) {
       message.error("something wrong! please try again");
       console.log(e);
@@ -143,40 +172,51 @@ export default function CustomUpload() {
 
   const handleChange = async (info) => {
     console.log("Upload onChange:", info);
+
+    // Extract EXIF data from the file
+    const exifData = await getExifData(info.file.originFileObj);
+    // Extract the base64 URL of the file for preview
+    const reviewUrl = await getBase64(info.file.originFileObj);
+
+    // Validate EXIF data
+    const isValidExif = validateExifData(exifData);
+
+    // If EXIF data is invalid, show error and cancel the upload
+    if (!isValidExif) {
+      console.log("Invalid photo. Required EXIF data missing.");
+
+      return; // Stop further processing
+    }
+
+    // Proceed with adding or updating the image if EXIF data is valid
     if (!isPhotoExistByUid(info.file.uid) && info.file.status !== "removed") {
       addSingleImage({
         ...info.file,
         title: info.file.name.replace(/\.(png|jpg)$/i, ""),
+        exif: exifData, // Include EXIF data
+        reviewUrl: reviewUrl,
+        watermark: true,
+        title: info.file.name.replace(/\.(png|jpg)$/i, ""), // Remove file extension
       });
+      setSelectedPhoto(info.file.uid);
     } else if (info.file.status === "done") {
       console.log("Upload done:", info, photoList);
       await updatePhotoByUid(info.file.uid, {
         ...info.file.response,
-        title: info.file.name.replace(/\.(png|jpg)$/i, ""), // Remove file extension
-        watermark: userToken
-          ? userToken.preferred_username.split("@")[0]
-          : "Pure Pixel",
       });
-      setSelectedPhoto({
-        ...info.file.response,
-        uid: info.file.uid,
-        title: info.file.name.replace(/\.(png|jpg)$/i, ""), // Remove file extension
-        watermark: userToken
-          ? userToken.preferred_username.split("@")[0]
-          : "Pure Pixel",
-        isWatermark: true,
-        currentStep: 1,
-      });
+      setSelectedPhoto(info.file.uid);
     } else if (info.file.status === "uploading") {
-      if (!info.file.url && !info.file.preview) {
-        info.file.preview = await getBase64(info.file.originFileObj);
-      }
+      console.log("reviewUrl", reviewUrl);
+
       updatePhotoByUid(info.file.uid, {
-        upload_url: info.file.url || info.file.preview,
-        percent: info.file.percent,
+        upload_url: reviewUrl,
+        // percent: info.file.percent,
       });
     } else if (info.file.status === "PARSED") {
       console.log("PARSED", info.file);
+    } else if (info.file.status === "error") {
+      message.error("Có lỗi xảy ra! Vui lòng thử lại");
+      removePhotoByUid(info.file.uid);
     }
   };
 
@@ -189,23 +229,18 @@ export default function CustomUpload() {
     return "";
   };
 
-  const updatePhotos = useMutation({
-    mutationKey: "update-photo",
-    mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
-  });
-
   const SubmitUpload = async () => {
     setIsUpdating(true);
 
     // Extract the necessary fields from photoList and filter by status 'PARSED'
     const photosToUpload = photoList
-      .filter((photo) => photo.status === "PARSED")
+      .filter((photo) => photo.status === "parsed")
       .map((photo) => ({
         id: photo.id,
         categoryId: photo.categoryId,
         photographerId: photo.photographerId,
         title: photo.title,
-        watermark: photo.isWatermark ? photo.isWatermark : true,
+        watermark: photo.watermark,
         showExif: photo.showExif,
         exif: photo.exif,
         colorGrading: photo.colorGrading,
@@ -242,10 +277,10 @@ export default function CustomUpload() {
   return (
     <div className="h-full overflow-hidden">
       <div className="w-full h-full flex flex-row">
-        {photoList.length > 0 && (
-          <div className="w-5/6 bg-slate-600">
+        {photoList && photoList.length > 0 && (
+          <div className="w-5/6 bg-[#36393f]">
             <div className="w-full">
-              {photoList.length > 1 && (
+              {photoList && photoList.length > 1 && (
                 <Tooltip placement="rightTop" color="geekblue">
                   <div className="flex items-center pl-3">
                     <Switch
@@ -271,14 +306,14 @@ export default function CustomUpload() {
         )}
         <div
           className={` tranlation duration-150 ${
-            photoList.length > 0
-              ? "w-1/6"
-              : "w-full h-full bg-slate-400  hover:bg-slate-300"
+            photoList && photoList.length > 0
+              ? "w-1/6 bg-[#42454a] "
+              : "w-full h-full bg-[#42454a]  hover:bg-slate-300"
           }`}
         >
-          {photoList.length > 0 && (
+          {photoList && photoList.length > 0 && (
             <div
-              className="w-full h-1/2 bg-green-400 hover:bg-green-300 transition duration-150 flex justify-center items-center cursor-pointer"
+              className="w-full h-1/2 bg-[#56bc8a] hover:bg-[#68c397] transition duration-150 flex justify-center items-center cursor-pointer"
               onClick={SubmitUpload}
             >
               <div className="h-16 w-full flex-shrink-0 m-2 text-6xl text-white flex justify-center items-center">
@@ -290,7 +325,7 @@ export default function CustomUpload() {
             name="avatar"
             listType="picture-card"
             className="avatar-uploader"
-            multiple={true}
+            multiple={false}
             beforeUpload={beforeUpload}
             onChange={handleChange}
             customRequest={customRequest}
@@ -303,7 +338,7 @@ export default function CustomUpload() {
             }}
           >
             <div className=" h-full w-full ">
-              {photoList.length > 0 ? (
+              {photoList && photoList.length > 0 ? (
                 <div className="w-full h-full hover:text-white text-gray-200">
                   <div className="  flex-shrink-0 m-2 text-6xl">
                     <PlusCircleOutlined />
@@ -311,7 +346,7 @@ export default function CustomUpload() {
                 </div>
               ) : (
                 <div className="h-screen">
-                  <div className="h-full w-full flex justify-center items-center">
+                  <div className="h-1/2 w-full flex justify-center items-center">
                     <div>
                       <p className="h-1/2 text-2xl text-white font-semibold">
                         Nhấp hoặc kéo tệp vào khu vực này để tải lên
@@ -328,7 +363,6 @@ export default function CustomUpload() {
           </Dragger>
         </div>
       </div>
-      {console.log("photoList", photoList)}
     </div>
   );
 }

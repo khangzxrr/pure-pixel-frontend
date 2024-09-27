@@ -33,7 +33,7 @@ import Galleries from "../components/UserProfile/Galleries";
 import Completed from "../components/UserProfile/Completed";
 import Packages from "../components/UserProfile/Packages";
 import Upgrade from "../pages/Manager/UpgradeAccount/Upgrade";
-import ProtectedRoute from "../authorize/";
+// import ProtectedRoute from "../authorize/";
 import DetailPhoto from "../pages/DetailPhoto/DetailPhoto";
 import InspirationPhoto from "../components/Inspiration/InspirationPhoto/InspirationPhoto";
 import HotPhoto from "../components/Hot/HotPhoto";
@@ -41,7 +41,7 @@ import DashboardLayoutF from "../layouts/DashboardLayoutF";
 import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
-
+import ScrollingBar from "../components/Photographer/UploadPhoto/ScrollingBar";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -245,9 +245,13 @@ export const AppRouter = createBrowserRouter([
         children: [
           {
             path: "/test/upload/public",
-            element: <PublicUpload />,
+            element: <UploadPhoto />,
           },
         ],
+      },
+      {
+        path: "/test/test_scroll",
+        element: <ScrollingBar />,
       },
     ],
   },
