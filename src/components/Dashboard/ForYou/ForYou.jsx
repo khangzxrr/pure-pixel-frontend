@@ -74,7 +74,7 @@ const ForYou = () => {
         />
       )}
 
-      <div className="py-5">
+      <div className={`py-5  `}>
         <div className="flex justify-between items-center px-2 pb-3">
           <div className="ml-6 hover:cursor-pointer">
             <Dropdown
