@@ -50,7 +50,6 @@ const useUploadPhotoStore = create(
               return {
                 ...photo,
                 ...newPhoto,
-                title: photo.name,
               };
             }
             return photo;
@@ -79,10 +78,10 @@ const useUploadPhotoStore = create(
           (photo) => photo.uid !== uid
         );
 
-        const isDeletedSelected = state.selectedPhoto.uid === uid;
+        const isDeletedSelected = state.selectedPhoto === uid;
 
         const newSelectedPhoto = isDeletedSelected
-          ? updatedPhotoList[0] || {}
+          ? updatedPhotoList[0]?.uid || {}
           : state.selectedPhoto;
 
         return {
@@ -147,10 +146,10 @@ const useUploadPhotoStore = create(
         if (photoList.length === 0) return;
 
         const currentIndex = photoList.findIndex(
-          (photo) => photo.uid === selectedPhoto.uid
+          (photo) => photo.uid === selectedPhoto
         );
         const nextIndex = (currentIndex + 1) % photoList.length;
-        return { selectedPhoto: photoList[nextIndex] };
+        return { selectedPhoto: photoList[nextIndex].uid };
       }),
 
     setPreviousSelectedPhoto: () =>
@@ -159,11 +158,11 @@ const useUploadPhotoStore = create(
         if (photoList.length === 0) return;
 
         const currentIndex = photoList.findIndex(
-          (photo) => photo.uid === selectedPhoto.uid
+          (photo) => photo.uid === selectedPhoto
         );
         const previousIndex =
           (currentIndex - 1 + photoList.length) % photoList.length;
-        return { selectedPhoto: photoList[previousIndex] };
+        return { selectedPhoto: photoList[previousIndex].uid };
       }),
   }))
 );

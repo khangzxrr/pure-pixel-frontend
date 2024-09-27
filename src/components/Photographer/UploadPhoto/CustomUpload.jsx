@@ -15,6 +15,7 @@ import {
   getExifData,
   validateExifData,
   getBase64,
+  getFileBlobUrl,
 } from "../../../utils/HandleUploadPhoto";
 
 const { Dragger } = Upload;
@@ -151,18 +152,15 @@ export default function CustomUpload() {
 
       message.info("Tải ảnh lên thành công, bắt đầu xử lý ảnh...");
 
-      onSuccess({ status: "done" }, presignedData.signedUpload); // Set status to 'done'
-
+      onSuccess({ ...file, status: "done", ...presignedData.signedUpload }); // Set status to 'done'
       // Then process the photo
-      const processedPhotoData = await processPhoto.mutateAsync(
-        presignedData.signedUpload
-      );
+      await processPhoto.mutateAsync(presignedData.signedUpload);
 
       // After successful processing, set status to 'parsed'
       message.success("Xử lý ảnh thành công");
 
       // Set status to 'parsed' in onSuccess callback
-      onSuccess({ status: "parsed", data: processedPhotoData });
+      onSuccess({ status: "parsed" });
     } catch (e) {
       message.error("something wrong! please try again");
       console.log(e);
@@ -176,7 +174,7 @@ export default function CustomUpload() {
     // Extract EXIF data from the file
     const exifData = await getExifData(info.file.originFileObj);
     // Extract the base64 URL of the file for preview
-    const reviewUrl = await getBase64(info.file.originFileObj);
+    const reviewUrl = await getFileBlobUrl(info.file.originFileObj);
 
     // Validate EXIF data
     const isValidExif = validateExifData(exifData);
@@ -191,28 +189,37 @@ export default function CustomUpload() {
     // Proceed with adding or updating the image if EXIF data is valid
     if (!isPhotoExistByUid(info.file.uid) && info.file.status !== "removed") {
       addSingleImage({
-        ...info.file,
+        uid: info.file.uid,
         title: info.file.name.replace(/\.(png|jpg)$/i, ""),
         exif: exifData, // Include EXIF data
+        status: "uploading",
         reviewUrl: reviewUrl,
         watermark: true,
-        title: info.file.name.replace(/\.(png|jpg)$/i, ""), // Remove file extension
+        visibility: "PUBLIC",
+        showExif: true,
       });
       setSelectedPhoto(info.file.uid);
-    } else if (info.file.status === "done") {
+    } else if (info.file.response.status === "done") {
       console.log("Upload done:", info, photoList);
+      console.log("photoId", info.file.response);
+
       await updatePhotoByUid(info.file.uid, {
-        ...info.file.response,
+        photoId: info.file.response.photoId,
       });
-      setSelectedPhoto(info.file.uid);
+      await updateFieldByUid(info.file.uid, "status", "done");
+      // await updateFieldByUid(info.file.uid, "reviewUrl", info.file.response.uploadUrl,);
+
+      // setSelectedPhoto(info.file.uid);
     } else if (info.file.status === "uploading") {
       console.log("reviewUrl", reviewUrl);
 
       updatePhotoByUid(info.file.uid, {
-        upload_url: reviewUrl,
+        reviewUrl: reviewUrl,
         // percent: info.file.percent,
       });
-    } else if (info.file.status === "PARSED") {
+      updateFieldByUid(info.file.uid, "status", "parsed");
+    } else if (info.file.response.status === "parsed") {
+      updateFieldByUid(info.file.uid, "status", "parsed");
       console.log("PARSED", info.file);
     } else if (info.file.status === "error") {
       message.error("Có lỗi xảy ra! Vui lòng thử lại");
@@ -236,12 +243,12 @@ export default function CustomUpload() {
     const photosToUpload = photoList
       .filter((photo) => photo.status === "parsed")
       .map((photo) => ({
-        id: photo.id,
+        id: photo.photoId,
         categoryId: photo.categoryId,
         photographerId: photo.photographerId,
         title: photo.title,
         watermark: photo.watermark,
-        showExif: photo.showExif,
+        showExif: photo.showExif ? photo.showExif : true,
         exif: photo.exif,
         colorGrading: photo.colorGrading,
         location: photo.location,
@@ -255,10 +262,6 @@ export default function CustomUpload() {
         visibility: photo.visibility,
         status: photo.status,
         photoTags: photo.photoTags,
-        createdAt: photo.createdAt,
-        updatedAt: photo.updatedAt,
-        deletedAt: photo.deletedAt,
-        photographer: photo.photographer,
         category: photo.category,
       }));
 
@@ -279,27 +282,29 @@ export default function CustomUpload() {
       <div className="w-full h-full flex flex-row">
         {photoList && photoList.length > 0 && (
           <div className="w-5/6 bg-[#36393f]">
-            <div className="w-full">
-              {photoList && photoList.length > 1 && (
-                <Tooltip placement="rightTop" color="geekblue">
-                  <div className="flex items-center pl-3">
-                    <Switch
-                      defaultChecked
-                      size="small"
-                      onChange={handleToggleWatermark}
-                    />
-                    {isWatermarkAll ? (
-                      <p className="ml-2 text-slate-300 font-semibold">
-                        Gỡ nhãn toàn bộ ảnh
-                      </p>
-                    ) : (
-                      <p className="ml-2 text-slate-300 font-semibold">
-                        Gắn nhãn toàn bộ ảnh
-                      </p>
-                    )}
-                  </div>
-                </Tooltip>
-              )}
+            <div
+              className={`w-full ${
+                photoList && photoList.length > 1 ? "visible" : "invisible"
+              }`}
+            >
+              <Tooltip placement="rightTop" color="geekblue">
+                <div className="flex items-center pl-3">
+                  <Switch
+                    defaultChecked
+                    size="small"
+                    onChange={handleToggleWatermark}
+                  />
+                  {isWatermarkAll ? (
+                    <p className="ml-2 text-slate-300 font-semibold">
+                      Gỡ nhãn toàn bộ ảnh
+                    </p>
+                  ) : (
+                    <p className="ml-2 text-slate-300 font-semibold">
+                      Gắn nhãn toàn bộ ảnh
+                    </p>
+                  )}
+                </div>
+              </Tooltip>
             </div>
             <ScrollingBar />
           </div>

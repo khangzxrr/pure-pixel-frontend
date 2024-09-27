@@ -17,7 +17,7 @@ export default function UploadPhoto() {
     photoList && photoList.find((photo) => photo.uid === selectedPhoto);
   useEffect(() => {}, [selectedPhoto]);
   return (
-    <div className="flex h-screen justify-end">
+    <div className="flex h-[93%] justify-end">
       <div className="flex flex-col w-full ">
         <div
           className={`w-full ${
@@ -30,33 +30,27 @@ export default function UploadPhoto() {
           <div className="w-full flex overflow-hidden">
             <div className="w-2/3 bg-[#292b2f] p-7 relative flex justify-center items-center">
               {photoList && photoList.length > 1 && (
-                <div
-                  className="absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer"
-                  onClick={() => setPreviousSelectedPhoto()}
-                >
-                  <ArrowLeftOutlined />
-                </div>
+                <>
+                  <div
+                    className="absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10"
+                    onClick={() => setPreviousSelectedPhoto()}
+                  >
+                    <ArrowLeftOutlined />
+                  </div>
+                  <div
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10"
+                    onClick={() => setNextSelectedPhoto()}
+                  >
+                    <ArrowRightOutlined />
+                  </div>
+                </>
               )}
-              {/* {currentPhoto?.status === "PARSED" ? ( */}
+
               <img
                 src={currentPhoto?.reviewUrl}
-                className="max-w-full max-h-full shadow-gray-600 shadow-xl drop-shadow-none"
+                className="max-w-full max-h-full shadow-gray-600 shadow-xl drop-shadow-none z-0"
                 alt="Selected Photo"
               />
-              {/* ) : (
-                <div>
-                  <Spin size="large" />
-                </div>
-              )} */}
-
-              {photoList && photoList.length > 1 && (
-                <div
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer"
-                  onClick={() => setNextSelectedPhoto()}
-                >
-                  <ArrowRightOutlined />
-                </div>
-              )}
             </div>
 
             <div className="w-1/3 overflow-y-auto px-3 bg-[#2f3136]">
@@ -64,6 +58,7 @@ export default function UploadPhoto() {
             </div>
           </div>
         )}
+
         <OverviewModal />
       </div>
     </div>

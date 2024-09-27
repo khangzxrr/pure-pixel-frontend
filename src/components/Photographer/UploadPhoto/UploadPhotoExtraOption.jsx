@@ -1,4 +1,4 @@
-import { Checkbox, Input, message, Tooltip } from "antd";
+import { Checkbox, Input, message, Select, Tooltip } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { PhotoDataFields } from "./PhotoDataFields";
 
 export default function UploadPhotoExtraOption({ selectedPhoto }) {
-  const { updateField, isUpdating, setIsOpenDraftModal } =
+  const { updateFieldByUid, isUpdating, setIsOpenDraftModal } =
     useUploadPhotoStore();
 
   const {
@@ -35,7 +35,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
   }, [selectedPhoto, reset]);
 
   return (
-    <div className="px-6 text-white">
+    <div className="px-2 lg:px-6 text-white font-normal lg:text-base text-xs">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-x-4 gap-y-4">
           {PhotoDataFields.map((field) => (
@@ -47,7 +47,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
                 render={({ field: controllerField }) => (
                   <Input
                     {...controllerField}
-                    className={`w-full px-2 m-2 font-light border-[1px] ${
+                    className={`w-full px-2 m-2 lg:text-base text-xs border-[1px] ${
                       errors[field.name] ? "border-red-500" : "border-[#e0e0e0]"
                     } focus:outline-none focus:border-[#e0e0e0]`}
                     type={field.type}
@@ -61,7 +61,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
                         value = parseFloat(value).toFixed(2);
                       }
                       controllerField.onChange(value);
-                      updateField(selectedPhoto.id, field.name, value);
+                      updateFieldByUid(selectedPhoto.uid, field.name, value);
                     }}
                   />
                 )}
@@ -87,23 +87,20 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
                 <Checkbox
                   {...controllerField}
                   className="m-2"
-                  checked={selectedPhoto?.watermark}
+                  checked={controllerField.value}
                   onChange={(e) => {
-                    controllerField.onChange(e.target.checked);
+                    const checked = e.target.checked;
+                    controllerField.onChange(checked);
                     console.log(
                       "watermark",
-                      e.target.checked,
+                      checked,
                       controllerField.value,
-                      selectedPhoto.id
+                      selectedPhoto.uid
                     );
-                    updateField(
-                      selectedPhoto.id,
-                      "watermark",
-                      e.target.checked
-                    );
+                    updateFieldByUid(selectedPhoto.uid, "watermark", checked);
                   }}
                 >
-                  <p className="text-white">Thêm Nhãn</p>
+                  <p className="text-white lg:text-base text-xs">Thêm Nhãn</p>
                 </Checkbox>
               </Tooltip>
             )}
@@ -113,7 +110,61 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
               {errors.watermark.message}
             </p>
           )}
+
+          <Controller
+            name="showExif"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                {...field}
+                className="m-2"
+                checked={field.value}
+                onChange={(e) => {
+                  field.onChange(e.target.checked);
+                  updateFieldByUid(
+                    selectedPhoto.uid,
+                    "showExif",
+                    e.target.checked
+                  );
+                }}
+              >
+                <p className="text-white lg:text-base text-xs">
+                  Hiện thông số bức ảnh
+                </p>
+              </Checkbox>
+            )}
+          />
+          {errors.showExif && (
+            <p className="text-red-500 text-sm p-1">
+              {errors.showExif.message}
+            </p>
+          )}
         </div>
+        <Controller
+          name="visibility"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              placeholder="Photo privacy"
+              options={[
+                { label: "Công khai", value: "PUBLIC" },
+                { label: "Riêng tư", value: "PRIVATE" },
+                { label: "Liên kết riêng tư", value: "SHARE_LINK" },
+              ]}
+              className="w-5/6 m-2 lg:text-base text-xs"
+              onChange={(value) => {
+                field.onChange(value);
+                updateFieldByUid(selectedPhoto.uid, "visibility", value);
+              }}
+            />
+          )}
+        />
+        {errors.visibility && (
+          <p className="text-red-500 text-sm p-1">
+            {errors.visibility.message}
+          </p>
+        )}
         <div className="h-24"></div>{" "}
         {/* <button
           type="submit"

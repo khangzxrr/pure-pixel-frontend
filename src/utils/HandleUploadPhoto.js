@@ -83,3 +83,28 @@ export const getBase64 = (file) => {
     reader.onerror = (error) => reject(error);
   });
 };
+export const getBuffer = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onload = () => {
+      // Convert ArrayBuffer to buffer in browsers
+      const buffer = new Uint8Array(reader.result);
+      resolve(buffer);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
+// Utility to convert file to Blob URL for preview
+export const getFileBlobUrl = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onload = () => {
+      const blob = new Blob([reader.result], { type: file.type });
+      const url = URL.createObjectURL(blob);
+      resolve(url);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};

@@ -12,8 +12,12 @@ function truncateString(str, num) {
 }
 
 export default function PhotoCard({ photo }) {
-  const { setSelectedPhoto, removePhotoByUid, selectedPhoto, updateField } =
-    useUploadPhotoStore();
+  const {
+    setSelectedPhoto,
+    removePhotoByUid,
+    selectedPhoto,
+    updateFieldByUid,
+  } = useUploadPhotoStore();
   const displayTitle = photo?.name
     ? truncateString(photo.name, 13)
     : "Untitled"; // Adjust the number as needed
@@ -24,20 +28,31 @@ export default function PhotoCard({ photo }) {
 
   const handleRemove = (photo) => {
     console.log("onRemove", photo);
-    deletePhoto.mutateAsync(
-      { id: photo.id },
-      {
-        onSuccess: () => {
-          message.success("Xóa ảnh thành công");
-          removePhotoByUid(photo.uid);
-          // Additional logic to handle the successful deletion of the photo
-        },
-        onError: (error) => {
-          message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
-          // Additional logic to handle the error
-        },
+    if (photo.photoId) {
+      try {
+        deletePhoto.mutateAsync(
+          { id: photo.photoId },
+          {
+            onSuccess: () => {
+              message.success("Xóa ảnh thành công");
+              removePhotoByUid(photo.uid);
+              // Additional logic to handle the successful deletion of the photo
+            },
+            onError: (error) => {
+              console.log("Error deleting photo", error);
+
+              message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
+              // Additional logic to handle the error
+            },
+          }
+        );
+      } catch (error) {
+        console.log("Error deleting photo", error);
+        message.error("Chưa thể xóa ảnh");
       }
-    );
+    } else {
+      removePhotoByUid(photo.uid);
+    }
   };
   const handleSelect = () => {
     setSelectedPhoto(photo.uid);
@@ -58,7 +73,7 @@ export default function PhotoCard({ photo }) {
         {displayTitle}
       </p>
       <>
-        <div className="h-4 w-4 absolute top-0 right-0 flex justify-center items-center z-20">
+        <div className="h-8 w-8 absolute top-2 right-2 flex justify-center items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
           <Tooltip title="Delete Photo">
             <DeleteOutlined
               className="text-white text-xl cursor-pointer hover:text-red-500"
@@ -69,7 +84,7 @@ export default function PhotoCard({ photo }) {
             />
           </Tooltip>
         </div>
-        <div className="h-4 w-4  absolute bottom-20 right-4 flex justify-center items-center z-20">
+        <div className="h-4 w-4  absolute bottom-16 right-3 flex justify-center items-center z-20">
           <div className="absolute">
             <Tooltip
               placement="topRight"
@@ -79,7 +94,7 @@ export default function PhotoCard({ photo }) {
               <Checkbox
                 onChange={(e) => {
                   console.log("Checkbox onChange", e.target.checked);
-                  updateField(photo.id, "watermark", e.target.checked);
+                  updateFieldByUid(photo.uid, "watermark", e.target.checked);
                 }}
                 checked={photo.watermark}
               />

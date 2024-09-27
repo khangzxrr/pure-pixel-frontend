@@ -12,7 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../../apis/CategoryApi";
 
 export default function UploadPhotoForm({ selectedPhoto }) {
-  const { updateField } = useUploadPhotoStore();
+  const { updateFieldByUid } = useUploadPhotoStore();
   const [categories, setCategories] = useState([]);
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
@@ -50,7 +50,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
   }, [selectedPhoto, reset]);
 
   return (
-    <div className="px-6 text-white">
+    <div className="px-2 lg:px-6 text-white font-normal lg:text-base text-xs">
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>Tựa đề</p>
         <Controller
@@ -59,14 +59,14 @@ export default function UploadPhotoForm({ selectedPhoto }) {
           render={({ field }) => (
             <Input
               {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
+              className={`w-full px-2 m-2 border-[1px] lg:text-base text-xs ${
                 errors.title ? "border-red-500" : "border-[#e0e0e0]"
               } focus:outline-none focus:border-[#e0e0e0]`}
               type="text"
               placeholder="Enter image title"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "title", e.target.value);
+                updateFieldByUid(selectedPhoto.uid, "title", e.target.value);
               }}
             />
           )}
@@ -88,7 +88,11 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               placeholder="Enter description"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "description", e.target.value);
+                updateFieldByUid(
+                  selectedPhoto.uid,
+                  "description",
+                  e.target.value
+                );
               }}
             />
           )}
@@ -117,7 +121,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               className="w-3/5 max-w-full m-2"
               onChange={(value) => {
                 field.onChange(value);
-                updateField(selectedPhoto.id, "photoType", value);
+                updateFieldByUid(selectedPhoto.uid, "photoType", value);
               }}
             />
           )}
@@ -142,7 +146,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               onChange={(value) => {
                 field.onChange(value); // Ensure the form state is updated
                 handleTagChange(value); // Call your custom handler
-                updateField(selectedPhoto.id, "photoTags", value);
+                updateFieldByUid(selectedPhoto.uid, "photoTags", value);
               }}
               options={categories}
             />
@@ -168,59 +172,13 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               placeholder="Enter location"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "location", e.target.value);
+                updateFieldByUid(selectedPhoto.uid, "location", e.target.value);
               }}
             />
           )}
         />
         {errors.location && (
           <p className=" text-red-500 text-sm p-1">{errors.location.message}</p>
-        )}
-        <Controller
-          name="visibility"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              placeholder="Photo privacy"
-              options={[
-                { label: "Công khai", value: "PUBLIC" },
-                { label: "Riêng tư", value: "PRIVATE" },
-                { label: "Liên kết riêng tư", value: "SHARE_LINK" },
-              ]}
-              className="w-1/3 m-2"
-              onChange={(value) => {
-                field.onChange(value);
-                updateField(selectedPhoto.id, "visibility", value);
-              }}
-            />
-          )}
-        />
-        {errors.visibility && (
-          <p className="text-red-500 text-sm p-1">
-            {errors.visibility.message}
-          </p>
-        )}
-
-        <Controller
-          name="showExif"
-          control={control}
-          render={({ field }) => (
-            <Checkbox
-              {...field}
-              className="m-2"
-              checked={field.value}
-              onChange={(e) => {
-                field.onChange(e.target.checked);
-                updateField(selectedPhoto.id, "showExif", e.target.checked);
-              }}
-            >
-              Include EXIF Data
-            </Checkbox>
-          )}
-        />
-        {errors.showExif && (
-          <p className="text-red-500 text-sm p-1">{errors.showExif.message}</p>
         )}
 
         {/* <button
