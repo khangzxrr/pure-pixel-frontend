@@ -199,25 +199,18 @@ export default function CustomUpload() {
         showExif: true,
       });
       setSelectedPhoto(info.file.uid);
+    } else if (info.file.status === "uploading") {
+      updatePhotoByUid(info.file.uid, {
+        reviewUrl: reviewUrl,
+        // percent: info.file.percent,
+      });
+      updateFieldByUid(info.file.uid, "status", "uploading");
     } else if (info.file.response.status === "done") {
-      console.log("Upload done:", info, photoList);
-      console.log("photoId", info.file.response);
-
       await updatePhotoByUid(info.file.uid, {
         photoId: info.file.response.photoId,
       });
       await updateFieldByUid(info.file.uid, "status", "done");
       // await updateFieldByUid(info.file.uid, "reviewUrl", info.file.response.uploadUrl,);
-
-      // setSelectedPhoto(info.file.uid);
-    } else if (info.file.status === "uploading") {
-      console.log("reviewUrl", reviewUrl);
-
-      updatePhotoByUid(info.file.uid, {
-        reviewUrl: reviewUrl,
-        // percent: info.file.percent,
-      });
-      updateFieldByUid(info.file.uid, "status", "parsed");
     } else if (info.file.response.status === "parsed") {
       updateFieldByUid(info.file.uid, "status", "parsed");
       console.log("PARSED", info.file);
