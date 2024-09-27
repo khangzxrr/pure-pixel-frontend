@@ -52,13 +52,20 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const userId = userData?.sub;
   console.log(UserService.hasRole(["photographer"]));
 
-  // if (getPhotoById.isFetching) {
-  //   return (
-  //     <div className="flex justify-center items-center">
-  //       <LoadingSpinner />
-  //     </div>
-  //   );
-  // }
+  useEffect(() => {
+    if (idImg) {
+      // Khi modal mở, thêm lớp `overflow-hidden` vào body
+      document.body.style.overflow = "hidden";
+    } else {
+      // Khi modal đóng, khôi phục lại cuộn
+      document.body.style.overflow = "auto";
+    }
+
+    // Cleanup khi component bị unmount
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [idImg]);
   console.log("====================================");
   console.log(idImg);
   console.log(listImg);
@@ -85,36 +92,37 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const votePhoto = getPhotoById.data?._count?.votes;
   const commentPhoto = getPhotoById.data?._count?.comments;
   console.log("====================================");
-  console.log(getPhotoById);
-  console.log(prevId, nextId);
+  console.log(getPhotoById.photographer);
   console.log("====================================");
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50 w-screen">
+    <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
       <div className="flex flex-col md:flex-row bg-black text-white md:h-screen w-screen">
         {/* Left side - Image */}
-        <div className="flex-1 relative">
+        <div className="flex-1 md:relative h-screen">
           <button
             onClick={onClose}
-            className="absolute top-4 left-4 text-white p-2 rounded-full bg-black bg-opacity-50"
+            className="absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
           >
             <Icon>
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </Icon>
           </button>
-          <button className="absolute top-4 right-4 text-white p-2 rounded-full bg-black bg-opacity-50">
+          <button className="absolute top-4 right-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px]  bg-opacity-50 hover:bg-opacity-75 hover:scale-110">
             <Icon>
               <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" />
             </Icon>
           </button>
-          <img
-            src={getPhotoById?.data?.signedUrl?.url}
-            alt="Traunfall waterfall"
-            className="w-full h-screen object-cover"
-          />
+          <div className="flex  justify-center">
+            <img
+              src={getPhotoById?.data?.signedUrl?.url}
+              alt="Traunfall waterfall"
+              className="w-auto h-screen object-cover "
+            />
+          </div>
           {prevId && (
             <button
               onClick={() => setSelectedImage(prevId)}
-              className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-black bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
+              className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
             >
               <Icon>
                 <path d="M15 18l-6-6 6-6" />
@@ -124,7 +132,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
           {nextId && (
             <button
               onClick={() => setSelectedImage(nextId)}
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-black bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
             >
               <Icon>
                 <path d="M9 18l6-6-6-6" />
@@ -143,7 +151,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 className="w-10 h-10 rounded-full"
               />
               <div>
-                <h2 className="font-semibold">GueM</h2>
+                <h2 className="font-semibold">{photographerName}</h2>
                 <p className="text-sm text-gray-400">1 day ago</p>
               </div>
             </div>
@@ -156,7 +164,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             </button>
           </div>
 
-          <div className="flex items-center space-x-4 mb-6">
+          <div className="flex items-center space-x-4 mb-6 justify-center">
             <div className="flex items-center">
               <Icon className="mr-2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -289,7 +297,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
                 <img
-                  src="https://sftpgo.s3-hcm-r1.s3cloud.vn/a5a43960-42fe-4d09-bc94-ad7d9866b320/51449f10-f5df-486c-bb0e-a7e3d6d72d61.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=00afd0ff0e38a73b5071%2F20240924%2Fhcm%2Fs3%2Faws4_request&X-Amz-Date=20240924T070247Z&X-Amz-Expires=900&X-Amz-Signature=2a158eb1b29042d259474e3ab2f068287d7fcfd7f699996c03d17293e98aac87&X-Amz-SignedHeaders=host&x-id=GetObject"
+                  src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
                   alt="Gianni Meini"
                   className="w-10 h-10 rounded-full"
                 />
@@ -305,7 +313,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               </div>
               <div className="flex items-start space-x-3 pl-8">
                 <img
-                  src="https://sftpgo.s3-hcm-r1.s3cloud.vn/a5a43960-42fe-4d09-bc94-ad7d9866b320/51449f10-f5df-486c-bb0e-a7e3d6d72d61.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=00afd0ff0e38a73b5071%2F20240924%2Fhcm%2Fs3%2Faws4_request&X-Amz-Date=20240924T070247Z&X-Amz-Expires=900&X-Amz-Signature=2a158eb1b29042d259474e3ab2f068287d7fcfd7f699996c03d17293e98aac87&X-Amz-SignedHeaders=host&x-id=GetObject"
+                  src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
                   alt="GueM"
                   className="w-10 h-10 rounded-full"
                 />
@@ -321,7 +329,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               </div>
               <div className="flex items-start space-x-3">
                 <img
-                  src="https://sftpgo.s3-hcm-r1.s3cloud.vn/a5a43960-42fe-4d09-bc94-ad7d9866b320/51449f10-f5df-486c-bb0e-a7e3d6d72d61.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=00afd0ff0e38a73b5071%2F20240924%2Fhcm%2Fs3%2Faws4_request&X-Amz-Date=20240924T070247Z&X-Amz-Expires=900&X-Amz-Signature=2a158eb1b29042d259474e3ab2f068287d7fcfd7f699996c03d17293e98aac87&X-Amz-SignedHeaders=host&x-id=GetObject"
+                  src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
                   alt="Gianni Meini"
                   className="w-10 h-10 rounded-full"
                 />
