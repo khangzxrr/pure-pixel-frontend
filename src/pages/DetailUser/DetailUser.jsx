@@ -3,7 +3,7 @@ import { Camera, Users, Image, Flame } from "lucide-react";
 
 export default function DetailUser() {
   const scrollContainerRef = useRef(null);
-  const [selectedButton, setSelectedButton] = useState(null);
+  const [selectedButton, setSelectedButton] = useState(1);
 
   const handleButtonClick = (buttonIndex) => {
     setSelectedButton(buttonIndex);
