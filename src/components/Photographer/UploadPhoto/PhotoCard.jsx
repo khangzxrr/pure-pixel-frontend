@@ -3,6 +3,7 @@ import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import { DeleteOutlined } from "@ant-design/icons"; // Ensure you have this import
 import PhotoApi from "../../../apis/PhotoApi";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 function truncateString(str, num) {
   if (str.length <= num) {
@@ -10,7 +11,19 @@ function truncateString(str, num) {
   }
   return str.slice(0, num) + "...";
 }
-
+const getAspectRatio = (url) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      const aspectRatio = img.width / img.height;
+      resolve(aspectRatio);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
 export default function PhotoCard({ photo }) {
   const {
     setSelectedPhoto,
@@ -18,9 +31,7 @@ export default function PhotoCard({ photo }) {
     selectedPhoto,
     updateFieldByUid,
   } = useUploadPhotoStore();
-  const displayTitle = photo?.name
-    ? truncateString(photo.name, 13)
-    : "Untitled"; // Adjust the number as needed
+  const [displayTitle, setDisplayTitle] = useState("Untitled");
 
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
@@ -57,12 +68,33 @@ export default function PhotoCard({ photo }) {
   const handleSelect = () => {
     setSelectedPhoto(photo.uid);
   };
+
+  useEffect(() => {
+    const fetchAspectRatio = async () => {
+      if (photo?.reviewUrl) {
+        try {
+          const ratio = await getAspectRatio(photo.reviewUrl);
+          if (ratio < 1) {
+            setDisplayTitle(truncateString(photo.title, 10));
+          } else {
+            setDisplayTitle(truncateString(photo.title, 20));
+          }
+
+          console.log("Selected Photo Aspect Ratio:", ratio);
+        } catch (error) {
+          console.error("Error loading image:", error);
+        }
+      }
+    };
+
+    fetchAspectRatio();
+  }, [photo]);
   return (
     <div className="relative h-56 flex-shrink-0 p-2">
       <img
         src={photo?.reviewUrl}
         className={`h-3/4 w-full object-cover rounded-md cursor-pointer ${
-          photo.uid === selectedPhoto?.uid
+          photo.uid === selectedPhoto
             ? "border-4 border-white transition duration-300"
             : ""
         }`}
@@ -73,7 +105,7 @@ export default function PhotoCard({ photo }) {
         {displayTitle}
       </p>
       <>
-        <div className="h-8 w-8 absolute top-2 right-2 flex justify-center items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+        <div className="h-8 w-8 absolute top-2 right-2 flex justify-center items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md   rounded-full">
           <Tooltip title="Delete Photo">
             <DeleteOutlined
               className="text-white text-xl cursor-pointer hover:text-red-500"
