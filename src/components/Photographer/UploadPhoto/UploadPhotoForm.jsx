@@ -17,10 +17,8 @@ export default function UploadPhotoForm({ selectedPhoto }) {
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
     onSuccess: (data) => {
-      console.log("data", data);
-
       setCategories(
-        data.map((category) => ({ label: category.name, value: category.id }))
+        data.map((category) => ({ label: category.name, value: category.id })),
       );
     },
     onError: (error) => {
@@ -91,7 +89,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                 updateFieldByUid(
                   selectedPhoto.uid,
                   "description",
-                  e.target.value
+                  e.target.value,
                 );
               }}
             />
