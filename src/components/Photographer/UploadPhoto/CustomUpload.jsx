@@ -336,6 +336,7 @@ export default function CustomUpload() {
             customRequest={customRequest}
             itemRender={itemRender}
             fileList={photoList}
+            accept=".jpg,.jpeg,.png"
             style={{
               width: "100%",
               padding: "none",
