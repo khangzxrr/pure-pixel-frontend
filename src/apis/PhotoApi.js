@@ -76,6 +76,21 @@ const commentPhoto = async (id, content, onProgress) => {
   return response.data;
 };
 
+const getAvailableResolutionsByPhotoId = async (id) => {
+  const response = await http.get(`photo/${id}/available-resolution`);
+
+  return response.data;
+};
+
+const sharePhotoById = async (photoId, quality) => {
+  const response = await http.post(`photo/share`, {
+    photoId,
+    quality,
+  });
+
+  return response.data;
+};
+
 const PhotoApi = {
   getPublicPhotos,
   getPresignedUploadUrls,
@@ -86,6 +101,9 @@ const PhotoApi = {
   getPhotoById,
   getPhotoComments,
   commentPhoto,
+
+  getAvailableResolutionsByPhotoId,
+  sharePhotoById,
 };
 
 export default PhotoApi;
