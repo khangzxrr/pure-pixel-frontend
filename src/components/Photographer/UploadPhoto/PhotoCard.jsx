@@ -38,7 +38,6 @@ export default function PhotoCard({ photo }) {
   });
 
   const handleRemove = (photo) => {
-    console.log("onRemove", photo);
     if (photo.photoId) {
       try {
         deletePhoto.mutateAsync(
