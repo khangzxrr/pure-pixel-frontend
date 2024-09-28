@@ -69,7 +69,7 @@ export default function CustomUpload() {
   });
 
   const processPhoto = useMutation({
-    mutationFn: (signedUploads) => PhotoApi.processPhotos(signedUploads),
+    mutationFn: (signedUploads) => PhotoApi.processPhoto(signedUploads),
   });
 
   const updatePhotos = useMutation({
@@ -84,8 +84,8 @@ export default function CustomUpload() {
 
       return false;
     }
-    const isLt50M = file.size / 1024 / 1024 < 150;
-    if (!isLt50M) {
+    const isLt150M = file.size / 1024 / 1024 < 150;
+    if (!isLt150M) {
       message.error("Image must smaller than 150MB!");
 
       return false;
@@ -111,60 +111,48 @@ export default function CustomUpload() {
         onError(new Error("Invalid EXIF data")); // Call onError callback to indicate failure
         return; // Stop further processing and don't call the upload API
       }
+
       const fileName = file.name;
       const presignedData = await getPresignedUploadUrls.mutateAsync(fileName);
+
       const signedUploadUrl = presignedData.signedUpload.uploadUrl;
-      const photoId = presignedData.signedUpload.photoId;
       const uid = file.uid;
-      console.log(file, "customRequest");
 
       await uploadPhoto.mutateAsync({
         url: signedUploadUrl,
         file,
         uid,
-        // options: {
-        //   onUploadProgress: (event) => {
-        //     const { loaded, total } = event;
-        //     // console.log(event, uid);
-        //     const percent = Math.round((loaded / total) * 100);
-        //     onProgress({ percent });
-        //     updateFieldByUid(uid, "upload_percent", percent);
-        //   },
-
-        //   onSuccess: (data) => {
-        //     console.log("before onSuccess call", data);
-        //     onSuccess(data);
-        //     console.log("after onSuccess call");
-        //   },
-        //   onError: (e) => {
-        //     console.log("upload error", e);
-        //     onError(e); // Ensure you call the passed onError callback
-        //   },
-        //   headers: {
-        //     "Content-Type": file.type,
-        //   },
-        // },
       });
-
-      message.info("Tải ảnh lên thành công, bắt đầu xử lý ảnh...");
 
       onSuccess({ ...file, status: "done", ...presignedData.signedUpload }); // Set status to 'done'
       // Then process the photo
       await processPhoto.mutateAsync(presignedData.signedUpload);
 
-      // After successful processing, set status to 'parsed'
-      message.success("Xử lý ảnh thành công");
-
       // Set status to 'parsed' in onSuccess callback
       onSuccess({ status: "parsed" });
     } catch (e) {
-      console.log(e);
       onError(e);
+      console.log(e);
     }
   };
 
   const handleChange = async (info) => {
     console.log("Upload onChange:", info);
+
+    if (info.file.status === "error") {
+      switch (info.file.error.response.data.message) {
+        case "RunOutPhotoQuotaException":
+          message.error(
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+          );
+          break;
+
+        default:
+          message.error(`Lỗi không xác định, vui lòng thử lại`);
+          break;
+      }
+      return;
+    }
 
     // Extract EXIF data from the file
     const exifData = await PhotoService.getExifData(info.file.originFileObj);
@@ -185,8 +173,6 @@ export default function CustomUpload() {
       );
       return; // Stop further processing
     }
-
-    console.log(exifData);
 
     // Extract the base64 URL of the file for preview
     const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(
