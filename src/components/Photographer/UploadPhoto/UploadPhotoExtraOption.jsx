@@ -24,7 +24,6 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
     resolver: yupResolver(uploadPhotoExtraOptionInputSchema),
     defaultValues: getDefaultPhoto(selectedPhoto),
   });
-  console.log("UploadPhotoExtraOption", selectedPhoto);
 
   const onSubmit = async (data) => {
     setIsOpenDraftModal(true);
@@ -95,7 +94,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
                       "watermark",
                       checked,
                       controllerField.value,
-                      selectedPhoto.uid
+                      selectedPhoto.uid,
                     );
                     updateFieldByUid(selectedPhoto.uid, "watermark", checked);
                   }}
@@ -124,7 +123,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
                   updateFieldByUid(
                     selectedPhoto.uid,
                     "showExif",
-                    e.target.checked
+                    e.target.checked,
                   );
                 }}
               >
