@@ -3,13 +3,31 @@ import { devtools } from "zustand/middleware";
 
 const initialPhotoList = [];
 
+const initPhotoMap = {};
+const initUiHashMap = {};
+
 const useUploadPhotoStore = create(
   devtools((set) => ({
     photoList: initialPhotoList,
-    selectedPhoto: initialPhotoList[0] ? initialPhotoList[0].uid : "",
+
+    photoMap: initPhotoMap,
+    uidHashmap: initUiHashMap,
+    selectedPhoto: "",
     photoExtraOption: {},
     isUpdatingPhotos: false,
     isOpenDraftModal: false,
+
+    setPhotoMapByPhotoId: (uid, id, payload) =>
+      set((state) => {
+        state.photoMap[id] = payload;
+
+        state.uidHashmap[uid] = id;
+
+        return {
+          photoMap: state.photoMap,
+          uidHashmap: state.uidHashmap,
+        };
+      }),
 
     clearState: () => {
       set({
@@ -60,7 +78,7 @@ const useUploadPhotoStore = create(
     deleteImageById: (id) =>
       set((state) => {
         const updatedPhotoList = state.photoList.filter(
-          (image) => image.id !== id
+          (image) => image.id !== id,
         );
         const isDeletedSelected = state.selectedPhoto.id === id;
 
@@ -75,7 +93,7 @@ const useUploadPhotoStore = create(
     removePhotoByUid: (uid) =>
       set((state) => {
         const updatedPhotoList = state.photoList.filter(
-          (photo) => photo.uid !== uid
+          (photo) => photo.uid !== uid,
         );
 
         const isDeletedSelected = state.selectedPhoto === uid;
@@ -146,7 +164,7 @@ const useUploadPhotoStore = create(
         if (photoList.length === 0) return;
 
         const currentIndex = photoList.findIndex(
-          (photo) => photo.uid === selectedPhoto
+          (photo) => photo.uid === selectedPhoto,
         );
         const nextIndex = (currentIndex + 1) % photoList.length;
         return { selectedPhoto: photoList[nextIndex].uid };
@@ -158,13 +176,13 @@ const useUploadPhotoStore = create(
         if (photoList.length === 0) return;
 
         const currentIndex = photoList.findIndex(
-          (photo) => photo.uid === selectedPhoto
+          (photo) => photo.uid === selectedPhoto,
         );
         const previousIndex =
           (currentIndex - 1 + photoList.length) % photoList.length;
         return { selectedPhoto: photoList[previousIndex].uid };
       }),
-  }))
+  })),
 );
 
 export default useUploadPhotoStore;
