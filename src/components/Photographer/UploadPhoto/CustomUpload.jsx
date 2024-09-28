@@ -84,9 +84,9 @@ export default function CustomUpload() {
 
       return false;
     }
-    const isLt50M = file.size / 1024 / 1024 < 50;
+    const isLt50M = file.size / 1024 / 1024 < 150;
     if (!isLt50M) {
-      message.error("Image must smaller than 50MB!");
+      message.error("Image must smaller than 150MB!");
 
       return false;
     }
