@@ -56,6 +56,16 @@ export default function CustomUpload() {
 
     //emit join event to join photo process gateway
     socketRef.current.emit("join");
+
+    socketRef.current.on("finish-process-photos", (data) => {
+      // console.log(data);
+      message.success(`Đã xử lý ảnh ${data.id} thành công!`);
+    });
+
+    return () => {
+      socketRef.current.off("finish-process-photos");
+      socketRef.current.disconnect();
+    };
   }, [userToken]);
 
   const uploadPhoto = useMutation({
@@ -98,16 +108,12 @@ export default function CustomUpload() {
     try {
       // Extract EXIF data from the file
       const exifData = await PhotoService.getExifData(file);
-      console.log("EXIF Data:", exifData);
 
       // Validate EXIF data
       const isValidExif = PhotoService.validateExifData(exifData);
 
       // If EXIF data is invalid, show error and cancel the upload
       if (!isValidExif) {
-        message.error(
-          "Ảnh không hợp lệ. Thiếu dữ liệu EXIF cần thiết (Model, ISO, FNumber, ShutterSpeedValue, ApertureValue).",
-        );
         onError(new Error("Invalid EXIF data")); // Call onError callback to indicate failure
         return; // Stop further processing and don't call the upload API
       }
@@ -124,12 +130,14 @@ export default function CustomUpload() {
         uid,
       });
 
-      onSuccess({ ...file, status: "done", ...presignedData.signedUpload }); // Set status to 'done'
+      onSuccess({
+        ...file,
+        exifData,
+        status: "done",
+        ...presignedData.signedUpload,
+      }); // Set status to 'done'
       // Then process the photo
       await processPhoto.mutateAsync(presignedData.signedUpload);
-
-      // Set status to 'parsed' in onSuccess callback
-      onSuccess({ status: "parsed" });
     } catch (e) {
       onError(e);
       console.log(e);
@@ -137,8 +145,6 @@ export default function CustomUpload() {
   };
 
   const handleChange = async (info) => {
-    console.log("Upload onChange:", info);
-
     if (info.file.status === "error") {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
@@ -154,42 +160,23 @@ export default function CustomUpload() {
       return;
     }
 
-    // Extract EXIF data from the file
-    const exifData = await PhotoService.getExifData(info.file.originFileObj);
-
-    if (!exifData) {
-      message.error(
-        "Bức ảnh bạn chọn không chứa thông tin exif, vui lòng thử lại",
-      );
-
-      return;
-    }
-
-    const isValidExif = PhotoService.validateExifData(exifData);
-    // If EXIF data is invalid, show error and cancel the upload
-    if (!isValidExif) {
-      message.error(
-        `Bức ảnh bạn chọn không chứa những thông tin exif cần thiết, vui lòng thử lại`,
-      );
-      return; // Stop further processing
-    }
-
-    // Extract the base64 URL of the file for preview
+    // Extract the ArrayBuffer URL of the file for preview
     const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(
       info.file.originFileObj,
     );
 
     // Proceed with adding or updating the image if EXIF data is valid
     if (!isPhotoExistByUid(info.file.uid) && info.file.status !== "removed") {
+      console.log(info.file);
       addSingleImage({
         uid: info.file.uid,
         title: info.file.name.replace(/\.(png|jpg)$/i, ""),
-        exif: exifData, // Include EXIF data
-        status: "uploading",
+        exif: {}, // Include EXIF data
+        status: "pending",
         reviewUrl: reviewUrl,
-        watermark: true,
-        visibility: "PUBLIC",
-        showExif: true,
+        // watermark: true,
+        // visibility: "PUBLIC",
+        // showExif: true,
       });
       setSelectedPhoto(info.file.uid);
     } else if (info.file.status === "uploading") {
