@@ -76,7 +76,7 @@ const getBuffer = (file) => {
 };
 
 // Utility to convert file to Blob URL for preview
-const getFileBlobUrl = (file) => {
+const convertArrayBufferToObjectUrl = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
@@ -94,7 +94,7 @@ const PhotoService = {
   validateExifData,
   getBase64,
   getBuffer,
-  getFileBlobUrl,
+  convertArrayBufferToObjectUrl,
 };
 
 export default PhotoService;
