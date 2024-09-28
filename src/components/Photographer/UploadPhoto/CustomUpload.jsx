@@ -19,24 +19,25 @@ export default function CustomUpload() {
   const [isWatermarkAll, setIsWatermarkAll] = useState(true);
 
   const {
-    addSingleImage,
-    setSelectedPhoto,
-    updatePhotoByUid,
-    updateFieldByUid,
+    addPhoto,
+    setSelectedPhotoById,
+
+    getPhotoByUid,
+    selectedPhoto,
+
+    photoArray,
+
     removePhotoByUid,
     toggleWatermark,
-    photoList,
-    isPhotoExistByUid,
-    setIsUpdating,
     clearState,
   } = useUploadPhotoStore();
+
   const navigate = useNavigate();
 
   //use keycloak to trigger refresh component when new token comes
   const { keycloak } = useKeycloak();
 
   const userToken = UserService ? UserService.getTokenParsed() : "";
-  // console.log("userToken", userToken);
 
   //using ref to NOT cause re-render when socketRef is change
   const socketRef = useRef();
@@ -58,7 +59,8 @@ export default function CustomUpload() {
     socketRef.current.emit("join");
 
     socketRef.current.on("finish-process-photos", (data) => {
-      // console.log(data);
+      console.log(`got data from WS`);
+      console.log(data);
       message.success(`Đã xử lý ảnh ${data.id} thành công!`);
     });
 
@@ -86,6 +88,21 @@ export default function CustomUpload() {
     mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
   });
 
+  const handleException = (file, e) => {
+    switch (e.response.data.message) {
+      case "RunOutPhotoQuotaException":
+        message.error(
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+        );
+        break;
+
+      default:
+        message.error(`Lỗi không xác định, vui lòng thử lại`);
+        break;
+    }
+    removePhotoByUid(file.uid);
+  };
+
   const beforeUpload = async (file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
@@ -101,50 +118,68 @@ export default function CustomUpload() {
       return false;
     }
 
+    const exif = await PhotoService.getExifData(file);
+    const isValidExif = PhotoService.validateExifData(exif);
+
+    if (!isValidExif) {
+      message.error("Ảnh bạn chọn không tồn tại exif hợp lệ");
+
+      return false;
+    }
+
+    try {
+      const presignedData = await getPresignedUploadUrls.mutateAsync(file.name);
+
+      const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(file);
+      //set global state by
+      //key = photoId
+      //value { presignedData }
+      addPhoto(file.uid, presignedData.signedUpload.photoId, {
+        signedUpload: presignedData.signedUpload,
+        reviewUrl,
+        file,
+        title: file.name,
+        exif,
+      });
+      if (!selectedPhoto) {
+        setSelectedPhotoById(presignedData.signedUpload.photoId);
+      }
+    } catch (e) {
+      handleException(file, e);
+      return false;
+    }
+
     return true;
   };
 
-  const customRequest = async ({ file, onError, onSuccess, onProgress }) => {
+  const customRequest = async ({ file, onError, onSuccess }) => {
     try {
-      // Extract EXIF data from the file
-      const exifData = await PhotoService.getExifData(file);
-
-      // Validate EXIF data
-      const isValidExif = PhotoService.validateExifData(exifData);
-
-      // If EXIF data is invalid, show error and cancel the upload
-      if (!isValidExif) {
-        onError(new Error("Invalid EXIF data")); // Call onError callback to indicate failure
-        return; // Stop further processing and don't call the upload API
-      }
-
-      const fileName = file.name;
-      const presignedData = await getPresignedUploadUrls.mutateAsync(fileName);
-
-      const signedUploadUrl = presignedData.signedUpload.uploadUrl;
-      const uid = file.uid;
+      const photo = getPhotoByUid(file.uid);
+      console.log(photo);
 
       await uploadPhoto.mutateAsync({
-        url: signedUploadUrl,
+        url: photo.signedUpload.uploadUrl,
         file,
-        uid,
       });
 
       onSuccess({
         ...file,
-        exifData,
         status: "done",
-        ...presignedData.signedUpload,
       }); // Set status to 'done'
       // Then process the photo
-      await processPhoto.mutateAsync(presignedData.signedUpload);
+      await processPhoto.mutateAsync(photo.signedUpload);
     } catch (e) {
       onError(e);
-      console.log(e);
     }
   };
 
   const handleChange = async (info) => {
+    console.log(info);
+    //skip removed this status
+    if (info.file.status === "removed") {
+      return;
+    }
+
     if (info.file.status === "error") {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
@@ -157,46 +192,9 @@ export default function CustomUpload() {
           message.error(`Lỗi không xác định, vui lòng thử lại`);
           break;
       }
-      return;
-    }
-
-    // Extract the ArrayBuffer URL of the file for preview
-    const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(
-      info.file.originFileObj,
-    );
-
-    // Proceed with adding or updating the image if EXIF data is valid
-    if (!isPhotoExistByUid(info.file.uid) && info.file.status !== "removed") {
-      console.log(info.file);
-      addSingleImage({
-        uid: info.file.uid,
-        title: info.file.name.replace(/\.(png|jpg)$/i, ""),
-        exif: {}, // Include EXIF data
-        status: "pending",
-        reviewUrl: reviewUrl,
-        // watermark: true,
-        // visibility: "PUBLIC",
-        // showExif: true,
-      });
-      setSelectedPhoto(info.file.uid);
-    } else if (info.file.status === "uploading") {
-      updatePhotoByUid(info.file.uid, {
-        reviewUrl: reviewUrl,
-        // percent: info.file.percent,
-      });
-      updateFieldByUid(info.file.uid, "status", "uploading");
-    } else if (info.file.response.status === "done") {
-      await updatePhotoByUid(info.file.uid, {
-        photoId: info.file.response.photoId,
-      });
-      await updateFieldByUid(info.file.uid, "status", "done");
-      // await updateFieldByUid(info.file.uid, "reviewUrl", info.file.response.uploadUrl,);
-    } else if (info.file.response.status === "parsed") {
-      updateFieldByUid(info.file.uid, "status", "parsed");
-      console.log("PARSED", info.file);
-    } else if (info.file.status === "error") {
-      message.error("Có lỗi xảy ra! Vui lòng thử lại");
       removePhotoByUid(info.file.uid);
+
+      return;
     }
   };
 
@@ -210,33 +208,27 @@ export default function CustomUpload() {
   };
 
   const SubmitUpload = async () => {
-    setIsUpdating(true);
-
     // Extract the necessary fields from photoList and filter by status 'PARSED'
-    const photosToUpload = photoList
-      .filter((photo) => photo.status === "parsed")
-      .map((photo) => ({
-        id: photo.photoId,
-        categoryId: photo.categoryId,
-        photographerId: photo.photographerId,
-        title: photo.title,
-        watermark: photo.watermark,
-        showExif: photo.showExif ? photo.showExif : true,
-        exif: photo.exif,
-        colorGrading: photo.colorGrading,
-        location: photo.location,
-        captureTime: photo.captureTime,
-        description: photo.description,
-        originalPhotoUrl: photo.originalPhotoUrl,
-        watermarkPhotoUrl: photo.watermarkPhotoUrl,
-        thumbnailPhotoUrl: photo.thumbnailPhotoUrl,
-        watermarkThumbnailPhotoUrl: photo.watermarkThumbnailPhotoUrl,
-        photoType: photo.photoType,
-        visibility: photo.visibility,
-        status: photo.status,
-        photoTags: photo.photoTags,
-        category: photo.category,
-      }));
+    const photosToUpload = photoArray.map((photo) => ({
+      id: photo.signedUpload.photoId,
+      categoryId: photo.categoryId,
+      title: photo.title,
+      watermark: photo.watermark,
+      showExif: photo.showExif ? photo.showExif : true,
+      exif: photo.exif,
+      colorGrading: photo.colorGrading,
+      location: photo.location,
+      captureTime: photo.captureTime,
+      description: photo.description,
+      originalPhotoUrl: photo.originalPhotoUrl,
+      watermarkPhotoUrl: photo.watermarkPhotoUrl,
+      thumbnailPhotoUrl: photo.thumbnailPhotoUrl,
+      watermarkThumbnailPhotoUrl: photo.watermarkThumbnailPhotoUrl,
+      photoType: photo.photoType,
+      visibility: photo.visibility,
+      status: photo.status,
+      photoTags: photo.photoTags,
+    }));
 
     console.log("photosToUpload", photosToUpload);
 
@@ -247,18 +239,18 @@ export default function CustomUpload() {
     await updatePhotos.mutateAsync(payload.photos);
 
     clearState();
+
     message.success("saved all uploaded photos!");
     navigate("/my-photo/photo/all");
   };
+
   return (
     <div className="h-full overflow-hidden">
       <div className="w-full h-full flex flex-row">
-        {photoList && photoList.length > 0 && (
+        {photoArray.length > 0 && (
           <div className="w-5/6 bg-[#36393f]">
             <div
-              className={`w-full ${
-                photoList && photoList.length > 1 ? "visible" : "invisible"
-              }`}
+              className={`w-full ${photoArray.length > 1 ? "visible" : "invisible"}`}
             >
               <Tooltip placement="rightTop" color="geekblue">
                 <div className="flex items-center pl-3">
@@ -284,12 +276,12 @@ export default function CustomUpload() {
         )}
         <div
           className={` tranlation duration-150 ${
-            photoList && photoList.length > 0
+            photoArray.length > 0
               ? "w-1/6 bg-[#42454a] "
               : "w-full h-full bg-[#42454a]  hover:bg-slate-300"
           }`}
         >
-          {photoList && photoList.length > 0 && (
+          {photoArray.length > 0 && (
             <div
               className="w-full h-1/2 bg-[#56bc8a] hover:bg-[#68c397] transition duration-150 flex justify-center items-center cursor-pointer"
               onClick={SubmitUpload}
@@ -303,12 +295,12 @@ export default function CustomUpload() {
             name="avatar"
             listType="picture-card"
             className="avatar-uploader"
-            multiple={false}
+            multiple={true}
             beforeUpload={beforeUpload}
             onChange={handleChange}
             customRequest={customRequest}
             itemRender={itemRender}
-            fileList={photoList}
+            fileList={photoArray}
             accept=".jpg,.jpeg,.png"
             style={{
               width: "100%",
@@ -317,7 +309,7 @@ export default function CustomUpload() {
             }}
           >
             <div className=" h-full w-full ">
-              {photoList && photoList.length > 0 ? (
+              {photoArray.length > 0 ? (
                 <div className="w-full h-full hover:text-white text-gray-200">
                   <div className="  flex-shrink-0 m-2 text-6xl">
                     <PlusCircleOutlined />

@@ -1,79 +1,107 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-const initialPhotoList = [];
-
-const initPhotoMap = {};
+const initPhotoIdHashMap = {};
 const initUiHashMap = {};
+const initPhotoArray = [];
 
 const useUploadPhotoStore = create(
-  devtools((set) => ({
-    photoList: initialPhotoList,
-
-    photoMap: initPhotoMap,
+  devtools((set, get) => ({
+    photoIdHashmap: initPhotoIdHashMap,
     uidHashmap: initUiHashMap,
-    selectedPhoto: "",
-    photoExtraOption: {},
+    photoArray: initPhotoArray,
+    selectedPhoto: null,
     isUpdatingPhotos: false,
     isOpenDraftModal: false,
 
-    setPhotoMapByPhotoId: (uid, id, payload) =>
-      set((state) => {
-        state.photoMap[id] = payload;
+    getPhotoByUid: (uid) => {
+      const index = get().uidHashmap[uid];
 
-        state.uidHashmap[uid] = id;
+      return get().photoArray[index];
+    },
+    setSelectedPhotoById: (id) =>
+      set((state) => ({
+        selectedPhoto: state.photoArray[state.photoIdHashmap[id]],
+      })),
+
+    updateSelectedPhotoProperty: (key, value) => {
+      set((state) => {
+        state.selectedPhoto[key] = value;
 
         return {
-          photoMap: state.photoMap,
+          selectedPhoto: state.selectedPhoto,
+        };
+      });
+    },
+    addPhoto: (uid, id, payload) =>
+      set((state) => {
+        const index = state.photoArray.length;
+
+        state.photoIdHashmap[id] = index;
+        state.uidHashmap[uid] = index;
+
+        state.photoArray.push(payload);
+
+        return {
+          photoArray: state.photoArray,
+          photoIdHashmap: state.photoIdHashmap,
           uidHashmap: state.uidHashmap,
+        };
+      }),
+
+    removePhotoById: (id) => {
+      set((state) => {
+        const index = state.photoIdHashmap[id];
+
+        const uid = state.photoArray[index].file.uid;
+
+        state.photoArray.splice(index, 1);
+
+        delete state.photoIdHashmap[id];
+        delete state.uidHashmap[uid];
+
+        return {
+          photoIdHashmap: state.photoIdHashmap,
+          uidHashmap: state.uidHashmap,
+          photoArray: state.photoArray,
+        };
+      });
+    },
+    removePhotoByUid: (uid) =>
+      set((state) => {
+        const index = state.uidHashmap[uid];
+
+        const id = state.photoArray[index].signedUpload.photoId;
+
+        delete state.photoIdHashmap[id];
+        delete state.uidHashmap[uid];
+
+        return {
+          photoIdHashmap: state.photoIdHashmap,
+          uidHashmap: state.uidHashmap,
+          photoArray: state.photoArray,
         };
       }),
 
     clearState: () => {
       set({
-        photoList: [],
-        selectedPhoto: "",
+        photoIdHashmap: {},
+        uidHashmap: {},
+        photoArray: [],
+        selectedPhoto: null,
+        isUpdatingPhotos: false,
+        isOpenDraftModal: false,
       });
-    },
-
-    setIsUpdating: (isUpdating) => {
-      set({ isUpdatingPhotos: isUpdating });
     },
 
     setIsOpenDraftModal: (status) => {
       set({ isOpenDraftModal: status });
     },
 
-    addSingleImage: (photo) =>
-      set((state) => ({
-        photoList: [
-          ...(Array.isArray(state.photoList) ? state.photoList : []),
-          {
-            ...photo,
-            isWatermark: true,
-          },
-        ],
-      })),
-
     isPhotoExistByUid: (uid) => {
       const state = useUploadPhotoStore.getState();
       return state.photoList.some((photo) => photo.uid === uid);
     },
-
-    updatePhotoByUid: (uid, newPhoto) =>
-      set((state) => {
-        return {
-          photoList: state.photoList.map((photo) => {
-            if (photo.uid === uid) {
-              return {
-                ...photo,
-                ...newPhoto,
-              };
-            }
-            return photo;
-          }),
-        };
-      }),
 
     deleteImageById: (id) =>
       set((state) => {
@@ -88,64 +116,6 @@ const useUploadPhotoStore = create(
             ? updatedPhotoList[0] || {}
             : state.selectedPhoto,
         };
-      }),
-
-    removePhotoByUid: (uid) =>
-      set((state) => {
-        const updatedPhotoList = state.photoList.filter(
-          (photo) => photo.uid !== uid,
-        );
-
-        const isDeletedSelected = state.selectedPhoto === uid;
-
-        const newSelectedPhoto = isDeletedSelected
-          ? updatedPhotoList[0]?.uid || {}
-          : state.selectedPhoto;
-
-        return {
-          photoList: updatedPhotoList,
-          selectedPhoto: newSelectedPhoto,
-        };
-      }),
-
-    setSelectedPhoto: (uid) =>
-      set((state) => ({
-        ...state,
-        selectedPhoto: uid,
-      })),
-
-    updateField: (id, field, value) =>
-      set((state) => {
-        const photoList = [...state.photoList];
-        const photoIndex = photoList.findIndex((image) => image.id === id);
-
-        if (photoIndex !== -1) {
-          const updatedPhoto = {
-            ...photoList[photoIndex],
-            [field]: value,
-          };
-
-          photoList[photoIndex] = updatedPhoto;
-
-          return { photoList };
-        }
-      }),
-
-    updateFieldByUid: (uid, field, value) =>
-      set((state) => {
-        const photoList = [...state.photoList];
-        const photoIndex = photoList.findIndex((image) => image.uid === uid);
-
-        if (photoIndex !== -1) {
-          const updatedPhoto = {
-            ...photoList[photoIndex],
-            [field]: value,
-          };
-
-          photoList[photoIndex] = updatedPhoto;
-
-          return { photoList };
-        }
       }),
 
     toggleWatermark: (status) =>

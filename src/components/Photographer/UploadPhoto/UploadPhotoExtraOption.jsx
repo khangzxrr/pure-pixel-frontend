@@ -1,18 +1,14 @@
-import { Checkbox, Input, message, Select, Tooltip } from "antd";
+import { Checkbox, Input, Select, Tooltip } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoadingOutlined } from "@ant-design/icons";
 import { uploadPhotoExtraOptionInputSchema } from "../../../yup/UploadPhotoExtraInputSchema";
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
-import { useMutation } from "@tanstack/react-query";
-import PhotoApi from "../../../apis/PhotoApi";
-import { useNavigate } from "react-router-dom";
 import { PhotoDataFields } from "./PhotoDataFields";
 
-export default function UploadPhotoExtraOption({ selectedPhoto }) {
-  const { updateFieldByUid, isUpdating, setIsOpenDraftModal } =
+export default function UploadPhotoExtraOption() {
+  const { updateSelectedPhotoProperty, selectedPhoto, setIsOpenDraftModal } =
     useUploadPhotoStore();
 
   const {
@@ -60,7 +56,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
                         value = parseFloat(value).toFixed(2);
                       }
                       controllerField.onChange(value);
-                      updateFieldByUid(selectedPhoto.uid, field.name, value);
+                      updateSelectedPhotoProperty(field.name, value);
                     }}
                   />
                 )}
@@ -96,7 +92,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
                       controllerField.value,
                       selectedPhoto.uid,
                     );
-                    updateFieldByUid(selectedPhoto.uid, "watermark", checked);
+                    updateSelectedPhotoProperty("watermark", checked);
                   }}
                 >
                   <p className="text-white lg:text-base text-xs">Thêm Nhãn</p>
@@ -120,11 +116,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
                 checked={field.value}
                 onChange={(e) => {
                   field.onChange(e.target.checked);
-                  updateFieldByUid(
-                    selectedPhoto.uid,
-                    "showExif",
-                    e.target.checked,
-                  );
+                  updateSelectedPhotoProperty("showExif", e.target.checked);
                 }}
               >
                 <p className="text-white lg:text-base text-xs">
@@ -154,7 +146,7 @@ export default function UploadPhotoExtraOption({ selectedPhoto }) {
               className="w-5/6 m-2 lg:text-base text-xs"
               onChange={(value) => {
                 field.onChange(value);
-                updateFieldByUid(selectedPhoto.uid, "visibility", value);
+                updateSelectedPhotoProperty("visibility", value);
               }}
             />
           )}

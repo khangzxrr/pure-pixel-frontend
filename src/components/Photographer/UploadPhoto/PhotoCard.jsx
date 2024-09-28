@@ -26,10 +26,10 @@ const getAspectRatio = (url) => {
 };
 export default function PhotoCard({ photo }) {
   const {
-    setSelectedPhoto,
-    removePhotoByUid,
+    setSelectedPhotoById,
+    removePhotoById,
+
     selectedPhoto,
-    updateFieldByUid,
   } = useUploadPhotoStore();
   const [displayTitle, setDisplayTitle] = useState("Untitled");
 
@@ -45,7 +45,7 @@ export default function PhotoCard({ photo }) {
           {
             onSuccess: () => {
               message.success("Xóa ảnh thành công");
-              removePhotoByUid(photo.uid);
+              removePhotoById(photo.signedUpload.photoId);
               // Additional logic to handle the successful deletion of the photo
             },
             onError: (error) => {
@@ -61,11 +61,11 @@ export default function PhotoCard({ photo }) {
         message.error("Chưa thể xóa ảnh");
       }
     } else {
-      removePhotoByUid(photo.uid);
+      removePhotoById(photo.signedUpload.photoId);
     }
   };
   const handleSelect = () => {
-    setSelectedPhoto(photo.uid);
+    setSelectedPhotoById(photo.signedUpload.photoId);
   };
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export default function PhotoCard({ photo }) {
               <Checkbox
                 onChange={(e) => {
                   console.log("Checkbox onChange", e.target.checked);
-                  updateFieldByUid(photo.uid, "watermark", e.target.checked);
+                  // updateFieldByUid(photo.uid, "watermark", e.target.checked);
                 }}
                 checked={photo.watermark}
               />

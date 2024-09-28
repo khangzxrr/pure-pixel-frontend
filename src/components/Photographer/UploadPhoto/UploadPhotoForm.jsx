@@ -1,4 +1,4 @@
-import { Input, Select, Checkbox } from "antd";
+import { Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
@@ -6,14 +6,15 @@ import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import TextArea from "antd/es/input/TextArea";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectType } from "../../../fakejson/SelectType";
-import { SelectTag } from "../../../fakejson/SelectTag";
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
 import { useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../../apis/CategoryApi";
 
-export default function UploadPhotoForm({ selectedPhoto }) {
-  const { updateFieldByUid } = useUploadPhotoStore();
+export default function UploadPhotoForm() {
+  const { updateSelectedPhotoProperty, selectedPhoto } = useUploadPhotoStore();
+
   const [categories, setCategories] = useState([]);
+
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
     onSuccess: (data) => {
@@ -64,7 +65,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               placeholder="Enter image title"
               onChange={(e) => {
                 field.onChange(e);
-                updateFieldByUid(selectedPhoto.uid, "title", e.target.value);
+                updateSelectedPhotoProperty("title", e.target.value);
               }}
             />
           )}
@@ -86,11 +87,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               placeholder="Enter description"
               onChange={(e) => {
                 field.onChange(e);
-                updateFieldByUid(
-                  selectedPhoto.uid,
-                  "description",
-                  e.target.value,
-                );
+                updateSelectedPhotoProperty("description", e.target.value);
               }}
             />
           )}
@@ -119,7 +116,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               className="w-3/5 max-w-full m-2"
               onChange={(value) => {
                 field.onChange(value);
-                updateFieldByUid(selectedPhoto.uid, "photoType", value);
+                updateSelectedPhotoProperty("photoType", value);
               }}
             />
           )}
@@ -144,7 +141,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               onChange={(value) => {
                 field.onChange(value); // Ensure the form state is updated
                 handleTagChange(value); // Call your custom handler
-                updateFieldByUid(selectedPhoto.uid, "photoTags", value);
+                updateSelectedPhotoProperty("photoTags", value);
               }}
               options={categories}
             />
@@ -170,7 +167,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               placeholder="Enter location"
               onChange={(e) => {
                 field.onChange(e);
-                updateFieldByUid(selectedPhoto.uid, "location", e.target.value);
+                updateSelectedPhotoProperty("location", e.target.value);
               }}
             />
           )}
