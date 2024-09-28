@@ -41,6 +41,7 @@ import DashboardLayoutF from "../layouts/DashboardLayoutF";
 import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
+import PrivateUpload from "../components/Upload/PrivateUpload";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -225,34 +226,38 @@ export const AppRouter = createBrowserRouter([
     element: <DashboardLayoutF />,
     children: [
       {
-        path: "", // Đường dẫn trống để xử lý điều hướng từ "/test"
+        path: "",
         element: <Navigate to="/test/explorer" replace={true} />,
       },
       {
-        path: "explorer", // Đường dẫn tương đối cho "/test/explorer"
+        path: "explorer",
         element: <Explore />,
         children: [
           {
-            path: "", // Đường dẫn trống để xử lý điều hướng từ "/test/explorer"
+            path: "",
             element: <Navigate to="inspiration" replace={true} />,
           },
           {
-            path: "inspiration", // Đường dẫn tương đối cho "/test/explorer/inspiration"
+            path: "inspiration",
             element: <InspirationPhoto />,
           },
           {
-            path: "hot", // Đường dẫn tương đối cho "/test/explorer/hot"
+            path: "hot",
             element: <HotPhoto />,
           },
         ],
       },
       {
-        path: "upload", // Đường dẫn tương đối cho "/test/upload"
+        path: "upload",
         element: <Upload />,
         children: [
           {
-            path: "public", // Đường dẫn tương đối cho "/test/upload/public"
+            path: "public",
             element: <PublicUpload />,
+          },
+          {
+            path: "private",
+            element: <PrivateUpload />,
           },
         ],
       },
