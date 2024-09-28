@@ -11,12 +11,8 @@ import PhotoCard from "./PhotoCard";
 import ScrollingBar from "./ScrollingBar";
 import { useNavigate } from "react-router-dom";
 import "./UploadPhoto.css";
-import {
-  getExifData,
-  validateExifData,
-  getBase64,
-  getFileBlobUrl,
-} from "../../../utils/HandleUploadPhoto";
+
+import PhotoService from "../../../services/PhotoService";
 
 const { Dragger } = Upload;
 
@@ -101,16 +97,16 @@ export default function CustomUpload() {
   const customRequest = async ({ file, onError, onSuccess, onProgress }) => {
     try {
       // Extract EXIF data from the file
-      const exifData = await getExifData(file);
+      const exifData = await PhotoService.getExifData(file);
       console.log("EXIF Data:", exifData);
 
       // Validate EXIF data
-      const isValidExif = validateExifData(exifData);
+      const isValidExif = PhotoService.validateExifData(exifData);
 
       // If EXIF data is invalid, show error and cancel the upload
       if (!isValidExif) {
         message.error(
-          "Ảnh không hợp lệ. Thiếu dữ liệu EXIF cần thiết (Model, ISO, FNumber, ShutterSpeedValue, ApertureValue)."
+          "Ảnh không hợp lệ. Thiếu dữ liệu EXIF cần thiết (Model, ISO, FNumber, ShutterSpeedValue, ApertureValue).",
         );
         onError(new Error("Invalid EXIF data")); // Call onError callback to indicate failure
         return; // Stop further processing and don't call the upload API
@@ -162,7 +158,6 @@ export default function CustomUpload() {
       // Set status to 'parsed' in onSuccess callback
       onSuccess({ status: "parsed" });
     } catch (e) {
-      message.error("something wrong! please try again");
       console.log(e);
       onError(e);
     }
@@ -172,12 +167,25 @@ export default function CustomUpload() {
     console.log("Upload onChange:", info);
 
     // Extract EXIF data from the file
-    const exifData = await getExifData(info.file.originFileObj);
+    const exifData = await PhotoService.getExifData(info.file.originFileObj);
+
+    if (!exifData) {
+      message.error(
+        "Bức ảnh bạn chọn không chứa thông tin exif, vui lòng thử lại",
+      );
+
+      return;
+    }
+
+    console.log(exifData);
+
     // Extract the base64 URL of the file for preview
-    const reviewUrl = await getFileBlobUrl(info.file.originFileObj);
+    const reviewUrl = await PhotoService.getFileBlobUrl(
+      info.file.originFileObj,
+    );
 
     // Validate EXIF data
-    const isValidExif = validateExifData(exifData);
+    const isValidExif = PhotoService.validateExifData(exifData);
 
     // If EXIF data is invalid, show error and cancel the upload
     if (!isValidExif) {
