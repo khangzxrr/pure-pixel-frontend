@@ -3,6 +3,7 @@ import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import { DeleteOutlined } from "@ant-design/icons"; // Ensure you have this import
 import PhotoApi from "../../../apis/PhotoApi";
 import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 function truncateString(str, num) {
   if (str.length <= num) {
@@ -10,51 +11,87 @@ function truncateString(str, num) {
   }
   return str.slice(0, num) + "...";
 }
-
+const getAspectRatio = (url) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      const aspectRatio = img.width / img.height;
+      resolve(aspectRatio);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
 export default function PhotoCard({ photo }) {
-  const { setSelectedPhoto, removePhotoByUid, selectedPhoto, updateField } =
-    useUploadPhotoStore();
-  const displayTitle = photo?.name
-    ? truncateString(photo.name, 13)
-    : "Untitled"; // Adjust the number as needed
+  const {
+    setSelectedPhotoById,
+    removePhotoById,
+
+    selectedPhoto,
+  } = useUploadPhotoStore();
+  const [displayTitle, setDisplayTitle] = useState("Untitled");
 
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
   });
 
   const handleRemove = (photo) => {
-    console.log("onRemove", photo);
-    deletePhoto.mutateAsync(
-      { id: photo.id },
-      {
-        onSuccess: () => {
-          message.success("Xóa ảnh thành công");
-          removePhotoByUid(photo.uid);
-          // Additional logic to handle the successful deletion of the photo
-        },
-        onError: (error) => {
-          message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
-          // Additional logic to handle the error
-        },
+    if (photo.photoId) {
+      try {
+        deletePhoto.mutateAsync(
+          { id: photo.photoId },
+          {
+            onSuccess: () => {
+              message.success("Xóa ảnh thành công");
+              removePhotoById(photo.signedUpload.photoId);
+              // Additional logic to handle the successful deletion of the photo
+            },
+            onError: (error) => {
+              console.log("Error deleting photo", error);
+
+              message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
+              // Additional logic to handle the error
+            },
+          },
+        );
+      } catch (error) {
+        console.log("Error deleting photo", error);
+        message.error("Chưa thể xóa ảnh");
       }
-    );
-  };
-  const handleSelect = () => {
-    if (photo.status === "PARSED") {
-      setSelectedPhoto({
-        ...photo,
-        title: photo.name.replace(/\.(png|jpg)$/i, ""),
-      });
     } else {
-      message.loading("File is not ready yet.");
+      removePhotoById(photo.signedUpload.photoId);
     }
   };
+  const handleSelect = () => {
+    setSelectedPhotoById(photo.signedUpload.photoId);
+  };
+
+  useEffect(() => {
+    const fetchAspectRatio = async () => {
+      if (photo?.reviewUrl) {
+        try {
+          const ratio = await getAspectRatio(photo.reviewUrl);
+          if (ratio < 1) {
+            setDisplayTitle(truncateString(photo.title, 10));
+          } else {
+            setDisplayTitle(truncateString(photo.title, 20));
+          }
+        } catch (error) {
+          console.error("Error loading image:", error);
+        }
+      }
+    };
+
+    fetchAspectRatio();
+  }, [photo]);
   return (
-    <div className="relative h-64 flex-shrink-0 p-2">
+    <div className="relative h-56 flex-shrink-0 p-2">
       <img
-        src={photo?.upload_url}
+        src={photo?.reviewUrl}
         className={`h-3/4 w-full object-cover rounded-md cursor-pointer ${
-          photo.uid === selectedPhoto?.uid
+          photo.uid === selectedPhoto
             ? "border-4 border-white transition duration-300"
             : ""
         }`}
@@ -64,48 +101,36 @@ export default function PhotoCard({ photo }) {
       <p className="text-slate-300 font-semibold text-center overflow-hidden">
         {displayTitle}
       </p>
-      {photo.status === "PARSED" && (
-        <>
-          <div className="h-4 w-4 absolute top-4 right-4 flex justify-center items-center z-20">
-            <Tooltip title="Delete Photo">
-              <DeleteOutlined
-                className="text-white text-xl cursor-pointer hover:text-red-500"
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering the parent onClick
-                  handleRemove(photo);
+      <>
+        <div className="h-8 w-8 absolute top-2 right-2 flex justify-center items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md   rounded-full">
+          <Tooltip title="Delete Photo">
+            <DeleteOutlined
+              className="text-white text-xl cursor-pointer hover:text-red-500"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent triggering the parent onClick
+                handleRemove(photo);
+              }}
+            />
+          </Tooltip>
+        </div>
+        <div className="h-4 w-4  absolute bottom-16 right-3 flex justify-center items-center z-20">
+          <div className="absolute">
+            <Tooltip
+              placement="topRight"
+              color="geekblue"
+              title={photo.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
+            >
+              <Checkbox
+                onChange={(e) => {
+                  console.log("Checkbox onChange", e.target.checked);
+                  // updateFieldByUid(photo.uid, "watermark", e.target.checked);
                 }}
+                checked={photo.watermark}
               />
             </Tooltip>
           </div>
-          <div className="h-4 w-4  absolute bottom-20 right-4 flex justify-center items-center z-20">
-            <div className="absolute">
-              <Tooltip
-                placement="topRight"
-                color="geekblue"
-                title={photo.isWatermark ? "Gỡ nhãn" : "Gắn nhãn"}
-              >
-                <Checkbox
-                  onChange={(e) => {
-                    console.log("Checkbox onChange", e.target.checked);
-                    updateField(photo.id, "isWatermark", e.target.checked);
-                  }}
-                  checked={photo.isWatermark}
-                />
-              </Tooltip>
-            </div>
-          </div>
-        </>
-      )}
-
-      {photo.status === "uploading" && (
-        <div
-          className="absolute h-52 inset-0 bg-gray-100 opacity-70 z-10 flex items-center justify-center rounded-lg cursor-default "
-          style={{ pointerEvents: "none" }} // Disable hover
-        >
-          <Spin />{" "}
-          <p className="text-black text-sm font-bold">{photo.percent}%</p>
         </div>
-      )}
+      </>
     </div>
   );
 }

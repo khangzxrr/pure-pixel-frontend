@@ -1,200 +1,158 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
-const initialPhotoList = [];
+const initPhotoIdHashMap = {};
+const initUiHashMap = {};
+const initPhotoArray = [];
 
-const useUploadPhotoStore = create((set) => ({
-  photoList: initialPhotoList,
-  selectedPhoto: initialPhotoList[0] || {},
-  photoExtraOption: {},
-  isUpdatingPhotos: false,
-  isOpenDraftModal: false,
+const useUploadPhotoStore = create(
+  devtools((set, get) => ({
+    photoIdHashmap: initPhotoIdHashMap,
+    uidHashmap: initUiHashMap,
+    photoArray: initPhotoArray,
+    selectedPhoto: null,
+    isUpdatingPhotos: false,
+    isOpenDraftModal: false,
 
-  clearState: () => {
-    set({
-      photoList: [],
-      selectedPhoto: {},
-    });
-  },
+    getPhotoByUid: (uid) => {
+      const index = get().uidHashmap[uid];
 
-  setIsUpdating: (isUpdating) => {
-    set({ isUpdatingPhotos: isUpdating });
-  },
+      return get().photoArray[index];
+    },
+    setSelectedPhotoById: (id) =>
+      set((state) => ({
+        selectedPhoto: state.photoArray[state.photoIdHashmap[id]],
+      })),
 
-  // Add a single photo to the photoList with currentStep default set to 1
+    updateSelectedPhotoProperty: (key, value) => {
+      set((state) => {
+        state.selectedPhoto[key] = value;
 
-  setIsOpenDraftModal: (status) => {
-    set({ isOpenDraftModal: status });
-  },
+        return {
+          selectedPhoto: state.selectedPhoto,
+        };
+      });
+    },
+    addPhoto: (uid, id, payload) =>
+      set((state) => {
+        const index = state.photoArray.length;
 
+        state.photoIdHashmap[id] = index;
+        state.uidHashmap[uid] = index;
 
-  addSingleImage: (photo) =>
-    set((state) => ({
-      photoList: [
-        ...(Array.isArray(state.photoList) ? state.photoList : []),
-        {
+        state.photoArray.push(payload);
+
+        return {
+          photoArray: state.photoArray,
+          photoIdHashmap: state.photoIdHashmap,
+          uidHashmap: state.uidHashmap,
+        };
+      }),
+
+    removePhotoById: (id) => {
+      set((state) => {
+        const index = state.photoIdHashmap[id];
+
+        const uid = state.photoArray[index].file.uid;
+
+        state.photoArray.splice(index, 1);
+
+        delete state.photoIdHashmap[id];
+        delete state.uidHashmap[uid];
+
+        return {
+          photoIdHashmap: state.photoIdHashmap,
+          uidHashmap: state.uidHashmap,
+          photoArray: state.photoArray,
+        };
+      });
+    },
+    removePhotoByUid: (uid) =>
+      set((state) => {
+        const index = state.uidHashmap[uid];
+
+        const id = state.photoArray[index].signedUpload.photoId;
+
+        delete state.photoIdHashmap[id];
+        delete state.uidHashmap[uid];
+
+        return {
+          photoIdHashmap: state.photoIdHashmap,
+          uidHashmap: state.uidHashmap,
+          photoArray: state.photoArray,
+        };
+      }),
+
+    clearState: () => {
+      set({
+        photoIdHashmap: {},
+        uidHashmap: {},
+        photoArray: [],
+        selectedPhoto: null,
+        isUpdatingPhotos: false,
+        isOpenDraftModal: false,
+      });
+    },
+
+    setIsOpenDraftModal: (status) => {
+      set({ isOpenDraftModal: status });
+    },
+
+    isPhotoExistByUid: (uid) => {
+      const state = useUploadPhotoStore.getState();
+      return state.photoList.some((photo) => photo.uid === uid);
+    },
+
+    deleteImageById: (id) =>
+      set((state) => {
+        const updatedPhotoList = state.photoList.filter(
+          (image) => image.id !== id,
+        );
+        const isDeletedSelected = state.selectedPhoto.id === id;
+
+        return {
+          photoList: updatedPhotoList,
+          selectedPhoto: isDeletedSelected
+            ? updatedPhotoList[0] || {}
+            : state.selectedPhoto,
+        };
+      }),
+
+    toggleWatermark: (status) =>
+      set((state) => {
+        const photoList = state.photoList.map((photo) => ({
           ...photo,
-          isWatermark: true,
-          currentStep: 1,
-        },
-      ],
-    })),
-
-  isPhotoExistByUid: (uid) => {
-    const state = useUploadPhotoStore.getState();
-    return state.photoList.some((photo) => photo.uid === uid);
-  },
-
-  updatePhotoByUid: (uid, newPhoto) =>
-    set((state) => {
-      console.log("Updating photo by UID:", uid);
-      return {
-        photoList: state.photoList.map((photo) => {
-          if (photo.uid === uid) {
-            console.log("Updating photo name:", photo.name);
-            return {
-              ...photo,
-              ...newPhoto,
-              title: photo.name,
-              currentStep: photo.currentStep,
-            };
-          }
-          return photo;
-        }),
-      };
-    }),
-
-  deleteImageById: (id) =>
-    set((state) => {
-      const updatedPhotoList = state.photoList.filter(
-        (image) => image.id !== id
-      );
-      const isDeletedSelected = state.selectedPhoto.id === id;
-
-      return {
-        photoList: updatedPhotoList,
-        selectedPhoto: isDeletedSelected
-          ? updatedPhotoList[0] || {}
-          : state.selectedPhoto,
-      };
-    }),
-
-  removePhotoByUid: (uid) =>
-    set((state) => {
-      const updatedPhotoList = state.photoList.filter(
-        (photo) => photo.uid !== uid
-      );
-
-      const isDeletedSelected = state.selectedPhoto.uid === uid;
-
-      const newSelectedPhoto = isDeletedSelected
-        ? updatedPhotoList[0] || {}
-        : state.selectedPhoto;
-
-      return {
-        photoList: updatedPhotoList,
-        selectedPhoto: newSelectedPhoto,
-      };
-    }),
-
-  setSelectedPhoto: (photo) =>
-    set(() => {
-      console.log("Setting selected photo:", photo);
-      return { selectedPhoto: photo };
-    }),
-
-  setCurrentStep: (id, step) =>
-    set((state) => {
-      const photoList = [...state.photoList];
-      const photoIndex = photoList.findIndex((image) => image.id === id);
-
-      if (photoIndex !== -1) {
-        photoList[photoIndex] = { ...photoList[photoIndex], currentStep: step };
-      }
-
-      const selectedPhoto =
-        state.selectedPhoto.id === id
-          ? { ...state.selectedPhoto, currentStep: step }
-          : state.selectedPhoto;
-
-      return { photoList, selectedPhoto };
-    }),
-
-  updateField: (id, field, value) =>
-    set((state) => {
-      const photoList = [...state.photoList];
-      const photoIndex = photoList.findIndex((image) => image.id === id);
-
-      if (photoIndex !== -1) {
-        const updatedPhoto = {
-          ...photoList[photoIndex],
-          [field]: value,
-        };
-
-        photoList[photoIndex] = updatedPhoto;
-
-        const selectedPhoto =
-          state.selectedPhoto.id === id ? updatedPhoto : state.selectedPhoto;
-
-        return { photoList, selectedPhoto };
-      }
-    }),
-
-  updateFieldByUid: (uid, field, value) =>
-    set((state) => {
-      console.log("Updating field by UID:", uid, field, value);
-
-      const photoList = [...state.photoList];
-      const photoIndex = photoList.findIndex((image) => image.uid === uid);
-
-      if (photoIndex !== -1) {
-        const updatedPhoto = {
-          ...photoList[photoIndex],
-          [field]: value,
-        };
-
-        photoList[photoIndex] = updatedPhoto;
+          watermark: status,
+        }));
 
         return { photoList };
-      }
-    }),
+      }),
 
-  toggleWatermark: (status) =>
-    set((state) => {
-      const photoList = state.photoList.map((photo) => ({
-        ...photo,
-        isWatermark: status,
-      }));
+    setNextSelectedPhoto: () =>
+      set((state) => {
+        const { photoList, selectedPhoto } = state;
+        if (photoList.length === 0) return;
 
-      const selectedPhoto = {
-        ...state.selectedPhoto,
-        isWatermark: status,
-      };
+        const currentIndex = photoList.findIndex(
+          (photo) => photo.uid === selectedPhoto,
+        );
+        const nextIndex = (currentIndex + 1) % photoList.length;
+        return { selectedPhoto: photoList[nextIndex].uid };
+      }),
 
-      return { photoList, selectedPhoto };
-    }),
-  setNextSelectedPhoto: () =>
-    set((state) => {
-      const { photoList, selectedPhoto } = state;
-      if (photoList.length === 0) return;
+    setPreviousSelectedPhoto: () =>
+      set((state) => {
+        const { photoList, selectedPhoto } = state;
+        if (photoList.length === 0) return;
 
-      const currentIndex = photoList.findIndex(
-        (photo) => photo.uid === selectedPhoto.uid
-      );
-      const nextIndex = (currentIndex + 1) % photoList.length;
-      return { selectedPhoto: photoList[nextIndex] };
-    }),
-  setPreviousSelectedPhoto: () =>
-    set((state) => {
-      const { photoList, selectedPhoto } = state;
-      if (photoList.length === 0) return;
-
-      const currentIndex = photoList.findIndex(
-        (photo) => photo.uid === selectedPhoto.uid
-      );
-      const previousIndex =
-        (currentIndex - 1 + photoList.length) % photoList.length;
-      return { selectedPhoto: photoList[previousIndex] };
-    }),
-}));
+        const currentIndex = photoList.findIndex(
+          (photo) => photo.uid === selectedPhoto,
+        );
+        const previousIndex =
+          (currentIndex - 1 + photoList.length) % photoList.length;
+        return { selectedPhoto: photoList[previousIndex].uid };
+      }),
+  })),
+);
 
 export default useUploadPhotoStore;

@@ -41,6 +41,7 @@ import DashboardLayoutF from "../layouts/DashboardLayoutF";
 import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
+import ScrollingBar from "../components/Photographer/UploadPhoto/ScrollingBar";
 import ProfilePage from "../pages/DetailUser/DetailUser";
 
 
@@ -251,9 +252,13 @@ export const AppRouter = createBrowserRouter([
         children: [
           {
             path: "/test/upload/public",
-            element: <PublicUpload />,
+            element: <UploadPhoto />,
           },
         ],
+      },
+      {
+        path: "/test/test_scroll",
+        element: <ScrollingBar />,
       },
     ],
   },

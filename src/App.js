@@ -10,8 +10,9 @@ import OneSignal from "react-onesignal";
 import { ConfigProvider } from "antd";
 import locale from "antd/es/locale/vi_VN"; // Import locale tiếng Việt cho antd
 import { NotificationProvider } from "./Notification/Notification";
-import dayjs  from 'dayjs';
+import dayjs from "dayjs";
 import "dayjs/locale/vi"; // Import locale tiếng Việt
+import useSocketStore from "./states/UseSocketStore";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,13 +23,15 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  OneSignal.init({
-    appId: "0460263b-9032-44ed-910c-4248b23ecf8e",
-    notifyButton: {
-      enable: true,
-    },
-    allowLocalhostAsSecureOrigin: true,
-  });
+  const { initSocket } = useSocketStore();
+
+  // OneSignal.init({
+  //   appId: "0460263b-9032-44ed-910c-4248b23ecf8e",
+  //   notifyButton: {
+  //     enable: true,
+  //   },
+  //   allowLocalhostAsSecureOrigin: true,
+  // });
   dayjs.locale("vi");
   return (
     <QueryClientProvider client={queryClient}>
@@ -40,10 +43,11 @@ function App() {
         }}
         onEvent={async (event, error) => {
           if (event === "onAuthSuccess") {
-            // console.log(UserService.getTokenParsed());
+            // const id = UserService.getUserId();
 
-            const id = UserService.getUserId();
-            await OneSignal.login(id);
+            initSocket();
+
+            // await OneSignal.login(id);
           }
         }}
       >
