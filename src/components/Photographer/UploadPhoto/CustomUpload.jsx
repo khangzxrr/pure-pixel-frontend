@@ -1,11 +1,9 @@
 import { PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
 import { message, Upload, Tooltip, Switch } from "antd";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import { io } from "socket.io-client";
-import UserService from "../../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
 import ScrollingBar from "./ScrollingBar";
 import { useNavigate } from "react-router-dom";
@@ -36,39 +34,6 @@ export default function CustomUpload() {
 
   //use keycloak to trigger refresh component when new token comes
   const { keycloak } = useKeycloak();
-
-  const userToken = UserService ? UserService.getTokenParsed() : "";
-
-  //using ref to NOT cause re-render when socketRef is change
-  const socketRef = useRef();
-
-  useEffect(() => {
-    if (!userToken) {
-      return;
-    }
-
-    //init connection to socket.io backend
-    socketRef.current = io(process.env.REACT_APP_WEBSOCKET_UPLOAD_PHOTO, {
-      autoConnect: true,
-      extraHeaders: {
-        Authorization: `bearer ${UserService.getToken()}`,
-      },
-    });
-
-    //emit join event to join photo process gateway
-    socketRef.current.emit("join");
-
-    socketRef.current.on("finish-process-photos", (data) => {
-      console.log(`got data from WS`);
-      console.log(data);
-      message.success(`Đã xử lý ảnh ${data.id} thành công!`);
-    });
-
-    return () => {
-      socketRef.current.off("finish-process-photos");
-      socketRef.current.disconnect();
-    };
-  }, [userToken]);
 
   const uploadPhoto = useMutation({
     mutationFn: ({ url, file, options }) =>
@@ -240,7 +205,7 @@ export default function CustomUpload() {
 
     clearState();
 
-    message.success("saved all uploaded photos!");
+    message.success("đã lưu các chỉnh sửa!");
     navigate("/my-photo/photo/all");
   };
 
