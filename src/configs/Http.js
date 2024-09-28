@@ -2,6 +2,7 @@ import axios from "axios";
 import UserService from "../services/Keycloak";
 
 const http = axios.create({
+  // eslint-disable-next-line no-undef
   baseURL: process.env.REACT_APP_AXIOS_BASE_URL,
 
   timeout: 30000,
@@ -24,15 +25,14 @@ export const testHttp = axios.create({
 http.interceptors.request.use(
   async (config) => {
     if (UserService.isLoggedIn()) {
-      await UserService.updateToken();
       config.headers.Authorization = `Bearer ${UserService.getToken()}`;
     }
-    return config;
+    return Promise.resolve(config);
   },
   (error) => {
     console.log("error: ", error);
     return Promise.reject(error);
-  }
+  },
 );
 
 export default http;
