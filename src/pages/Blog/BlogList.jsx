@@ -40,7 +40,7 @@ const blogPosts = [
 
 export default function EnhancedColorBlogList() {
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-[#36393f]">
       <div className="max-w-6xl mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold text-center mb-12 text-gray-100">
           Featured Blog Posts
@@ -49,7 +49,7 @@ export default function EnhancedColorBlogList() {
           {blogPosts.map((post) => (
             <div
               key={post.id}
-              className="bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105"
+              className="bg-[#2f3136] rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105"
             >
               <img
                 src={post.image}
@@ -58,7 +58,7 @@ export default function EnhancedColorBlogList() {
               />
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-semibold text-teal-400">
+                  <span className="text-sm font-semibold text-white">
                     {post.category}
                   </span>
                   <div className="flex items-center text-gray-400 text-sm">
@@ -81,10 +81,10 @@ export default function EnhancedColorBlogList() {
                   </div>
                 </div>
               </div>
-              <div className="px-6 py-4 bg-gray-700 border-t border-gray-600">
+              <div className="px-6 py-4 bg-[#202225] border-t border-gray-600">
                 <Link
                   to="/blog/123"
-                  className="text-teal-400 font-semibold flex items-center hover:text-teal-300 transition-colors duration-300"
+                  className="text-[#57afdd] font-semibold flex items-center hover:text-[#eeeeee] transition-colors duration-300"
                 >
                   Read More
                   <ChevronRight size={16} className="ml-1" />

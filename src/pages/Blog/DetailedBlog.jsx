@@ -12,7 +12,7 @@ import {
 
 export default function EnhancedColorDetailedBlogPost() {
   return (
-    <div className="bg-gray-900 min-h-screen text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="bg-[#36393f] min-h-screen text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
       <article className="max-w-4xl mx-auto">
         <header className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-100 mb-4">
