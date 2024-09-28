@@ -9,6 +9,7 @@ import {
   Share2,
   Bookmark,
 } from "lucide-react";
+import BlogList from "./BlogList";
 
 export default function EnhancedColorDetailedBlogPost() {
   return (
@@ -151,6 +152,8 @@ export default function EnhancedColorDetailedBlogPost() {
           </div>
         </footer>
       </article>
+
+      <BlogList/>
     </div>
   );
 }

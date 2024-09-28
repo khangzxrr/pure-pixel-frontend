@@ -38,7 +38,7 @@ const blogPosts = [
   },
 ];
 
-export default function EnhancedColorBlogList() {
+export default function BlogList() {
   return (
     <div className="min-h-screen bg-[#36393f]">
       <div className="max-w-6xl mx-auto px-4 py-12">
