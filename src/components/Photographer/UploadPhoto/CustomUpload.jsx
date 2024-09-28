@@ -1,13 +1,12 @@
 import { PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Image, message, Upload, Progress, Flex, Tooltip, Switch } from "antd";
+import { useMutation } from "@tanstack/react-query";
+import { message, Upload, Tooltip, Switch } from "antd";
 import { useEffect, useRef, useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import { io } from "socket.io-client";
 import UserService from "../../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
-import PhotoCard from "./PhotoCard";
 import ScrollingBar from "./ScrollingBar";
 import { useNavigate } from "react-router-dom";
 import "./UploadPhoto.css";
@@ -84,6 +83,7 @@ export default function CustomUpload() {
 
       return false;
     }
+
     const isLt150M = file.size / 1024 / 1024 < 150;
     if (!isLt150M) {
       message.error("Image must smaller than 150MB!");
