@@ -55,7 +55,7 @@ export default function PhotoCard({ photo }) {
               message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
               // Additional logic to handle the error
             },
-          }
+          },
         );
       } catch (error) {
         console.log("Error deleting photo", error);
@@ -79,8 +79,6 @@ export default function PhotoCard({ photo }) {
           } else {
             setDisplayTitle(truncateString(photo.title, 20));
           }
-
-          console.log("Selected Photo Aspect Ratio:", ratio);
         } catch (error) {
           console.error("Error loading image:", error);
         }
