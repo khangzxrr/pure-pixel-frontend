@@ -177,22 +177,21 @@ export default function CustomUpload() {
       return;
     }
 
+    const isValidExif = PhotoService.validateExifData(exifData);
+    // If EXIF data is invalid, show error and cancel the upload
+    if (!isValidExif) {
+      message.error(
+        `Bức ảnh bạn chọn không chứa những thông tin exif cần thiết, vui lòng thử lại`,
+      );
+      return; // Stop further processing
+    }
+
     console.log(exifData);
 
     // Extract the base64 URL of the file for preview
-    const reviewUrl = await PhotoService.getFileBlobUrl(
+    const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(
       info.file.originFileObj,
     );
-
-    // Validate EXIF data
-    const isValidExif = PhotoService.validateExifData(exifData);
-
-    // If EXIF data is invalid, show error and cancel the upload
-    if (!isValidExif) {
-      console.log("Invalid photo. Required EXIF data missing.");
-
-      return; // Stop further processing
-    }
 
     // Proceed with adding or updating the image if EXIF data is valid
     if (!isPhotoExistByUid(info.file.uid) && info.file.status !== "removed") {
