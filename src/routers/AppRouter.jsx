@@ -42,6 +42,7 @@ import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
 import ProfilePage from "../pages/DetailUser/DetailUser";
+import BlogList from "../pages/Blog/BlogList";
 
 
 export const AppRouter = createBrowserRouter([
@@ -64,6 +65,10 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/membership",
             element: <MembershipPage />,
+          },
+          {
+            path: "/blog",
+            element: <BlogList />,
           },
           // {
           //   path: "/following",

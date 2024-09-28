@@ -3,9 +3,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import ComButton from "../../../components/ComButton/ComButton";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ComTextArea from './../../../components/ComInput/ComTextArea';
-import ComNumber from './../../../components/ComInput/ComNumber';
-import ComInput from './../../../components/ComInput/ComInput';
+import ComTextArea from "./../../../components/ComInput/ComTextArea";
+import ComNumber from "./../../../components/ComInput/ComNumber";
+import ComInput from "./../../../components/ComInput/ComInput";
 import ComSelect from "../../../components/ComInput/ComSelect";
 
 export default function CreateUpgrade() {
@@ -35,9 +35,9 @@ export default function CreateUpgrade() {
     setError,
     trigger,
   } = methods;
-    const onSubmit = () => {
-      
-  }
+  const onSubmit = (data) => {
+    console.log(data);
+  };
   return (
     <div>
       <div className="bg-white">
@@ -57,6 +57,7 @@ export default function CreateUpgrade() {
                       {...register("name")}
                       required
                     />
+                  
                   </div>
                 </div>
                 <div className="sm:col-span-1">
@@ -68,8 +69,8 @@ export default function CreateUpgrade() {
                       }}
                       label="Thời hạn "
                       placeholder="Thời hạn"
-                      onChangeValue={(e, value) => {
-                        setValue(e, value);
+                      onChangeValue={(name, value) => {
+                        setValue(name, value);
                       }}
                       mode="default"
                       options={[
@@ -95,7 +96,7 @@ export default function CreateUpgrade() {
                   <div className="mt-2.5">
                     <ComNumber
                       type="money"
-                      money
+                      // money
                       defaultValue={1000}
                       min={1000}
                       label={"Số tiền"}
@@ -120,8 +121,8 @@ export default function CreateUpgrade() {
                 <div className="sm:col-span-1">
                   <div className="mt-2.5">
                     <ComNumber
-                      type="money"
-                      money
+               
+                      
                       defaultValue={1000}
                       min={1000}
                       label={"Số lượng ảnh/album"}
@@ -134,8 +135,8 @@ export default function CreateUpgrade() {
                 <div className="sm:col-span-2">
                   <div className="mt-2.5">
                     <ComNumber
-                      type="money"
-                      money
+                      // type=""
+                      
                       defaultValue={1000}
                       min={1000}
                       label={"Số lượng ảnh upload"}
@@ -162,7 +163,7 @@ export default function CreateUpgrade() {
                 <ComButton
                   htmlType="submit"
                   //   disabled={disabled}
-                  className="block w-full rounded-md bg-[#0F296D] text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0F296D] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="block w-full rounded-md bg-[#0F296D] text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0F296D] "
                 >
                   Tạo mới
                 </ComButton>
