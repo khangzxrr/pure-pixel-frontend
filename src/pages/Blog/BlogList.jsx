@@ -36,71 +36,16 @@ const blogPosts = [
     category: "Technology",
     image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
   },
-  {
-    id: 3,
-    title: "The Future of AI in Web Design: Trends to Watch",
-    excerpt:
-      "Uncover how artificial intelligence is reshaping the landscape of web design and user experiences...",
-    author: "Michael Smith",
-    date: "June 10, 2023",
-    readTime: "6 min read",
-    category: "Technology",
-    image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
-  },
-  {
-    id: 3,
-    title: "The Future of AI in Web Design: Trends to Watch",
-    excerpt:
-      "Uncover how artificial intelligence is reshaping the landscape of web design and user experiences...",
-    author: "Michael Smith",
-    date: "June 10, 2023",
-    readTime: "6 min read",
-    category: "Technology",
-    image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
-  },
-  {
-    id: 3,
-    title: "The Future of AI in Web Design: Trends to Watch",
-    excerpt:
-      "Uncover how artificial intelligence is reshaping the landscape of web design and user experiences...",
-    author: "Michael Smith",
-    date: "June 10, 2023",
-    readTime: "6 min read",
-    category: "Technology",
-    image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
-  },
-  {
-    id: 3,
-    title: "The Future of AI in Web Design: Trends to Watch",
-    excerpt:
-      "Uncover how artificial intelligence is reshaping the landscape of web design and user experiences...",
-    author: "Michael Smith",
-    date: "June 10, 2023",
-    readTime: "6 min read",
-    category: "Technology",
-    image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
-  },
-  {
-    id: 3,
-    title: "The Future of AI in Web Design: Trends to Watch",
-    excerpt:
-      "Uncover how artificial intelligence is reshaping the landscape of web design and user experiences...",
-    author: "Michael Smith",
-    date: "June 10, 2023",
-    readTime: "6 min read",
-    category: "Technology",
-    image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
-  },
 ];
 
-export default function BlogList() {
+export default function EnhancedColorBlogList() {
   return (
-    <div className="bg-gray-900 min-h-screen">
+    <div className="min-h-screen bg-gray-900">
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-center mb-12 text-white">
+        <h1 className="text-4xl font-bold text-center mb-12 text-gray-100">
           Featured Blog Posts
         </h1>
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {blogPosts.map((post) => (
             <div
               key={post.id}
@@ -113,7 +58,7 @@ export default function BlogList() {
               />
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-semibold text-blue-400">
+                  <span className="text-sm font-semibold text-teal-400">
                     {post.category}
                   </span>
                   <div className="flex items-center text-gray-400 text-sm">
@@ -121,16 +66,16 @@ export default function BlogList() {
                     <span>{post.readTime}</span>
                   </div>
                 </div>
-                <h2 className="text-xl font-bold mb-2 text-white">
+                <h2 className="text-xl font-bold mb-2 text-gray-100">
                   {post.title}
                 </h2>
-                <p className="text-gray-300 mb-4">{post.excerpt}</p>
+                <p className="text-gray-400 mb-4">{post.excerpt}</p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <User size={16} className="text-gray-400 mr-2" />
-                    <span className="text-sm text-gray-400">{post.author}</span>
+                    <User size={16} className="text-gray-500 mr-2" />
+                    <span className="text-sm text-gray-500">{post.author}</span>
                   </div>
-                  <div className="flex items-center text-gray-400 text-sm">
+                  <div className="flex items-center text-gray-500 text-sm">
                     <Calendar size={14} className="mr-1" />
                     <span>{post.date}</span>
                   </div>
@@ -139,7 +84,7 @@ export default function BlogList() {
               <div className="px-6 py-4 bg-gray-700 border-t border-gray-600">
                 <Link
                   to="/blog/123"
-                  className="text-blue-400 font-semibold flex items-center hover:text-blue-300 transition-colors duration-300"
+                  className="text-teal-400 font-semibold flex items-center hover:text-teal-300 transition-colors duration-300"
                 >
                   Read More
                   <ChevronRight size={16} className="ml-1" />
