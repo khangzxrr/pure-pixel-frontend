@@ -43,6 +43,7 @@ import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
 import ProfilePage from "../pages/DetailUser/DetailUser";
 import BlogList from "../pages/Blog/BlogList";
+import DetailedBlog from './../pages/Blog/DetailedBlog';
 
 
 export const AppRouter = createBrowserRouter([
@@ -124,6 +125,10 @@ export const AppRouter = createBrowserRouter([
       {
         path: "/blog",
         element: <Blog />,
+      },
+      {
+        path: "/blog/:id",
+        element: <DetailedBlog />,
       },
       {
         path: "/discover",
