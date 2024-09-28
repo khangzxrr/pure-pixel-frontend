@@ -26,8 +26,10 @@ const uploadPhotoUsingPresignedUrl = async (url, file, options) => {
   return response.data;
 };
 
-const processPhotos = async (presignedData) => {
-  const response = await http.post(`photo/process`, presignedData);
+const processPhoto = async (signedUpload) => {
+  const response = await http.post(`photo/process`, {
+    signedUpload,
+  });
 
   return response;
 };
@@ -78,7 +80,7 @@ const PhotoApi = {
   getPublicPhotos,
   getPresignedUploadUrls,
   uploadPhotoUsingPresignedUrl,
-  processPhotos,
+  processPhoto,
   updatePhotos,
   deletePhoto,
   getPhotoById,
