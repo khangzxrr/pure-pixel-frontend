@@ -44,6 +44,7 @@ import PublicUpload from "../components/Upload/PublicUpload";
 import ProfilePage from "../pages/DetailUser/DetailUser";
 import BlogList from "../pages/Blog/BlogList";
 import DetailedBlog from './../pages/Blog/DetailedBlog';
+import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
 
 
 export const AppRouter = createBrowserRouter([
@@ -70,6 +71,10 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/blog",
             element: <BlogList />,
+          },
+          {
+            path: "/ProfileSettings",
+            element: <ProfileSettings />,
           },
           // {
           //   path: "/following",
