@@ -1,18 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import UseSidebarStore from "../../states/UseSidebarStore";
-
+import UserService from "../../services/Keycloak";
+const userData = UserService.getTokenParsed();
 const Sidebar = ({
   sideItems,
   trendItems,
   handleClick,
-  activeItem,
   isUpload,
   isImg,
+  isUser,
 }) => {
   const { activeLink, setActiveLink } = UseSidebarStore();
   return (
     <div className="flex flex-col max-h-screen gap-3 w-[256px]">
+      {isUser && (
+        <div className=" flex-grow">
+          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
+            {userData?.name || "User"}
+          </div>
+        </div>
+      )}
       {isImg && (
         <div>
           <img src="https://picsum.photos/290/150" alt="" />

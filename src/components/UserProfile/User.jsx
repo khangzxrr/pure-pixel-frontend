@@ -1,16 +1,14 @@
+// User.js
 import React from "react";
-import UploadSide from "./UploadSide";
-import { Outlet } from "react-router-dom";
-import { IoMenu, IoSettingsSharp } from "react-icons/io5";
+import UseSidebarStore from "../../states/UseSidebarStore";
 import UserService from "../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
-import UseUploadStore from "../../states/UseUploadStore";
-import UseInspirationStore from "../../states/UseInspirationStore";
-import UseSidebarStore from "../../states/UseSidebarStore";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import UseUserProfileStore from "./../../states/UseUserProfileStore";
+import UseProfileSide from "./UseProfileSide";
 import SidebarLayout from "../../layouts/SidebarLayout";
-const Upload = () => {
-  const { activeTitle, activeIcon, activeQuote } = UseUploadStore();
+
+const User = () => {
+  const { activeTitle, activeIcon, activeQuote } = UseUserProfileStore();
   const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
   const userData = UserService.getTokenParsed();
   const { keycloak } = useKeycloak();
@@ -27,7 +25,7 @@ const Upload = () => {
       activeIcon={activeIcon}
       activeTitle={activeTitle}
       activeQuote={activeQuote}
-      sidebarContent={<UploadSide />}
+      sidebarContent={<UseProfileSide />}
       onLogout={handleLogout}
       onLogin={handleLogin}
       onRegister={handleRegister}
@@ -35,4 +33,4 @@ const Upload = () => {
   );
 };
 
-export default Upload;
+export default User;

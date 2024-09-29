@@ -42,11 +42,15 @@ import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
 import PrivateUpload from "../components/Upload/PrivateUpload";
+import User from "../components/UserProfile/User";
+import ErrorPage from "../pages/ErrorPage";
+import ListPhotographers from "../pages/Photographer/ListPhotographers";
 
 export const AppRouter = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -224,6 +228,7 @@ export const AppRouter = createBrowserRouter([
   {
     path: "/test",
     element: <DashboardLayoutF />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "",
@@ -245,6 +250,10 @@ export const AppRouter = createBrowserRouter([
             path: "hot",
             element: <HotPhoto />,
           },
+          {
+            path: "photographers",
+            element: <ListPhotographers />,
+          },
         ],
       },
       {
@@ -258,6 +267,16 @@ export const AppRouter = createBrowserRouter([
           {
             path: "private",
             element: <PrivateUpload />,
+          },
+        ],
+      },
+      {
+        path: "profile",
+        element: <User />,
+        children: [
+          {
+            path: "userprofile",
+            element: <UserProfile />,
           },
         ],
       },

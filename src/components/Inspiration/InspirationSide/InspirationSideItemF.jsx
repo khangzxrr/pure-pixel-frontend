@@ -3,8 +3,7 @@ import { FaFireFlameCurved } from "react-icons/fa6";
 import { GiPolarStar } from "react-icons/gi";
 import { PiClockCountdownBold } from "react-icons/pi";
 import { RiVipCrownFill } from "react-icons/ri";
-import { TiPin } from "react-icons/ti";
-
+import { BsPersonBoundingBox } from "react-icons/bs";
 const InspirationSideItemF = [
   {
     id: 1,
@@ -25,13 +24,13 @@ const InspirationSideItemF = [
     id: 3,
     title: "Ảnh mới",
     icon: <PiClockCountdownBold />,
-    link: "/explorer/news",
+    link: "news",
   },
   {
     id: 4,
-    title: "Ảnh bìa",
-    icon: <TiPin />,
-    link: "/explorer/cover",
+    title: "Nhiếp ảnh gia",
+    icon: <BsPersonBoundingBox />,
+    link: "photographers",
   },
   {
     id: 5,

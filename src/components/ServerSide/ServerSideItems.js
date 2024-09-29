@@ -2,7 +2,7 @@ import { MdHomeFilled } from "react-icons/md";
 import { FaCompass } from "react-icons/fa6";
 import UserService from "../../services/Keycloak";
 import { FiUpload } from "react-icons/fi";
-import { IoMailSharp } from "react-icons/io5";
+import { IoMailSharp, IoPersonSharp } from "react-icons/io5";
 const userData = UserService.getTokenParsed();
 
 console.log(userData);
@@ -38,6 +38,11 @@ const ServerSideItems = [
     id: "message",
     link: "/test/message",
     icon: <IoMailSharp className="text-3xl" />,
+  },
+  {
+    id: "profile",
+    link: "/test/profile",
+    icon: <IoPersonSharp className="text-3xl" />,
   },
   //   userData && {
   //     id: "upload",

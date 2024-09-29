@@ -8,14 +8,19 @@ import Masonry from "react-masonry-css";
 import { FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
+import { useKeycloak } from "@react-keycloak/web";
+
 const InspirationPhoto = () => {
+  const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const limit = 99; // Tổng số ảnh
-  const take = 20; // Số lượng ảnh load mỗi lần
+  const limit = 10; // Tổng số ảnh
   const [selectedImage, setSelectedImage] = useState(null);
+
   const fetchPhotos = async ({ pageParam = 0 }) => {
-    const response = await PhotoApi.getPublicPhotos(pageParam, take);
+    const validLimit = Math.max(1, Math.min(limit, 9999));
+    const validPage = Math.max(0, Math.min(pageParam, 9999));
+    const response = await PhotoApi.getPublicPhotos(validLimit, validPage);
     return response;
   };
 
@@ -23,9 +28,11 @@ const InspirationPhoto = () => {
     useInfiniteQuery({
       queryKey: ["public-photos"],
       queryFn: fetchPhotos,
-      getNextPageParam: (lastPage, allPages) => {
-        const nextSkip = allPages.length * take;
-        return nextSkip < limit ? nextSkip : undefined;
+      getNextPageParam: (lastPage, pages) => {
+        // Số trang đã fetch
+        const currentPage = pages.length;
+        // Trả về số trang tiếp theo nếu còn ảnh
+        return currentPage < lastPage.totalPage ? currentPage : undefined;
       },
     });
 
@@ -42,7 +49,7 @@ const InspirationPhoto = () => {
   }
 
   // Merge all pages' results
-  const photoList = data.pages.flat();
+  const photoList = data.pages.flatMap((page) => page.objects);
 
   // Breakpoint columns for screen size
   const breakpointColumnsObj = {
