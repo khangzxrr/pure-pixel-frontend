@@ -1,27 +1,14 @@
-import React, { useState } from "react";
-import { Modal, Button, List, Avatar, message } from "antd";
+import React from "react";
+import { Modal, List, message } from "antd";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import PhotoApi from "../../../apis/PhotoApi";
 
 export default function OverviewModal() {
-  const {
-    isOpenDraftModal,
-    setIsOpenDraftModal,
-    photoList,
-    setIsUpdating,
-    clearState,
-  } = useUploadPhotoStore();
+  const { photoArray, isOpenDraftModal, setIsOpenDraftModal, clearState } =
+    useUploadPhotoStore();
   const navigate = useNavigate();
 
-  const updatePhotos = useMutation({
-    mutationKey: "update-photo",
-    mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
-  });
   const handleOk = async () => {
-    setIsUpdating(true);
-    await updatePhotos.mutateAsync(photoList);
     clearState();
     message.success("saved all uploaded photos!");
     navigate("/my-photo/photo/all");
@@ -31,8 +18,6 @@ export default function OverviewModal() {
   const handleCancel = () => {
     setIsOpenDraftModal(false);
   };
-
-  console.log(photoList);
 
   return (
     <div>
@@ -45,7 +30,7 @@ export default function OverviewModal() {
       >
         <List
           itemLayout="horizontal"
-          dataSource={photoList}
+          dataSource={photoArray}
           renderItem={(item) => (
             <List.Item>
               <img src={item.thumbUrl} />

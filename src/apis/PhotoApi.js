@@ -9,9 +9,9 @@ const getPublicPhotos = async (limit, page) => {
   return response.data;
 };
 
-const getPresignedUploadUrls = async ({ filenames }) => {
+const getPresignedUploadUrls = async ({ filename }) => {
   const response = await http.post(`/photo/upload`, {
-    filenames,
+    filename,
   });
 
   return response.data;
@@ -26,8 +26,10 @@ const uploadPhotoUsingPresignedUrl = async (url, file, options) => {
   return response.data;
 };
 
-const processPhotos = async (presignedData) => {
-  const response = await http.post(`photo/process`, presignedData);
+const processPhoto = async (signedUpload) => {
+  const response = await http.post(`photo/process`, {
+    signedUpload,
+  });
 
   return response;
 };
@@ -74,16 +76,34 @@ const commentPhoto = async (id, content, onProgress) => {
   return response.data;
 };
 
+const getAvailableResolutionsByPhotoId = async (id) => {
+  const response = await http.get(`photo/${id}/available-resolution`);
+
+  return response.data;
+};
+
+const sharePhotoById = async (photoId, quality) => {
+  const response = await http.post(`photo/share`, {
+    photoId,
+    quality,
+  });
+
+  return response.data;
+};
+
 const PhotoApi = {
   getPublicPhotos,
   getPresignedUploadUrls,
   uploadPhotoUsingPresignedUrl,
-  processPhotos,
+  processPhoto,
   updatePhotos,
   deletePhoto,
   getPhotoById,
   getPhotoComments,
   commentPhoto,
+
+  getAvailableResolutionsByPhotoId,
+  sharePhotoById,
 };
 
 export default PhotoApi;

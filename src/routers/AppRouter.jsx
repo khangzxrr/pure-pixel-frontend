@@ -45,6 +45,10 @@ import PrivateUpload from "../components/Upload/PrivateUpload";
 import User from "../components/UserProfile/User";
 import ErrorPage from "../pages/ErrorPage";
 import ListPhotographers from "../pages/Photographer/ListPhotographers";
+import ScrollingBar from "../components/Photographer/UploadPhoto/ScrollingBar";
+import ProfilePage from "../pages/DetailUser/DetailUser";
+
+
 
 export const AppRouter = createBrowserRouter([
   {
@@ -111,6 +115,10 @@ export const AppRouter = createBrowserRouter([
         path: "/photos/:id",
         element: <DetailPhoto />,
       },
+      {
+        path: "/ProfilePage",
+        element: <ProfilePage />,
+      },
       // {
       //   path: "/award",
       //   element: <Award />,
@@ -131,6 +139,7 @@ export const AppRouter = createBrowserRouter([
             path: "/discover/for-you",
             element: <ForYou />,
           },
+
           // {
           //   path: "/discover/explore",
           //   element: <Explore />,
@@ -261,8 +270,14 @@ export const AppRouter = createBrowserRouter([
         element: <Upload />,
         children: [
           {
+
             path: "public",
             element: <PublicUpload />,
+          },
+          {
+            path: "/test/upload/public",
+            element: <UploadPhoto />,
+
           },
           {
             path: "private",
@@ -279,6 +294,10 @@ export const AppRouter = createBrowserRouter([
             element: <UserProfile />,
           },
         ],
+      },
+      {
+        path: "/test/test_scroll",
+        element: <ScrollingBar />,
       },
     ],
   },

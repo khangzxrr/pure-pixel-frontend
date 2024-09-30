@@ -1,4 +1,4 @@
-import { Input, Select, Checkbox } from "antd";
+import { Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
@@ -6,21 +6,20 @@ import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import TextArea from "antd/es/input/TextArea";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectType } from "../../../fakejson/SelectType";
-import { SelectTag } from "../../../fakejson/SelectTag";
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
 import { useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../../apis/CategoryApi";
 
 export default function UploadPhotoForm() {
-  const { selectedPhoto, setCurrentStep, updateField } = useUploadPhotoStore();
+  const { updateSelectedPhotoProperty, selectedPhoto } = useUploadPhotoStore();
+
   const [categories, setCategories] = useState([]);
+
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
     onSuccess: (data) => {
-      console.log("data", data);
-
       setCategories(
-        data.map((category) => ({ label: category.name, value: category.id }))
+        data.map((category) => ({ label: category.name, value: category.id })),
       );
     },
     onError: (error) => {
@@ -42,9 +41,7 @@ export default function UploadPhotoForm() {
     console.log(`Type of value: ${typeof value}`);
   };
 
-  const onSubmit = (data) => {
-    setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep + 1);
-  };
+  const onSubmit = (data) => {};
 
   useEffect(() => {
     reset(selectedPhoto);
@@ -52,7 +49,7 @@ export default function UploadPhotoForm() {
   }, [selectedPhoto, reset]);
 
   return (
-    <div className="px-6 text-white">
+    <div className="px-2 lg:px-6 text-white font-normal lg:text-base text-xs">
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>Tựa đề</p>
         <Controller
@@ -61,14 +58,14 @@ export default function UploadPhotoForm() {
           render={({ field }) => (
             <Input
               {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
+              className={`w-full px-2 m-2 border-[1px] lg:text-base text-xs ${
                 errors.title ? "border-red-500" : "border-[#e0e0e0]"
               } focus:outline-none focus:border-[#e0e0e0]`}
               type="text"
               placeholder="Enter image title"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "title", e.target.value);
+                updateSelectedPhotoProperty("title", e.target.value);
               }}
             />
           )}
@@ -90,7 +87,7 @@ export default function UploadPhotoForm() {
               placeholder="Enter description"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "description", e.target.value);
+                updateSelectedPhotoProperty("description", e.target.value);
               }}
             />
           )}
@@ -119,7 +116,7 @@ export default function UploadPhotoForm() {
               className="w-3/5 max-w-full m-2"
               onChange={(value) => {
                 field.onChange(value);
-                updateField(selectedPhoto.id, "photoType", value);
+                updateSelectedPhotoProperty("photoType", value);
               }}
             />
           )}
@@ -144,7 +141,7 @@ export default function UploadPhotoForm() {
               onChange={(value) => {
                 field.onChange(value); // Ensure the form state is updated
                 handleTagChange(value); // Call your custom handler
-                updateField(selectedPhoto.id, "photoTags", value);
+                updateSelectedPhotoProperty("photoTags", value);
               }}
               options={categories}
             />
@@ -170,7 +167,7 @@ export default function UploadPhotoForm() {
               placeholder="Enter location"
               onChange={(e) => {
                 field.onChange(e);
-                updateField(selectedPhoto.id, "location", e.target.value);
+                updateSelectedPhotoProperty("location", e.target.value);
               }}
             />
           )}
@@ -178,58 +175,9 @@ export default function UploadPhotoForm() {
         {errors.location && (
           <p className=" text-red-500 text-sm p-1">{errors.location.message}</p>
         )}
-        <Controller
-          name="visibility"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              placeholder="Photo privacy"
-              options={[
-                { label: "Công khai", value: "PUBLIC" },
-                { label: "Riêng tư", value: "PRIVATE" },
-                { label: "Liên kết riêng tư", value: "SHARE_LINK" },
-              ]}
-              className="w-1/3 m-2"
-              onChange={(value) => {
-                field.onChange(value);
-                updateField(selectedPhoto.id, "visibility", value);
-              }}
-              disabled={selectedPhoto.currentStep === 3}
-            />
-          )}
-        />
-        {errors.visibility && (
-          <p className="text-red-500 text-sm p-1">
-            {errors.visibility.message}
-          </p>
-        )}
-
-        <Controller
-          name="showExif"
-          control={control}
-          render={({ field }) => (
-            <Checkbox
-              {...field}
-              className="m-2"
-              checked={field.value}
-              onChange={(e) => {
-                field.onChange(e.target.checked);
-                updateField(selectedPhoto.id, "showExif", e.target.checked);
-              }}
-              disabled={selectedPhoto.currentStep === 3}
-            >
-              Include EXIF Data
-            </Checkbox>
-          )}
-        />
-        {errors.showExif && (
-          <p className="text-red-500 text-sm p-1">{errors.showExif.message}</p>
-        )}
 
         {/* <button
           type="submit"
-          // disabled={selectedPhoto.currentStep === 3}
           className="mt-4 px-4 py-2  bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
           Next
