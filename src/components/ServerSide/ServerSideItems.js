@@ -1,5 +1,5 @@
 import { MdHomeFilled } from "react-icons/md";
-import { FaCompass } from "react-icons/fa6";
+import { FaCompass, FaBell } from "react-icons/fa6";
 import UserService from "../../services/Keycloak";
 import { FiUpload } from "react-icons/fi";
 import { IoMailSharp, IoPersonSharp } from "react-icons/io5";
@@ -33,6 +33,10 @@ const ServerSideItems = [
     id: "upload",
     link: "/test/upload",
     icon: <FiUpload className="text-3xl" />,
+  },
+  {
+    id: "notification",
+    icon: <FaBell className="text-3xl" />,
   },
   {
     id: "message",

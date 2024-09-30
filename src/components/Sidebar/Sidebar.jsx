@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import UseSidebarStore from "../../states/UseSidebarStore";
-import UserService from "../../services/Keycloak";
-const userData = UserService.getTokenParsed();
 const Sidebar = ({
   sideItems,
   trendItems,
@@ -10,6 +8,7 @@ const Sidebar = ({
   isUpload,
   isImg,
   isUser,
+  nameUser,
 }) => {
   const { activeLink, setActiveLink } = UseSidebarStore();
   return (
@@ -17,7 +16,7 @@ const Sidebar = ({
       {isUser && (
         <div className=" flex-grow">
           <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
-            {userData?.name || "User"}
+            {nameUser || "User"}
           </div>
         </div>
       )}

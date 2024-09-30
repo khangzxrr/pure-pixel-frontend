@@ -2,7 +2,7 @@
 import React from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -15,7 +15,6 @@ const SidebarLayout = ({
   onLogout,
   onLogin,
   onRegister,
-  compNavigate,
 }) => {
   return (
     <div className="flex flex-grow max-h-screen">
@@ -31,7 +30,7 @@ const SidebarLayout = ({
           <div className="sticky bottom-0 bg-[#2a2d31] p-[12.5px]">
             {userData ? (
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md">
+                <div className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md transition-colors duration-300">
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
                     <img
                       src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
@@ -51,14 +50,14 @@ const SidebarLayout = ({
                         />
                       </MenuButton>
                     </div>
-                    <MenuItems className="absolute right-0 z-10 mt-2 w-24 -top-14 origin-top-right divide-y divide-gray-100 rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none">
+                    <MenuItems className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-top-right divide-y divide-gray-100 rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none">
                       <div className="py-1">
                         <MenuItem>
                           <div
                             onClick={onLogout}
                             className="flex px-4 py-2 text-sm text-[#eee]"
                           >
-                            Log out
+                            Đăng xuất
                           </div>
                         </MenuItem>
                       </div>

@@ -1,11 +1,15 @@
 import React from "react";
 import Sidebar from "../Sidebar/Sidebar";
+import UserService from "../../services/Keycloak";
+
+const userData = UserService.getTokenParsed();
 
 const UserProfileSideBar = ({
   sideItems,
   trendItems,
   handleClick,
   activeItem,
+  userData,
 }) => {
   return (
     <Sidebar
@@ -16,6 +20,7 @@ const UserProfileSideBar = ({
       isImg={false}
       isUpload={false}
       isUser={true}
+      nameUser={userData?.name}
     />
   );
 };

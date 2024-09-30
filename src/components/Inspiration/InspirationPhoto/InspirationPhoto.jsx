@@ -14,7 +14,7 @@ const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const limit = 10; // Tổng số ảnh
+  const limit = 20; // Tổng số ảnh
   const [selectedImage, setSelectedImage] = useState(null);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {

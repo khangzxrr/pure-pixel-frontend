@@ -11,7 +11,6 @@ const InspirationNav = ({
   return (
     <>
       <div className="relative flex items-center space-x-4">
-        <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />{" "}
         <div className="flex gap-2 items-center lg:items-end">
           <div className="flex items-center gap-2 pr-4   border-r-[1px] border-[#777777]">
             <div className="text-2xl">{activeIcon || "#"}</div>

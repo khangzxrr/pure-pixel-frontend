@@ -38,7 +38,7 @@ const ListPhotographers = () => {
               <b>Bạn đã xem hết tất cả các nhiếp ảnh gia</b>
             </p>
           }
-          className="flex flex-wrap gap-7 px-4 py-3 justify-center"
+          className="flex flex-wrap gap-7 py-3 justify-center"
         >
           {photographers.map((_, index) => (
             <PhotographerCard key={index} />

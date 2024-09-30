@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import InspirationSideComp from "../Inspiration/InspirationSide/InspirationSideComp";
-import { IoSettingsSharp } from "react-icons/io5";
+import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import UseInspirationStore from "../../states/UseInspirationStore";
 import UserService from "../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
@@ -106,6 +106,7 @@ const Explore = () => {
        scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
       >
         <div className="sticky top-0 px-2 z-50 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+          <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />{" "}
           {isInspirationActive && ( // Chỉ hiển thị InspirationNav khi activeItem là "Cảm hứng"
             <InspirationNav
               toggleSidebar={toggleSidebar}
