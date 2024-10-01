@@ -47,6 +47,9 @@ import ErrorPage from "../pages/ErrorPage";
 import ListPhotographers from "../pages/Photographer/ListPhotographers";
 import ScrollingBar from "../components/Photographer/UploadPhoto/ScrollingBar";
 import ProfilePage from "../pages/DetailUser/DetailUser";
+import BlogList from "../pages/Blog/BlogList";
+import DetailedBlog from './../pages/Blog/DetailedBlog';
+import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
 
 
 
@@ -71,6 +74,14 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/membership",
             element: <MembershipPage />,
+          },
+          {
+            path: "/blog",
+            element: <BlogList />,
+          },
+          {
+            path: "/ProfileSettings",
+            element: <ProfileSettings />,
           },
           // {
           //   path: "/following",
@@ -126,6 +137,10 @@ export const AppRouter = createBrowserRouter([
       {
         path: "/blog",
         element: <Blog />,
+      },
+      {
+        path: "/blog/:id",
+        element: <DetailedBlog />,
       },
       {
         path: "/discover",
