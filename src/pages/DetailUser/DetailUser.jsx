@@ -55,7 +55,7 @@ export default function DetailUser() {
   }, []);
 
   return (
-    <div className="bg-[#373737] text-white max-h-screen overflow-y-auto">
+    <div className="bg-[#373737] text-white h-screen overflow-y-auto">
       {/* Header */}
       <div className="relative h-48 ">
         <img

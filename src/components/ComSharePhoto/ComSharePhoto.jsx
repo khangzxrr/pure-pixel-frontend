@@ -1,15 +1,24 @@
 import React from "react";
 import { User, Link, ChevronDown, Info } from "lucide-react";
 import { Select } from "antd";
+import PhotoApi from "../../apis/PhotoApi";
+import { useQuery } from "@tanstack/react-query";
 
-export default function ComSharePhoto() {
+export default function ComSharePhoto({ idImg }) {
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
+    const AvailableResolutions = useQuery({
+      queryKey: ["getAvailableResolutionsByPhotoId",idImg],
+      queryFn: () => PhotoApi.getAvailableResolutionsByPhotoId(idImg),
+    });
+    console.log(idImg);
+    console.log(AvailableResolutions);
+    
   return (
     <div className="bg-white text-gray-800 py-8 px-1 max-w-md mx-auto">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Share 'Photo'</h2>
+        <h2 className="text-xl font-semibold">Chia sẻ hình ảnh</h2>
         <button className="text-gray-500 hover:text-gray-700">
           <Info size={20} />
         </button>
@@ -23,18 +32,18 @@ export default function ComSharePhoto() {
         />
       </div> */}
 
-      <h3 className="text-lg font-semibold mb-2 flex items-center">
+      {/* <h3 className="text-lg font-semibold mb-2 flex items-center">
         People with access
         <button className="ml-2 text-gray-500 hover:text-gray-700">
           <Info size={16} />
         </button>
-      </h3>
+      </h3> */}
 
-      <h3 className="text-lg font-semibold mb-2">General access</h3>
+      <h3 className="text-lg font-semibold mb-2">Lựa chọn </h3>
       <div className="flex items-center justify-between bg-gray-100 p-3 rounded-md mb-6">
         <div className="flex items-center">
           <Link size={20} className="mr-3 text-gray-500" />
-          <span>Quality</span>
+          <span>Chất lượng ảnh</span>
         </div>
         <div className="flex items-center">
           <Select
@@ -55,7 +64,7 @@ export default function ComSharePhoto() {
           Copy link
         </button>
         <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          Done
+          Xong
         </button>
       </div>
     </div>
