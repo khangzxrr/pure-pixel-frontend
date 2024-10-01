@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getData } from "../../apis/api";
 import ComDateConverter from "../ComDateConverter/ComDateConverter";
-
+import { useKeycloak } from "@react-keycloak/web";
+import UserService from "../../services/Keycloak";
+import { FiSend } from "react-icons/fi";
 export default function CommentPhoto({ id }) {
   const [dataComment, setDataComment] = useState([]);
+    const { keycloak } = useKeycloak();
+  const handleLogin = () => keycloak.login();
+    const userData = UserService.getTokenParsed();
   useEffect(() => {
     getData(`photo/${id}/comment`)
       .then((e) => {
@@ -36,6 +41,30 @@ console.log(dataComment);
           </div>
         </div>
       ))}
+      {userData ? (
+        <div className="sticky bottom-0 ">
+          <div className="flex bg-[#202225]">
+            <textarea
+              className="w-full p-2 border-none focus:ring-0 text-[#eee] placeholder-[#6e6e6e] outline-none resize-none bg-[#202225] rounded-md"
+              rows="2"
+              placeholder="Viết bình luận của bạn..."
+            ></textarea>
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex space-x-2"></div>
+              <button className=" text[#eee] p-2 rounded-sm hover:bg-[#3d3d3d]">
+                <FiSend className="text-2xl" />
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          onClick={handleLogin}
+          className="text-center hover:underline hover:cursor-pointer"
+        >
+          Vui lòng đăng nhập để bình luận
+        </div>
+      )}
       {/* <div className="flex items-start space-x-3">
         <img
           src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
