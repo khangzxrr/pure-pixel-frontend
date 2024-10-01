@@ -1,20 +1,19 @@
 import { RiCameraLensLine } from "react-icons/ri";
+import { MdLock } from "react-icons/md";
 const UploadSideItem = [
   {
     id: "U1",
-    title: "Tải lên công khai",
+    title: "Tải lên ảnh công khai",
     icon: <RiCameraLensLine />,
     link: "public",
-    quote:
-      "Những bức ảnh đẹp nhất gần đây, được nhóm của chúng tôi tuyển chọn theo cách thủ công",
+    quote: "",
   },
   {
     id: "U2",
-    title: "Tải lên công khai",
-    icon: <RiCameraLensLine />,
-    link: "public",
-    quote:
-      "Những bức ảnh đẹp nhất gần đây, được nhóm của chúng tôi tuyển chọn theo cách thủ công",
+    title: "Ảnh riêng tư",
+    icon: <MdLock />,
+    link: "private",
+    quote: "",
   },
 ];
 

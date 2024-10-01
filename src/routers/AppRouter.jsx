@@ -41,14 +41,20 @@ import DashboardLayoutF from "../layouts/DashboardLayoutF";
 import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
 import PublicUpload from "../components/Upload/PublicUpload";
+import PrivateUpload from "../components/Upload/PrivateUpload";
+import User from "../components/UserProfile/User";
+import ErrorPage from "../pages/ErrorPage";
+import ListPhotographers from "../pages/Photographer/ListPhotographers";
 import ScrollingBar from "../components/Photographer/UploadPhoto/ScrollingBar";
 import ProfilePage from "../pages/DetailUser/DetailUser";
+
 
 
 export const AppRouter = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -231,28 +237,61 @@ export const AppRouter = createBrowserRouter([
   {
     path: "/test",
     element: <DashboardLayoutF />,
+    errorElement: <ErrorPage />,
     children: [
       {
-        path: "/test/explorer",
+        path: "",
+        element: <Navigate to="/test/explorer" replace={true} />,
+      },
+      {
+        path: "explorer",
         element: <Explore />,
         children: [
           {
-            path: "/test/explorer/inspiration",
+            path: "",
+            element: <Navigate to="inspiration" replace={true} />,
+          },
+          {
+            path: "inspiration",
             element: <InspirationPhoto />,
           },
           {
-            path: "/test/explorer/hot",
+            path: "hot",
             element: <HotPhoto />,
+          },
+          {
+            path: "photographers",
+            element: <ListPhotographers />,
           },
         ],
       },
       {
-        path: "/test/upload",
+        path: "upload",
         element: <Upload />,
         children: [
           {
+
+            path: "public",
+            element: <PublicUpload />,
+          },
+          {
             path: "/test/upload/public",
             element: <UploadPhoto />,
+
+          },
+          {
+            path: "private",
+            element: <PrivateUpload />,
+          },
+        ],
+      },
+      {
+        path: "profile",
+        element: <User />,
+        children: [
+          {
+            path: "userprofile",
+            element: <UserProfile />,
           },
         ],
       },
