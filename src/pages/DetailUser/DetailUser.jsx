@@ -156,7 +156,7 @@ export default function DetailUser() {
 
         {/* Packages */}
         <div className="ml-4">
-          <h2 className="text-2xl font-bold mb-2 text-center px-8">
+          <h2 className="text-2xl font-bold mb-2 text-center px-8 py-4">
             DISCOVER OUR SIX PACKAGES
           </h2>
           <p className="text-gray-400 mb-6 text-center px-8">
