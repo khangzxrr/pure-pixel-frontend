@@ -48,10 +48,9 @@ import ListPhotographers from "../pages/Photographer/ListPhotographers";
 import ScrollingBar from "../components/Photographer/UploadPhoto/ScrollingBar";
 import ProfilePage from "../pages/DetailUser/DetailUser";
 import BlogList from "../pages/Blog/BlogList";
-import DetailedBlog from './../pages/Blog/DetailedBlog';
+import DetailedBlog from "./../pages/Blog/DetailedBlog";
 import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
-
-
+import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -120,7 +119,7 @@ export const AppRouter = createBrowserRouter([
 
       {
         path: "/photo/:id",
-        element: <PhotoDetailLayout />,
+        element: <DetailedPhotoView listImg={[]} />,
       },
       {
         path: "/photos/:id",
@@ -285,14 +284,12 @@ export const AppRouter = createBrowserRouter([
         element: <Upload />,
         children: [
           {
-
             path: "public",
             element: <PublicUpload />,
           },
           {
             path: "/test/upload/public",
             element: <UploadPhoto />,
-
           },
           {
             path: "private",

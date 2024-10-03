@@ -10,6 +10,7 @@ import { useModalState } from "./../../hooks/useModalState";
 import ComModal from "../../components/ComModal/ComModal";
 import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
 import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
+import { getData } from "../../apis/api";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -29,7 +30,6 @@ const getNavigation = (idImg, listImg) => {
   // Tìm vị trí của hình ảnh hiện tại trong mảng
   const currentIndex = listImg.findIndex((img) => img.id === idImg);
 
-
   // Lấy id của hình ảnh trước đó, nếu có
   const prevId = currentIndex > 0 ? listImg[currentIndex - 1].id : null;
 
@@ -42,23 +42,33 @@ const getNavigation = (idImg, listImg) => {
 };
 export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const [selectedImage, setSelectedImage] = useState(idImg);
+  const [getPhotoById, setGetPhotoById] = useState({});
   const { id } = useParams();
   const popup = useModalState();
   const popupShare = useModalState();
   const { prevId, nextId } = getNavigation(selectedImage, listImg);
-  const getPhotoById = useQuery({
-    queryKey: ["get-getPhotoById-by-id", selectedImage],
-    queryFn: () => PhotoApi.getPhotoById(selectedImage),
-  });
-    const handleLogin = () => keycloak.login();
+  // const getPhotoById = useQuery({
+  //   queryKey: ["get-getPhotoById-by-id", selectedImage],
+  //   queryFn: () => PhotoApi.getPhotoById(selectedImage),
+  // });
+
+  const getImage = () => {
+    getData(`photo/${selectedImage}`)
+      .then((e) => {
+        setGetPhotoById(e);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
-    setSelectedImage(idImg);
-  }, [idImg]);
-
-  const { keycloak } = useKeycloak();
+    getImage();
+  }, [selectedImage]);
+  useEffect(() => {
+    setSelectedImage(idImg || id);
+  }, [idImg, id]);
   const userData = UserService.getTokenParsed();
-  const userId = userData?.sub;
-
   useEffect(() => {
     if (idImg) {
       // Khi modal mở, thêm lớp `overflow-hidden` vào body
@@ -74,7 +84,6 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
     };
   }, [idImg]);
 
-
   const photographerId = getPhotoById.data?.photographer?.id;
   const titleT = getPhotoById.data?.title;
   const description = getPhotoById.data?.description;
@@ -88,7 +97,6 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const quoteUser = getPhotoById.data?.photographer?.quote;
   const votePhoto = getPhotoById.data?._count?.votes;
   const commentPhoto = getPhotoById.data?._count?.comments;
-
 
   return (
     <>
@@ -108,14 +116,16 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
         <div className="flex flex-col md:flex-row bg-black text-white md:h-screen w-screen">
           {/* Left side - Image */}
           <div className="flex-1 md:relative h-screen">
-            <button
-              onClick={onClose}
-              className="absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
-            >
-              <Icon>
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </Icon>
-            </button>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
+              >
+                <Icon>
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </Icon>
+              </button>
+            )}
             <button className="absolute top-4 right-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px]  bg-opacity-50 hover:bg-opacity-75 hover:scale-110">
               <Icon>
                 <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" />
@@ -314,7 +324,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               <h2 className="text-lg font-semibold mb-2">
                 {commentPhoto} Comments
               </h2>
-              <CommentPhoto id={selectedImage} />
+              <CommentPhoto id={selectedImage} reload={getImage} />
             </div>
           </div>
         </div>

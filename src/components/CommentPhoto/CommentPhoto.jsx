@@ -4,7 +4,7 @@ import ComDateConverter from "../ComDateConverter/ComDateConverter";
 import { useKeycloak } from "@react-keycloak/web";
 import UserService from "../../services/Keycloak";
 import { FiSend } from "react-icons/fi";
-export default function CommentPhoto({ id }) {
+export default function CommentPhoto({ id, reload }) {
   const [dataComment, setDataComment] = useState([]);
   const [valueComment, setValueComment] = useState("");
   const { keycloak } = useKeycloak();
@@ -31,6 +31,7 @@ export default function CommentPhoto({ id }) {
       .then((e) => {
         setValueComment("");
         callApiComment();
+        reload();
       })
       .catch((error) => {
         console.log(error);
