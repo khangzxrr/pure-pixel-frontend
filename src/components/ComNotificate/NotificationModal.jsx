@@ -10,11 +10,23 @@ const notifications = [
   { id: 7, name: "Bob Brown" },
   { id: 8, name: "Bob Brown" },
 ];
-const NotificationModal = ({ isOpen }) => {
+
+const NotificationModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
+  const handleClickOutside = (e) => {
+    // Kiểm tra nếu click vào phần overlay (phần không phải modal)
+    if (e.target.id === "modal-overlay") {
+      onClose();
+    }
+  };
+
   return (
-    <div className="absolute inset-0 bg-black bg-opacity-80 z-50 flex justify-start">
+    <div
+      id="modal-overlay"
+      className="absolute inset-0 bg-black bg-opacity-50 z-50 flex justify-start"
+      onClick={handleClickOutside}
+    >
       <div className="bg-[#1b1b1b] text-[#eee] w-[400px] h-full flex flex-col">
         <div>
           <h2 className="text-xl font-semibold p-3">Thông báo</h2>
