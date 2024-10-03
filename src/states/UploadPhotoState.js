@@ -1,153 +1,158 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
-const initialPhotoList = [];
+const initPhotoIdHashMap = {};
+const initUiHashMap = {};
+const initPhotoArray = [];
 
-const useUploadPhotoStore = create((set) => ({
-  photoList: initialPhotoList,
-  selectedPhoto: initialPhotoList[0] || {}, // Initialize with the first photo if it exists
-  photoExtraOption: {},
-  isUpdatingPhotos: false,
+const useUploadPhotoStore = create(
+  devtools((set, get) => ({
+    photoIdHashmap: initPhotoIdHashMap,
+    uidHashmap: initUiHashMap,
+    photoArray: initPhotoArray,
+    selectedPhoto: null,
+    isUpdatingPhotos: false,
+    isOpenDraftModal: false,
 
-  // Clear all state (reset photoList and selectedPhoto)
-  clearState: () => {
-    set({
-      photoList: [],
-      selectedPhoto: {},
-    });
-  },
+    getPhotoByUid: (uid) => {
+      const index = get().uidHashmap[uid];
 
-  // Set the isUpdatingPhotos flag
-  setIsUpdating: (isUpdating) => {
-    set({ isUpdatingPhotos: isUpdating });
-  },
+      return get().photoArray[index];
+    },
+    setSelectedPhotoById: (id) =>
+      set((state) => ({
+        selectedPhoto: state.photoArray[state.photoIdHashmap[id]],
+      })),
 
+    updateSelectedPhotoProperty: (key, value) => {
+      set((state) => {
+        state.selectedPhoto[key] = value;
 
-  setIsUpdating: (isUpdating) => {
-    set({ isUpdatingPhotos: isUpdating });
-  },
-  
-    // Add a single photo to the photoList with currentStep default set to 1
-  addSingleImage: (photo) =>
-    set((state) => ({
-      photoList: [
-        ...(Array.isArray(state.photoList) ? state.photoList : []),
-        {
-          ...photo,
-
-          currentStep: 1, // Assign currentStep to the new image
-        },
-      ],
-    })),
-
-  // Check if a photo with the given UID exists in the list
-
-  isPhotoExistByUid: (uid) => {
-    const state = useUploadPhotoStore.getState();
-    return state.photoList.some((photo) => photo.uid === uid);
-  },
-
-  // Update photo data by UID
-  updatePhotoByUid: (uid, newPhoto) =>
-    set((state) => {
-      console.log("Updating photo by UID:", uid);
-      return {
-        photoList: state.photoList.map((photo) => {
-          if (photo.uid === uid) {
-            console.log("Updating photo name:", photo.name); // Log the photo name
-            return {
-              ...photo,
-              ...newPhoto,
-              title: photo.name, // Set title to the name of the existing photo
-              currentStep: photo.currentStep, // Keep the current step
-            };
-          }
-          return photo;
-        }),
-      };
-    }),
-
-  // Delete photo by ID
-
-  deleteImageById: (id) =>
-    set((state) => {
-      const updatedPhotoList = state.photoList.filter(
-        (image) => image.id !== id
-      );
-      const isDeletedSelected = state.selectedPhoto.id === id;
-
-      return {
-        photoList: updatedPhotoList,
-        selectedPhoto: isDeletedSelected
-          ? updatedPhotoList[0] || {}
-          : state.selectedPhoto,
-      };
-    }),
-  // Remove photo by UID
-  removePhotoByUid: (uid) =>
-    set((state) => {
-      const updatedPhotoList = state.photoList.filter(
-        (photo) => photo.uid !== uid
-      );
-
-      // Check if the removed photo was the selected one
-      const isDeletedSelected = state.selectedPhoto.uid === uid;
-
-      // If the deleted photo was selected, set the selectedPhoto to the first one in the updated list
-      const newSelectedPhoto = isDeletedSelected
-        ? updatedPhotoList[0] || {}
-        : state.selectedPhoto;
-
-      return {
-        photoList: updatedPhotoList,
-        selectedPhoto: newSelectedPhoto, // Update selectedPhoto here
-      };
-    }),
-  // Set the currently selected photo
-  setSelectedPhoto: (photo) =>
-    set(() => {
-      console.log("Setting selected photo:", photo);
-      return { selectedPhoto: photo };
-    }),
-
-  // Update the current step of a photo by ID
-
-  setCurrentStep: (id, step) =>
-    set((state) => {
-      const photoList = [...state.photoList]; // Shallow copy of photoList
-      const photoIndex = photoList.findIndex((image) => image.id === id);
-
-      if (photoIndex !== -1) {
-        photoList[photoIndex] = { ...photoList[photoIndex], currentStep: step };
-      }
-
-      const selectedPhoto =
-        state.selectedPhoto.id === id
-          ? { ...state.selectedPhoto, currentStep: step }
-          : state.selectedPhoto;
-
-      return { photoList, selectedPhoto };
-    }),
-
-  // Update a specific field of a photo by ID
-  updateField: (id, field, value) =>
-    set((state) => {
-      const photoList = [...state.photoList]; // Shallow copy of photoList
-      const photoIndex = photoList.findIndex((image) => image.id === id);
-
-      if (photoIndex !== -1) {
-        const updatedPhoto = {
-          ...photoList[photoIndex],
-          [field]: value,
+        return {
+          selectedPhoto: state.selectedPhoto,
         };
+      });
+    },
+    addPhoto: (uid, id, payload) =>
+      set((state) => {
+        const index = state.photoArray.length;
 
-        photoList[photoIndex] = updatedPhoto;
+        state.photoIdHashmap[id] = index;
+        state.uidHashmap[uid] = index;
 
-        const selectedPhoto =
-          state.selectedPhoto.id === id ? updatedPhoto : state.selectedPhoto;
+        state.photoArray.push(payload);
 
-        return { photoList, selectedPhoto };
-      }
-    }),
-}));
+        return {
+          photoArray: state.photoArray,
+          photoIdHashmap: state.photoIdHashmap,
+          uidHashmap: state.uidHashmap,
+        };
+      }),
+
+    removePhotoById: (id) => {
+      set((state) => {
+        const index = state.photoIdHashmap[id];
+
+        const uid = state.photoArray[index].file.uid;
+
+        state.photoArray.splice(index, 1);
+
+        delete state.photoIdHashmap[id];
+        delete state.uidHashmap[uid];
+
+        return {
+          photoIdHashmap: state.photoIdHashmap,
+          uidHashmap: state.uidHashmap,
+          photoArray: state.photoArray,
+        };
+      });
+    },
+    removePhotoByUid: (uid) =>
+      set((state) => {
+        const index = state.uidHashmap[uid];
+
+        const id = state.photoArray[index].signedUpload.photoId;
+
+        delete state.photoIdHashmap[id];
+        delete state.uidHashmap[uid];
+
+        return {
+          photoIdHashmap: state.photoIdHashmap,
+          uidHashmap: state.uidHashmap,
+          photoArray: state.photoArray,
+        };
+      }),
+
+    clearState: () => {
+      set({
+        photoIdHashmap: {},
+        uidHashmap: {},
+        photoArray: [],
+        selectedPhoto: null,
+        isUpdatingPhotos: false,
+        isOpenDraftModal: false,
+      });
+    },
+
+    setIsOpenDraftModal: (status) => {
+      set({ isOpenDraftModal: status });
+    },
+
+    isPhotoExistByUid: (uid) => {
+      const state = useUploadPhotoStore.getState();
+      return state.photoList.some((photo) => photo.uid === uid);
+    },
+
+    deleteImageById: (id) =>
+      set((state) => {
+        const updatedPhotoList = state.photoList.filter(
+          (image) => image.id !== id,
+        );
+        const isDeletedSelected = state.selectedPhoto.id === id;
+
+        return {
+          photoList: updatedPhotoList,
+          selectedPhoto: isDeletedSelected
+            ? updatedPhotoList[0] || {}
+            : state.selectedPhoto,
+        };
+      }),
+
+    toggleWatermark: (status) =>
+      set((state) => {
+        const photoList = state.photoList.map((photo) => ({
+          ...photo,
+          watermark: status,
+        }));
+
+        return { photoList };
+      }),
+
+    setNextSelectedPhoto: () =>
+      set((state) => {
+        const { photoList, selectedPhoto } = state;
+        if (photoList.length === 0) return;
+
+        const currentIndex = photoList.findIndex(
+          (photo) => photo.uid === selectedPhoto,
+        );
+        const nextIndex = (currentIndex + 1) % photoList.length;
+        return { selectedPhoto: photoList[nextIndex].uid };
+      }),
+
+    setPreviousSelectedPhoto: () =>
+      set((state) => {
+        const { photoList, selectedPhoto } = state;
+        if (photoList.length === 0) return;
+
+        const currentIndex = photoList.findIndex(
+          (photo) => photo.uid === selectedPhoto,
+        );
+        const previousIndex =
+          (currentIndex - 1 + photoList.length) % photoList.length;
+        return { selectedPhoto: photoList[previousIndex].uid };
+      }),
+  })),
+);
 
 export default useUploadPhotoStore;

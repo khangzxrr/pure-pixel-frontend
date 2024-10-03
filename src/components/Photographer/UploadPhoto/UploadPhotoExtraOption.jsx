@@ -1,25 +1,15 @@
-import { Input, message } from "antd";
+import { Checkbox, Input, Select, Tooltip } from "antd";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoadingOutlined } from "@ant-design/icons";
 import { uploadPhotoExtraOptionInputSchema } from "../../../yup/UploadPhotoExtraInputSchema";
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
-import { useMutation } from "@tanstack/react-query";
-import PhotoApi from "../../../apis/PhotoApi";
-import { useNavigate } from "react-router-dom";
+import { PhotoDataFields } from "./PhotoDataFields";
 
 export default function UploadPhotoExtraOption() {
-  const {
-    selectedPhoto,
-    setCurrentStep,
-    updateField,
-    isUpdating,
-    setIsUpdating,
-    photoList,
-    clearState,
-  } = useUploadPhotoStore();
+  const { updateSelectedPhotoProperty, selectedPhoto, setIsOpenDraftModal } =
+    useUploadPhotoStore();
 
   const {
     control,
@@ -31,23 +21,8 @@ export default function UploadPhotoExtraOption() {
     defaultValues: getDefaultPhoto(selectedPhoto),
   });
 
-  const navigate = useNavigate();
-
-  const updatePhotos = useMutation({
-    mutationKey: "update-photo",
-    mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
-  });
-
   const onSubmit = async (data) => {
-    setIsUpdating(true);
-
-    await updatePhotos.mutateAsync(photoList);
-
-    clearState();
-
-    message.success("saved all uploaded photos!");
-
-    navigate("/my-photo/photo/all");
+    setIsOpenDraftModal(true);
   };
 
   useEffect(() => {
@@ -55,149 +30,139 @@ export default function UploadPhotoExtraOption() {
   }, [selectedPhoto, reset]);
 
   return (
-    <div className="px-6">
+    <div className="px-2 lg:px-6 text-white font-normal lg:text-base text-xs">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="exif.Model"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
-                errors.camera ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="text"
-              placeholder="Camera model"
-              onChange={(e) => {
-                field.onChange(e);
-                updateField(selectedPhoto.id, "exif.Model", e.target.value);
-              }}
-            />
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+          {PhotoDataFields.map((field) => (
+            <div key={field.name}>
+              <p>{field.placeholder}</p>
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field: controllerField }) => (
+                  <Input
+                    {...controllerField}
+                    className={`w-full px-2 m-2 lg:text-base text-xs border-[1px] ${
+                      errors[field.name] ? "border-red-500" : "border-[#e0e0e0]"
+                    } focus:outline-none focus:border-[#e0e0e0]`}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      if (
+                        field.name === "exif.ShutterSpeedValue" ||
+                        field.name === "exif.ApertureValue"
+                      ) {
+                        value = parseFloat(value).toFixed(2);
+                      }
+                      controllerField.onChange(value);
+                      updateSelectedPhotoProperty(field.name, value);
+                    }}
+                  />
+                )}
+              />
+              {errors[field.name] && (
+                <p className="text-red-500 text-sm p-1">
+                  {errors[field.name].message}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-row w-full mt-1">
+          <Controller
+            name="watermark"
+            control={control}
+            render={({ field: controllerField }) => (
+              <Tooltip
+                placement="left"
+                color="geekblue"
+                title={selectedPhoto?.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
+              >
+                <Checkbox
+                  {...controllerField}
+                  className="m-2"
+                  checked={controllerField.value}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    controllerField.onChange(checked);
+                    console.log(
+                      "watermark",
+                      checked,
+                      controllerField.value,
+                      selectedPhoto.uid,
+                    );
+                    updateSelectedPhotoProperty("watermark", checked);
+                  }}
+                >
+                  <p className="text-white lg:text-base text-xs">Thêm Nhãn</p>
+                </Checkbox>
+              </Tooltip>
+            )}
+          />
+          {errors.watermark && (
+            <p className="text-red-500 text-sm p-1">
+              {errors.watermark.message}
+            </p>
           )}
-        />
-        {errors.camera && (
-          <p className="text-red-500 text-sm p-1">{errors.camera.message}</p>
-        )}
 
+          <Controller
+            name="showExif"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                {...field}
+                className="m-2"
+                checked={field.value}
+                onChange={(e) => {
+                  field.onChange(e.target.checked);
+                  updateSelectedPhotoProperty("showExif", e.target.checked);
+                }}
+              >
+                <p className="text-white lg:text-base text-xs">
+                  Hiện thông số bức ảnh
+                </p>
+              </Checkbox>
+            )}
+          />
+          {errors.showExif && (
+            <p className="text-red-500 text-sm p-1">
+              {errors.showExif.message}
+            </p>
+          )}
+        </div>
         <Controller
-          name="exif.FocalLength"
+          name="visibility"
           control={control}
           render={({ field }) => (
-            <Input
+            <Select
               {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
-                errors.lens ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="text"
-              placeholder="Lens"
-              onChange={(e) => {
-                field.onChange(e);
-                updateField(
-                  selectedPhoto.id,
-                  "exif.FocalLength",
-                  e.target.value
-                );
+              placeholder="Photo privacy"
+              options={[
+                { label: "Công khai", value: "PUBLIC" },
+                { label: "Riêng tư", value: "PRIVATE" },
+                { label: "Liên kết riêng tư", value: "SHARE_LINK" },
+              ]}
+              className="w-5/6 m-2 lg:text-base text-xs"
+              onChange={(value) => {
+                field.onChange(value);
+                updateSelectedPhotoProperty("visibility", value);
               }}
             />
           )}
         />
-        {errors.lens && (
-          <p className="text-red-500 text-sm p-1">{errors.lens.message}</p>
-        )}
-
-        <Controller
-          name="exif.ShutterSpeedValue"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
-                errors.shutterSpeed ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="text"
-              placeholder="Shutter Speed (s)"
-              onChange={(e) => {
-                field.onChange(e);
-                updateField(
-                  selectedPhoto.id,
-                  "exif.ShutterSpeedValue",
-                  e.target.value
-                );
-              }}
-            />
-          )}
-        />
-        {errors.shutterSpeed && (
+        {errors.visibility && (
           <p className="text-red-500 text-sm p-1">
-            {errors.shutterSpeed.message}
+            {errors.visibility.message}
           </p>
         )}
-
-        <Controller
-          name="exif.ApertureValue"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
-                errors.aperture ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="number"
-              placeholder="Aperture (f)"
-              onChange={(e) => {
-                field.onChange(e);
-                updateField(
-                  selectedPhoto.id,
-                  "exif.ApertureValue",
-                  e.target.value
-                );
-              }}
-            />
-          )}
-        />
-        {errors.aperture && (
-          <p className="text-red-500 text-sm p-1">{errors.aperture.message}</p>
-        )}
-
-        <Controller
-          name="exif.ISO"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
-                errors.iso ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="number"
-              placeholder="ISO"
-              onChange={(e) => {
-                field.onChange(e);
-                updateField(selectedPhoto.id, "exif.ISO", e.target.value);
-              }}
-            />
-          )}
-        />
-        {errors.iso && (
-          <p className="text-red-500 text-sm p-1">{errors.iso.message}</p>
-        )}
-
-        {selectedPhoto.currentStep !== 3 && (
-          <button
-            type="button"
-            onClick={() =>
-              setCurrentStep(selectedPhoto.id, selectedPhoto.currentStep - 1)
-            }
-            className="mt-4 px-4 py-2 bg-gray-500 text-white rounded disabled:opacity-50 float-left"
-          >
-            Back
-          </button>
-        )}
-        <button
+        <div className="h-24"></div>{" "}
+        {/* <button
           type="submit"
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 float-right"
         >
-          {isUpdating ? <LoadingOutlined /> : "Save"}
-        </button>
+          {isUpdating ? <LoadingOutlined /> : "Next"}
+        </button> */}
       </form>
     </div>
   );

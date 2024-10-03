@@ -1,8 +1,9 @@
 import React from "react";
-import ComButton from "../../ComButton/ComButton";
-import ComText from "../../ComText/ComText";
+import { useKeycloak } from "@react-keycloak/web";
 
 export default function Home6() {
+  const { keycloak } = useKeycloak();
+
   return (
     <div className="  bg-black ">
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2 justify-between">
@@ -37,10 +38,18 @@ export default function Home6() {
         <p className="font-inter text-[16px] font-light leading-[19.36px]  text-center text-black">
           Today and get rewarded for your love of photography.
         </p>
+
         <div className="   flex justify-center items-center p-6 ">
-          <div className=" bg-[#000]  rounded-[29px] p-4 px-8 font-inter text-[32px] font-semibold flex items-center justify-center text-white text-center">
-            Sign up
-          </div>
+          {keycloak.authenticated || (
+            <div
+              onClick={() => keycloak.login()}
+              className="bg-[#000000] z-50 rounded-[29px] h-[69px] w-[190px] flex justify-center items-center p-6 cursor-pointer hover:bg-[#333333] transition-all duration-300"
+            >
+              <div className="font-inter text-[32px] font-semibold flex items-center justify-center text-white">
+                Sign up
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

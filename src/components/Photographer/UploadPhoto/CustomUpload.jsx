@@ -1,59 +1,39 @@
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Image, message, Upload } from "antd";
-import { useEffect, useRef, useState } from "react";
+import { PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import { useMutation } from "@tanstack/react-query";
+import { message, Upload, Tooltip, Switch } from "antd";
+import { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import SinglePhotoUpload from "./SinglePhotoUpload";
-import { io } from "socket.io-client";
-import UserService from "../../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
+import ScrollingBar from "./ScrollingBar";
+import { useNavigate } from "react-router-dom";
+import "./UploadPhoto.css";
 
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
+import PhotoService from "../../../services/PhotoService";
+
+const { Dragger } = Upload;
 
 export default function CustomUpload() {
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
+  const [isWatermarkAll, setIsWatermarkAll] = useState(true);
+
   const {
-    addSingleImage,
-    setSelectedPhoto,
-    updatePhotoByUid,
-    removePhotoByUid,
+    addPhoto,
+    setSelectedPhotoById,
+
+    getPhotoByUid,
     selectedPhoto,
-    photoList,
-    isPhotoExistByUid,
+
+    photoArray,
+
+    removePhotoByUid,
+    toggleWatermark,
+    clearState,
   } = useUploadPhotoStore();
+
+  const navigate = useNavigate();
 
   //use keycloak to trigger refresh component when new token comes
   const { keycloak } = useKeycloak();
-
-  const userToken = UserService.getToken();
-
-  //using ref to NOT cause re-render when socketRef is change
-  const socketRef = useRef();
-
-  useEffect(() => {
-    if (!userToken) {
-      return;
-    }
-
-    //init connection to socket.io backend
-    socketRef.current = io(process.env.REACT_APP_WEBSOCKET_UPLOAD_PHOTO, {
-      autoConnect: true,
-      extraHeaders: {
-        Authorization: `bearer ${UserService.getToken()}`,
-      },
-    });
-
-    //emit join event to join photo process gateway
-    socketRef.current.emit("join");
-  }, [userToken]);
 
   const uploadPhoto = useMutation({
     mutationFn: ({ url, file, options }) =>
@@ -61,12 +41,32 @@ export default function CustomUpload() {
   });
 
   const getPresignedUploadUrls = useMutation({
-    mutationFn: (filenames) => PhotoApi.getPresignedUploadUrls({ filenames }),
+    mutationFn: (filename) => PhotoApi.getPresignedUploadUrls({ filename }),
   });
 
   const processPhoto = useMutation({
-    mutationFn: (signedUploads) => PhotoApi.processPhotos(signedUploads),
+    mutationFn: (signedUploads) => PhotoApi.processPhoto(signedUploads),
   });
+
+  const updatePhotos = useMutation({
+    mutationKey: "update-photo",
+    mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
+  });
+
+  const handleException = (file, e) => {
+    switch (e.response.data.message) {
+      case "RunOutPhotoQuotaException":
+        message.error(
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+        );
+        break;
+
+      default:
+        message.error(`Lỗi không xác định, vui lòng thử lại`);
+        break;
+    }
+    removePhotoByUid(file.uid);
+  };
 
   const beforeUpload = async (file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
@@ -75,169 +75,230 @@ export default function CustomUpload() {
 
       return false;
     }
-    const isLt50M = file.size / 1024 / 1024 < 50;
-    if (!isLt50M) {
-      message.error("Image must smaller than 50MB!");
 
+    const isLt150M = file.size / 1024 / 1024 < 150;
+    if (!isLt150M) {
+      message.error("Image must smaller than 150MB!");
+
+      return false;
+    }
+
+    const exif = await PhotoService.getExifData(file);
+    const isValidExif = PhotoService.validateExifData(exif);
+
+    if (!isValidExif) {
+      message.error("Ảnh bạn chọn không tồn tại exif hợp lệ");
+
+      return false;
+    }
+
+    try {
+      const presignedData = await getPresignedUploadUrls.mutateAsync(file.name);
+
+      const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(file);
+      //set global state by
+      //key = photoId
+      //value { presignedData }
+      addPhoto(file.uid, presignedData.signedUpload.photoId, {
+        signedUpload: presignedData.signedUpload,
+        reviewUrl,
+        file,
+        title: file.name,
+        exif,
+      });
+      if (!selectedPhoto) {
+        setSelectedPhotoById(presignedData.signedUpload.photoId);
+      }
+    } catch (e) {
+      handleException(file, e);
       return false;
     }
 
     return true;
   };
 
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-      }}
-      type="button"
-    >
-      {/* {loading ? <LoadingOutlined /> : <PlusOutlined />} */}
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
-  );
-
-  const customRequest = async ({ file, onError, onSuccess, onProgress }) => {
+  const customRequest = async ({ file, onError, onSuccess }) => {
     try {
-      const fileNames = [file.name];
-      const presignedData = await getPresignedUploadUrls.mutateAsync(fileNames);
-      const signedUploadUrl = presignedData.signedUploads[0].uploadUrl;
-      const photoId = presignedData.signedUploads[0].photoId;
+      const photo = getPhotoByUid(file.uid);
+      console.log(photo);
 
       await uploadPhoto.mutateAsync({
-        url: signedUploadUrl,
+        url: photo.signedUpload.uploadUrl,
         file,
-        options: {
-          onUploadProgress: (event) => {
-            const { loaded, total } = event;
-            onProgress({
-              percent: Math.round((loaded / total) * 100),
-            });
-          },
-          headers: {
-            "Content-Type": file.type,
-          },
-        },
       });
 
-      await processPhoto.mutateAsync(presignedData);
-
-      message.info("upload success, start to parse photo metadata...");
-
-      socketRef.current.on("finish-process-photos", (data) => {
-        //only call back onSuccess if the data return is equal photoId
-        //this prevent all photos in pending state trigger onSuccess when ONLY ONE DATA is received
-        if (data[0].id == photoId) {
-          onSuccess(data[0]);
-        }
-      });
+      onSuccess({
+        ...file,
+        status: "done",
+      }); // Set status to 'done'
+      // Then process the photo
+      await processPhoto.mutateAsync(photo.signedUpload);
     } catch (e) {
-      message.error("something wrong! please try again");
-      console.log(e);
       onError(e);
     }
   };
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
 
   const handleChange = async (info) => {
-    console.log("Upload onChange:", info);
-    if (!isPhotoExistByUid(info.file.uid) && info.file.status !== "removed") {
-      addSingleImage(info.file);
-    } else if (info.file.status === "done") {
-      console.log("Upload done:", info, photoList);
-      await updatePhotoByUid(info.file.uid, {
-        ...info.file.response,
-        title: info.file.name,
-      });
-      setSelectedPhoto({
-        ...info.file.response,
-        uid: info.file.uid,
-        title: info.file.name,
-        currentStep: 1,
-      });
+    console.log(info);
+    //skip removed this status
+    if (info.file.status === "removed") {
+      return;
+    }
+
+    if (info.file.status === "error") {
+      switch (info.file.error.response.data.message) {
+        case "RunOutPhotoQuotaException":
+          message.error(
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+          );
+          break;
+
+        default:
+          message.error(`Lỗi không xác định, vui lòng thử lại`);
+          break;
+      }
+      removePhotoByUid(info.file.uid);
+
+      return;
     }
   };
-  const handleRemove = (file) => {
-    console.log("onRemove", file);
-    useUploadPhotoStore.getState().removePhotoByUid(file.uid);
-  };
-  const handleDoubleClick = (file) => {
-    handlePreview(file);
+
+  const handleToggleWatermark = () => {
+    setIsWatermarkAll(!isWatermarkAll);
+    toggleWatermark(!isWatermarkAll);
   };
 
-  const itemRender = (originNode, file, fileList, actions) => {
-    return (
-      <SinglePhotoUpload
-        originNode={originNode}
-        file={{ ...file, percent: 33 }}
-        fileList={fileList}
-        actions={actions}
-        selectedPhoto={selectedPhoto}
-        handleDoubleClick={handleDoubleClick}
-        setSelectedPhoto={setSelectedPhoto}
-      />
-    );
+  const itemRender = () => {
+    return "";
   };
+
+  const SubmitUpload = async () => {
+    // Extract the necessary fields from photoList and filter by status 'PARSED'
+    const photosToUpload = photoArray.map((photo) => ({
+      id: photo.signedUpload.photoId,
+      categoryId: photo.categoryId,
+      title: photo.title,
+      watermark: photo.watermark,
+      showExif: photo.showExif ? photo.showExif : true,
+      exif: photo.exif,
+      colorGrading: photo.colorGrading,
+      location: photo.location,
+      captureTime: photo.captureTime,
+      description: photo.description,
+      originalPhotoUrl: photo.originalPhotoUrl,
+      watermarkPhotoUrl: photo.watermarkPhotoUrl,
+      thumbnailPhotoUrl: photo.thumbnailPhotoUrl,
+      watermarkThumbnailPhotoUrl: photo.watermarkThumbnailPhotoUrl,
+      photoType: photo.photoType,
+      visibility: photo.visibility,
+      status: photo.status,
+      photoTags: photo.photoTags,
+    }));
+
+    console.log("photosToUpload", photosToUpload);
+
+    // Create the payload
+    const payload = { photos: photosToUpload };
+
+    // Upload the photos
+    await updatePhotos.mutateAsync(payload.photos);
+
+    clearState();
+
+    message.success("đã lưu các chỉnh sửa!");
+    navigate("/my-photo/photo/all");
+  };
+
   return (
-    <div className="h-full">
-      <Upload
-        name="avatar"
-        listType="picture-card"
-        className="avatar-uploader"
-        // showUploadList={false}
-        multiple={true}
-        beforeUpload={beforeUpload}
-        onChange={handleChange}
-        customRequest={customRequest}
-        onPreview={handlePreview}
-        onRemove={handleRemove}
-        itemRender={itemRender}
-        fileList={photoList}
-
-        // action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-      >
-        {uploadButton}
-      </Upload>
-      {/* <Upload
-        customRequest={customRequest}
-        // action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-        listType="picture-card"
-        fileList={fileList}
-        maxCount={10}
-        multiple={true}
-        beforeUpload={beforeUpload}
-        onPreview={handlePreview}
-        onChange={handleChange}
-        itemRender={itemRender}
-      >
-        {uploadButton}
-      </Upload> */}
-      {previewImage && (
-        <Image
-          wrapperStyle={{
-            display: "none",
-          }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
+    <div className="h-full overflow-hidden">
+      <div className="w-full h-full flex flex-row">
+        {photoArray.length > 0 && (
+          <div className="w-5/6 bg-[#36393f]">
+            <div
+              className={`w-full ${photoArray.length > 1 ? "visible" : "invisible"}`}
+            >
+              <Tooltip placement="rightTop" color="geekblue">
+                <div className="flex items-center pl-3">
+                  <Switch
+                    defaultChecked
+                    size="small"
+                    onChange={handleToggleWatermark}
+                  />
+                  {isWatermarkAll ? (
+                    <p className="ml-2 text-slate-300 font-semibold">
+                      Gỡ nhãn toàn bộ ảnh
+                    </p>
+                  ) : (
+                    <p className="ml-2 text-slate-300 font-semibold">
+                      Gắn nhãn toàn bộ ảnh
+                    </p>
+                  )}
+                </div>
+              </Tooltip>
+            </div>
+            <ScrollingBar />
+          </div>
+        )}
+        <div
+          className={` tranlation duration-150 ${
+            photoArray.length > 0
+              ? "w-1/6 bg-[#42454a] "
+              : "w-full h-full bg-[#42454a]  hover:bg-slate-300"
+          }`}
+        >
+          {photoArray.length > 0 && (
+            <div
+              className="w-full h-1/2 bg-[#56bc8a] hover:bg-[#68c397] transition duration-150 flex justify-center items-center cursor-pointer"
+              onClick={SubmitUpload}
+            >
+              <div className="h-16 w-full flex-shrink-0 m-2 text-6xl text-white flex justify-center items-center">
+                <UploadOutlined />
+              </div>
+            </div>
+          )}
+          <Dragger
+            name="avatar"
+            listType="picture-card"
+            className="avatar-uploader"
+            multiple={true}
+            beforeUpload={beforeUpload}
+            onChange={handleChange}
+            customRequest={customRequest}
+            itemRender={itemRender}
+            fileList={photoArray}
+            accept=".jpg,.jpeg,.png"
+            style={{
+              width: "100%",
+              padding: "none",
+              border: "0px",
+            }}
+          >
+            <div className=" h-full w-full ">
+              {photoArray.length > 0 ? (
+                <div className="w-full h-full hover:text-white text-gray-200">
+                  <div className="  flex-shrink-0 m-2 text-6xl">
+                    <PlusCircleOutlined />
+                  </div>
+                </div>
+              ) : (
+                <div className="h-screen">
+                  <div className="h-1/2 w-full flex justify-center items-center">
+                    <div>
+                      <p className="h-1/2 text-2xl text-white font-semibold">
+                        Nhấp hoặc kéo tệp vào khu vực này để tải lên
+                      </p>
+                      <p className="h-1/2 text-white font-extralight">
+                        Hỗ trợ tải lên một hoặc nhiều tệp. Nghiêm cấm tải lên dữ
+                        liệu công ty hoặc các tệp bị cấm khác.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Dragger>
+        </div>
+      </div>
     </div>
   );
 }

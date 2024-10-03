@@ -1,41 +1,53 @@
-import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
-import useUploadPhotoStore from "../../states/UploadPhotoState";
+import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import React, { useEffect } from "react";
 import CustomUpload from "../../components/Photographer/UploadPhoto/CustomUpload";
 import UploadPhotoInfoBar from "../../components/Photographer/UploadPhoto/UploadPhotoInfoBar";
+import OverviewModal from "../../components/Photographer/UploadPhoto/OverviewModal";
+import useUploadPhotoStore from "../../states/UploadPhotoState";
 
 export default function UploadPhoto() {
-  const { photoList, deleteImageById, setSelectedPhoto, selectedPhoto } =
-    useUploadPhotoStore();
+  const { photoArray, selectedPhoto } = useUploadPhotoStore();
 
-  const imageListContainerClasses = `w-1/2 px-3 flex flex-wrap gap-2 
-
-    `;
   return (
-    <div className="flex py-9 h-screen">
-      <div className="flex flex-col w-5/6 mx-auto bg-white rounded-lg border-[1px]">
-        <div className="w-full flex px-5 py-2 shadow-lg hover:shadow-xl transition-all duration-300">
-          <CloudUploadOutlined style={{ fontSize: "48px" }} />
-          <p className="text-2xl p-3">Upload your photos</p>
+    <div className="flex h-[93%] justify-end">
+      <div className="flex flex-col w-full ">
+        <div className={`w-full ${photoArray.length > 0 ? "h-1/3" : "h-1/2"}`}>
+          <CustomUpload />
         </div>
-        <div className="w-full flex overflow-hidden pt-9 px-6">
-          <div className={imageListContainerClasses}>
-            <CustomUpload />
-            {/* {photoList.map((image) => (
-              <PhotoCard
-                key={image.id}
-                image={image}
-                deleteImageById={deleteImageById}
-                setSelectedPhoto={setSelectedPhoto}
-                length={photoList.length}
-                selectedPhoto={selectedPhoto}
+        {photoArray.length > 0 && (
+          <div className="w-full flex overflow-hidden">
+            <div className="w-2/3 bg-[#292b2f] p-7 relative flex justify-center items-center">
+              {photoArray.length > 1 && (
+                <>
+                  <div
+                    className="absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10"
+                    // onClick={() => setPreviousSelectedPhoto()}
+                  >
+                    <ArrowLeftOutlined />
+                  </div>
+                  <div
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10"
+                    // onClick={() => setNextSelectedPhoto()}
+                  >
+                    <ArrowRightOutlined />
+                  </div>
+                </>
+              )}
+
+              <img
+                src={selectedPhoto?.reviewUrl}
+                className="max-w-full max-h-full shadow-gray-600 shadow-xl drop-shadow-none z-0"
+                alt="Selected Photo"
               />
-            ))} */}
+            </div>
+
+            <div className="w-1/3 overflow-y-auto px-3 bg-[#2f3136]">
+              <UploadPhotoInfoBar />
+            </div>
           </div>
-          <div className="w-1/2 px-3">
-            <UploadPhotoInfoBar />
-          </div>
-        </div>
+        )}
+
+        <OverviewModal />
       </div>
     </div>
   );

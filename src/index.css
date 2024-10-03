@@ -8,8 +8,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
-
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
@@ -17,16 +22,25 @@ code {
 
 .my-masonry-grid {
   display: flex;
-  margin-left: -30px;
+  margin-left: -5px;
   width: auto;
 }
 .my-masonry-grid_column {
-  padding-left: 30px;
+  padding-left: 5px;
   background-clip: padding-box;
 }
 
 .my-masonry-grid_column > div {
-  margin-bottom: 30px;
+  margin-bottom: 5px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Minh  */

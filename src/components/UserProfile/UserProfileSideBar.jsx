@@ -1,0 +1,28 @@
+import React from "react";
+import Sidebar from "../Sidebar/Sidebar";
+import UserService from "../../services/Keycloak";
+
+const userData = UserService.getTokenParsed();
+
+const UserProfileSideBar = ({
+  sideItems,
+  trendItems,
+  handleClick,
+  activeItem,
+  userData,
+}) => {
+  return (
+    <Sidebar
+      sideItems={sideItems}
+      trendItems={trendItems}
+      handleClick={handleClick}
+      activeItem={activeItem}
+      isImg={false}
+      isUpload={false}
+      isUser={true}
+      nameUser={userData?.name}
+    />
+  );
+};
+
+export default UserProfileSideBar;

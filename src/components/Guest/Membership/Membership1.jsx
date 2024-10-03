@@ -1,6 +1,9 @@
+import { useKeycloak } from "@react-keycloak/web";
 import React from "react";
 
 export default function Membership1() {
+  const { keycloak } = useKeycloak();
+
   return (
     <div className=" relative">
       <div className="flex flex-col md:flex-row justify-between items-center">
@@ -14,11 +17,16 @@ export default function Membership1() {
             unlimited uploads, uncompressed storage, insights with statistics,
             and earn 100% royalties on your work.
           </p>
-          <div className="bg-[#000000] rounded-[29px] h-[69px] w-[190px] flex justify-center items-center p-6 ml-28">
-            <div className="font-inter text-[32px] font-semibold flex items-center justify-center text-white">
-              Sign up
+          {keycloak.authenticated || (
+            <div
+              onClick={() => keycloak.login()}
+              className="bg-[#000000] z-50 rounded-[29px] h-[69px] w-[190px] flex justify-center items-center p-6 ml-28 cursor-pointer hover:bg-[#333333] transition-all duration-300"
+            >
+              <div className="font-inter text-[32px] font-semibold flex items-center justify-center text-white">
+                Sign up
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="md:w-1/2 w-full">
           <img
