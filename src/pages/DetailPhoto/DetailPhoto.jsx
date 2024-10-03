@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import PhotoApi from "../../apis/PhotoApi";
 import UserService from "../../services/Keycloak";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DetailUser from "../DetailUser/DetailUser";
 import { useModalState } from "./../../hooks/useModalState";
 import ComModal from "../../components/ComModal/ComModal";
@@ -46,6 +46,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const { id } = useParams();
   const popup = useModalState();
   const popupShare = useModalState();
+  const navigate = useNavigate();
   const { prevId, nextId } = getNavigation(selectedImage, listImg);
   // const getPhotoById = useQuery({
   //   queryKey: ["get-getPhotoById-by-id", selectedImage],
@@ -77,12 +78,19 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
       // Khi modal đóng, khôi phục lại cuộn
       document.body.style.overflow = "auto";
     }
-
     // Cleanup khi component bị unmount
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [idImg]);
+
+  const handleGoBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1); // Quay lại trang trước đó
+    } else {
+      navigate("/"); // Nếu không có trang trước, về trang chủ
+    }
+  };
 
   const photographerId = getPhotoById.data?.photographer?.id;
   const titleT = getPhotoById.data?.title;
@@ -116,9 +124,18 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
         <div className="flex flex-col md:flex-row bg-black text-white md:h-screen w-screen">
           {/* Left side - Image */}
           <div className="flex-1 md:relative h-screen">
-            {onClose && (
+            {onClose ? (
               <button
                 onClick={onClose}
+                className="absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
+              >
+                <Icon>
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </Icon>
+              </button>
+            ) : (
+              <button
+                onClick={handleGoBack}
                 className="absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
               >
                 <Icon>
