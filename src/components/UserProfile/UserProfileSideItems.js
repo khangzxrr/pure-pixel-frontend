@@ -7,7 +7,7 @@ const UserProfileSideItems = [
     id: "NameProfile",
     title: "Hồ sơ",
     icon: <IoPersonSharp />,
-    link: "/test/profile/userprofile",
+    link: "/profile/userprofile",
   },
 ];
 

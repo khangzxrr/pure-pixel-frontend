@@ -5,7 +5,7 @@ const BlogSideItem = [
     id: "B1",
     title: "Danh sách bài viết",
     icon: <GrArticle />,
-    link: "/test/blog/list",
+    link: "/blog/list",
     quote: "",
   },
   //   {

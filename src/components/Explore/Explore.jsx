@@ -39,7 +39,7 @@ const Explore = () => {
             {userData ? (
               <div className="flex items-center justify-between gap-2 ">
                 <div
-                  onClick={() => navigate("/test/profile")}
+                  onClick={() => navigate("/profile")}
                   className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md"
                 >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
@@ -51,10 +51,7 @@ const Explore = () => {
                   </div>
                   <div className="text-[13px]">{userData.name}</div>
                 </div>
-                <div
-                  // onClick={handleLogout}
-                  className="hover:cursor-pointer  px-[5px] rounded-md"
-                >
+                <div className="hover:cursor-pointer  px-[5px] rounded-md">
                   <Menu as="div" className="relative inline-block text-left">
                     <div>
                       <MenuButton className="flex w-full items-center justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-gray-900 ">

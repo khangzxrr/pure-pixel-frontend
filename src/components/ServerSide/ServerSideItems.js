@@ -23,19 +23,19 @@ const ServerSideItems = [
   {
     id: "blog",
     name: "Blog",
-    link: "/test/blog",
+    link: "/blog",
     icon: <MdHomeFilled className="text-4xl" />,
   },
   {
-    id: "explorer",
-    name: "Explorer",
-    link: "/test/explorer/",
+    id: "explore",
+    name: "Explore",
+    link: "/explore",
     icon: <FaCompass className="text-3xl" />,
   },
   {
     id: "upload",
     name: "Upload",
-    link: "/test/upload/",
+    link: "/upload",
     icon: <FiUpload className="text-3xl" />,
   },
   {
@@ -46,7 +46,7 @@ const ServerSideItems = [
   {
     id: "message",
     name: "Message",
-    link: "/test/message",
+    link: "/message",
     icon: <IoMailSharp className="text-3xl" />,
   },
   //   userData && {

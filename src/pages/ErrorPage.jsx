@@ -11,7 +11,7 @@ const ErrorPage = () => {
           Bạn có thể quay lại trang chính hoặc kiểm tra lại đường dẫn.
         </p>
         <a
-          href="/test"
+          href="/"
           className="mt-4 inline-block px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-200 transition duration-300"
         >
           Quay lại trang chính

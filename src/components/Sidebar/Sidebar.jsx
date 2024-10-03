@@ -39,8 +39,12 @@ const Sidebar = ({
         </div>
       )}
       {isImg && (
-        <div>
-          <img src="https://picsum.photos/290/150" alt="" />
+        <div className="w-[290px] h-[150px] overflow-hidden">
+          <img
+            className="w-full h-full object-cover"
+            src="https://picsum.photos/1920/1080?random=1"
+            alt=""
+          />
         </div>
       )}
       {isUpload && (
