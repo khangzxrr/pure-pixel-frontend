@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import UseSidebarStore from "../../states/UseSidebarStore";
 const Sidebar = ({
   sideItems,
@@ -10,7 +10,24 @@ const Sidebar = ({
   isUser,
   nameUser,
 }) => {
+  const location = useLocation();
   const { activeLink, setActiveLink } = UseSidebarStore();
+
+  useEffect(() => {
+    const currentItem = sideItems.find(
+      (item) => item.link === location.pathname
+    );
+    if (currentItem && activeLink !== currentItem.id) {
+      setActiveLink(currentItem.id);
+      handleClick(
+        currentItem.id,
+        currentItem.title,
+        currentItem.icon,
+        currentItem.quote
+      );
+    }
+  }, [location.pathname, activeLink, setActiveLink, handleClick, sideItems]);
+
   return (
     <div className="flex flex-col max-h-screen gap-3 w-[256px]">
       {isUser && (
@@ -42,7 +59,11 @@ const Sidebar = ({
               setActiveLink(item.id);
             }}
             className={`flex text-[#a3a3a3] items-center gap-3 hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md transition-colors duration-200
-            ${activeLink === item.id ? "bg-gray-500 text-[#eee]" : ""}`}
+            ${
+              activeLink === item.id || activeLink === item.link
+                ? "bg-gray-500 text-[#eee]"
+                : ""
+            }`}
           >
             <div className="flex items-center justify-center w-12 h-12">
               <div className="flex justify-center items-center text-2xl">

@@ -33,15 +33,17 @@ code {
 .my-masonry-grid_column > div {
   margin-bottom: 5px;
 }
-/* Minh  */
-.text-shadow {
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
+
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Minh  */
+.text-shadow {
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }

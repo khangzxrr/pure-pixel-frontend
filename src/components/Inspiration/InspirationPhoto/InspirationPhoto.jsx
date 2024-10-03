@@ -62,6 +62,7 @@ const InspirationPhoto = () => {
   const handleOnClick = (id) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     setSelectedImage(id);
+    // navigate(`/photo/${id}`, { state: { listImg: photoList } });
   };
 
   return (

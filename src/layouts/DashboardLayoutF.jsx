@@ -34,7 +34,7 @@ const DashboardLayoutF = () => {
         <ServerSide />
       </div>
       {/* Main content */}
-      <div className="flex flex-grow max-h-screen relative">
+      <div className="flex flex-grow max-h-screen w-[500px] relative">
         <Outlet />
         <div className="h-full">
           <NotificationModal

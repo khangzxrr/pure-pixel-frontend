@@ -48,10 +48,8 @@ import ListPhotographers from "../pages/Photographer/ListPhotographers";
 import ScrollingBar from "../components/Photographer/UploadPhoto/ScrollingBar";
 import ProfilePage from "../pages/DetailUser/DetailUser";
 import BlogList from "../pages/Blog/BlogList";
-import DetailedBlog from './../pages/Blog/DetailedBlog';
+import DetailedBlog from "./../pages/Blog/DetailedBlog";
 import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
-
-
 
 export const AppRouter = createBrowserRouter([
   {
@@ -284,15 +282,13 @@ export const AppRouter = createBrowserRouter([
         path: "upload",
         element: <Upload />,
         children: [
+          // {
+          //   path: "public",
+          //   element: <PublicUpload />,
+          // },
           {
-
             path: "public",
-            element: <PublicUpload />,
-          },
-          {
-            path: "/test/upload/public",
             element: <UploadPhoto />,
-
           },
           {
             path: "private",
@@ -304,6 +300,10 @@ export const AppRouter = createBrowserRouter([
         path: "profile",
         element: <User />,
         children: [
+          {
+            path: "",
+            element: <Navigate to="userprofile" replace={true} />,
+          },
           {
             path: "userprofile",
             element: <UserProfile />,
