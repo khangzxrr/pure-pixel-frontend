@@ -7,7 +7,6 @@ import { FiSend } from "react-icons/fi";
 export default function CommentPhoto({ id }) {
   const [dataComment, setDataComment] = useState([]);
   const [valueComment, setValueComment] = useState("");
-
   const { keycloak } = useKeycloak();
   const handleLogin = () => keycloak.login();
   const userData = UserService.getTokenParsed();

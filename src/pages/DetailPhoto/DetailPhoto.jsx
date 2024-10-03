@@ -58,7 +58,6 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
   const userId = userData?.sub;
-  console.log(UserService.hasRole(["photographer"]));
 
   useEffect(() => {
     if (idImg) {
@@ -74,10 +73,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
       document.body.style.overflow = "auto";
     };
   }, [idImg]);
-  console.log("====================================");
-  console.log(idImg);
-  console.log(listImg);
-  console.log("====================================");
+
 
   const photographerId = getPhotoById.data?.photographer?.id;
   const titleT = getPhotoById.data?.title;
@@ -92,9 +88,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const quoteUser = getPhotoById.data?.photographer?.quote;
   const votePhoto = getPhotoById.data?._count?.votes;
   const commentPhoto = getPhotoById.data?._count?.comments;
-  console.log("====================================");
-  console.log(getPhotoById.data);
-  console.log("====================================");
+
 
   return (
     <>
@@ -105,7 +99,10 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
           // width={800}
           // className={"bg-black"}
         >
-          <ComSharePhoto idImg={idImg} />
+          <ComSharePhoto
+            idImg={selectedImage}
+            onClose={popupShare.handleClose}
+          />
         </ComModal>
 
         <div className="flex flex-col md:flex-row bg-black text-white md:h-screen w-screen">
@@ -319,7 +316,6 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               </h2>
               <CommentPhoto id={selectedImage} />
             </div>
-          
           </div>
         </div>
       </div>
