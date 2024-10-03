@@ -52,6 +52,9 @@ import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
 import Blog from "./../components/Blog/Blog";
 import UserService from "../services/Keycloak";
 const userData = UserService.getTokenParsed();
+import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
+
+
 export const AppRouter = createBrowserRouter([
   {
     path: "/",
@@ -207,7 +210,7 @@ export const AppRouter = createBrowserRouter([
 
       {
         path: "/photo/:id",
-        element: <PhotoDetailLayout />,
+        element: <DetailedPhotoView listImg={[]} />,
       },
       {
         path: "/photos/:id",
