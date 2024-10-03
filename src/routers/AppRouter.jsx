@@ -6,7 +6,6 @@ import Following from "../components/Dashboard/Following/Following";
 // import Explore from "../components/Dashboard/Explore/Explore";
 import HomePage from "./../pages/HomePage/HomePage";
 // import Award from "../pages/HomePage/Award";
-import Blog from "../pages/HomePage/Blog";
 import Discover from "../pages/HomePage/Discover";
 import Licensing from "../pages/HomePage/Licensing";
 // import Quest from "../pages/HomePage/Quest";
@@ -50,6 +49,7 @@ import ProfilePage from "../pages/DetailUser/DetailUser";
 import BlogList from "../pages/Blog/BlogList";
 import DetailedBlog from "./../pages/Blog/DetailedBlog";
 import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
+import Blog from "./../components/Blog/Blog";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -278,6 +278,7 @@ export const AppRouter = createBrowserRouter([
           },
         ],
       },
+
       {
         path: "upload",
         element: <Upload />,
@@ -286,6 +287,10 @@ export const AppRouter = createBrowserRouter([
           //   path: "public",
           //   element: <PublicUpload />,
           // },
+          {
+            path: "",
+            element: <Navigate to="public" replace={true} />,
+          },
           {
             path: "public",
             element: <UploadPhoto />,
@@ -313,6 +318,21 @@ export const AppRouter = createBrowserRouter([
       {
         path: "/test/test_scroll",
         element: <ScrollingBar />,
+      },
+      {
+        path: "blog",
+        // element: <BlogList />,
+        element: <Blog />,
+        children: [
+          {
+            path: "",
+            element: <Navigate to="list" replace={true} />,
+          },
+          {
+            path: "list",
+            element: <BlogList />,
+          },
+        ],
       },
     ],
   },

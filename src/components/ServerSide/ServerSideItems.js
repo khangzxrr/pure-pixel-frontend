@@ -21,9 +21,9 @@ const ServerSideItems = [
     ),
   },
   {
-    id: "home",
-    name: "Home",
-    link: "/",
+    id: "blog",
+    name: "Blog",
+    link: "/test/blog",
     icon: <MdHomeFilled className="text-4xl" />,
   },
   {

@@ -30,7 +30,7 @@ const Explore = () => {
         <div
           className={`${
             isSidebarOpen ? "flex" : "hidden"
-          } xl:flex flex-col w-[256px] bg-[#36393f] max-h-screen sticky top-0 z-40`}
+          } xl:flex flex-col w-[256px] bg-[#2f3136] max-h-screen sticky top-0 z-40`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             <InspirationSideComp />

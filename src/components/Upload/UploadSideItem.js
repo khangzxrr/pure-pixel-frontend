@@ -5,7 +5,7 @@ const UploadSideItem = [
     id: "U1",
     title: "Tải lên ảnh công khai",
     icon: <RiCameraLensLine />,
-    link: "public",
+    link: "/test/upload/public",
     quote: "",
   },
   {

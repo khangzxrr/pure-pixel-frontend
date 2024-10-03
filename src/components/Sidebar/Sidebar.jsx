@@ -9,6 +9,7 @@ const Sidebar = ({
   isImg,
   isUser,
   nameUser,
+  isBlog,
 }) => {
   const location = useLocation();
   const { activeLink, setActiveLink } = UseSidebarStore();
@@ -44,8 +45,15 @@ const Sidebar = ({
       )}
       {isUpload && (
         <div className=" flex-grow">
-          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
+          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-2 outline-[#1d1f22] shadow-xl text-[#eee] items-center gap-3">
             Upload
+          </div>
+        </div>
+      )}
+      {isBlog && (
+        <div className=" flex-grow">
+          <div className="flex px-2 h-[48px] bg-[#36393f] outline outline-bottom outline-2 outline-[#1d1f22] shadow-xl text-[#eee] items-center gap-3">
+            Blog
           </div>
         </div>
       )}

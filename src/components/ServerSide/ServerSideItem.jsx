@@ -15,7 +15,6 @@ const ServerSideItem = ({
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    // Cập nhật activeLinkServer với location.pathname
     setActiveLinkServer(location.pathname);
   }, [location.pathname, setActiveLinkServer]);
 
@@ -40,16 +39,18 @@ const ServerSideItem = ({
         className="relative flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200"
       >
         {icon}
-        {isHovered && (
+        {/* {isHovered && (
           <div className="absolute left-full ml-2 whitespace-nowrap bg-gray-700 text-white text-sm p-1 rounded-md shadow-lg z-50">
             {name}
           </div>
-        )}
+        )} */}
       </div>
     );
   }
 
-  const isActive = location.pathname.startsWith(link);
+  const isActive =
+    id !== "logo" && location.pathname.slice(1).startsWith(link.slice(1));
+  console.log("isActive", isActive);
 
   return (
     <Link
@@ -61,11 +62,11 @@ const ServerSideItem = ({
         ${isActive ? "bg-gray-500" : ""}`}
     >
       {icon}
-      {isHovered && (
+      {/* {isHovered && (
         <div className="absolute left-full ml-2 whitespace-nowrap bg-gray-700 text-white text-sm p-1 rounded-md shadow-lg z-9999">
           {name}
         </div>
-      )}
+      )} */}
     </Link>
   );
 };

@@ -23,7 +23,7 @@ const SidebarLayout = ({
         <div
           className={` ${
             isSidebarOpen ? "flex" : "hidden"
-          } xl:flex flex-col w-[256px] bg-[#36393f] max-h-screen sticky top-0 z-40`}
+          } xl:flex flex-col w-[256px] bg-[#2f3136] max-h-screen sticky top-0 z-40`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             {sidebarContent}
@@ -89,7 +89,7 @@ const SidebarLayout = ({
         </div>
       </div>
       <div className="flex flex-col flex-grow overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
-        <div className="sticky top-0 px-2 z-50 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+        <div className="sticky top-0 px-2 z-50 flex justify-between items-center border-b-2 border-[#1d1f22] bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
           <div className=" flex items-center space-x-4">
             <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />
             <div className="flex gap-2 items-center lg:items-end">
