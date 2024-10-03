@@ -71,7 +71,7 @@ const InspirationPhoto = () => {
         <DetailedPhotoView
           idImg={selectedImage}
           onClose={() => {
-            navigate(`/test/explorer/inspiration`);
+            navigate(`/explore/inspiration`);
             setSelectedImage(null);
           }}
           listImg={photoList}

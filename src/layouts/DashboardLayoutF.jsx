@@ -1,5 +1,5 @@
 import { useKeycloak } from "@react-keycloak/web";
-import React, { useState } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
 import ServerSide from "../components/ServerSide/ServerSide";
 import UseSidebarStore from "../states/UseSidebarStore";
@@ -9,19 +9,7 @@ import UseNotificationStore from "../states/UseNotificationStore";
 const DashboardLayoutF = () => {
   const { keycloak } = useKeycloak();
   const { isSidebarOpen } = UseSidebarStore();
-  const { isNotificationOpen, closeNotificationModal } = UseNotificationStore();
-  // // State quản lý modal
-  // const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-
-  // // Hàm mở modal
-  // const openNotificationModal = () => {
-  //   setIsNotificationOpen(true);
-  // };
-
-  // // Hàm đóng modal
-  // const closeNotificationModal = () => {
-  //   setIsNotificationOpen(false);
-  // };
+  const { isNotificationOpen, closeNotificationModal } = UseNotificationStore(); // đảm bảo closeNotificationModal tồn tại
 
   return (
     <div className="relative flex bg-[#43474e] text-white font-semibold">
@@ -39,7 +27,7 @@ const DashboardLayoutF = () => {
         <div className="h-full">
           <NotificationModal
             isOpen={isNotificationOpen}
-            onClose={closeNotificationModal}
+            onClose={closeNotificationModal} // truyền đúng hàm onClose
           />
         </div>
       </div>
