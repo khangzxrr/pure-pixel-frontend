@@ -52,7 +52,6 @@ import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
 import Blog from "./../components/Blog/Blog";
 import UserService from "../services/Keycloak";
 import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
-const userData = UserService.getTokenParsed();
 
 export const AppRouter = createBrowserRouter([
   {
