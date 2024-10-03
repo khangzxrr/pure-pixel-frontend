@@ -5,11 +5,9 @@ import React from "react";
 const MainLayout = () => {
   return (
     <>
-      <Header />
       <div className="bg-[#f7f8fa]">
         <Outlet />
       </div>
-      <Footer />
     </>
   );
 };

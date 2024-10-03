@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import UseSidebarStore from "../../states/UseSidebarStore";
 const Sidebar = ({
   sideItems,
@@ -9,8 +9,26 @@ const Sidebar = ({
   isImg,
   isUser,
   nameUser,
+  isBlog,
 }) => {
+  const location = useLocation();
   const { activeLink, setActiveLink } = UseSidebarStore();
+
+  useEffect(() => {
+    const currentItem = sideItems.find(
+      (item) => item.link === location.pathname
+    );
+    if (currentItem && activeLink !== currentItem.id) {
+      setActiveLink(currentItem.id);
+      handleClick(
+        currentItem.id,
+        currentItem.title,
+        currentItem.icon,
+        currentItem.quote
+      );
+    }
+  }, [location.pathname, activeLink, setActiveLink, handleClick, sideItems]);
+
   return (
     <div className="flex flex-col max-h-screen gap-3 w-[256px]">
       {isUser && (
@@ -21,14 +39,25 @@ const Sidebar = ({
         </div>
       )}
       {isImg && (
-        <div>
-          <img src="https://picsum.photos/290/150" alt="" />
+        <div className="w-[290px] h-[150px] overflow-hidden">
+          <img
+            className="w-full h-full object-cover"
+            src="https://picsum.photos/1920/1080?random=1"
+            alt=""
+          />
         </div>
       )}
       {isUpload && (
         <div className=" flex-grow">
-          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
+          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-2 outline-[#1d1f22] shadow-xl text-[#eee] items-center gap-3">
             Upload
+          </div>
+        </div>
+      )}
+      {isBlog && (
+        <div className=" flex-grow">
+          <div className="flex px-2 h-[48px] bg-[#36393f] outline outline-bottom outline-2 outline-[#1d1f22] shadow-xl text-[#eee] items-center gap-3">
+            Blog
           </div>
         </div>
       )}
@@ -42,7 +71,11 @@ const Sidebar = ({
               setActiveLink(item.id);
             }}
             className={`flex text-[#a3a3a3] items-center gap-3 hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md transition-colors duration-200
-            ${activeLink === item.id ? "bg-gray-500 text-[#eee]" : ""}`}
+            ${
+              activeLink === item.id || activeLink === item.link
+                ? "bg-gray-500 text-[#eee]"
+                : ""
+            }`}
           >
             <div className="flex items-center justify-center w-12 h-12">
               <div className="flex justify-center items-center text-2xl">

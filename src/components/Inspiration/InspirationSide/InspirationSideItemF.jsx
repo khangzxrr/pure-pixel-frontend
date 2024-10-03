@@ -9,7 +9,7 @@ const InspirationSideItemF = [
     id: 1,
     title: "Cảm hứng",
     icon: <GiPolarStar />,
-    link: "inspiration",
+    link: "/explore/inspiration",
     quote:
       "Những bức ảnh đẹp nhất gần đây, được nhóm của chúng tôi tuyển chọn theo cách thủ công",
   },
@@ -17,26 +17,26 @@ const InspirationSideItemF = [
     id: 2,
     title: "Ảnh nổi bật",
     icon: <FaFireFlameCurved />,
-    link: "hot",
+    link: "/explore/hot",
     quote: "Những bức ảnh thú vị nhất dành cho bạn",
   },
   {
     id: 3,
     title: "Ảnh mới",
     icon: <PiClockCountdownBold />,
-    link: "news",
+    link: "/explore/news",
   },
   {
     id: 4,
     title: "Nhiếp ảnh gia",
     icon: <BsPersonBoundingBox />,
-    link: "photographers",
+    link: "/explore/photographers",
   },
   {
     id: 5,
     title: "Xếp hạng",
     icon: <RiVipCrownFill />,
-    link: "/explorer/leaderboard",
+    link: "/explore/leaderboard",
   },
 ];
 

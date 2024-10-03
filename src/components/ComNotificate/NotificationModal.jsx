@@ -4,12 +4,11 @@ const notifications = [
   { id: 1, name: "PurePixel" },
   { id: 2, name: "John Doe" },
   { id: 3, name: "Jane Smith" },
-  { id: 4, name: "Alice Johnson" },
+  { id: 4, name: "Alice Johnson Alice Johnson Alice Johnson" },
   { id: 5, name: "Bob Brown" },
   { id: 6, name: "Bob Brown" },
   { id: 7, name: "Bob Brown" },
   { id: 8, name: "Bob Brown" },
-  // Thêm nhiều mục hơn nếu cần
 ];
 const NotificationModal = ({ isOpen }) => {
   if (!isOpen) return null;
@@ -35,8 +34,10 @@ const NotificationModal = ({ isOpen }) => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span className="font-bold">{notification.name}</span> đã bắt
-                đầu theo dõi bạn
+                <div className="w-[325px]">
+                  <span className="font-bold">{notification.name}</span> đã bắt
+                  đầu theo dõi bạn
+                </div>
               </div>
             </div>
           ))}
