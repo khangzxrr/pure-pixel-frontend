@@ -1,26 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { getData } from "../../apis/api";
+import { getData, postData } from "../../apis/api";
 import ComDateConverter from "../ComDateConverter/ComDateConverter";
 import { useKeycloak } from "@react-keycloak/web";
 import UserService from "../../services/Keycloak";
 import { FiSend } from "react-icons/fi";
-export default function CommentPhoto({ id }) {
+export default function CommentPhoto({ id, reload }) {
   const [dataComment, setDataComment] = useState([]);
-    const { keycloak } = useKeycloak();
+  const [valueComment, setValueComment] = useState("");
+  const { keycloak } = useKeycloak();
   const handleLogin = () => keycloak.login();
-    const userData = UserService.getTokenParsed();
-  useEffect(() => {
+  const userData = UserService.getTokenParsed();
+  const callApiComment = () => {
     getData(`photo/${id}/comment`)
       .then((e) => {
-          setDataComment(e.data);
-          
+        setDataComment(e?.data?.reverse());
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+  useEffect(() => {
+    callApiComment();
   }, [id]);
-console.log(dataComment);
-
+  console.log(dataComment);
+  console.log(valueComment);
+  const handComment = () => {
+    postData(`photo/${id}/comment`, {
+      content: valueComment,
+    })
+      .then((e) => {
+        setValueComment("");
+        callApiComment();
+        reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div className="space-y-4">
       {dataComment?.map((value, index) => (
@@ -31,13 +47,15 @@ console.log(dataComment);
             className="w-10 h-10 rounded-full"
           />
           <div>
-            <div className="flex items-center">
-              <span className="font-medium">{value?.user?.name}</span>
-              <span className="text-xs text-gray-400 ml-2">
+            <div className="flex items-center flex-wrap">
+              <span className="font-medium mr-2">{value?.user?.name}</span>
+              <span className="text-xs text-gray-400 ">
                 <ComDateConverter>{value?.createdAt}</ComDateConverter>
               </span>
             </div>
-            <p className="text-sm">{value?.content}</p>
+            <p className="text-sm" style={{ whiteSpace: "pre-line" }}>
+              {value?.content}
+            </p>
           </div>
         </div>
       ))}
@@ -47,11 +65,18 @@ console.log(dataComment);
             <textarea
               className="w-full p-2 border-none focus:ring-0 text-[#eee] placeholder-[#6e6e6e] outline-none resize-none bg-[#202225] rounded-md"
               rows="2"
+              value={valueComment}
+              onChange={(e) => {
+                setValueComment(e.target.value);
+              }}
               placeholder="Viết bình luận của bạn..."
             ></textarea>
             <div className="flex items-center justify-between mt-2">
               <div className="flex space-x-2"></div>
-              <button className=" text[#eee] p-2 rounded-sm hover:bg-[#3d3d3d]">
+              <button
+                onClick={handComment}
+                className=" text[#eee] p-2 rounded-sm hover:bg-[#3d3d3d]"
+              >
                 <FiSend className="text-2xl" />
               </button>
             </div>

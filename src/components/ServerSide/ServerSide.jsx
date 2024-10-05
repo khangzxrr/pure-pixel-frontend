@@ -23,6 +23,7 @@ const ServerSide = () => {
             <ServerSideItem
               key={item.id}
               icon={item.icon}
+              name={item.name}
               isNotification
               onNotificationClick={toggleNotificationModal} // Gọi hàm toggle modal
             />
@@ -33,6 +34,7 @@ const ServerSide = () => {
           <ServerSideItem
             key={item.id}
             id={item.id}
+            name={item.name}
             link={item.link}
             icon={item.icon}
           />

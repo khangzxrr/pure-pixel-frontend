@@ -4,8 +4,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import UserService from "../../services/Keycloak";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import TransactionLine from "./TransactionLine";
-import { Button, Dropdown, Tooltip } from "antd";
+import { Button, Dropdown, Pagination, Tooltip } from "antd";
 import TransactionSkeleton from "./TransactionSkeleton";
+import CustomPagination from "./CustomPagination";
 
 const buttonTypes = [
   { key: "", label: "Tất cả" },
@@ -34,8 +35,8 @@ const translateStatus = (status) => {
 };
 export default function TransactionList() {
   // Initialize state for the fields
-  const [limit, setLimit] = useState(10); // Default limit
-  const [page, setPage] = useState(1); // Default page
+  const [limit, setLimit] = useState(8); // Default limit
+  const [page, setPage] = useState(0); // Default page
   const [type, setType] = useState(""); // Default type (empty string for all types)
   const [status, setStatus] = useState(""); // Default status (empty string for all statuses)
   const [orderByAmount, setOrderByAmount] = useState(true); // Default order by amount (ascending)
@@ -196,6 +197,15 @@ export default function TransactionList() {
               </button>
             ))}
           </div>
+          {transaction && (
+            <div>
+              <CustomPagination
+                currentPage={page}
+                setPage={setPage}
+                totalPage={transaction.totalPage}
+              />{" "}
+            </div>
+          )}
         </div>
       </div>
 

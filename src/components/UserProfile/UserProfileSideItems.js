@@ -8,7 +8,7 @@ const UserProfileSideItems = [
     id: "NameProfile",
     title: "Hồ sơ",
     icon: <IoPersonSharp />,
-    link: "userprofile",
+    link: "/profile/userprofile",
   },
   {
     id: "transaction",

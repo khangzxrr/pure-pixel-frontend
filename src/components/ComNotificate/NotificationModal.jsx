@@ -4,18 +4,29 @@ const notifications = [
   { id: 1, name: "PurePixel" },
   { id: 2, name: "John Doe" },
   { id: 3, name: "Jane Smith" },
-  { id: 4, name: "Alice Johnson" },
+  { id: 4, name: "Alice Johnson Alice Johnson Alice Johnson" },
   { id: 5, name: "Bob Brown" },
   { id: 6, name: "Bob Brown" },
   { id: 7, name: "Bob Brown" },
   { id: 8, name: "Bob Brown" },
-  // Thêm nhiều mục hơn nếu cần
 ];
-const NotificationModal = ({ isOpen }) => {
+
+const NotificationModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
+  const handleClickOutside = (e) => {
+    // Kiểm tra nếu click vào phần overlay (phần không phải modal)
+    if (e.target.id === "modal-overlay") {
+      onClose();
+    }
+  };
+
   return (
-    <div className="absolute inset-0 bg-black bg-opacity-80 z-50 flex justify-start">
+    <div
+      id="modal-overlay"
+      className="absolute inset-0 bg-black bg-opacity-50 z-50 flex justify-start"
+      onClick={handleClickOutside}
+    >
       <div className="bg-[#1b1b1b] text-[#eee] w-[400px] h-full flex flex-col">
         <div>
           <h2 className="text-xl font-semibold p-3">Thông báo</h2>
@@ -35,8 +46,10 @@ const NotificationModal = ({ isOpen }) => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <span className="font-bold">{notification.name}</span> đã bắt
-                đầu theo dõi bạn
+                <div className="w-[325px]">
+                  <span className="font-bold">{notification.name}</span> đã bắt
+                  đầu theo dõi bạn
+                </div>
               </div>
             </div>
           ))}

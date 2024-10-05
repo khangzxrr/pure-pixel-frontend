@@ -6,7 +6,6 @@ import Following from "../components/Dashboard/Following/Following";
 // import Explore from "../components/Dashboard/Explore/Explore";
 import HomePage from "./../pages/HomePage/HomePage";
 // import Award from "../pages/HomePage/Award";
-import Blog from "../pages/HomePage/Blog";
 import Discover from "../pages/HomePage/Discover";
 import Licensing from "../pages/HomePage/Licensing";
 // import Quest from "../pages/HomePage/Quest";
@@ -51,6 +50,9 @@ import BlogList from "../pages/Blog/BlogList";
 import DetailedBlog from "./../pages/Blog/DetailedBlog";
 import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
 import Wallet from "../pages/UserProfile/Wallet";
+import Blog from "./../components/Blog/Blog";
+import UserService from "../services/Keycloak";
+import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -60,42 +62,134 @@ export const AppRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <DashboardLayout />,
+        element: <DashboardLayoutF />,
         children: [
           {
-            path: "/",
-            element: <HomePage />,
+            path: "",
+            element: <Navigate to="explore" replace={true} />,
           },
           {
-            path: "/admin/upgrade",
-            element: <Upgrade />,
+            path: "explore",
+            element: <Explore />,
+            children: [
+              {
+                path: "",
+                element: <Navigate to="inspiration" replace={true} />,
+              },
+              {
+                path: "inspiration",
+                element: <InspirationPhoto />,
+              },
+              {
+                path: "hot",
+                element: <HotPhoto />,
+              },
+              {
+                path: "photographers",
+                element: <ListPhotographers />,
+              },
+            ],
+          },
+
+          {
+            path: "upload",
+            element: <Upload />,
+            children: [
+              // {
+              //   path: "public",
+              //   element: <PublicUpload />,
+              // },
+              {
+                path: "",
+                element: <Navigate to="public" replace={true} />,
+              },
+              {
+                path: "public",
+                element: <UploadPhoto />,
+              },
+              {
+                path: "private",
+                element: <PrivateUpload />,
+              },
+            ],
           },
           {
-            path: "/membership",
-            element: <MembershipPage />,
+            path: "profile",
+            element: <User />,
+            children: [
+              {
+                path: "",
+                element: <Navigate to="userprofile" replace={true} />,
+              },
+              {
+                path: "userprofile",
+                element: <UserProfile />,
+              },
+              {
+                path: "wallet",
+                element: <Wallet />,
+              },
+            ],
           },
           {
-            path: "/blog",
-            element: <BlogList />,
+            path: "test_scroll",
+            element: <ScrollingBar />,
           },
           {
-            path: "/ProfileSettings",
-            element: <ProfileSettings />,
+            path: "blog",
+            // element: <BlogList />,
+            element: <Blog />,
+            children: [
+              {
+                path: "",
+                element: <Navigate to="list" replace={true} />,
+              },
+              {
+                path: "list",
+                element: <BlogList />,
+              },
+            ],
           },
-          // {
-          //   path: "/following",
-          //   element: <Following />,
-          // },
-          // {
-          //   path: "/for-you",
-          //   element: <ForYou />,
-          // },
-          // {
-          //   path: "/explore",
-          //   element: <Explore />,
-          // },
         ],
       },
+      // {
+      //   path: "/",
+      //   element: <DashboardLayout />,
+      //   children: [
+      //     {
+      //       path: "/",
+      //       element: <HomePage />,
+      //     },
+      //     {
+      //       path: "/admin/upgrade",
+      //       element: <Upgrade />,
+      //     },
+      //     {
+      //       path: "/membership",
+      //       element: <MembershipPage />,
+      //     },
+      //     {
+      //       path: "/blog",
+      //       element: <BlogList />,
+      //     },
+      //     {
+      //       path: "/ProfileSettings",
+      //       element: <ProfileSettings />,
+      //     },
+      //     // {
+      //     //   path: "/following",
+      //     //   element: <Following />,
+      //     // },
+      //     // {
+      //     //   path: "/for-you",
+      //     //   element: <ForYou />,
+      //     // },
+      //     // {
+      //     //   path: "/explore",
+      //     //   element: <Explore />,
+      //     // },
+      //   ],
+      // },
       {
         path: "/profile/:userId",
         element: <UserProfile />,
@@ -119,7 +213,7 @@ export const AppRouter = createBrowserRouter([
 
       {
         path: "/photo/:id",
-        element: <PhotoDetailLayout />,
+        element: <DetailedPhotoView listImg={[]} />,
       },
       {
         path: "/photos/:id",
@@ -245,76 +339,6 @@ export const AppRouter = createBrowserRouter([
             element: <Transaction />,
           },
         ],
-      },
-    ],
-  },
-  {
-    path: "/test",
-    element: <DashboardLayoutF />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "",
-        element: <Navigate to="/test/explorer" replace={true} />,
-      },
-      {
-        path: "explorer",
-        element: <Explore />,
-        children: [
-          {
-            path: "",
-            element: <Navigate to="inspiration" replace={true} />,
-          },
-          {
-            path: "inspiration",
-            element: <InspirationPhoto />,
-          },
-          {
-            path: "hot",
-            element: <HotPhoto />,
-          },
-          {
-            path: "photographers",
-            element: <ListPhotographers />,
-          },
-        ],
-      },
-      {
-        path: "upload",
-        element: <Upload />,
-        children: [
-          // {
-
-          //   path: "public",
-          //   element: <PublicUpload />,
-          // },
-          {
-            path: "/test/upload/public",
-            element: <UploadPhoto />,
-          },
-          {
-            path: "private",
-            element: <PrivateUpload />,
-          },
-        ],
-      },
-      {
-        path: "profile",
-        element: <User />,
-        children: [
-          {
-            path: "userprofile",
-            element: <UserProfile />,
-          },
-          {
-            path: "wallet",
-            element: <Wallet />,
-          },
-        ],
-      },
-      {
-        path: "/test/test_scroll",
-        element: <ScrollingBar />,
       },
     ],
   },

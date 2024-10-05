@@ -2,7 +2,7 @@
 import React from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -16,13 +16,14 @@ const SidebarLayout = ({
   onLogin,
   onRegister,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-grow max-h-screen">
       <div className="flex">
         <div
           className={` ${
             isSidebarOpen ? "flex" : "hidden"
-          } xl:flex flex-col w-[256px] bg-[#36393f] max-h-screen sticky top-0 z-40`}
+          } xl:flex flex-col w-[256px] bg-[#2f3136] max-h-screen sticky top-0 z-40`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             {sidebarContent}
@@ -30,7 +31,10 @@ const SidebarLayout = ({
           <div className="sticky bottom-0 bg-[#2a2d31] p-[12.5px]">
             {userData ? (
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md transition-colors duration-300">
+                <div
+                  onClick={() => navigate("/profile")}
+                  className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md transition-colors duration-300"
+                >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
                     <img
                       src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
@@ -85,7 +89,7 @@ const SidebarLayout = ({
         </div>
       </div>
       <div className="flex flex-col flex-grow overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
-        <div className="sticky top-0 px-2 z-50 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+        <div className="sticky top-0 px-2 z-50 flex justify-between items-center border-b-2 border-[#1d1f22] bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
           <div className=" flex items-center space-x-4">
             <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />
             <div className="flex gap-2 items-center lg:items-end">
@@ -97,13 +101,6 @@ const SidebarLayout = ({
                 {activeQuote}
               </div>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              placeholder="Tìm kiếm PurePixel..."
-              className="font-normal text-sm px-2 py-2 w-[300px] pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
-            />
           </div>
         </div>
         <Outlet />

@@ -93,16 +93,16 @@ export default function Wallet() {
     <div className="relative">
       {/* The Main Content */}
       <div
-        className={`p-8 text-gray-500 transition-opacity duration-300 ${
+        className={`px-8 py-2 text-gray-500 transition-opacity duration-300 ${
           isNavVisible || isNavDrawalVisible
             ? "opacity-60 pointer-events-none"
             : "opacity-100"
         }`}
       >
         {/* Phần Thu nhập */}
-        <div className="grid grid-cols-10 gap-4 mb-4">
-          <div className="col-start-1 col-span-3 bg-[#2a2c32] shadow rounded-lg p-4 flex flex-col">
-            <p className="text-lg text-[#dddddd]">Số tiền hiện tại</p>
+        <div className="grid grid-cols-10 mb-4">
+          <div className="col-start-1 col-span-3 bg-[#2a2c32] shadow rounded-lg p-3 flex flex-col">
+            <p className="text-lg text-[#b9b3b3]">Số tiền hiện tại</p>
             <div className="flex items-center justify-between w-full cursor-pointer text-[#dddddd] hover:text-white p-2">
               {isBalanceVisible ? (
                 <div
@@ -138,26 +138,26 @@ export default function Wallet() {
               )}
             </div>
           </div>
-          <div className="col-start-9 col-span-2 bg-[#2a2c32] shadow rounded-lg p-4 flex flex-row justify-between">
-            <div className="bg-[#3F4146C2] w-[45%] flex justify-center rounded-lg p-3">
+          <div className="col-start-9 col-span-2 bg-[#2a2c32] shadow rounded-lg p-3 flex flex-row justify-between">
+            <div className="bg-[#3F4146C2] w-[45%] flex justify-center rounded-lg p-2">
               <button
                 onClick={toggleNav}
                 className=" text-green-500  mr-1 hover:text-green-400 py-1 rounded menu-button"
               >
                 <Tooltip title="Nạp tiền" placement="bottom" color="green">
-                  <PlusSquareOutlined style={{ fontSize: "36px" }} />
-                  <p className="text-xs">Nạp tiền</p>
+                  <PlusSquareOutlined style={{ fontSize: "29px" }} />
+                  <p className="text-[10px]">Nạp tiền</p>
                 </Tooltip>
               </button>
             </div>
-            <div className="bg-[#3F4146C2] w-[45%] flex justify-center rounded-lg p-3">
+            <div className="bg-[#3F4146C2] w-[45%] flex justify-center rounded-lg p-2">
               <button
                 onClick={toggleNavDrawal}
                 className=" text-red-500 ml-1 hover:text-red-400 py-1 rounded menu-button"
               >
                 <Tooltip title="Rút tiền" placement="bottom" color="red">
-                  <IoIosLogOut size={36} />
-                  <p className="text-xs">Rút tiền</p>
+                  <IoIosLogOut size={27} />
+                  <p className="text-[10px]">Rút tiền</p>
                 </Tooltip>
               </button>
             </div>

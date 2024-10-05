@@ -24,7 +24,7 @@ export default function TransactionSkeleton() {
 
   return (
     <tbody className="bg-[#36393f]">
-      {Array.from({ length: 10 }).map((_, index) => (
+      {Array.from({ length: 8 }).map((_, index) => (
         <React.Fragment key={index}>{renderSkeleton()}</React.Fragment>
       ))}
     </tbody>

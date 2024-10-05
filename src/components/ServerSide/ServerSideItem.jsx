@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import UseServerSideStore from "../../states/UseServerSideStore";
 
 const ServerSideItem = ({
@@ -8,34 +8,65 @@ const ServerSideItem = ({
   icon,
   isNotification,
   onNotificationClick,
+  name,
 }) => {
+  const location = useLocation();
   const { activeLinkServer, setActiveLinkServer } = UseServerSideStore();
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    setActiveLinkServer(location.pathname);
+  }, [location.pathname, setActiveLinkServer]);
 
   const handleClick = () => {
-    setActiveLinkServer(link); // Lưu vị trí link nếu có
+    setActiveLinkServer(link);
   };
 
-  // Nếu là notification thì chỉ mở modal
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   if (isNotification) {
     return (
       <div
         onClick={onNotificationClick}
-        className="flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="relative flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200"
       >
         {icon}
+        {/* {isHovered && (
+          <div className="absolute left-full ml-2 whitespace-nowrap bg-gray-700 text-white text-sm p-1 rounded-md shadow-lg z-50">
+            {name}
+          </div>
+        )} */}
       </div>
     );
   }
 
-  // Nếu không phải notification thì điều hướng bằng Link
+  const isActive =
+    id !== "logo" && location.pathname.slice(1).startsWith(link.slice(1));
+  console.log("isActive", isActive);
+
   return (
     <Link
       to={link}
       onClick={handleClick}
-      className={`flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200
-        ${activeLinkServer === link ? "bg-gray-500" : ""}`} // Kiểm tra nếu link đang hoạt động
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`relative flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200
+        ${isActive ? "bg-gray-500" : ""}`}
     >
       {icon}
+      {/* {isHovered && (
+        <div className="absolute left-full ml-2 whitespace-nowrap bg-gray-700 text-white text-sm p-1 rounded-md shadow-lg z-9999">
+          {name}
+        </div>
+      )} */}
     </Link>
   );
 };
