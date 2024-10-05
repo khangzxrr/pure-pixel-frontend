@@ -28,7 +28,7 @@ export default function PhotoCard({ photo }) {
   const {
     setSelectedPhotoById,
     removePhotoById,
-
+    updatePhotoPropertyByUid,
     selectedPhoto,
   } = useUploadPhotoStore();
   const [displayTitle, setDisplayTitle] = useState("Untitled");
@@ -54,7 +54,7 @@ export default function PhotoCard({ photo }) {
               message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
               // Additional logic to handle the error
             },
-          },
+          }
         );
       } catch (error) {
         console.log("Error deleting photo", error);
@@ -91,7 +91,7 @@ export default function PhotoCard({ photo }) {
       <img
         src={photo?.reviewUrl}
         className={`h-3/4 w-full object-cover rounded-md cursor-pointer ${
-          photo.uid === selectedPhoto
+          photo.file.uid === selectedPhoto.file.uid
             ? "border-4 border-white transition duration-300"
             : ""
         }`}
@@ -123,7 +123,11 @@ export default function PhotoCard({ photo }) {
               <Checkbox
                 onChange={(e) => {
                   console.log("Checkbox onChange", e.target.checked);
-                  // updateFieldByUid(photo.uid, "watermark", e.target.checked);
+                  updatePhotoPropertyByUid(
+                    photo.file.uid,
+                    "watermark",
+                    e.target.checked
+                  );
                 }}
                 checked={photo.watermark}
               />

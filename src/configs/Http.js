@@ -13,7 +13,7 @@ const http = axios.create({
 });
 
 export const testHttp = axios.create({
-  baseURL: "https://667f9d41f2cb59c38dc94c63.mockapi.io/profiles",
+  baseURL: "",
 
   timeout: 30000,
   headers: {
@@ -32,7 +32,7 @@ http.interceptors.request.use(
   (error) => {
     console.log("error: ", error);
     return Promise.reject(error);
-  },
+  }
 );
 
 export default http;
