@@ -6,7 +6,12 @@ import OverviewModal from "../../components/Photographer/UploadPhoto/OverviewMod
 import useUploadPhotoStore from "../../states/UploadPhotoState";
 
 export default function UploadPhoto() {
-  const { photoArray, selectedPhoto } = useUploadPhotoStore();
+  const {
+    photoArray,
+    selectedPhoto,
+    setPreviousSelectedPhoto,
+    setNextSelectedPhoto,
+  } = useUploadPhotoStore();
 
   return (
     <div className="flex h-[93%] justify-end">
@@ -21,13 +26,13 @@ export default function UploadPhoto() {
                 <>
                   <div
                     className="absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10"
-                    // onClick={() => setPreviousSelectedPhoto()}
+                    onClick={() => setPreviousSelectedPhoto()}
                   >
                     <ArrowLeftOutlined />
                   </div>
                   <div
                     className="absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10"
-                    // onClick={() => setNextSelectedPhoto()}
+                    onClick={() => setNextSelectedPhoto()}
                   >
                     <ArrowRightOutlined />
                   </div>

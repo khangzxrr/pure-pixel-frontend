@@ -32,7 +32,7 @@ const SidebarLayout = ({
             {userData ? (
               <div className="flex items-center justify-between gap-2">
                 <div
-                  onClick={() => navigate("/test/profile")}
+                  onClick={() => navigate("/profile")}
                   className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md transition-colors duration-300"
                 >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">

@@ -16,9 +16,9 @@ const useUploadPhotoStore = create(
 
     getPhotoByUid: (uid) => {
       const index = get().uidHashmap[uid];
-
       return get().photoArray[index];
     },
+
     setSelectedPhotoById: (id) =>
       set((state) => ({
         selectedPhoto: state.photoArray[state.photoIdHashmap[id]],
@@ -27,8 +27,20 @@ const useUploadPhotoStore = create(
     updateSelectedPhotoProperty: (key, value) => {
       set((state) => {
         state.selectedPhoto[key] = value;
-
         return {
+          selectedPhoto: state.selectedPhoto,
+        };
+      });
+    },
+    updatePhotoPropertyByUid: (uid, key, value) => {
+      set((state) => {
+        const index = state.uidHashmap[uid];
+        if (index !== undefined) {
+          state.photoArray[index][key] = value;
+          state.selectedPhoto[key] = value;
+        }
+        return {
+          photoArray: state.photoArray,
           selectedPhoto: state.selectedPhoto,
         };
       });
@@ -67,6 +79,7 @@ const useUploadPhotoStore = create(
         };
       });
     },
+
     removePhotoByUid: (uid) =>
       set((state) => {
         const index = state.uidHashmap[uid];
@@ -100,59 +113,66 @@ const useUploadPhotoStore = create(
 
     isPhotoExistByUid: (uid) => {
       const state = useUploadPhotoStore.getState();
-      return state.photoList.some((photo) => photo.uid === uid);
+      return state.photoArray.some((photo) => photo.uid === uid);
     },
 
     deleteImageById: (id) =>
       set((state) => {
-        const updatedPhotoList = state.photoList.filter(
-          (image) => image.id !== id,
+        const updatedPhotoArray = state.photoArray.filter(
+          (image) => image.id !== id
         );
         const isDeletedSelected = state.selectedPhoto.id === id;
 
         return {
-          photoList: updatedPhotoList,
+          photoArray: updatedPhotoArray,
           selectedPhoto: isDeletedSelected
-            ? updatedPhotoList[0] || {}
+            ? updatedPhotoArray[0] || {}
             : state.selectedPhoto,
         };
       }),
 
     toggleWatermark: (status) =>
       set((state) => {
-        const photoList = state.photoList.map((photo) => ({
+        const photoArray = state.photoArray.map((photo) => ({
           ...photo,
           watermark: status,
         }));
 
-        return { photoList };
+        return { photoArray };
       }),
 
     setNextSelectedPhoto: () =>
       set((state) => {
-        const { photoList, selectedPhoto } = state;
-        if (photoList.length === 0) return;
+        const { photoArray, selectedPhoto } = state;
+        if (photoArray.length === 0) return;
 
-        const currentIndex = photoList.findIndex(
-          (photo) => photo.uid === selectedPhoto,
+        const currentIndex = photoArray.findIndex(
+          (photo) => photo.file.uid === selectedPhoto.file.uid
         );
-        const nextIndex = (currentIndex + 1) % photoList.length;
-        return { selectedPhoto: photoList[nextIndex].uid };
+        const nextIndex = (currentIndex + 1) % photoArray.length;
+        return { selectedPhoto: photoArray[nextIndex] };
       }),
 
     setPreviousSelectedPhoto: () =>
       set((state) => {
-        const { photoList, selectedPhoto } = state;
-        if (photoList.length === 0) return;
+        const { photoArray, selectedPhoto } = state;
+        if (photoArray.length === 0) return;
 
-        const currentIndex = photoList.findIndex(
-          (photo) => photo.uid === selectedPhoto,
+        const currentIndex = photoArray.findIndex(
+          (photo) => photo.file.uid === selectedPhoto.file.uid
         );
         const previousIndex =
-          (currentIndex - 1 + photoList.length) % photoList.length;
-        return { selectedPhoto: photoList[previousIndex].uid };
+          (currentIndex - 1 + photoArray.length) % photoArray.length;
+        console.log(
+          "setPrevious",
+          currentIndex,
+          previousIndex,
+          photoArray[previousIndex]
+        );
+
+        return { selectedPhoto: photoArray[previousIndex] };
       }),
-  })),
+  }))
 );
 
 export default useUploadPhotoStore;

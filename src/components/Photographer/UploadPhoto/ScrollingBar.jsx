@@ -8,8 +8,8 @@ export default function ScrollingBar() {
 
   return (
     <div className="flex overflow-x-auto scrollbar-hidden w-fit">
-      {photoArray.map((photo) => (
-        <PhotoCard key={1} photo={photo} />
+      {photoArray.map((photo, index) => (
+        <PhotoCard key={index} photo={photo} />
       ))}
     </div>
   );
