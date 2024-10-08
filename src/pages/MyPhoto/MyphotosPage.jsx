@@ -1,12 +1,9 @@
 import React from "react";
 import MyPhotosLayout from "../../layouts/MyPhotosLayout";
+import UserService from "../../services/Keycloak";
 
-const MyphotosPage = () => {
-  return (
-    <div>
-      <MyPhotosLayout />
-    </div>
-  );
+const MyPhotosPage = () => {
+  return <MyPhotosLayout />;
 };
 
-export default MyphotosPage;
+export default MyPhotosPage;

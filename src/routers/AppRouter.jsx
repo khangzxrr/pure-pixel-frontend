@@ -52,8 +52,7 @@ import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
 import Blog from "./../components/Blog/Blog";
 import UserService from "../services/Keycloak";
 import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
-import MyphotoPage from "../pages/MyPhoto/MyphotosPage";
-import MyphotosPage from "../pages/MyPhoto/MyphotosPage";
+import MyPhotosPage from "../pages/MyPhoto/MyPhotosPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -128,7 +127,7 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "my-photos",
-                element: <MyphotosPage />,
+                element: <MyPhotosPage />,
               },
             ],
           },

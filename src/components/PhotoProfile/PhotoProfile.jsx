@@ -1,8 +1,8 @@
 import React from "react";
 import UserService from "../../services/Keycloak";
 import { IoEyeSharp } from "react-icons/io5";
-const PhotoProfile = () => {
-  const userData = UserService.getTokenParsed();
+
+const PhotoProfile = ({ userData }) => {
   console.log(userData);
 
   return (
@@ -16,8 +16,10 @@ const PhotoProfile = () => {
           />
         </div>
         <div className="flex flex-col gap-2 p-1">
-          <div className="font-bold text-4xl">{userData.name}</div>
-          <div>{userData.email}</div>
+          <div className="font-bold text-4xl">
+            {userData?.name || "Không xác định"}
+          </div>
+          <div>{userData?.email || "Không xác định"}</div>
           <div className="flex gap-2">
             <div className="px-[12px] py-[4px] bg-[#fff3] rounded-full">
               2 người theo dõi
