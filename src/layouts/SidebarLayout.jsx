@@ -103,7 +103,19 @@ const SidebarLayout = ({
             </div>
           </div>
         </div>
-        <Outlet />
+        <section
+          aria-labelledby="products-heading"
+          className=" "
+        >
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6 ">
+            <div className="lg:col-span-6  h-full w-full ">
+              <div className="">
+               
+                <Outlet />
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

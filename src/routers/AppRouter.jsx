@@ -53,6 +53,7 @@ import Wallet from "../pages/UserProfile/Wallet";
 import Blog from "./../components/Blog/Blog";
 import UserService from "../services/Keycloak";
 import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
+import TableTransactilonList from "../components/Wallet/TableTransactilonList";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -342,4 +343,5 @@ export const AppRouter = createBrowserRouter([
       },
     ],
   },
+  
 ]);
