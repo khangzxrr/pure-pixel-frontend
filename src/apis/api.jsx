@@ -8,10 +8,6 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    console.log("====================================");
-    console.log(111, UserService.getToken());
-    console.log("====================================");
-
     if (UserService.isLoggedIn()) {
       // Set Authorization header with Bearer token
       config.headers.Authorization = `Bearer ${UserService.getToken()}`;
