@@ -9,41 +9,42 @@ import { useState } from "react";
 import { getData, postData } from "./../../apis/api";
 export default function ComSharePhoto({ idImg, onClose }) {
   const { notificationApi } = useNotification();
-  const [availableResolution, setAvailableResolution] = useState([]);
+  const [linkShare, setLinkShare] = useState(null);
   const handleChange = (value) => {
     console.log(`selected ${value}`);
     callApiShare(value);
   };
   const callApiShare = (value) => {
+    setLinkShare(null);
     postData(`/photo/share`, {
       photoId: idImg,
       resolution: value,
     })
       .then((e) => {
-        
+        console.log("====================================");
+        console.log(e.shareUrl);
+        console.log("====================================");
+        setLinkShare(e.shareUrl);
       })
       .catch((error) => {
         console.log(error);
+        setLinkShare(null);
       });
   };
 
-  useEffect(() => {
-    try {
-      callApiShare(resolutionOptions[0]?.value);
-    } catch (error) {}
-  }, []);
+
   const AvailableResolutions = useQuery({
     queryKey: ["getAvailableResolutionsByPhotoId", idImg],
     queryFn: () => PhotoApi.getAvailableResolutionsByPhotoId(idImg),
   });
 
-  console.log(idImg);
   console.log(AvailableResolutions);
 
   const baseURL = window.location.origin;
   const copyToClipboard = () => {
+    const url = linkShare || `${baseURL}/photo/${idImg}`;
     navigator.clipboard
-      .writeText(`${baseURL}/photo/${idImg}`)
+      .writeText(url)
       .then(() => {
         notificationApi("success", "Thành công", "Đã sao chép liên kết");
       })
@@ -55,6 +56,11 @@ export default function ComSharePhoto({ idImg, onClose }) {
     value: res.resolution,
     label: res.resolution,
   }));
+    useEffect(() => {
+      try {
+        callApiShare(resolutionOptions[0]?.value);
+      } catch (error) {}
+    }, [AvailableResolutions?.data]);
   return (
     <div className="bg-white text-gray-800 py-8 px-1 max-w-md mx-auto">
       <div className="flex items-center justify-between mb-4">
@@ -63,7 +69,7 @@ export default function ComSharePhoto({ idImg, onClose }) {
           <Info size={20} />
         </button>
       </div>
-      {AvailableResolutions.isLoading ? (
+      {AvailableResolutions?.isLoadingError ? (
         <Skeleton active />
       ) : AvailableResolutions?.data ? (
         <>
@@ -87,6 +93,21 @@ export default function ComSharePhoto({ idImg, onClose }) {
               />
             </div>
           </div>
+          <div className="flex justify-between mt-4">
+            <button
+              disabled={linkShare ? false : true}
+              onClick={copyToClipboard}
+              className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Copy đường dẫn
+            </button>
+            <button
+              onClick={onClose}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Xong
+            </button>
+          </div>
         </>
       ) : (
         <>
@@ -98,23 +119,22 @@ export default function ComSharePhoto({ idImg, onClose }) {
               <FaClipboard className="text-gray-500 hover:text-gray-800 cursor-pointer" />
             </button>
           </div>
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={copyToClipboard}
+              className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Copy đường dẫn
+            </button>
+            <button
+              onClick={onClose}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Xong
+            </button>
+          </div>
         </>
       )}
-
-      <div className="flex justify-between mt-4">
-        <button
-          onClick={copyToClipboard}
-          className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
-        >
-          Copy đường dẫn
-        </button>
-        <button
-          onClick={onClose}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Xong
-        </button>
-      </div>
     </div>
   );
 }
