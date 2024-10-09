@@ -9,7 +9,7 @@ const MyPhotoP = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [page, setPage] = useState(1); //
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
 
   const { data, isFetching, isError, error } = useQuery({
     queryKey: ["my-photo", page],
@@ -21,8 +21,7 @@ const MyPhotoP = () => {
     setSelectedImage(id);
   };
 
-  // Sử dụng `totalPage` từ dữ liệu trả về
-  const totalPages = data.totalPage;
+  const totalPages = data?.totalPage || 1;
 
   const handlePageClick = (pageNumber) => {
     setPage(pageNumber);
