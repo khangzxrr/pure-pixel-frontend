@@ -3,11 +3,12 @@ import ServerSideItems from "./ServerSideItems";
 import ServerSideItem from "./ServerSideItem";
 import UserService from "../../services/Keycloak";
 import UseNotificationStore from "../../states/UseNotificationStore";
+import { useKeycloak } from "@react-keycloak/web";
 // Import store
 
-const userData = UserService.getTokenParsed();
-
 const ServerSide = () => {
+  const { keycloak } = useKeycloak();
+  const userData = UserService.getTokenParsed();
   const { toggleNotificationModal } = UseNotificationStore(); // Lấy hàm toggle từ store
 
   return (

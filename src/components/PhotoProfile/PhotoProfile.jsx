@@ -15,7 +15,7 @@ const PhotoProfile = ({ userData }) => {
             alt=""
           />
         </div>
-        <div className="flex flex-col gap-2 p-1">
+        <div className="flex flex-col  gap-2 p-1">
           <div className="font-bold text-4xl">
             {userData?.name || "Không xác định"}
           </div>

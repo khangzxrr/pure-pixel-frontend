@@ -50,9 +50,8 @@ import BlogList from "../pages/Blog/BlogList";
 import DetailedBlog from "./../pages/Blog/DetailedBlog";
 import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
 import Blog from "./../components/Blog/Blog";
-import UserService from "../services/Keycloak";
 import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
-import MyPhotosPage from "../pages/MyPhoto/MyPhotosPage";
+import MyPhotosPage from "../pages/MyPhoto/MyPhotosP";
 
 export const AppRouter = createBrowserRouter([
   {

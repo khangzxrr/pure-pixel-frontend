@@ -50,7 +50,6 @@ const ServerSideItem = ({
 
   const isActive =
     id !== "logo" && location.pathname.slice(1).startsWith(link.slice(1));
-  console.log("isActive", isActive);
 
   return (
     <Link
