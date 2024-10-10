@@ -1,12 +1,13 @@
 import React from "react";
 import UserService from "../../services/Keycloak";
 import { IoEyeSharp } from "react-icons/io5";
+import StorageBar from "./StorageBar";
 
 const PhotoProfile = ({ userData }) => {
   console.log(userData);
 
   return (
-    <div className="flex">
+    <div className="flex justify-between">
       <div className="flex items-center gap-5">
         <div className="w-[120px] h-[120px] overflow-hidden rounded-full">
           <img
@@ -19,7 +20,9 @@ const PhotoProfile = ({ userData }) => {
           <div className="font-bold text-4xl">
             {userData?.name || "Không xác định"}
           </div>
-          <div>{userData?.email || "Không xác định"}</div>
+          <div className="pl-1 font-normal">
+            {userData?.email || "Không xác định"}
+          </div>
           <div className="flex gap-2">
             <div className="px-[12px] py-[4px] bg-[#fff3] rounded-full">
               2 người theo dõi
@@ -29,6 +32,9 @@ const PhotoProfile = ({ userData }) => {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <StorageBar used={35.6} total={100} />
       </div>
     </div>
   );
