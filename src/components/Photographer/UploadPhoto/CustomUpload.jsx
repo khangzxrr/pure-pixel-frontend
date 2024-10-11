@@ -206,7 +206,7 @@ export default function CustomUpload() {
     clearState();
 
     message.success("đã lưu các chỉnh sửa!");
-    navigate("/my-photo/photo/all");
+    navigate("/profile/my-photos");
   };
 
   return (

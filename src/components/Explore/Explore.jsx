@@ -63,7 +63,7 @@ const Explore = () => {
                     </div>
                     <MenuItems
                       transition
-                      className="absolute right-0 z-10 mt-2 w-24 -top-14 origin-top-right divide-y divide-gray-100 
+                      className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-top-right divide-y divide-gray-100 
                       rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition 
                       focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 
                       data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
@@ -74,7 +74,7 @@ const Explore = () => {
                             onClick={handleLogout}
                             className="flex px-4 py-2 text-sm text-[#eee] data-[focus]:bg-[#36393f] "
                           >
-                            Log out
+                            Đăng xuất
                           </div>
                         </MenuItem>
                       </div>
