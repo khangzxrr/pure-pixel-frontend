@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import ComButton from "../../../components/ComButton/ComButton";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,19 +7,24 @@ import ComInput from "./../../../components/ComInput/ComInput";
 import ComSelect from "../../../components/ComInput/ComSelect";
 import { MonyNumber } from "./../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
-import { postData } from "../../../apis/api";
+import {  putData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
 
-export default function CreateUpgrade({ onClose, tableRef }) {
+export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
+  console.log("====================================");
+  console.log(selectedUpgrede);
+  console.log("====================================");
+
+  useEffect(() => {
+    setValue("minOrderMonth", selectedUpgrede.minOrderMonth);
+    setValue("maxPhotoQuota", 123123123);
+  }, [selectedUpgrede]);
 
   const methods = useForm({
     resolver: yupResolver(Upgrade),
-    defaultValues: {
-      name: "",
-      descriptions: [" "],
-    },
+    values: selectedUpgrede,
   });
   const {
     handleSubmit,
@@ -28,11 +33,10 @@ export default function CreateUpgrade({ onClose, tableRef }) {
     watch,
     setValue,
     setError,
-    control,
-    formState: { errors },
     trigger,
+    formState: { errors },
+    control,
   } = methods;
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: "descriptions",
@@ -47,7 +51,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
       (value) => (data.price = value)
     );
     if (change !== null) {
-      postData("/upgrade-package", {
+      putData("/upgrade-package", selectedUpgrede.id,{
         ...data,
         status: "ENABLED",
       })
@@ -55,10 +59,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
           notificationApi("success", "Thành công", "Đã tạo thành công");
           setDisabled(false);
           setTimeout(() => {
-            if (tableRef.current) {
-              // Kiểm tra xem ref đã được gắn chưa
-              tableRef?.current.reloadData();
-            }
+            tableRef()
           }, 100);
           onClose();
         })
@@ -75,15 +76,11 @@ export default function CreateUpgrade({ onClose, tableRef }) {
       setDisabled(true);
     }
   };
-
-  console.log("====================================");
-  console.log(errors.descriptions);
-  console.log("====================================");
   return (
     <div>
       <div className="bg-white">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Tạo gói Nâng cấp
+          Cập nhật gói Nâng cấp
         </h2>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-xl">
@@ -112,6 +109,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                       onChangeValue={(name, value) => {
                         setValue(name, value);
                       }}
+                      value={watch("minOrderMonth")}
                       mode="default"
                       options={[
                         {
@@ -135,8 +133,9 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                 <div className="sm:col-span-1">
                   <div className="mt-2.5">
                     <ComNumber
-                      type={"numbers"}
+                      type="money"
                       money
+                      value={watch("price")}
                       defaultValue={10000}
                       min={10000}
                       label={"Số tiền"}
@@ -150,10 +149,8 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                   <div className="mt-2.5">
                     <ComInput
                       type={"numbers"}
-                      // defaultValue={1000}
-                      // min={11}
-                      label={"Dung lượng upload tối da"}
-                      placeholder={"Vui lòng nhập dung lượng upload tối da"}
+                      label={"maxPhotoQuota"}
+                      placeholder={"Vui lòng nhập maxPhotoQuota"}
                       {...register("maxPhotoQuota")}
                       required
                     />
@@ -220,30 +217,25 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                 ))}
               </div>
 
-              {errors.descriptions?.message && (
-                <p className="text-red-600">{errors.descriptions?.message}</p>
+              {errors.descriptions?.root?.message && (
+                <p className="text-red-600"></p>
               )}
-              {errors.descriptions &&
-                !fields.some((field) => field.value !== "") && (
-                  <p>{errors.descriptions.message}</p>
-                )}
               <div className="sm:col-span-2">
                 <button
                   type="button"
                   onClick={() => append(" ")}
-                  className="mt-4  bg-blackpointer-events-auto rounded-md bg-[#0F296D] px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-[#0F296D] hover:text-white"
+                  className="mt-4 bg-blackpointer-events-auto rounded-md bg-[#0F296D] px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-[#0F296D] hover:text-white"
                 >
                   Thêm Chi Tiết Gói
                 </button>
               </div>
-
               <div className="mt-10">
                 <ComButton
                   htmlType="submit"
                   disabled={disabled}
                   className="block w-full rounded-md bg-[#0F296D] text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0F296D] "
                 >
-                  Tạo mới
+                  Cập nhật
                 </ComButton>
               </div>
             </div>
