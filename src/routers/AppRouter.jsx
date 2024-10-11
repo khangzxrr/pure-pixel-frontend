@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
@@ -53,6 +53,7 @@ import Wallet from "../pages/UserProfile/Wallet";
 import Blog from "./../components/Blog/Blog";
 import UserService from "../services/Keycloak";
 import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
+import AdminLayout from "../layouts/AdminLayout";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -191,6 +192,24 @@ export const AppRouter = createBrowserRouter([
       //   ],
       // },
       {
+        path: "/admin",
+        element: (
+          <AdminLayout>
+            <Outlet />
+          </AdminLayout>
+        ),
+        children: [
+          {
+            path: "/admin/*",
+            element: <p className="w-screen">12312312321</p>,
+          },
+          {
+            path: "/admin/upgrade",
+            element: <Upgrade />,
+          },
+        ],
+      },
+      {
         path: "/profile/:userId",
         element: <UserProfile />,
         children: [
@@ -210,7 +229,6 @@ export const AppRouter = createBrowserRouter([
           { path: "/profile/:userId/packages", element: <Packages /> },
         ],
       },
-
       {
         path: "/photo/:id",
         element: <DetailedPhotoView listImg={[]} />,
