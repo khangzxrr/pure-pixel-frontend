@@ -101,7 +101,7 @@ const useColumnFilters = () => {
       const nestedValue = getNestedValue(record, dataIndex);
       return searchedColumn === dataIndex ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          highlightStyle={{ backgroundColor: "#001aff", padding: 0 }}
           searchWords={[searchText]}
           autoEscape
           textToHighlight={nestedValue ? nestedValue.toString() : ""}
@@ -152,7 +152,7 @@ const useColumnFilters = () => {
       </div>
     ),
     filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? "#de1818" : "#fff" }} />
+      <SearchOutlined style={{ color: filtered ? "#001aff" : "#fff" }} />
     ),
     onFilter: (value, record) => {
       if (!value.length) return true;
@@ -221,7 +221,7 @@ const useColumnFilters = () => {
       </div>
     ),
     filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? "#de1818" : "#fff" }} />
+      <SearchOutlined style={{ color: filtered ? "#001aff" : "#fff" }} />
     ),
     onFilter: (value, record) => {
       if (!value.length) return true;
@@ -332,7 +332,7 @@ const useColumnFilters = () => {
       </div>
     ),
     filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? "#de1818" : "#fff" }} />
+      <SearchOutlined style={{ color: filtered ? "#001aff" : "#fff" }} />
     ),
     onFilter: (value, record) => {
       if (!value.length) return true;
