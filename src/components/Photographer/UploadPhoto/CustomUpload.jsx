@@ -19,12 +19,9 @@ export default function CustomUpload() {
   const {
     addPhoto,
     setSelectedPhotoById,
-
     getPhotoByUid,
     selectedPhoto,
-
     photoArray,
-
     removePhotoByUid,
     toggleWatermark,
     clearState,
@@ -105,6 +102,7 @@ export default function CustomUpload() {
         file,
         title: file.name,
         exif,
+        watermark: true,
       });
       if (!selectedPhoto) {
         setSelectedPhotoById(presignedData.signedUpload.photoId);
@@ -140,6 +138,8 @@ export default function CustomUpload() {
 
   const handleChange = async (info) => {
     console.log(info);
+    console.log("photoArray", photoArray, selectedPhoto);
+
     //skip removed this status
     if (info.file.status === "removed") {
       return;

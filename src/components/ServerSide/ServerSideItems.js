@@ -1,5 +1,5 @@
 import { MdHomeFilled } from "react-icons/md";
-import { FaCompass, FaBell } from "react-icons/fa6";
+import { FaCompass, FaBell, FaMoneyBillTransfer } from "react-icons/fa6";
 import { FiUpload } from "react-icons/fi";
 import { IoMailSharp, IoPersonSharp } from "react-icons/io5";
 

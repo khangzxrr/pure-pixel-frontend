@@ -49,6 +49,7 @@ import ProfilePage from "../pages/DetailUser/DetailUser";
 import BlogList from "../pages/Blog/BlogList";
 import DetailedBlog from "./../pages/Blog/DetailedBlog";
 import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
+import Wallet from "../pages/UserProfile/Wallet";
 import Blog from "./../components/Blog/Blog";
 import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
 import MyPhotosPage from "../pages/MyPhoto/MyPhotosP";
@@ -125,9 +126,14 @@ export const AppRouter = createBrowserRouter([
                 element: <UserProfile />,
               },
               {
+
                 path: "my-photos",
                 element: <MyPhotosPage />,
-              },
+               },
+               {
+                path: "wallet",
+                element: <Wallet />,
+               },
             ],
           },
           {
