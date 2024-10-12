@@ -28,6 +28,7 @@ const MyPhotoP = () => {
       setPage(pageNumber);
     }
   };
+  // console.log(data.objects);
 
   return (
     <>

@@ -1,11 +1,15 @@
 import axios from "axios";
 import http from "./../configs/Http";
 
-const getPublicPhotos = async (limit, page) => {
+const getPublicPhotos = async (limit, page, categoryName) => {
   //go 1 chu no nhay chung 1000 cai suggest
   //AI SUCKK
-  const response = await http.get(`/photo/public?limit=${limit}&page=${page}`);
+  //Nếu categoryName không tồn tại hoặc là undefined, không thêm nó vào URL
+  const url = categoryName
+    ? `/photo/public?limit=${limit}&page=${page}&categoryName=${categoryName}`
+    : `/photo/public?limit=${limit}&page=${page}`;
 
+  const response = await http.get(url);
   return response.data;
 };
 

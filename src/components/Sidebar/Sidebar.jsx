@@ -85,7 +85,7 @@ const Sidebar = ({
             <div className="text-[15px]">{item.title}</div>
           </Link>
         ))}
-        {trendItems && (
+        {/* {trendItems && (
           <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1">
             <div className="text-[12px]">THỊNH HÀNH HIỆN TẠI</div>
             <div className="flex flex-col gap-2">
@@ -103,7 +103,7 @@ const Sidebar = ({
               ))}
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
 import { useKeycloak } from "@react-keycloak/web";
+import UseCategoryStore from "../../../states/UseCategoryStore";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
@@ -16,17 +17,25 @@ const InspirationPhoto = () => {
   const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
   const [selectedImage, setSelectedImage] = useState(null);
+  const selectedPhotoCategory = UseCategoryStore(
+    (state) => state.selectedPhotoCategory
+  );
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
-    const response = await PhotoApi.getPublicPhotos(validLimit, validPage);
+    const categoryName = selectedPhotoCategory.name;
+    const response = await PhotoApi.getPublicPhotos(
+      validLimit,
+      validPage,
+      categoryName
+    );
     return response;
   };
 
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["public-photos"],
+      queryKey: ["public-photos", selectedPhotoCategory],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {
         // Số trang đã fetch
