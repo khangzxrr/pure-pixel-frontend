@@ -10,6 +10,7 @@ import { FiShare2 } from "react-icons/fi";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
 import { useKeycloak } from "@react-keycloak/web";
 import UseCategoryStore from "../../../states/UseCategoryStore";
+import InsPhotoFilter from "./InsPhotoFilter";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
@@ -20,22 +21,35 @@ const InspirationPhoto = () => {
   const selectedPhotoCategory = UseCategoryStore(
     (state) => state.selectedPhotoCategory
   );
+  const filterByPhotoDate = UseCategoryStore(
+    (state) => state.filterByPhotoDate
+  );
+  const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
     const categoryName = selectedPhotoCategory.name;
+    const orderByCreatedAt = filterByPhotoDate.param;
+    const orderByUpVote = filterByUpVote.param;
     const response = await PhotoApi.getPublicPhotos(
       validLimit,
       validPage,
-      categoryName
+      categoryName,
+      orderByCreatedAt,
+      orderByUpVote
     );
     return response;
   };
 
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["public-photos", selectedPhotoCategory],
+      queryKey: [
+        "public-photos",
+        selectedPhotoCategory,
+        filterByPhotoDate,
+        filterByUpVote,
+      ],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {
         // Số trang đã fetch
@@ -88,6 +102,9 @@ const InspirationPhoto = () => {
       )}
 
       <div>
+        <div className="flex mx-2 my-2 items-center ">
+          Sắp xếp theo tiêu chí: <InsPhotoFilter />
+        </div>
         <InfiniteScroll
           dataLength={photoList.length}
           next={fetchNextPage}
