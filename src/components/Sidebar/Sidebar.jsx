@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import UseSidebarStore from "../../states/UseSidebarStore";
+import PhotoTagsTrend from "../Explore/PhotoTagsTrend";
 const Sidebar = ({
   sideItems,
   trendItems,
@@ -85,25 +86,26 @@ const Sidebar = ({
             <div className="text-[15px]">{item.title}</div>
           </Link>
         ))}
-        {/* {trendItems && (
+        {trendItems && (
           <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1">
-            <div className="text-[12px]">THỊNH HÀNH HIỆN TẠI</div>
+            <div className="text-[12px]">TOP 5 THẺ THỊNH HÀNH HIỆN TẠI</div>
             <div className="flex flex-col gap-2">
-              {trendItems.map((item) => (
+              {/* {trendItems.map((item) => (
                 <Link
                   key={item.id}
                   to={"#"}
                   onClick={() => handleClick(item.id, item.title)}
-                  className={`flex gap-2 items-center hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md px-2 py-[2px] transition-colors duration-200 
+                  className={`flex gap-2 items-center hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md px-2 py-[2px] transition-colors duration-200
                     ${activeLink === item.id ? "bg-gray-500 text-[#eee]" : ""}`}
                 >
                   <div className="text-xl">#</div>
                   <div>{item.title}</div>
                 </Link>
-              ))}
+              ))} */}
+              <PhotoTagsTrend />
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

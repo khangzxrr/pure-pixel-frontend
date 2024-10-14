@@ -151,7 +151,6 @@ const PhotoApi = {
   getPhotoById,
   getPhotoComments,
   commentPhoto,
-
   getAvailableResolutionsByPhotoId,
   sharePhotoById,
   getPhotoTags,
