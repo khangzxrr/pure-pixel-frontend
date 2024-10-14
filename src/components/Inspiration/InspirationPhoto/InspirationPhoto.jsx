@@ -18,13 +18,17 @@ const InspirationPhoto = () => {
   const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
   const [selectedImage, setSelectedImage] = useState(null);
+
   const selectedPhotoCategory = UseCategoryStore(
     (state) => state.selectedPhotoCategory
   );
   const filterByPhotoDate = UseCategoryStore(
     (state) => state.filterByPhotoDate
   );
+  const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
+  const searchResult = UseCategoryStore((state) => state.searchResult);
+  console.log("searchResult Inspiration", searchResult);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
@@ -32,12 +36,18 @@ const InspirationPhoto = () => {
     const categoryName = selectedPhotoCategory.name;
     const orderByCreatedAt = filterByPhotoDate.param;
     const orderByUpVote = filterByUpVote.param;
+    const watermark = isWatermarkChecked;
+    const selling = isForSaleChecked;
+    const photographerName = searchResult;
     const response = await PhotoApi.getPublicPhotos(
       validLimit,
       validPage,
       categoryName,
       orderByCreatedAt,
-      orderByUpVote
+      orderByUpVote,
+      watermark,
+      selling,
+      photographerName
     );
     return response;
   };
@@ -49,6 +59,9 @@ const InspirationPhoto = () => {
         selectedPhotoCategory,
         filterByPhotoDate,
         filterByUpVote,
+        isWatermarkChecked,
+        isForSaleChecked,
+        searchResult,
       ],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {
@@ -102,8 +115,8 @@ const InspirationPhoto = () => {
       )}
 
       <div>
-        <div className="flex mx-2 my-2 items-center ">
-          Sắp xếp theo tiêu chí: <InsPhotoFilter />
+        <div className="font-normal flex mx-3 my-2 items-center flex-col sm:flex-row">
+          Bộ lọc ảnh theo tiêu chí: <InsPhotoFilter />
         </div>
         <InfiniteScroll
           dataLength={photoList.length}

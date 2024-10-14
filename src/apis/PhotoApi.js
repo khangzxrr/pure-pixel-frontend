@@ -17,7 +17,10 @@ const getPublicPhotos = async (
   page,
   categoryName,
   orderByCreatedAt,
-  orderByUpvote
+  orderByUpvote,
+  watermark,
+  selling,
+  photographerName
 ) => {
   // Tạo một đối tượng chứa các tham số
   const params = {
@@ -35,7 +38,15 @@ const getPublicPhotos = async (
   if (orderByUpvote) {
     params.orderByUpvote = orderByUpvote;
   }
-
+  if (watermark) {
+    params.watermark = watermark;
+  }
+  if (selling) {
+    params.selling = selling;
+  }
+  if (photographerName) {
+    params.photographerName = photographerName;
+  }
   // Tạo chuỗi truy vấn từ đối tượng params
   const queryString = new URLSearchParams(params).toString();
   const url = `/photo/public?${queryString}`;
@@ -52,6 +63,10 @@ const getPresignedUploadUrls = async ({ filename }) => {
   return response.data;
 };
 
+const getPhotoTags = async ({ top }) => {
+  const response = await http.get(`/photo-tag?top=${top}`);
+  return response.data;
+};
 const uploadPhotoUsingPresignedUrl = async (url, file, options) => {
   //FUCK AXIOS
   //waste me 2 hour just for a fucking upload feature???
@@ -139,6 +154,7 @@ const PhotoApi = {
 
   getAvailableResolutionsByPhotoId,
   sharePhotoById,
+  getPhotoTags,
 };
 
 export default PhotoApi;
