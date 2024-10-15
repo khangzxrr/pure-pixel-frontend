@@ -59,14 +59,20 @@ const navigation = [
     current: true,
   },
   {
+    name: "Báo cáo ",
+    href: "/admin/report",
+    icon: FolderIcon,
+    current: true,
+  },
+  {
     name: "Photo",
     href: "/admin/photo",
     icon: CalendarIcon,
     current: false,
   },
   {
-    name: "Album",
-    href: "/admin/album",
+    name: "Blog ",
+    href: "/admin/blog",
     icon: DocumentDuplicateIcon,
     current: false,
   },
