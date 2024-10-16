@@ -35,17 +35,28 @@ const InsPhotoFilter = () => {
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
   const filterByDate = [
     {
-      id: "f1",
+      id: "d1",
+      name: "Mới nhất",
+      param: "desc",
+    },
+    {
+      id: "d2",
+      name: "Cũ nhất",
+      param: "asc",
+    },
+  ];
+  const filterByVote = [
+    {
+      id: "v1",
       name: "Tăng dần",
       param: "asc",
     },
     {
-      id: "f2",
+      id: "v2",
       name: "Giảm dần",
       param: "desc",
     },
   ];
-
   const handleFilterByPhotoDate = (name, param) => {
     setFilterByPhotoDate(name, param);
   };
@@ -68,7 +79,7 @@ const InsPhotoFilter = () => {
 
           <MenuItems
             transition
-            className="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-[#2f3136] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+            className="absolute right-0 z-10 mt-2 w-full origin-top rounded-md bg-[#2f3136] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
           >
             <div className="py-1">
               {filterByDate.map((item) => (
@@ -109,10 +120,10 @@ const InsPhotoFilter = () => {
 
           <MenuItems
             transition
-            className="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-[#2f3136] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+            className="absolute right-0 z-10 mt-2 w-full origin-top rounded-md bg-[#2f3136] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
           >
             <div className="py-1">
-              {filterByDate.map((item) => (
+              {filterByVote.map((item) => (
                 <MenuItem className="hover:cursor-pointer">
                   <div
                     onClick={() => handleFilterByUpVote(item.name, item.param)}
