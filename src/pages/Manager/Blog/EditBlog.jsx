@@ -1,26 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import ComButton from "../../../components/ComButton/ComButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ComNumber from "./../../../components/ComInput/ComNumber";
-import ComInput from "./../../../components/ComInput/ComInput";
+import ComNumber from "../../../components/ComInput/ComNumber";
+import ComInput from "../../../components/ComInput/ComInput";
 import ComSelect from "../../../components/ComInput/ComSelect";
-import { MonyNumber } from "./../../../components/MonyNumber/MonyNumber";
+import { MonyNumber } from "../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
-import { postData } from "../../../apis/api";
-import ComTextArea from "./../../../components/ComInput/ComTextArea";
+import {  putData } from "../../../apis/api";
 import { BlogYup } from "../../../yup/Blog";
+import ComTextArea from "../../../components/ComInput/ComTextArea";
 
-export default function CreateBlog({ onClose, tableRef }) {
+export default function EditBlog({ selectedUpgrede, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
+  console.log("====================================");
+  console.log(selectedUpgrede);
+  console.log("====================================");
+
+  useEffect(() => {
+    setValue("minOrderMonth", selectedUpgrede.minOrderMonth);
+    setValue("maxPhotoQuota", 123123123);
+  }, [selectedUpgrede]);
 
   const methods = useForm({
     resolver: yupResolver(BlogYup),
-    defaultValues: {
-      name: "",
-      content: "",
-    },
+    values: selectedUpgrede,
   });
   const {
     handleSubmit,
@@ -29,43 +34,43 @@ export default function CreateBlog({ onClose, tableRef }) {
     watch,
     setValue,
     setError,
-    control,
-    formState: { errors },
     trigger,
+    formState: { errors },
+    control,
   } = methods;
-
-
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "descriptions",
+  });
   const onSubmit = (data) => {
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
-    postData("/blog", {
-      ...data,
-      status: "ENABLED",
+  putData("/blog", selectedUpgrede.id, {
+    ...data,
+    status: "ENABLED",
+  })
+    .then((e) => {
+      notificationApi("success", "Thành công", "Đã tạo thành công");
+      setDisabled(false);
+      setTimeout(() => {
+        tableRef();
+      }, 100);
+      onClose();
     })
-      .then((e) => {
-        notificationApi("success", "Thành công", "Đã tạo thành công");
-        setDisabled(false);
-        setTimeout(() => {
-          if (tableRef.current) {
-            // Kiểm tra xem ref đã được gắn chưa
-            tableRef?.current.reloadData();
-          }
-        }, 100);
-        onClose();
-      })
-      .catch((error) => {
-        console.log(error);
-        setDisabled(false);
-     
-        notificationApi("error", "Không thành công", "Vui lòng thử lại");
-      });
+    .catch((error) => {
+      console.log(error);
+      setDisabled(false);
+      if (error?.data?.statusCode === 400) {
+        setError("name", { message: "Tên gói này đã tồn tại" });
+        setFocus("name");
+      }
+      notificationApi("error", "Không thành công", "Vui lòng thử lại");
+    });
   };
-
   return (
     <div>
       <div className="bg-white">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Tạo blog</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Cập nhật blog
+        </h2>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-xl">
             <div className="overflow-y-auto p-4">

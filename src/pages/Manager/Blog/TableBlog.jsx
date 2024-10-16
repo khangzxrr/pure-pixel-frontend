@@ -15,7 +15,7 @@ import { useNotification } from "../../../Notification/Notification";
 import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
 import ComModal from "../../../components/ComModal/ComModal";
 import DetailUpgrede from "./DetailUpgrede";
-import EditUpgrede from './EditUpgrede';
+import EditUpgrede from './EditBlog';
   function formatCurrency(number) {
     // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
     if (typeof number === "number") {
@@ -52,10 +52,28 @@ export const TableBlog = forwardRef((props, ref) => {
     },
 
     {
+      title: "Hình ảnh",
+      dataIndex: "thumbnail",
+      key: "thumbnail",
+      width: 150,
+      render: (_, record) => (
+        <>
+          <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
+            <Image
+              wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
+              src={record?.thumbnail}
+              alt={record?.thumbnail}
+              preview={{ mask: "Xem ảnh" }}
+            />
+          </div>
+        </>
+      ),
+    },
+    {
       title: "Nội dung",
       dataIndex: "content",
       key: "content",
-      width: 300,
+      width: 150,
       ...getColumnSearchProps("content", "Nội dung"),
     },
     {
@@ -77,7 +95,7 @@ export const TableBlog = forwardRef((props, ref) => {
             }}
             showModalDelete={() => {
               ComConfirmDeleteModal(
-                `/upgrade-package`,
+                `/blog`,
                 record.id,
                 `Bạn có chắc chắn muốn xóa?`,
                 reloadData,
@@ -122,6 +140,7 @@ export const TableBlog = forwardRef((props, ref) => {
     <div>
       <ComTable
         y={"50vh"}
+        x={1020}
         columns={columns}
         dataSource={data}
         loading={table.loading}
