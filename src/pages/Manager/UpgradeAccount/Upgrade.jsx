@@ -1,13 +1,13 @@
-import React from "react";
-import TableUpgrade from "./TableUpgrade";
+import React, { useRef } from "react";
+import { TableUpgrade } from "./TableUpgrade";
 import { useModalState } from "../../../hooks/useModalState";
-import ComModal from './../../../components/ComModal/ComModal';
+import ComModal from "./../../../components/ComModal/ComModal";
 import ComButton from "../../../components/ComButton/ComButton";
 import CreateUpgrade from "./CreateUpgrade";
 
 export default function Upgrade() {
-    const modal = useModalState();
-    
+  const modal = useModalState();
+  const tableRef = useRef(null);
   return (
     <>
       <div className="flex justify-end pb-2">
@@ -15,13 +15,13 @@ export default function Upgrade() {
           <ComButton onClick={modal.handleOpen}>+ Tạo mới gói</ComButton>
         </div>
       </div>
-      <TableUpgrade />
+      <TableUpgrade ref={tableRef} />
       <ComModal
         width={800}
         isOpen={modal?.isModalOpen}
         onClose={modal?.handleClose}
       >
-        <CreateUpgrade/>
+        <CreateUpgrade onClose={modal?.handleClose} tableRef={tableRef} />
       </ComModal>
     </>
   );

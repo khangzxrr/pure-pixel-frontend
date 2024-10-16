@@ -19,12 +19,9 @@ export default function CustomUpload() {
   const {
     addPhoto,
     setSelectedPhotoById,
-
     getPhotoByUid,
     selectedPhoto,
-
     photoArray,
-
     removePhotoByUid,
     toggleWatermark,
     clearState,
@@ -57,7 +54,7 @@ export default function CustomUpload() {
     switch (e.response.data.message) {
       case "RunOutPhotoQuotaException":
         message.error(
-          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
         );
         break;
 
@@ -105,6 +102,7 @@ export default function CustomUpload() {
         file,
         title: file.name,
         exif,
+        watermark: true,
       });
       if (!selectedPhoto) {
         setSelectedPhotoById(presignedData.signedUpload.photoId);
@@ -140,6 +138,8 @@ export default function CustomUpload() {
 
   const handleChange = async (info) => {
     console.log(info);
+    console.log("photoArray", photoArray, selectedPhoto);
+
     //skip removed this status
     if (info.file.status === "removed") {
       return;
@@ -149,7 +149,7 @@ export default function CustomUpload() {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
           message.error(
-            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
           );
           break;
 
@@ -206,7 +206,7 @@ export default function CustomUpload() {
     clearState();
 
     message.success("đã lưu các chỉnh sửa!");
-    navigate("/my-photo/photo/all");
+    navigate("/profile/my-photos");
   };
 
   return (
@@ -215,7 +215,9 @@ export default function CustomUpload() {
         {photoArray.length > 0 && (
           <div className="w-5/6 bg-[#36393f]">
             <div
-              className={`w-full ${photoArray.length > 1 ? "visible" : "invisible"}`}
+              className={`w-full ${
+                photoArray.length > 1 ? "visible" : "invisible"
+              }`}
             >
               <Tooltip placement="rightTop" color="geekblue">
                 <div className="flex items-center pl-3">
