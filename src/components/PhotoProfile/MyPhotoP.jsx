@@ -4,16 +4,46 @@ import PhotographerApi from "../../apis/PhotographerApi";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
 import { useNavigate } from "react-router-dom";
+import MyPhotoFilter from "./MyPhotoFilter";
+import UseMyPhotoFilter from "../../states/UseMyPhotoFilter";
 
 const MyPhotoP = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 12;
+  const itemsPerPage = 10;
 
+  const filterByPhotoDate = UseMyPhotoFilter(
+    (state) => state.filterByPhotoDate
+  );
+  const searchResult = UseMyPhotoFilter((state) => state.searchResult);
+  const searchPhoto = searchResult;
+  const orderByCreatedAt = filterByPhotoDate.param;
+  const filterByUpVote = UseMyPhotoFilter((state) => state.filterByUpVote);
+  const orderByUpVote = filterByUpVote.param;
+  const { isWatermarkChecked, isForSaleChecked } = UseMyPhotoFilter();
+  const watermark = isWatermarkChecked;
+  const selling = isForSaleChecked;
   const { data, isFetching, isError, error } = useQuery({
-    queryKey: ["my-photo", page],
-    queryFn: () => PhotographerApi.getMyPhotos(itemsPerPage, page - 1),
+    queryKey: [
+      "my-photo",
+      page,
+      filterByPhotoDate,
+      filterByUpVote,
+      isWatermarkChecked,
+      isForSaleChecked,
+      searchResult,
+    ],
+    queryFn: () =>
+      PhotographerApi.getMyPhotos(
+        itemsPerPage,
+        page - 1,
+        orderByCreatedAt,
+        orderByUpVote,
+        watermark,
+        selling,
+        searchPhoto
+      ),
     keepPreviousData: true,
   });
 
@@ -42,7 +72,9 @@ const MyPhotoP = () => {
           listImg={data.objects}
         />
       )}
-
+      <div className="my-2">
+        <MyPhotoFilter />
+      </div>
       <div className="flex flex-col min-h-screen py-2 bg-[#2f3136]">
         {/* Pagination Top */}
         <div className="flex justify-center gap-2 mx-5 my-2">
@@ -64,7 +96,7 @@ const MyPhotoP = () => {
         </div>
 
         {/* Photos Display */}
-        <div className="flex mx-2 gap-1 justify-center 2xl:justify-start flex-wrap hover:cursor-pointer">
+        <div className="grid grid-cols-4 gap-2 mx-2">
           {isError && (
             <div className="text-red-500">{JSON.stringify(error)}</div>
           )}
@@ -73,26 +105,24 @@ const MyPhotoP = () => {
               <LoadingSpinner />
             </div>
           ) : data?.objects.length > 0 ? (
-            data.objects
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map((photo) => (
-                <div key={photo.id} className="relative group">
-                  <div className="w-[380px] h-[320px] overflow-hidden">
-                    <img
-                      className="w-full h-full object-cover"
-                      src={photo.signedUrl.thumbnail}
-                      alt={photo.title || "Ảnh"}
-                      onClick={() => handleOnClick(photo.id)}
-                    />
-                  </div>
-                  <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-md">
-                    <div className="flex justify-between px-1">
-                      <div>{photo.title || "Không xác định"}</div>
-                      <div>{photo.category.name || "Không xác định"}</div>
-                    </div>
+            data.objects.map((photo) => (
+              <div key={photo.id} className="relative group">
+                <div className="w-full h-[320px] overflow-hidden">
+                  <img
+                    className="w-full h-full object-cover"
+                    src={photo.signedUrl.thumbnail}
+                    alt={photo.title || "Ảnh"}
+                    onClick={() => handleOnClick(photo.id)}
+                  />
+                </div>
+                <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-md">
+                  <div className="flex justify-between px-1">
+                    <div>{photo.title || "Không xác định"}</div>
+                    <div>{photo.category.name || "Không xác định"}</div>
                   </div>
                 </div>
-              ))
+              </div>
+            ))
           ) : (
             <div className="text-white text-center w-full">
               Không có ảnh để hiển thị

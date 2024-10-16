@@ -48,7 +48,6 @@ code {
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-
 .ant-table-thead .ant-table-cell {
   background-color: #32353b !important; /* Thay đổi màu nền header */
   color: #ffffff !important; /* Thay đổi màu chữ header */
@@ -56,7 +55,7 @@ code {
 
 .anticon-filter {
   background-color: #32353b !important; /* Thay đổi màu nền header */
-  color: #ffffff  !important;
+  color: #ffffff !important;
 }
 .ant-table-column-sorter {
   color: #ffffff !important;
@@ -65,20 +64,18 @@ code {
 .active .anticon-filter {
   color: #001aff !important;
 }
-.ant-pagination-item-link{
-  color: #ffffff  !important;
+.ant-pagination-item-link {
+  color: #ffffff !important;
 }
 
 .ant-table-cell {
-  background-color: #36393f !important; 
-  color: #eee  !important;
+  background-color: #36393f !important;
+  color: #eee !important;
   font-weight: 400;
-
 }
 
-.ant-table-container{
-    border-bottom:1px solid #f0f0f000 !important;
-    border-top: 1px solid #f0f0f000 !important;
-    border-inline-start: 1px solid #f0f0f000;
-
+.ant-table-container {
+  border-bottom: 1px solid #f0f0f000 !important;
+  border-top: 1px solid #f0f0f000 !important;
+  border-inline-start: 1px solid #f0f0f000;
 }

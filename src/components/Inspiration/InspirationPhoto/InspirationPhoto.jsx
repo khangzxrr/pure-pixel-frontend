@@ -125,7 +125,7 @@ const InspirationPhoto = () => {
 
       <div>
         <div className="font-normal flex mx-3 my-2 items-center flex-col sm:flex-row">
-          Bộ lọc ảnh theo tiêu chí: <InsPhotoFilter />
+          Bộ lọc ảnh: <InsPhotoFilter />
         </div>
         <div>
           {isLoading && (

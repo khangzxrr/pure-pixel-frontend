@@ -66,7 +66,10 @@ const InspirationNav = ({
       <div className="flex items-center gap-2">
         <div className="flex items-center bg-[#202225] rounded-lg">
           <div>
-            <Menu as="div" className="relative inline-block text-left">
+            <Menu
+              as="div"
+              className="relative min-w-[135px] inline-block text-left "
+            >
               <div>
                 <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-l-md  px-3 py-2 text-sm font-semibold text-[#eee] bg-[#4e535e]">
                   {searchCategory.name || "Tìm theo"}
@@ -104,7 +107,7 @@ const InspirationNav = ({
             onKeyDown={handleKeyDown}
             type="text"
             placeholder={`Tìm kiếm ảnh theo tên ${searchCategory.quote}...`}
-            className="font-normal text-sm px-2 py-2 w-[300px] pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
+            className="font-normal text-sm px-2 py-2 min-w-[270px] pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
           />
           <div className="flex items-center px-3">
             <button className="" onClick={handleSearch}>
