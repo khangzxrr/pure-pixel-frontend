@@ -7,22 +7,15 @@ import ComInput from "../../../components/ComInput/ComInput";
 import ComSelect from "../../../components/ComInput/ComSelect";
 import { MonyNumber } from "../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
-import {  putData } from "../../../apis/api";
+import { patchData, putData } from "../../../apis/api";
 import { BlogYup } from "../../../yup/Blog";
 import ComTextArea from "../../../components/ComInput/ComTextArea";
+import ComUpImgOne from "../../../components/ComUpImg/ComUpImgOne";
 
 export default function EditBlog({ selectedUpgrede, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
-  console.log("====================================");
-  console.log(selectedUpgrede);
-  console.log("====================================");
-
-  useEffect(() => {
-    setValue("minOrderMonth", selectedUpgrede.minOrderMonth);
-    setValue("maxPhotoQuota", 123123123);
-  }, [selectedUpgrede]);
-
+  const [image, setImages] = useState(null);
   const methods = useForm({
     resolver: yupResolver(BlogYup),
     values: selectedUpgrede,
@@ -42,28 +35,61 @@ export default function EditBlog({ selectedUpgrede, onClose, tableRef }) {
     control,
     name: "descriptions",
   });
+
+  const onChange = (data) => {
+    const selectedImages = data;
+    console.log(selectedImages);
+    setImages(selectedImages);
+  };
+
   const onSubmit = (data) => {
-  putData("/blog", selectedUpgrede.id, {
-    ...data,
-    status: "ENABLED",
-  })
-    .then((e) => {
-      notificationApi("success", "Thành công", "Đã tạo thành công");
-      setDisabled(false);
-      setTimeout(() => {
-        tableRef();
-      }, 100);
-      onClose();
-    })
-    .catch((error) => {
-      console.log(error);
-      setDisabled(false);
-      if (error?.data?.statusCode === 400) {
-        setError("name", { message: "Tên gói này đã tồn tại" });
-        setFocus("name");
-      }
-      notificationApi("error", "Không thành công", "Vui lòng thử lại");
-    });
+    console.log("====================================");
+    console.log(data);
+    console.log("====================================");
+    setDisabled(true);
+    if (!image) {
+      patchData("/blog", selectedUpgrede.id, {
+        title: data?.title,
+        content: data?.content,
+        status: data?.status,
+      })
+        .then((e) => {
+          notificationApi("success", "Thành công", "Đã cập nhật");
+          setDisabled(false);
+          setTimeout(() => {
+            tableRef();
+          }, 100);
+          onClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          setDisabled(false);
+
+          notificationApi("error", "Không thành công", "Vui lòng thử lại");
+        });
+      return;
+    } else {
+      const formData = new FormData();
+      formData.append("thumbnailFile", image);
+      formData.append("title", data.title);
+      formData.append("content", data.content);
+      formData.append("status", data.status);
+      putData("/blog", selectedUpgrede.id, formData)
+        .then((e) => {
+          notificationApi("success", "Thành công", "Đã cập nhật");
+          setDisabled(false);
+          setTimeout(() => {
+            tableRef();
+          }, 100);
+          onClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          setDisabled(false);
+
+          notificationApi("error", "Không thành công", "Vui lòng thử lại");
+        });
+    }
   };
   return (
     <div>
@@ -81,7 +107,7 @@ export default function EditBlog({ selectedUpgrede, onClose, tableRef }) {
                       type="text"
                       label={"Tên bài viết"}
                       placeholder={"Tên bài viết"}
-                      {...register("name")}
+                      {...register("title")}
                       required
                     />
                   </div>
@@ -99,7 +125,15 @@ export default function EditBlog({ selectedUpgrede, onClose, tableRef }) {
                   </div>
                 </div>
               </div>
-
+              <div className="sm:col-span-2">
+                <ComUpImgOne
+                  onChange={onChange}
+                  label={"Hình ảnh Blog"}
+                  error={image ? "" : "Vui lòng chọn hình ảnh"}
+                  required
+                  imgUrl={selectedUpgrede?.thumbnail}
+                />
+              </div>
               <div className="mt-10">
                 <ComButton
                   htmlType="submit"

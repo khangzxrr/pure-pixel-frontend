@@ -1,63 +1,75 @@
 import React, { useState } from "react";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import ComButton from "../../../components/ComButton/ComButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ComNumber from "./../../../components/ComInput/ComNumber";
 import ComInput from "./../../../components/ComInput/ComInput";
-import ComSelect from "../../../components/ComInput/ComSelect";
-import { MonyNumber } from "./../../../components/MonyNumber/MonyNumber";
+import ComTextArea from "./../../../components/ComInput/ComTextArea";
+import ComUpImgOne from "../../../components/ComUpImg/ComUpImgOne";
 import { useNotification } from "../../../Notification/Notification";
 import { postData } from "../../../apis/api";
-import ComTextArea from "./../../../components/ComInput/ComTextArea";
 import { BlogYup } from "../../../yup/Blog";
 
 export default function CreateBlog({ onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
+  const [image, setImages] = useState(null);
 
   const methods = useForm({
     resolver: yupResolver(BlogYup),
     defaultValues: {
-      name: "",
+      title: "",
       content: "",
     },
   });
+
   const {
     handleSubmit,
     register,
-    setFocus,
-    watch,
-    setValue,
-    setError,
-    control,
     formState: { errors },
-    trigger,
   } = methods;
+  console.log("====================================");
+  console.log(image);
+  console.log("====================================");
+  // Hàm thay đổi hình ảnh
+  const onChange = (data) => {
+    const selectedImages = data;
+    console.log(selectedImages);
+    setImages(selectedImages);
+  };
 
-
+  // Hàm submit form
   const onSubmit = (data) => {
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
-    postData("/blog", {
-      ...data,
-      status: "ENABLED",
-    })
-      .then((e) => {
+    // Kiểm tra nếu chưa chọn hình ảnh
+    if (!image) {
+      notificationApi(
+        "error",
+        "Hình ảnh không hợp lệ",
+        "Vui lòng chọn hình ảnh."
+      );
+      return;
+    }
+
+    setDisabled(true);
+    const formData = new FormData();
+    formData.append("thumbnailFile", image);
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+    formData.append("status", "ENABLED");
+    postData("/blog", formData)
+      .then((response) => {
         notificationApi("success", "Thành công", "Đã tạo thành công");
         setDisabled(false);
         setTimeout(() => {
           if (tableRef.current) {
-            // Kiểm tra xem ref đã được gắn chưa
-            tableRef?.current.reloadData();
+            tableRef.current.reloadData();
           }
         }, 100);
         onClose();
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         setDisabled(false);
-     
         notificationApi("error", "Không thành công", "Vui lòng thử lại");
       });
   };
@@ -76,8 +88,9 @@ export default function CreateBlog({ onClose, tableRef }) {
                       type="text"
                       label={"Tên bài viết"}
                       placeholder={"Tên bài viết"}
-                      {...register("name")}
+                      error={errors.title?.message}
                       required
+                      {...register("title")}
                     />
                   </div>
                 </div>
@@ -85,13 +98,22 @@ export default function CreateBlog({ onClose, tableRef }) {
                 <div className="sm:col-span-2">
                   <div className="mt-2.5">
                     <ComTextArea
-                      label={"Nội dung bài viết "}
-                      placeholder={"Vui lòng nhập Nội dung bài viết "}
+                      label={"Nội dung bài viết"}
+                      placeholder={"Vui lòng nhập nội dung bài viết"}
                       {...register("content")}
                       rows={5}
+                      error={errors.content?.message}
                       required
                     />
                   </div>
+                </div>
+                <div className="sm:col-span-2">
+                  <ComUpImgOne
+                    onChange={onChange}
+                    label={"Hình ảnh Blog"}
+                    error={image ? "" : "Vui lòng chọn hình ảnh"}
+                    required
+                  />
                 </div>
               </div>
 
@@ -99,9 +121,11 @@ export default function CreateBlog({ onClose, tableRef }) {
                 <ComButton
                   htmlType="submit"
                   disabled={disabled}
-                  className="block w-full rounded-md bg-[#0F296D] text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0F296D] "
+                  className={`block w-full rounded-md bg-[#0F296D] text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0F296D] ${
+                    disabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
-                  Tạo mới
+                  {disabled ? "Đang tạo..." : "Tạo mới"}
                 </ComButton>
               </div>
             </div>

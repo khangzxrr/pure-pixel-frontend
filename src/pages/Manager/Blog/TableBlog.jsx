@@ -43,19 +43,19 @@ export const TableBlog = forwardRef((props, ref) => {
   const columns = [
     {
       title: "Tên bài viết",
-      width: 150,
+      width: 100,
       fixed: "left",
-      dataIndex: "name",
-      key: "name",
-      sorter: (a, b) => a?.name?.localeCompare(b?.name),
-      ...getColumnSearchProps("name", "Tên bài viết"),
+      dataIndex: "title",
+      key: "title",
+      sorter: (a, b) => a?.title?.localeCompare(b?.title),
+      ...getColumnSearchProps("title", "Tên bài viết"),
     },
 
     {
       title: "Hình ảnh",
       dataIndex: "thumbnail",
       key: "thumbnail",
-      width: 150,
+      width: 50,
       render: (_, record) => (
         <>
           <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
@@ -104,14 +104,14 @@ export const TableBlog = forwardRef((props, ref) => {
               );
             }}
             // extraMenuItems={extraMenuItems}
-            // excludeDefaultItems={["details"]}
+            excludeDefaultItems={["details"]}
           />
         </div>
       ),
     },
   ];
   const notificationSuccess = () => {
-    notificationApi("success", "thành công", "Đã thành công");
+    notificationApi("success", "Thành công", "Đã xóa blog");
   };
   const notificationError = () => {
     notificationApi("error", "Lỗi", "Lỗi");
@@ -121,7 +121,7 @@ export const TableBlog = forwardRef((props, ref) => {
   }));
   const reloadData = () => {
     table.handleOpenLoading();
-    getData("/blog?limit=9999&page=0")
+    getData("/blog?limit=9999&page=0&orderByCreatedAt=desc")
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");
