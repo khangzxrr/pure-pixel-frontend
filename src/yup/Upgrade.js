@@ -14,14 +14,6 @@ export const Upgrade = yup.object({
         .number()
         .typeError("Vui lòng chọn thời hạn")
         .required("Vui lòng chọn thời hạn"),
-    maxBookingPhotoQuota: yup
-        .number()
-        .typeError("Vui lòng chọn thời hạn")
-        .required("Vui lòng chọn thời hạn"),
-    maxBookingVideoQuota: yup
-        .number()
-        .typeError("Vui lòng chọn thời hạn")
-        .required("Vui lòng chọn thời hạn"),
     price: yup
         .string().trim()
         .typeError("Vui lòng nhập giá tiền")
