@@ -426,7 +426,7 @@ export default function AdminLayout({ children }) {
             </div>
           </Affix>
 
-          <main className="py-2  bg-[#43474e] h-screen">
+          <main className="py-2  bg-[#43474e] h-[calc(100vh-64px)]">
             <div className="sm:px-6 lg:px-2">{children}</div>
           </main>
         </div>

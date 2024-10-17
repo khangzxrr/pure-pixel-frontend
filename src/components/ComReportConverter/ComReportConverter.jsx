@@ -10,8 +10,8 @@ function ComReportConverter({ children }) {
             <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
               <Image
                 wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
-                src={data?.photo?.signedUrl?.thumbnail}
-                alt={data?.photo?.signedUrl?.thumbnail}
+                src={data?.referencedPhoto?.signedUrl?.thumbnail}
+                alt={data?.referencedPhoto?.signedUrl?.thumbnail}
                 preview={{ mask: "Xem ảnh" }}
               />
             </div>
@@ -20,17 +20,17 @@ function ComReportConverter({ children }) {
       case "USER":
         return (
           <div className="flex gap-2 items-center ">
-            {data?.user?.avatar && (
+            {data?.referencedUser?.avatar && (
               <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
                 <Image
                   wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
-                  src={data?.user?.avatar}
-                  alt={data?.user?.avatar}
+                  src={data?.referencedUser?.avatar}
+                  alt={data?.referencedUser?.avatar}
                   preview={{ mask: "Xem ảnh" }}
                 />
               </div>
             )}
-            <p>{data?.user?.name}</p>
+            <p>{data?.referencedUser?.name}</p>
           </div>
         );
       case "BOOKING":

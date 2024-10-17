@@ -46,7 +46,7 @@ export const TableReport = forwardRef((props, ref) => {
   const columns = [
     {
       title: "Người báo cáo",
-      width: 200,
+      width: 100,
       fixed: "left",
       dataIndex: "user.name",
       key: "user.name",
@@ -54,13 +54,23 @@ export const TableReport = forwardRef((props, ref) => {
       ...getColumnSearchProps("user.name", "Người báo cáo"),
       render: (_, record) => (
         <div className="flex gap-2 items-center ">
-      
+          {record?.user?.avatar && (
+            <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
+              <Image
+                wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
+                src={record?.user?.avatar}
+                alt={record?.user?.avatar}
+                preview={{ mask: "Xem ảnh" }}
+              />
+            </div>
+          )}
+          <p>{record?.user?.name}</p>
         </div>
       ),
     },
     {
       title: "Thể loại báo cáo",
-      width: 120,
+      width: 100,
       dataIndex: "reportType",
       key: "reportType",
       filters: [
@@ -115,32 +125,8 @@ export const TableReport = forwardRef((props, ref) => {
       key: "maxPackageCount",
       render: (_, record) => (
         <div>
-          <ComReportConverter>
-            {record}
-          </ComReportConverter>
+          <ComReportConverter>{record}</ComReportConverter>
         </div>
-      ),
-    },
-    {
-      title: "Số lượng đã đăng ký",
-      width: 120,
-      dataIndex: "totalOrder",
-      key: "totalOrder",
-      sorter: (a, b) => a.totalOrder - b.totalOrder,
-      // ...getColumnPriceRangeProps("price", "Giá Tiền"),
-    },
-    {
-      title: "Thông tin bổ sung",
-      dataIndex: "descriptions",
-      key: "descriptions",
-      width: 300,
-      ...getColumnSearchProps("descriptions", "chi tiết"),
-
-      render: (descriptions) => (
-        <Tooltip placement="topLeft">
-          {/* Hiển thị từng phần tử trên giao diện */}
-          {descriptions}
-        </Tooltip>
       ),
     },
     {
@@ -171,7 +157,7 @@ export const TableReport = forwardRef((props, ref) => {
               );
             }}
             // extraMenuItems={extraMenuItems}
-            // excludeDefaultItems={["details"]}
+            excludeDefaultItems={["edit","delete"]}
           />
         </div>
       ),
