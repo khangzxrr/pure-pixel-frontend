@@ -56,7 +56,7 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
         status: "ENABLED",
       })
         .then((e) => {
-          notificationApi("success", "Thành công", "Đã tạo thành công");
+          notificationApi("success", "Thành công", "Đã cập nhật thành công");
           setDisabled(false);
           setTimeout(() => {
             tableRef()
@@ -163,32 +163,6 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
                       label={"Số lượng gói dịch vụ tối đa "}
                       placeholder={"Vui lòng nhập số lượng gói dịch vụ tối đa "}
                       {...register("maxPackageCount")}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-1">
-                  <div className="mt-2.5">
-                    <ComInput
-                      type={"numbers"}
-                      label={"Số lượng ảnh maxBookingPhotoQuota"}
-                      placeholder={
-                        "Vui lòng nhập số lượng ảnh maxBookingPhotoQuota"
-                      }
-                      {...register("maxBookingPhotoQuota")}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-1">
-                  <div className="mt-2.5">
-                    <ComInput
-                      type={"numbers"}
-                      label={"Số lượng ảnh maxBookingVideoQuota"}
-                      placeholder={
-                        "Vui lòng nhập số lượng ảnh maxBookingVideoQuota"
-                      }
-                      {...register("maxBookingVideoQuota")}
                       required
                     />
                   </div>

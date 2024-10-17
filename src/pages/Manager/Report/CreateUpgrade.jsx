@@ -170,32 +170,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                     />
                   </div>
                 </div>
-                <div className="sm:col-span-1">
-                  <div className="mt-2.5">
-                    <ComInput
-                      type={"numbers"}
-                      label={"Số lượng ảnh maxBookingPhotoQuota"}
-                      placeholder={
-                        "Vui lòng nhập số lượng ảnh maxBookingPhotoQuota"
-                      }
-                      {...register("maxBookingPhotoQuota")}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-1">
-                  <div className="mt-2.5">
-                    <ComInput
-                      type={"numbers"}
-                      label={"Số lượng ảnh maxBookingVideoQuota"}
-                      placeholder={
-                        "Vui lòng nhập số lượng ảnh maxBookingVideoQuota"
-                      }
-                      {...register("maxBookingVideoQuota")}
-                      required
-                    />
-                  </div>
-                </div>
+                
                 {fields.map((description, index) => (
                   <div className="sm:col-span-2" key={index}>
                     <div className="mt-2.5">
