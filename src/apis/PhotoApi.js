@@ -1,11 +1,61 @@
 import axios from "axios";
 import http from "./../configs/Http";
 
-const getPublicPhotos = async (limit, page) => {
-  //go 1 chu no nhay chung 1000 cai suggest
-  //AI SUCKK
-  const response = await http.get(`/photo/public?limit=${limit}&page=${page}`);
+// const getPublicPhotos = async (limit, page, categoryName) => {
+//   //go 1 chu no nhay chung 1000 cai suggest
+//   //AI SUCKK
+//   //Nếu categoryName không tồn tại hoặc là undefined, không thêm nó vào URL
+//   const url = categoryName
+//     ? `/photo/public?limit=${limit}&page=${page}&categoryName=${categoryName}`
+//     : `/photo/public?limit=${limit}&page=${page}`;
 
+//   const response = await http.get(url);
+//   return response.data;
+// };
+const getPublicPhotos = async (
+  limit,
+  page,
+  categoryName,
+  orderByCreatedAt,
+  orderByUpvote,
+  watermark,
+  selling,
+  photographerName,
+  title
+) => {
+  // Tạo một đối tượng chứa các tham số
+  const params = {
+    limit,
+    page,
+  };
+
+  // Chỉ thêm categoryName nếu nó tồn tại và không phải là undefined hoặc null
+  if (categoryName) {
+    params.categoryName = categoryName;
+  }
+  if (orderByCreatedAt) {
+    params.orderByCreatedAt = orderByCreatedAt;
+  }
+  if (orderByUpvote) {
+    params.orderByUpvote = orderByUpvote;
+  }
+  if (watermark) {
+    params.watermark = watermark;
+  }
+  if (selling) {
+    params.selling = selling;
+  }
+  if (photographerName) {
+    params.photographerName = photographerName;
+  }
+  if (title) {
+    params.title = title;
+  }
+  // Tạo chuỗi truy vấn từ đối tượng params
+  const queryString = new URLSearchParams(params).toString();
+  const url = `/photo/public?${queryString}`;
+
+  const response = await http.get(url);
   return response.data;
 };
 
@@ -17,6 +67,10 @@ const getPresignedUploadUrls = async ({ filename }) => {
   return response.data;
 };
 
+const getPhotoTags = async ({ top }) => {
+  const response = await http.get(`/photo-tag?top=${top}`);
+  return response.data;
+};
 const uploadPhotoUsingPresignedUrl = async (url, file, options) => {
   //FUCK AXIOS
   //waste me 2 hour just for a fucking upload feature???
@@ -101,9 +155,9 @@ const PhotoApi = {
   getPhotoById,
   getPhotoComments,
   commentPhoto,
-
   getAvailableResolutionsByPhotoId,
   sharePhotoById,
+  getPhotoTags,
 };
 
 export default PhotoApi;
