@@ -353,7 +353,10 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             onClick={popup.handleClose}
           ></div>
           <div className="w-[700px]">
-            <DetailUser />
+            <DetailUser
+              id={photographerId}
+              data={getPhotoById?.data?.photographer}
+            />
           </div>
         </div>
       )}

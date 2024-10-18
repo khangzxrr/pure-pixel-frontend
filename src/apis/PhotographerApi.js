@@ -11,10 +11,44 @@ const getPresignedUploadUrls = async ({ queryKey }) => {
   return response.data;
 };
 
-const getMyPhotos = async (limit, page) => {
-  const response = await http.get(
-    `/photographer/me/photo?limit=${limit}&page=${page}`
-  );
+const getMyPhotos = async (
+  limit,
+  page,
+  // categoryName,
+  orderByCreatedAt,
+  orderByUpvote,
+  watermark,
+  selling,
+  title
+) => {
+  const params = {
+    limit,
+    page,
+  };
+  // if (categoryName) {
+  //   params.categoryName = categoryName;
+  // }
+  if (orderByCreatedAt) {
+    params.orderByCreatedAt = orderByCreatedAt;
+  }
+  if (orderByUpvote) {
+    params.orderByUpvote = orderByUpvote;
+  }
+  if (watermark) {
+    params.watermark = watermark;
+  }
+  if (selling) {
+    params.selling = selling;
+  }
+  if (title) {
+    params.title = title;
+  }
+  const queryString = new URLSearchParams(params).toString();
+  const url = `/photographer/me/photo?${queryString}`;
+  const response = await http.get(url);
+  // const response = await http.get(
+  //   `/photographer/me/photo?limit=${limit}&page=${page}`
+  // );
 
   return response.data;
 };

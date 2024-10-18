@@ -8,6 +8,7 @@ import ComTable from "../ComTable/ComTable";
 import { getData } from "../../apis/api";
 import ComMenuButonTable from "../ComMenuButonTable/ComMenuButonTable";
 import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter";
+import ComStatusWalletConverter from "../ComStatusConverter/ComStatusWalletConverter";
   function formatCurrency(number) {
     // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
     if (typeof number === "number") {
@@ -33,7 +34,14 @@ export default function TableTransactilonList() {
       ...getColumnPriceRangeProps("amount", "Số Tiền"),
       render: (_, record) => (
         <div>
-          <h1>{formatCurrency(record.amount)}</h1>
+          <h1
+            className={
+              record.type === "DEPOSIT" ? `text-green-400` : "text-red-400"
+            }
+          >
+            {record.type === "DEPOSIT" ? `+` : "-"}
+            {formatCurrency(record.amount)}
+          </h1>
         </div>
       ),
     },
@@ -52,7 +60,7 @@ export default function TableTransactilonList() {
       sorter: (a, b) => a?.type?.localeCompare(b?.type),
       render: (_, record) => (
         <div>
-          <h1>{record.type}</h1>
+          <ComTypeWalletConverter>{record.type}</ComTypeWalletConverter>
         </div>
       ),
     },
@@ -107,7 +115,7 @@ export default function TableTransactilonList() {
       render: (_, record) => (
         <div>
           <h1>
-            <ComTypeWalletConverter>{record.status}</ComTypeWalletConverter>
+            <ComStatusWalletConverter>{record.status}</ComStatusWalletConverter>
           </h1>
         </div>
       ),
@@ -122,28 +130,28 @@ export default function TableTransactilonList() {
       ...getColumnApprox("updatedAt", "Thời gian thanh toán"),
       render: (updatedAt, record) => (
         <div>
-          <ComDateConverter>{updatedAt}</ComDateConverter>
+          <ComDateConverter time>{updatedAt}</ComDateConverter>
         </div>
       ),
     },
-    {
-      title: "Thao tác",
-      key: "operation",
-      fixed: "right",
-      width: 50,
-      render: (_, record) => (
-        <div className="flex items-center flex-col">
-          <ComMenuButonTable
-            record={record}
-            //    showModalDetails={() => showModal(record)}
-            //    showModalEdit={showModalEdit}
-            // extraMenuItems={extraMenuItems}
-            excludeDefaultItems={["delete", "edit"]}
-            // order={order}
-          />
-        </div>
-      ),
-    },
+    // {
+    //   title: "Thao tác",
+    //   key: "operation",
+    //   fixed: "right",
+    //   width: 50,
+    //   render: (_, record) => (
+    //     <div className="flex items-center flex-col">
+    //       <ComMenuButonTable
+    //         record={record}
+    //         //    showModalDetails={() => showModal(record)}
+    //         //    showModalEdit={showModalEdit}
+    //         // extraMenuItems={extraMenuItems}
+    //         excludeDefaultItems={["delete", "edit"]}
+    //         // order={order}
+    //       />
+    //     </div>
+    //   ),
+    // },
   ];
    const reloadData = () => {
      getData(
