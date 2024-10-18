@@ -42,6 +42,8 @@
     "react-toastify": "^10.0.5",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.7.5",
+    "stream-chat": "^8.40.9",
+    "stream-chat-react": "^12.2.1",
     "tailwind-scrollbar": "^3.1.0",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0",

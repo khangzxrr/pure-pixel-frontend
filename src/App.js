@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 import UserService from "./services/Keycloak";
-import OneSignal from "react-onesignal";
 import { ConfigProvider } from "antd";
 import locale from "antd/es/locale/vi_VN"; // Import locale tiếng Việt cho antd
 import { NotificationProvider } from "./Notification/Notification";
@@ -32,6 +31,7 @@ function App() {
   //   },
   //   allowLocalhostAsSecureOrigin: true,
   // });
+
   dayjs.locale("vi");
   return (
     <QueryClientProvider client={queryClient}>
