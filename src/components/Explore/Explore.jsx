@@ -9,6 +9,7 @@ import UseSidebarStore from "../../states/UseSidebarStore";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import InspirationNav from "../Inspiration/InspirationNav/InspirationNav";
 import PhotographerNav from "../Photographer/PhotographerList/PhotographerNav";
+import SellingPhotoNav from "../SellingPhoto/SellingPhotoNav";
 const Explore = () => {
   const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote, activeItem } =
@@ -23,6 +24,7 @@ const Explore = () => {
 
   const isInspirationActive = activeItem === 1;
   const isPhotographerListActive = activeItem === 4;
+  const isSellingListActive = activeItem === 6;
   return (
     <div className="flex flex-grow max-h-screen">
       {/* Sidebar - Right */}
@@ -119,6 +121,13 @@ const Explore = () => {
           {isPhotographerListActive && (
             <PhotographerNav
               toggleSidebar={toggleSidebar}
+              activeTitle={activeTitle}
+              activeIcon={activeIcon}
+              activeQuote={activeQuote}
+            />
+          )}
+          {isSellingListActive && (
+            <SellingPhotoNav
               activeTitle={activeTitle}
               activeIcon={activeIcon}
               activeQuote={activeQuote}

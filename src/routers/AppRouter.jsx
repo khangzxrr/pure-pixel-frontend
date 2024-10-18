@@ -56,7 +56,7 @@ import MyPhotosPage from "../pages/MyPhoto/MyPhotosP";
 
 import TableTransactilonList from "../components/Wallet/TableTransactilonList";
 import AdminLayout from "../layouts/AdminLayout";
-
+import PhotoSellingPage from "../pages/PhotoSelling/PhotoSellingPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -91,6 +91,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "photographers",
                 element: <ListPhotographers />,
+              },
+              {
+                path: "selling",
+                element: <PhotoSellingPage />,
               },
             ],
           },
@@ -130,14 +134,13 @@ export const AppRouter = createBrowserRouter([
                 element: <UserProfile />,
               },
               {
-
                 path: "my-photos",
                 element: <MyPhotosPage />,
-               },
-               {
+              },
+              {
                 path: "wallet",
                 element: <Wallet />,
-               },
+              },
             ],
           },
           {
@@ -368,5 +371,4 @@ export const AppRouter = createBrowserRouter([
       },
     ],
   },
-  
 ]);

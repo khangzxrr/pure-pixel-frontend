@@ -128,8 +128,8 @@ const MyPhotoP = () => {
               </div>
             ))
           ) : (
-            <div className="flex justify-center items-center w-full col-span-4 h-[500px] ">
-              <div className="flex flex-col items-center text-[#6b7280]">
+            <div className="flex justify-center items-center w-full col-span-4 h-[60vh] ">
+              <div className="flex flex-col items-center text-[#8b8d91]">
                 <IoMdImages className="text-[100px] " />
                 <p className="select-none">Không tìm thấy ảnh khả dụng!</p>
               </div>

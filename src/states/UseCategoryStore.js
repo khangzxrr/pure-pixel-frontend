@@ -5,6 +5,7 @@ const UseCategoryStore = create((set) => ({
   filterByUpVote: { name: "", param: "" },
   isWatermarkChecked: false,
   isForSaleChecked: false,
+
   inputValue: "", // Giá trị của input
   searchResult: "", // Lưu trữ kết quả tìm kiếm
   searchByPhotoTitle: "",

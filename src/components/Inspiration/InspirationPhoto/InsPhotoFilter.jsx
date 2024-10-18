@@ -70,7 +70,7 @@ const InsPhotoFilter = () => {
       <div>
         <Menu as="div" className="relative inline-block text-left">
           <div>
-            <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] shadow-sm ">
+            <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] ">
               <span className="font-normal">Ngày đăng:</span>{" "}
               {filterByPhotoDate.name || ""}
               <IoMdArrowDropdown />
@@ -111,7 +111,7 @@ const InsPhotoFilter = () => {
       <div>
         <Menu as="div" className="relative inline-block text-left">
           <div>
-            <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] shadow-sm ">
+            <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] ">
               <span className="font-normal">Lượt bình chọn:</span>{" "}
               {filterByUpVote.name || ""}
               <IoMdArrowDropdown />
@@ -145,7 +145,7 @@ const InsPhotoFilter = () => {
           </MenuItems>
         </Menu>
       </div>
-      <div className="flex items-center  p-[5px] rounded-md">
+      {/* <div className="flex items-center  p-[5px] rounded-md">
         <label class="inline-flex items-center cursor-pointer">
           <input
             id="watermarkCheckbox"
@@ -160,7 +160,7 @@ const InsPhotoFilter = () => {
             Ảnh có watermark
           </span>
         </label>
-      </div>
+      </div> */}
       <div className="flex items-center p-[5px] rounded-md">
         <label class="inline-flex items-center cursor-pointer">
           <input
