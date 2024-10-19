@@ -1,4 +1,4 @@
-export const PhotoDataFields = [
+export const ExifField = [
   {
     name: "exif.Model",
     inputField: "Input",

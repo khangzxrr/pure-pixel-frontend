@@ -1,17 +1,21 @@
 import React from "react";
 import UploadPhotoForm from "./UploadPhotoForm";
-import UploadPhotoExtraOption from "./UploadPhotoExtraOption";
 import "./UploadPhoto.css";
+import useUploadPhotoStore from "../../../states/UploadPhotoState";
 export default function UploadPhotoInfoBar() {
+  const { selectedPhoto, getPhotoByUid } = useUploadPhotoStore();
+
+  const photoData = getPhotoByUid(selectedPhoto);
+
+  console.log("photoData", photoData);
+
   return (
     <div className="w-full h-full mx-auto overflow-y-auto scrollbar-hidden">
-      {/* {selectedPhoto?.status === "PARSED" ? ( */}
       <div>
         <p className="text-white text-lg font-semibold p-3">
           Thông tin bức ảnh
         </p>
-        <UploadPhotoForm />
-        <UploadPhotoExtraOption />
+        <UploadPhotoForm selectedPhoto={photoData} />
       </div>
       {/* ) : (
         <div className="h-screen flex justify-center items-center">

@@ -34,14 +34,20 @@ const processPhoto = async (signedUpload) => {
   return response;
 };
 
-const updatePhotos = async (photos) => {
-  const response = await http.patch(`photo/update`, {
-    photos,
+const updatePhotos = async (photo) => {
+  const response = await http.patch(`photo/${photo.id}`, {
+    photo,
   });
 
   return response;
 };
-
+const addWatermark = async (photo) => {
+  const res = await http.post("/photo/watermark", {
+    photoId: photo.photoId,
+    text: photo.text,
+  });
+  return res;
+};
 const deletePhoto = async (id) => {
   const response = await http.delete(`photo/${id}`);
 
@@ -101,7 +107,7 @@ const PhotoApi = {
   getPhotoById,
   getPhotoComments,
   commentPhoto,
-
+  addWatermark,
   getAvailableResolutionsByPhotoId,
   sharePhotoById,
 };
