@@ -7,6 +7,7 @@ import {
   ChannelList,
   MessageInput,
   MessageList,
+  Thread,
   useChatContext,
   Window,
 } from "stream-chat-react";
@@ -18,8 +19,6 @@ export default function ChatPage() {
   const { keycloak } = useKeycloak();
 
   const { client, setActiveChannel } = useChatContext();
-
-  console.log(keycloak.tokenParsed, client);
 
   const conversationToUserId = searchParams.get("to");
 
@@ -49,6 +48,7 @@ export default function ChatPage() {
           <MessageList />
           <MessageInput />
         </Window>
+        <Thread />
       </Channel>
     </>
   );

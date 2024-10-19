@@ -2,12 +2,26 @@ import "stream-chat-react/dist/css/v2/index.css";
 import "./ChannelInbox.css";
 import { useKeycloak } from "@react-keycloak/web";
 import ChatClientProvider from "./ChatClientProvider";
+import { ClipLoader, PacmanLoader } from "react-spinners";
 
 const ChatProvider = ({ children }) => {
   const { keycloak, initialized } = useKeycloak();
 
   if (!initialized) {
-    return <div>initiating keycloak...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          justifyItems: "center",
+          alignItems: "center",
+          textAlign: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <PacmanLoader />
+      </div>
+    );
   }
 
   if (keycloak.authenticated) {

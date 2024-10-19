@@ -2,6 +2,7 @@ import { Chat, useCreateChatClient } from "stream-chat-react";
 import ChatApi from "../../apis/ChatApi";
 import "stream-chat-react/dist/css/v2/index.css";
 import "./ChannelInbox.css";
+import { PacmanLoader } from "react-spinners";
 
 export default function ChatClientProvider({ user, children }) {
   const client = useCreateChatClient({
@@ -11,7 +12,20 @@ export default function ChatClientProvider({ user, children }) {
   });
 
   if (!client) {
-    return <div>stream chat initialing...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          justifyItems: "center",
+          alignItems: "center",
+          textAlign: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <PacmanLoader />
+      </div>
+    );
   }
 
   return (
