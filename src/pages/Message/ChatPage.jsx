@@ -1,4 +1,6 @@
 import { useKeycloak } from "@react-keycloak/web";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Channel,
   ChannelHeader,
@@ -11,11 +13,27 @@ import {
 import "stream-chat-react/dist/css/v2/index.css";
 
 export default function ChatPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { keycloak } = useKeycloak();
 
-  const { client } = useChatContext();
+  const { client, setActiveChannel } = useChatContext();
 
   console.log(keycloak.tokenParsed, client);
+
+  const conversationToUserId = searchParams.get("to");
+
+  useEffect(() => {
+    if (!conversationToUserId) return;
+
+    if (!client) return;
+
+    const channel = client.channel("messaging", {
+      members: [keycloak.tokenParsed.sub, conversationToUserId],
+    });
+
+    setActiveChannel(channel);
+  }, [client, conversationToUserId]);
 
   const filters = {
     type: "messaging",
