@@ -6,7 +6,7 @@ import { PacmanLoader } from "react-spinners";
 
 export default function ChatClientProvider({ user, children }) {
   const client = useCreateChatClient({
-    apiKey: "xhwsccp3ptxd",
+    apiKey: process.env.REACT_APP_STREAM_API_KEY,
     tokenOrProvider: ChatApi.auth,
     userData: user,
   });

@@ -27,7 +27,7 @@ function App() {
   const { initSocket } = useSocketStore();
 
   OneSignal.init({
-    appId: "0460263b-9032-44ed-910c-4248b23ecf8e",
+    appId: process.env.REACT_APP_ONE_SIGNAL_APP_ID,
     notifyButton: {
       enable: true,
     },
