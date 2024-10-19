@@ -58,7 +58,7 @@ import TableTransactilonList from "../components/Wallet/TableTransactilonList";
 import AdminLayout from "../layouts/AdminLayout";
 import Report from "../pages/Manager/Report/Report";
 import BlogManager from "../pages/Manager/Blog/BlogManager";
-import ChatPage from "../pages/Message/ChatInbox";
+import ChatPage from "../pages/Message/ChatPage";
 
 export const AppRouter = createBrowserRouter([
   {

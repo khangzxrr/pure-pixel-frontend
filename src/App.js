@@ -12,6 +12,7 @@ import { NotificationProvider } from "./Notification/Notification";
 import dayjs from "dayjs";
 import "dayjs/locale/vi"; // Import locale tiếng Việt
 import useSocketStore from "./states/UseSocketStore";
+import ChatProvider from "./components/ChatComponent/ChatProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,7 +55,9 @@ function App() {
         <ToastContainer />
         <ConfigProvider locale={locale}>
           <NotificationProvider>
-            <RouterProvider router={AppRouter} />
+            <ChatProvider>
+              <RouterProvider router={AppRouter} />
+            </ChatProvider>
           </NotificationProvider>
         </ConfigProvider>
         <ReactQueryDevtools buttonPosition="bottom-right" />
