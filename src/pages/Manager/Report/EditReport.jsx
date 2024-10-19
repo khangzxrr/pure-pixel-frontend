@@ -2,29 +2,29 @@ import React, { useEffect, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import ComButton from "../../../components/ComButton/ComButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ComNumber from "./../../../components/ComInput/ComNumber";
-import ComInput from "./../../../components/ComInput/ComInput";
+import ComNumber from "../../../components/ComInput/ComNumber";
+import ComInput from "../../../components/ComInput/ComInput";
 import ComSelect from "../../../components/ComInput/ComSelect";
-import { MonyNumber } from "./../../../components/MonyNumber/MonyNumber";
+import { MonyNumber } from "../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
 import {  putData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
 
-export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
+export default function EditReport({ selectedReport, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
   console.log("====================================");
-  console.log(selectedUpgrede);
+  console.log(selectedReport);
   console.log("====================================");
 
   useEffect(() => {
-    setValue("minOrderMonth", selectedUpgrede.minOrderMonth);
+    setValue("minOrderMonth", selectedReport.minOrderMonth);
     setValue("maxPhotoQuota", 123123123);
-  }, [selectedUpgrede]);
+  }, [selectedReport]);
 
   const methods = useForm({
     resolver: yupResolver(Upgrade),
-    values: selectedUpgrede,
+    values: selectedReport,
   });
   const {
     handleSubmit,
@@ -51,12 +51,12 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
       (value) => (data.price = value)
     );
     if (change !== null) {
-      putData("/upgrade-package", selectedUpgrede.id,{
+      putData("/upgrade-package", selectedReport.id,{
         ...data,
         status: "ENABLED",
       })
         .then((e) => {
-          notificationApi("success", "Thành công", "Đã cập nhật thành công");
+          notificationApi("success", "Thành công", "Đã tạo thành công");
           setDisabled(false);
           setTimeout(() => {
             tableRef()
@@ -163,6 +163,32 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
                       label={"Số lượng gói dịch vụ tối đa "}
                       placeholder={"Vui lòng nhập số lượng gói dịch vụ tối đa "}
                       {...register("maxPackageCount")}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="sm:col-span-1">
+                  <div className="mt-2.5">
+                    <ComInput
+                      type={"numbers"}
+                      label={"Số lượng ảnh maxBookingPhotoQuota"}
+                      placeholder={
+                        "Vui lòng nhập số lượng ảnh maxBookingPhotoQuota"
+                      }
+                      {...register("maxBookingPhotoQuota")}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="sm:col-span-1">
+                  <div className="mt-2.5">
+                    <ComInput
+                      type={"numbers"}
+                      label={"Số lượng ảnh maxBookingVideoQuota"}
+                      placeholder={
+                        "Vui lòng nhập số lượng ảnh maxBookingVideoQuota"
+                      }
+                      {...register("maxBookingVideoQuota")}
                       required
                     />
                   </div>

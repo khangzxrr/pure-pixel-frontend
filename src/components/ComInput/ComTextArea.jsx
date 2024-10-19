@@ -106,7 +106,7 @@ const ComTextArea = React.forwardRef(
             }
             id={inputId}
             ref={ref}
-            showCount
+            // showCount
             size="large"
             rows={rows}
             {...props}

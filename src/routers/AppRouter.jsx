@@ -56,7 +56,9 @@ import MyPhotosPage from "../pages/MyPhoto/MyPhotosP";
 
 import TableTransactilonList from "../components/Wallet/TableTransactilonList";
 import AdminLayout from "../layouts/AdminLayout";
-
+import Report from "../pages/Manager/Report/Report";
+import BlogManager from "../pages/Manager/Blog/BlogManager";
+import ChatPage from "../pages/Message/ChatPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -130,14 +132,13 @@ export const AppRouter = createBrowserRouter([
                 element: <UserProfile />,
               },
               {
-
                 path: "my-photos",
                 element: <MyPhotosPage />,
-               },
-               {
+              },
+              {
                 path: "wallet",
                 element: <Wallet />,
-               },
+              },
             ],
           },
           {
@@ -158,6 +159,10 @@ export const AppRouter = createBrowserRouter([
                 element: <BlogList />,
               },
             ],
+          },
+          {
+            path: "message",
+            element: <ChatPage />,
           },
         ],
       },
@@ -214,6 +219,14 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/admin/upgrade",
             element: <Upgrade />,
+          },
+          {
+            path: "/admin/report",
+            element: <Report />,
+          },
+          {
+            path: "/admin/blog",
+            element: <BlogManager />,
           },
         ],
       },
@@ -368,5 +381,4 @@ export const AppRouter = createBrowserRouter([
       },
     ],
   },
-  
 ]);
