@@ -122,7 +122,7 @@ export default function SideWithdrawalForm({
   return (
     <div
       ref={sideNavRef}
-      className={`fixed bottom-0 right-0 w-2/3 lg:w-1/3 h-5/6 bg-[#2a2c32] rounded-md shadow-lg transition-transform transform z-50 ${
+      className={`fixed bottom-0 right-0 w-2/3 lg:w-1/3 h-full bg-[#2a2c32] rounded-md shadow-lg transition-transform transform z-50 ${
         isNavVisible ? "translate-x-0" : "translate-x-full"
       }`}
     >

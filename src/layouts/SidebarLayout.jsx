@@ -2,7 +2,7 @@
 import React from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -17,6 +17,11 @@ const SidebarLayout = ({
   onRegister,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // This will give you the current path
+  const isUploadRoute = location.pathname === "/upload/public" ? true : false;
+
   return (
     <div className="flex flex-grow max-h-screen">
       <div className="flex">
@@ -32,9 +37,7 @@ const SidebarLayout = ({
             {userData ? (
               <div className="flex items-center justify-between gap-2">
                 <div
-
                   onClick={() => navigate("/profile/userprofile")}
-
                   className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md transition-colors duration-300"
                 >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
@@ -111,14 +114,15 @@ const SidebarLayout = ({
             </div>
           </div>
         </div>
-        <section
-          aria-labelledby="products-heading"
-          className=" "
-        >
-          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6 ">
+        <section aria-labelledby="products-heading" className=" ">
+          <div
+            className={`grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6 ${
+              isUploadRoute ? "h-screen overflow-hidden" : ""
+            }`}
+          >
             <div className="lg:col-span-6  h-full w-full ">
-              <div className="">
-               
+              <div className={``}>
+                {" "}
                 <Outlet />
               </div>
             </div>

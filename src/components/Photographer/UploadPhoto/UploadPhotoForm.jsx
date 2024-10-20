@@ -1,31 +1,33 @@
-import { Input, Select } from "antd";
+import { Checkbox, Input, Select, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
-import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import TextArea from "antd/es/input/TextArea";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SelectType } from "../../../fakejson/SelectType";
+import TextArea from "antd/es/input/TextArea";
+import useUploadPhotoStore from "../../../states/UploadPhotoState";
+import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
+import { ExifField } from "./PhotoDataFields";
 import { useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../../apis/CategoryApi";
+import TagInputArea from "./TagInputArea";
 
-export default function UploadPhotoForm() {
-  const { updateSelectedPhotoProperty, selectedPhoto } = useUploadPhotoStore();
-
+export default function UploadPhotoForm({ selectedPhoto }) {
+  const { updatePhotoPropertyByUid, setIsOpenDraftModal } =
+    useUploadPhotoStore();
   const [categories, setCategories] = useState([]);
 
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
     onSuccess: (data) => {
       setCategories(
-        data.map((category) => ({ label: category.name, value: category.id })),
+        data.map((category) => ({ label: category.name, value: category.id }))
       );
     },
     onError: (error) => {
-      console.error("Error posting comment:", error);
+      console.error("Error fetching categories:", error);
     },
   });
+
   const {
     control,
     handleSubmit,
@@ -38,13 +40,14 @@ export default function UploadPhotoForm() {
 
   const handleTagChange = (value) => {
     console.log(`selected ${value}`);
-    console.log(`Type of value: ${typeof value}`);
   };
 
-  const onSubmit = (data) => {};
+  const onSubmit = async (data) => {
+    setIsOpenDraftModal(true);
+  };
 
   useEffect(() => {
-    reset(selectedPhoto);
+    reset(getDefaultPhoto(selectedPhoto));
     getAllCategories.mutate();
   }, [selectedPhoto, reset]);
 
@@ -65,7 +68,11 @@ export default function UploadPhotoForm() {
               placeholder="Enter image title"
               onChange={(e) => {
                 field.onChange(e);
-                updateSelectedPhotoProperty("title", e.target.value);
+                updatePhotoPropertyByUid(
+                  selectedPhoto.file.uid,
+                  "title",
+                  e.target.value
+                );
               }}
             />
           )}
@@ -74,7 +81,6 @@ export default function UploadPhotoForm() {
           <p className=" text-red-500 text-sm p-1">{errors.title.message}</p>
         )}
         <p>Mô tả </p>
-
         <Controller
           name="description"
           control={control}
@@ -87,7 +93,11 @@ export default function UploadPhotoForm() {
               placeholder="Enter description"
               onChange={(e) => {
                 field.onChange(e);
-                updateSelectedPhotoProperty("description", e.target.value);
+                updatePhotoPropertyByUid(
+                  selectedPhoto.file.uid,
+                  "description",
+                  e.target.value
+                );
               }}
             />
           )}
@@ -98,7 +108,6 @@ export default function UploadPhotoForm() {
           </p>
         )}
         <p>Thể loại</p>
-
         <Controller
           name="photoType"
           control={control}
@@ -112,11 +121,15 @@ export default function UploadPhotoForm() {
                   .toLowerCase()
                   .includes(input.toLowerCase())
               }
-              options={SelectType}
+              options={categories}
               className="w-3/5 max-w-full m-2"
               onChange={(value) => {
                 field.onChange(value);
-                updateSelectedPhotoProperty("photoType", value);
+                updatePhotoPropertyByUid(
+                  selectedPhoto.file.uid,
+                  "photoType",
+                  value
+                );
               }}
             />
           )}
@@ -125,35 +138,19 @@ export default function UploadPhotoForm() {
           <p className=" text-red-500 text-sm p-1">{errors.type.message}</p>
         )}
         <p>Gắn thẻ</p>
-
         <Controller
           name="photoTags"
           control={control}
           render={({ field }) => (
-            <Select
-              {...field}
-              mode="multiple"
-              style={{
-                width: "100%",
-              }}
-              className="w-3/5 max-w-full m-2"
-              placeholder="Please select"
-              onChange={(value) => {
-                field.onChange(value); // Ensure the form state is updated
-                handleTagChange(value); // Call your custom handler
-                updateSelectedPhotoProperty("photoTags", value);
-              }}
-              options={categories}
+            <TagInputArea
+              field={field}
+              updatePhotoPropertyByUid={updatePhotoPropertyByUid}
+              selectedPhoto={selectedPhoto}
+              isError={errors.photoTags}
             />
           )}
         />
-        {errors.photoTags && (
-          <p className=" text-red-500 text-sm p-1">
-            {errors.photoTags.message}
-          </p>
-        )}
         <p>Vị trí</p>
-
         <Controller
           name="location"
           control={control}
@@ -167,7 +164,11 @@ export default function UploadPhotoForm() {
               placeholder="Enter location"
               onChange={(e) => {
                 field.onChange(e);
-                updateSelectedPhotoProperty("location", e.target.value);
+                updatePhotoPropertyByUid(
+                  selectedPhoto.file.uid,
+                  "location",
+                  e.target.value
+                );
               }}
             />
           )}
@@ -175,13 +176,168 @@ export default function UploadPhotoForm() {
         {errors.location && (
           <p className=" text-red-500 text-sm p-1">{errors.location.message}</p>
         )}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+          {ExifField.map((field) => (
+            <div key={field.name}>
+              <p>{field.placeholder}</p>
+              <Controller
+                name={field.name}
+                control={control}
+                render={({ field: controllerField }) => (
+                  <Input
+                    {...controllerField}
+                    className={`w-full px-2 m-2 lg:text-base text-xs border-[1px] ${
+                      errors[field.name] ? "border-red-500" : "border-[#e0e0e0]"
+                    } focus:outline-none focus:border-[#e0e0e0]`}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      controllerField.onChange(value);
+                      updatePhotoPropertyByUid(
+                        selectedPhoto.file.uid,
+                        field.name,
+                        value
+                      );
+                    }}
+                  />
+                )}
+              />
+              {errors[field.name] && (
+                <p className="text-red-500 text-sm p-1">
+                  {errors[field.name].message}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col w-full mt-1">
+          <div className="flex flex-row w-full">
+            <Controller
+              name="watermark"
+              control={control}
+              render={({ field: controllerField }) => (
+                <Tooltip
+                  placement="left"
+                  color="geekblue"
+                  title={selectedPhoto?.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
+                >
+                  <Checkbox
+                    {...controllerField}
+                    className="m-2"
+                    checked={selectedPhoto?.watermark}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      controllerField.onChange(checked);
+                      updatePhotoPropertyByUid(
+                        selectedPhoto.file.uid,
+                        "watermark",
+                        checked
+                      );
+                    }}
+                  >
+                    <p className="text-white lg:text-sm text-xs my-2">
+                      Thêm Nhãn
+                    </p>
+                  </Checkbox>
+                </Tooltip>
+              )}
+            />
+            {errors.watermark && (
+              <p className="text-red-500 text-sm p-1">
+                {errors.watermark.message}
+              </p>
+            )}
 
-        {/* <button
-          type="submit"
-          className="mt-4 px-4 py-2  bg-blue-500 text-white rounded disabled:opacity-50 float-right"
-        >
-          Next
-        </button> */}
+            <div className={selectedPhoto?.watermark ? "visible" : "invisible"}>
+              <Controller
+                name="watermarkContent"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className={`w-full px-2 m-2 border-[1px] lg:text-sm text-xs ${
+                      errors.watermarkContent
+                        ? "border-red-500"
+                        : "border-[#e0e0e0]"
+                    } focus:outline-none focus:border-[#e0e0e0]`}
+                    type="text"
+                    placeholder="Thông tin gắn nhãn"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      updatePhotoPropertyByUid(
+                        selectedPhoto.file.uid,
+                        "watermarkContent",
+                        e.target.value
+                      );
+                    }}
+                  />
+                )}
+              />
+              {errors.watermarkContent && (
+                <p className="text-red-500 text-sm p-1">
+                  {errors.watermarkContent.message}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+        <Controller
+          name="showExif"
+          control={control}
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              className="m-2"
+              checked={field.value}
+              onChange={(e) => {
+                field.onChange(e.target.checked);
+                updatePhotoPropertyByUid(
+                  selectedPhoto.file.uid,
+                  "showExif",
+                  e.target.checked
+                );
+              }}
+            >
+              <p className="text-white lg:text-sm text-xs">
+                Hiện thông số bức ảnh
+              </p>
+            </Checkbox>
+          )}
+        />
+        {errors.showExif && (
+          <p className="text-red-500 text-sm p-1">{errors.showExif.message}</p>
+        )}
+        <Controller
+          name="visibility"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              placeholder="Photo privacy"
+              options={[
+                { label: "Công khai", value: "PUBLIC" },
+                { label: "Riêng tư", value: "PRIVATE" },
+                { label: "Liên kết riêng tư", value: "SHARE_LINK" },
+              ]}
+              className="w-5/6 m-2 lg:text-sm text-xs"
+              onChange={(value) => {
+                field.onChange(value);
+                updatePhotoPropertyByUid(
+                  selectedPhoto.file.uid,
+                  "visibility",
+                  value
+                );
+              }}
+            />
+          )}
+        />
+        {errors.visibility && (
+          <p className="text-red-500 text-sm p-1">
+            {errors.visibility.message}
+          </p>
+        )}
+        <div className="h-24"></div>{" "}
       </form>
     </div>
   );

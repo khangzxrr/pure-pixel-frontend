@@ -88,7 +88,7 @@ export default function SideDepositForm({
   return (
     <div
       ref={sideNavRef}
-      className={`fixed bottom-0 right-0 w-2/3 lg:w-1/3 h-5/6 bg-[#2a2c32] rounded-md shadow-lg transition-transform transform z-50 ${
+      className={`fixed bottom-0 right-0 w-2/3 lg:w-1/3 h-full bg-[#2a2c32] rounded-md shadow-lg transition-transform transform z-50 ${
         isNavVisible ? "translate-x-0" : "translate-x-full"
       }`}
     >
@@ -106,7 +106,7 @@ export default function SideDepositForm({
             <div className="flex justify-between items-center mt-4">
               <p className="text-[#dddddd]">Chọn số tiền muốn nạp</p>
             </div>
-            <div className="mt-4 flex">
+            <div className="mt-4 flex mb-4">
               <input
                 value={formattedDeposit}
                 type="text"
@@ -127,7 +127,7 @@ export default function SideDepositForm({
                 {formatNumber(item)}
               </button>
             ))}
-            <div className="w-11/12 flex justify-end">
+            <div className="w-11/12 mt-4 flex justify-end">
               <Popconfirm
                 title="Xác nhận nạp tiền?"
                 description={`Bạn có chắc muốn nạp ${formattedDeposit} vào ví?`}

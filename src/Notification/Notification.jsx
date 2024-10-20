@@ -1,29 +1,41 @@
 import { notification } from "antd";
 import React, { useContext } from "react";
+import { SmileOutlined } from "@ant-design/icons";
 
-// Tạo context để chứa API notification
+// Create context for notification API
 const NotificationContext = React.createContext();
-
-// Custom hook để sử dụng API notification
+let notificationApi;
+// Custom hook to use the notification API
 export const useNotification = () => useContext(NotificationContext);
 
-// Provider để cung cấp API notification cho các thành phần con
+// Provider to supply the notification API to children components
 export const NotificationProvider = ({ children }) => {
-  // Sử dụng hook useNotification của antd để nhận API notification
+  // Get the notification API from antd
   const [api, contextHolder] = notification.useNotification();
+
+  // Helper function to capitalize the first letter of a string
   function capitalizeFirstLetter(string) {
     const trimmedString = string.trim();
     return trimmedString.charAt(0).toUpperCase() + trimmedString.slice(1);
   }
-  // Tạo một hàm wrapper để thông báo
-  const notificationApi = (type, message, description) => {
+
+  // Wrapper function for notifications
+  notificationApi = (type, message, description, icon, duration, key) => {
+    // Open notification with given options
     api[type]({
-      message: capitalizeFirstLetter(message),
-      description: capitalizeFirstLetter(description),
+      message:
+        typeof message === "string" ? capitalizeFirstLetter(message) : message,
+      description:
+        typeof description === "string"
+          ? capitalizeFirstLetter(description)
+          : description,
+      icon: icon ? icon : "",
+      key: key ? key : "",
+      duration: duration ? (duration === "unlimit" ? 0 : duration) : 3,
     });
   };
 
-  // Cung cấp notificationApi thông qua context
+  // Provide notificationApi through context
   return (
     <NotificationContext.Provider value={{ notificationApi }}>
       {contextHolder}
@@ -32,3 +44,5 @@ export const NotificationProvider = ({ children }) => {
   );
 };
 
+// Export the notificationApi for use in other files
+export { notificationApi };
