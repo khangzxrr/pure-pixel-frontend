@@ -26,7 +26,7 @@ const PhotoTagsTrend = () => {
         tags.map((tag) => (
           <div
             className="flex gap-2 items-center hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md px-2 py-[2px] transition-colors duration-200"
-            key={tag.id}
+            key={tag.name}
           >
             # {tag.name}
           </div>

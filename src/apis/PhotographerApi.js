@@ -11,6 +11,11 @@ const getPresignedUploadUrls = async ({ queryKey }) => {
   return response.data;
 };
 
+const getAllPhotographers = async (limit, page) => {
+  const response = await http.get(`/photographer?limit=${limit}&page=${page}`);
+  return response.data;
+};
+
 const getMyPhotos = async (
   limit,
   page,
@@ -55,6 +60,7 @@ const getMyPhotos = async (
 
 const PhotographerApi = {
   getPresignedUploadUrls,
+  getAllPhotographers,
   getMyPhotos,
 };
 

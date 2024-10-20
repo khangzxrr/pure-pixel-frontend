@@ -10,14 +10,17 @@ const ServerSide = () => {
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
   const { toggleNotificationModal } = UseNotificationStore(); // Lấy hàm toggle từ store
+  const userRoles = userData?.resource_access?.purepixel?.roles || [];
 
   return (
     <div className="flex flex-col items-center gap-5 pt-5">
       {ServerSideItems.map((item) => {
-        if (item.authen && !userData) {
+        if (
+          (item.authen && !userData) ||
+          (item.author && !userRoles.includes("photographer"))
+        ) {
           return null;
         }
-
         // Nếu item là notification thì không sử dụng link
         if (item.id === "notification") {
           return (

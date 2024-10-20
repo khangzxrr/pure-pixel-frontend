@@ -31,6 +31,8 @@ const InspirationSideItemF = [
     title: "Nhiếp ảnh gia",
     icon: <BsPersonBoundingBox />,
     link: "/explore/photographers",
+    quote:
+      "Theo dõi các nhiếp ảnh gia nổi tiếng để cập nhật các bức ảnh mới nhất của họ",
   },
   {
     id: 5,

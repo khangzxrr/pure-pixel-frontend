@@ -72,7 +72,7 @@ const MyPhotoP = () => {
           listImg={data.objects}
         />
       )}
-      <div className="my-2">
+      <div className="my-[5px]">
         <MyPhotoFilter />
       </div>
       <div className="flex flex-col min-h-[620px] py-2 bg-[#2f3136]">
@@ -100,7 +100,7 @@ const MyPhotoP = () => {
         )}
 
         {/* Photos Display */}
-        <div className="grid grid-cols-4 gap-2 mx-2">
+        <div className="grid grid-cols-5 gap-2 mx-2">
           {isError && (
             <div className="text-red-500">{JSON.stringify(error)}</div>
           )}
@@ -128,7 +128,7 @@ const MyPhotoP = () => {
               </div>
             ))
           ) : (
-            <div className="flex justify-center items-center w-full col-span-4 h-[60vh] ">
+            <div className="flex justify-center items-center w-full col-span-5 h-[60vh] ">
               <div className="flex flex-col items-center text-[#8b8d91]">
                 <IoMdImages className="text-[100px] " />
                 <p className="select-none">Không tìm thấy ảnh khả dụng!</p>

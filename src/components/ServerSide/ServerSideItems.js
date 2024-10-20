@@ -33,6 +33,7 @@ const ServerSideItems = [
     id: "upload",
     name: "Upload",
     link: "/upload",
+    author: true,
     authen: true,
     icon: <FiUpload className="text-3xl" />,
   },

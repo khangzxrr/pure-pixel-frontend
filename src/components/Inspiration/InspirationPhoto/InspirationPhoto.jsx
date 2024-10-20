@@ -11,6 +11,7 @@ import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
 import { useKeycloak } from "@react-keycloak/web";
 import UseCategoryStore from "../../../states/UseCategoryStore";
 import InsPhotoFilter from "./InsPhotoFilter";
+import { IoMdImages } from "react-icons/io";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
@@ -123,9 +124,12 @@ const InspirationPhoto = () => {
         />
       )}
 
-      <div>
-        <div className="font-normal flex mx-3 my-2 items-center flex-col sm:flex-row">
-          Bộ lọc ảnh: <InsPhotoFilter />
+      <div className="">
+        <div className="font-normal flex my-2 items-center flex-col sm:flex-row">
+          <div className="flex items-center bg-[#383b41] px-2 rounded-r-md">
+            <span className="text-[#eee]">Bộ lọc ảnh:</span>
+            <InsPhotoFilter />
+          </div>
         </div>
         <div>
           {isLoading && (
@@ -137,7 +141,7 @@ const InspirationPhoto = () => {
             <div className="text-center text-red-500">Lỗi: {error.message}</div>
           )}
 
-          {!isLoading && !isError && photoList.length > 0 && (
+          {!isLoading && !isError && photoList.length > 0 ? (
             <InfiniteScroll
               dataLength={photoList.length}
               next={fetchNextPage}
@@ -199,6 +203,13 @@ const InspirationPhoto = () => {
                 </Masonry>
               </div>
             </InfiniteScroll>
+          ) : (
+            <div className="flex justify-center items-center  h-[90vh] ">
+              <div className="flex flex-col items-center text-[#8b8d91]">
+                <IoMdImages className="text-[100px] " />
+                <p className="select-none">Không tìm thấy ảnh khả dụng!</p>
+              </div>
+            </div>
           )}
         </div>
       </div>
