@@ -16,21 +16,85 @@ const useUploadPhotoStore = create(
 
     getPhotoByUid: (uid) => {
       const index = get().uidHashmap[uid];
-
+      console.log("getPhotoByUid", uid, index, get().uidHashmap);
       return get().photoArray[index];
     },
-    setSelectedPhotoById: (id) =>
+
+    // setSelectedPhotoById: (id) =>
+    //   set((state) => ({
+    //     selectedPhoto: state.photoArray[state.photoIdHashmap[id]],
+    //   })),
+    setSelectedPhotoByUid: (uid) =>
       set((state) => ({
-        selectedPhoto: state.photoArray[state.photoIdHashmap[id]],
+        selectedPhoto: uid,
       })),
 
     updateSelectedPhotoProperty: (key, value) => {
       set((state) => {
         state.selectedPhoto[key] = value;
-
         return {
           selectedPhoto: state.selectedPhoto,
         };
+      });
+    },
+    updatePhotoPropertyByUid: (uid, key, value) => {
+      set((state) => {
+        const index = state.uidHashmap[uid];
+
+        // Check if the index is valid
+        if (index !== undefined && state.photoArray[index]) {
+          const photo = state.photoArray[index];
+
+          // Handle nested keys like "exif.ShutterSpeedValue"
+          if (key.includes(".")) {
+            const keys = key.split(".");
+            let current = photo;
+
+            // Traverse the nested object up to the second-to-last key
+            for (let i = 0; i < keys.length - 1; i++) {
+              const k = keys[i];
+              if (!current[k]) {
+                current[k] = {}; // Create nested object if it doesn't exist
+              }
+              current = current[k];
+            }
+
+            // Update the final key with the new value
+            current[keys[keys.length - 1]] = value;
+          } else {
+            // Handle non-nested keys
+            photo[key] = value;
+          }
+
+          return {
+            photoArray: [...state.photoArray], // Return updated photoArray
+          };
+        } else {
+          return state;
+        }
+      });
+    },
+
+    updatePhotoPropertyById: (id, key, value) => {
+      set((state) => {
+        console.log("updatePhotoPropertyById", id, key, value);
+
+        const index = state.photoIdHashmap[id];
+        console.log("index", index, state.photoIdHashmap, id);
+
+        if (index !== undefined && state.photoArray[index]) {
+          console.log("updatePhotoPropertyById", state.photoArray[index]);
+
+          state.photoArray[index][key] = value;
+          // state.selectedPhoto[key] = value;
+
+          return {
+            photoArray: state.photoArray,
+            // selectedPhoto: state.selectedPhoto,
+          };
+        } else {
+          return state;
+        }
       });
     },
     addPhoto: (uid, id, payload) =>
@@ -49,37 +113,71 @@ const useUploadPhotoStore = create(
         };
       }),
 
-    removePhotoById: (id) => {
-      set((state) => {
-        const index = state.photoIdHashmap[id];
-
-        const uid = state.photoArray[index].file.uid;
-
-        state.photoArray.splice(index, 1);
-
-        delete state.photoIdHashmap[id];
-        delete state.uidHashmap[uid];
-
-        return {
-          photoIdHashmap: state.photoIdHashmap,
-          uidHashmap: state.uidHashmap,
-          photoArray: state.photoArray,
-        };
-      });
-    },
     removePhotoByUid: (uid) =>
       set((state) => {
         const index = state.uidHashmap[uid];
+        if (index === undefined) return state; // Exit if uid not found
 
-        const id = state.photoArray[index].signedUpload.photoId;
+        // Remove photo from photoArray
+        const updatedPhotoArray = state.photoArray.filter(
+          (_, idx) => idx !== index
+        );
 
-        delete state.photoIdHashmap[id];
-        delete state.uidHashmap[uid];
+        // Regenerate uidHashmap and photoIdHashmap with new indices
+        const newUidHashmap = {};
+        const newPhotoIdHashmap = {};
+
+        updatedPhotoArray.forEach((photo, idx) => {
+          newUidHashmap[photo.file.uid] = idx;
+          newPhotoIdHashmap[photo.signedUpload.photoId] = idx;
+        });
+
+        // Set selectedPhoto as the first element in the newUidHashmap
+        const newSelectedPhoto =
+          state.selectedPhoto === uid
+            ? Object.keys(newUidHashmap)[0] || null
+            : state.selectedPhoto;
+        return {
+          photoArray: updatedPhotoArray,
+          uidHashmap: newUidHashmap,
+          photoIdHashmap: newPhotoIdHashmap,
+          selectedPhoto: newSelectedPhoto,
+        };
+      }),
+
+    removePhotoById: (photoId) =>
+      set((state) => {
+        const index = state.photoArray.findIndex(
+          (photo) => photo.signedUpload.photoId === photoId
+        );
+        if (index === -1) return state; // Exit if photoId not found
+        const uid = state.photoArray[index].file.uid;
+
+        // Remove photo from photoArray
+        const updatedPhotoArray = state.photoArray.filter(
+          (_, idx) => idx !== index
+        );
+
+        // Regenerate uidHashmap and photoIdHashmap with new indices
+        const newUidHashmap = {};
+        const newPhotoIdHashmap = {};
+
+        updatedPhotoArray.forEach((photo, idx) => {
+          newUidHashmap[photo.file.uid] = idx;
+          newPhotoIdHashmap[photo.signedUpload.photoId] = idx;
+        });
+
+        // Set selectedPhoto as the first element in the newUidHashmap
+        const newSelectedPhoto =
+          state.selectedPhoto === uid
+            ? Object.keys(newUidHashmap)[0] || null
+            : state.selectedPhoto;
 
         return {
-          photoIdHashmap: state.photoIdHashmap,
-          uidHashmap: state.uidHashmap,
-          photoArray: state.photoArray,
+          photoArray: updatedPhotoArray,
+          uidHashmap: newUidHashmap,
+          photoIdHashmap: newPhotoIdHashmap,
+          selectedPhoto: newSelectedPhoto,
         };
       }),
 
@@ -100,59 +198,80 @@ const useUploadPhotoStore = create(
 
     isPhotoExistByUid: (uid) => {
       const state = useUploadPhotoStore.getState();
-      return state.photoList.some((photo) => photo.uid === uid);
+      return state.photoArray.some((photo) => photo.uid === uid);
     },
 
     deleteImageById: (id) =>
       set((state) => {
-        const updatedPhotoList = state.photoList.filter(
-          (image) => image.id !== id,
+        const updatedPhotoArray = state.photoArray.filter(
+          (image) => image.id !== id
         );
         const isDeletedSelected = state.selectedPhoto.id === id;
 
         return {
-          photoList: updatedPhotoList,
+          photoArray: updatedPhotoArray,
           selectedPhoto: isDeletedSelected
-            ? updatedPhotoList[0] || {}
+            ? updatedPhotoArray[0] || {}
             : state.selectedPhoto,
         };
       }),
 
     toggleWatermark: (status) =>
       set((state) => {
-        const photoList = state.photoList.map((photo) => ({
+        const photoArray = state.photoArray.map((photo) => ({
           ...photo,
           watermark: status,
         }));
 
-        return { photoList };
+        return { photoArray };
       }),
 
-    setNextSelectedPhoto: () =>
+    setNextSelectedPhoto: () => {
       set((state) => {
-        const { photoList, selectedPhoto } = state;
-        if (photoList.length === 0) return;
+        const { uidHashmap, selectedPhoto } = state;
+        if (!selectedPhoto) return;
 
-        const currentIndex = photoList.findIndex(
-          (photo) => photo.uid === selectedPhoto,
-        );
-        const nextIndex = (currentIndex + 1) % photoList.length;
-        return { selectedPhoto: photoList[nextIndex].uid };
-      }),
+        // Get all uids as an array from the keys of uidHashmap
+        const uids = Object.keys(uidHashmap);
+        const currentIndex = uids.indexOf(selectedPhoto);
 
-    setPreviousSelectedPhoto: () =>
+        // If the current UID is not found, do nothing
+        if (currentIndex === -1) return;
+
+        // Calculate the next index with wrap-around to the start of the array
+        const nextIndex = (currentIndex + 1) % uids.length;
+        const nextUid = uids[nextIndex];
+
+        console.log("setNext", currentIndex, nextIndex, nextUid);
+
+        // Return the new selected UID
+        return { selectedPhoto: nextUid };
+      });
+    },
+
+    setPreviousSelectedPhoto: () => {
       set((state) => {
-        const { photoList, selectedPhoto } = state;
-        if (photoList.length === 0) return;
+        const { uidHashmap, selectedPhoto } = state;
+        if (!selectedPhoto) return;
 
-        const currentIndex = photoList.findIndex(
-          (photo) => photo.uid === selectedPhoto,
-        );
-        const previousIndex =
-          (currentIndex - 1 + photoList.length) % photoList.length;
-        return { selectedPhoto: photoList[previousIndex].uid };
-      }),
-  })),
+        // Get all uids as an array from the keys of uidHashmap
+        const uids = Object.keys(uidHashmap);
+        const currentIndex = uids.indexOf(selectedPhoto);
+
+        // If the current UID is not found, do nothing
+        if (currentIndex === -1) return;
+
+        // Calculate the previous index using circular logic
+        const previousIndex = (currentIndex - 1 + uids.length) % uids.length;
+        const previousUid = uids[previousIndex];
+
+        console.log("setPrevious", currentIndex, previousIndex, previousUid);
+
+        // Return the new selected UID
+        return { selectedPhoto: previousUid };
+      });
+    },
+  }))
 );
 
 export default useUploadPhotoStore;

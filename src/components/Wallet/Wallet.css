@@ -1,0 +1,12 @@
+:where(.css-dev-only-do-not-override-kghr11).ant-pagination
+  .ant-pagination-item-active {
+  border: none;
+  background-color: transparent;
+  margin-right: 0;
+}
+
+:where(.css-dev-only-do-not-override-kghr11).ant-pagination
+  .ant-pagination-item-active:hover {
+  border: none;
+  background-color: transparent;
+}

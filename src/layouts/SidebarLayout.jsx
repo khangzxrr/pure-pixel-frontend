@@ -2,7 +2,7 @@
 import React from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -17,6 +17,11 @@ const SidebarLayout = ({
   onRegister,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // This will give you the current path
+  const isUploadRoute = location.pathname === "/upload/public" ? true : false;
+
   return (
     <div className="flex flex-grow max-h-screen">
       <div className="flex">
@@ -32,7 +37,7 @@ const SidebarLayout = ({
             {userData ? (
               <div className="flex items-center justify-between gap-2">
                 <div
-                  onClick={() => navigate("/test/profile")}
+                  onClick={() => navigate("/profile/userprofile")}
                   className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md transition-colors duration-300"
                 >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
@@ -54,12 +59,18 @@ const SidebarLayout = ({
                         />
                       </MenuButton>
                     </div>
-                    <MenuItems className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-top-right divide-y divide-gray-100 rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none">
+                    <MenuItems
+                      transition
+                      className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-top-right divide-y divide-gray-100 
+                      rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition 
+                      focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 
+                      data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                    >
                       <div className="py-1">
                         <MenuItem>
                           <div
                             onClick={onLogout}
-                            className="flex px-4 py-2 text-sm text-[#eee]"
+                            className="flex px-4 py-2 text-sm text-[#eee] data-[focus]:bg-[#36393f] "
                           >
                             Đăng xuất
                           </div>
@@ -103,7 +114,20 @@ const SidebarLayout = ({
             </div>
           </div>
         </div>
-        <Outlet />
+        <section aria-labelledby="products-heading" className=" ">
+          <div
+            className={`grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6 ${
+              isUploadRoute ? "h-screen overflow-hidden" : ""
+            }`}
+          >
+            <div className="lg:col-span-6  h-full w-full ">
+              <div className={``}>
+                {" "}
+                <Outlet />
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

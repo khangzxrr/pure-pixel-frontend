@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
@@ -49,9 +49,16 @@ import ProfilePage from "../pages/DetailUser/DetailUser";
 import BlogList from "../pages/Blog/BlogList";
 import DetailedBlog from "./../pages/Blog/DetailedBlog";
 import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
+import Wallet from "../pages/UserProfile/Wallet";
 import Blog from "./../components/Blog/Blog";
-import UserService from "../services/Keycloak";
 import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
+import MyPhotosPage from "../pages/MyPhoto/MyPhotosP";
+
+import TableTransactilonList from "../components/Wallet/TableTransactilonList";
+import AdminLayout from "../layouts/AdminLayout";
+import Report from "../pages/Manager/Report/Report";
+import BlogManager from "../pages/Manager/Blog/BlogManager";
+import ChatPage from "../pages/Message/ChatPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -124,6 +131,14 @@ export const AppRouter = createBrowserRouter([
                 path: "userprofile",
                 element: <UserProfile />,
               },
+              {
+                path: "my-photos",
+                element: <MyPhotosPage />,
+              },
+              {
+                path: "wallet",
+                element: <Wallet />,
+              },
             ],
           },
           {
@@ -144,6 +159,10 @@ export const AppRouter = createBrowserRouter([
                 element: <BlogList />,
               },
             ],
+          },
+          {
+            path: "message",
+            element: <ChatPage />,
           },
         ],
       },
@@ -186,6 +205,32 @@ export const AppRouter = createBrowserRouter([
       //   ],
       // },
       {
+        path: "/admin",
+        element: (
+          <AdminLayout>
+            <Outlet />
+          </AdminLayout>
+        ),
+        children: [
+          {
+            path: "/admin/*",
+            element: <p className="w-screen">12312312321</p>,
+          },
+          {
+            path: "/admin/upgrade",
+            element: <Upgrade />,
+          },
+          {
+            path: "/admin/report",
+            element: <Report />,
+          },
+          {
+            path: "/admin/blog",
+            element: <BlogManager />,
+          },
+        ],
+      },
+      {
         path: "/profile/:userId",
         element: <UserProfile />,
         children: [
@@ -205,7 +250,6 @@ export const AppRouter = createBrowserRouter([
           { path: "/profile/:userId/packages", element: <Packages /> },
         ],
       },
-
       {
         path: "/photo/:id",
         element: <DetailedPhotoView listImg={[]} />,
@@ -265,50 +309,50 @@ export const AppRouter = createBrowserRouter([
         path: "/upload-photo",
         element: <UploadPhoto />,
       },
-      {
-        path: "/my-photo/",
-        element: <MyPhoto />,
-        children: [
-          {
-            path: "/my-photo/photo",
-            element: <MyPhotoContent />,
-            children: [
-              {
-                path: "/my-photo/photo",
-                element: <Navigate to="/my-photo/photo/all" />,
-              },
-              {
-                path: "/my-photo/photo/all",
-                element: <MyPhotoAll />,
-              },
-              {
-                path: "/my-photo/photo/private",
-                element: <MyPhotoPrivate />,
-              },
-            ],
-          },
-          {
-            path: "/my-photo/licensing",
-            element: <MyPhotoLicensing />,
-          },
-          {
-            path: "/my-photo/stories",
-            element: <MyPhotoStories />,
-          },
-          {
-            path: "/my-photo/galleries",
-            element: <MyPhotoGalleries />,
-          },
-          {
-            path: "/my-photo/likes",
-            element: <MyPhotoLikes />,
-          },
-          {
-            path: "/my-photo/statistics",
-            element: <MyPhotoStatistics />,
-          },
-        ],
-      },
+      // {
+      //   path: "/my-photo/",
+      //   element: <MyPhoto />,
+      //   children: [
+      //     {
+      //       path: "/my-photo/photo",
+      //       element: <MyPhotoContent />,
+      //       children: [
+      //         {
+      //           path: "/my-photo/photo",
+      //           element: <Navigate to="/my-photo/photo/all" />,
+      //         },
+      //         {
+      //           path: "/my-photo/photo/all",
+      //           element: <MyPhotoAll />,
+      //         },
+      //         {
+      //           path: "/my-photo/photo/private",
+      //           element: <MyPhotoPrivate />,
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       path: "/my-photo/licensing",
+      //       element: <MyPhotoLicensing />,
+      //     },
+      //     {
+      //       path: "/my-photo/stories",
+      //       element: <MyPhotoStories />,
+      //     },
+      //     {
+      //       path: "/my-photo/galleries",
+      //       element: <MyPhotoGalleries />,
+      //     },
+      //     {
+      //       path: "/my-photo/likes",
+      //       element: <MyPhotoLikes />,
+      //     },
+      //     {
+      //       path: "/my-photo/statistics",
+      //       element: <MyPhotoStatistics />,
+      //     },
+      //   ],
+      // },
       {
         path: "/customer",
         element: <CustomerLayout />,

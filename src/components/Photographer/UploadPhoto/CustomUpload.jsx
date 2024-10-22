@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import "./UploadPhoto.css";
 
 import PhotoService from "../../../services/PhotoService";
+import { useNotification } from "../../../Notification/Notification";
+import UserService from "../../../services/Keycloak";
 
 const { Dragger } = Upload;
 
@@ -18,22 +20,26 @@ export default function CustomUpload() {
 
   const {
     addPhoto,
-    setSelectedPhotoById,
-
+    setSelectedPhotoByUid,
     getPhotoByUid,
-    selectedPhoto,
-
     photoArray,
-
     removePhotoByUid,
+    updatePhotoPropertyByUid,
     toggleWatermark,
     clearState,
   } = useUploadPhotoStore();
 
+  const userData = UserService.getTokenParsed()?.preferred_username;
+  // notificationApi(
+  //   "success",
+  //   "Thành công",
+  //   <span className="text-blue-500">
+  //     Đã tải ảnh lên thành công, ảnh đang được xử lý
+  //   </span>
+  // );
   const navigate = useNavigate();
 
   //use keycloak to trigger refresh component when new token comes
-  const { keycloak } = useKeycloak();
 
   const uploadPhoto = useMutation({
     mutationFn: ({ url, file, options }) =>
@@ -53,11 +59,16 @@ export default function CustomUpload() {
     mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
   });
 
+  const addWatermark = useMutation({
+    mutateKey: "add-watermark",
+    mutationFn: async (photo) => await PhotoApi.addWatermark(photo),
+  });
+
   const handleException = (file, e) => {
     switch (e.response.data.message) {
       case "RunOutPhotoQuotaException":
         message.error(
-          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
         );
         break;
 
@@ -105,10 +116,13 @@ export default function CustomUpload() {
         file,
         title: file.name,
         exif,
+        watermark: true,
+        watermarkContent: `${userData}`,
+        visibility: "PUBLIC",
+        status: "uploading",
       });
-      if (!selectedPhoto) {
-        setSelectedPhotoById(presignedData.signedUpload.photoId);
-      }
+
+      setSelectedPhotoByUid(file.uid);
     } catch (e) {
       handleException(file, e);
       return false;
@@ -122,16 +136,22 @@ export default function CustomUpload() {
       const photo = getPhotoByUid(file.uid);
       console.log(photo);
 
+      // Upload the photo
       await uploadPhoto.mutateAsync({
         url: photo.signedUpload.uploadUrl,
         file,
+        options: {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 70) / progressEvent.total
+            );
+            updatePhotoPropertyByUid(file.uid, "percent", percentCompleted);
+            console.log(progressEvent, percentCompleted);
+          },
+        },
       });
 
-      onSuccess({
-        ...file,
-        status: "done",
-      }); // Set status to 'done'
-      // Then process the photo
+      // Process the photo after upload
       await processPhoto.mutateAsync(photo.signedUpload);
     } catch (e) {
       onError(e);
@@ -140,6 +160,25 @@ export default function CustomUpload() {
 
   const handleChange = async (info) => {
     console.log(info);
+
+    if (info.file.status === "uploading") {
+      // updatePhotoPropertyByUid(info.file.uid, "status", "uploading");
+      console.log("updatePhotoPropertyByUid: uploading");
+
+      return;
+    }
+    if (info.file.status === "processing") {
+      // updatePhotoPropertyByUid(info.file.uid, "status", "processing");
+      console.log("updatePhotoPropertyByUid: processing");
+
+      return;
+    }
+    if (info.file.status === "done") {
+      // updatePhotoPropertyByUid(info.file.uid, "status", "done");
+      console.log("updatePhotoPropertyByUid: done");
+
+      return;
+    }
     //skip removed this status
     if (info.file.status === "removed") {
       return;
@@ -149,7 +188,7 @@ export default function CustomUpload() {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
           message.error(
-            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
           );
           break;
 
@@ -173,49 +212,68 @@ export default function CustomUpload() {
   };
 
   const SubmitUpload = async () => {
-    // Extract the necessary fields from photoList and filter by status 'PARSED'
-    const photosToUpload = photoArray.map((photo) => ({
-      id: photo.signedUpload.photoId,
-      categoryId: photo.categoryId,
-      title: photo.title,
-      watermark: photo.watermark,
-      showExif: photo.showExif ? photo.showExif : true,
-      exif: photo.exif,
-      colorGrading: photo.colorGrading,
-      location: photo.location,
-      captureTime: photo.captureTime,
-      description: photo.description,
-      originalPhotoUrl: photo.originalPhotoUrl,
-      watermarkPhotoUrl: photo.watermarkPhotoUrl,
-      thumbnailPhotoUrl: photo.thumbnailPhotoUrl,
-      watermarkThumbnailPhotoUrl: photo.watermarkThumbnailPhotoUrl,
-      photoType: photo.photoType,
-      visibility: photo.visibility,
-      status: photo.status,
-      photoTags: photo.photoTags,
-    }));
+    // Loop over each photo and update them individually
+    const updatePromises = photoArray.map(async (photo) => {
+      const photoToUpdate = {
+        id: photo.signedUpload.photoId,
+        categoryId: photo.categoryId,
+        title: photo.title,
+        watermark: photo.watermark,
+        showExif: photo.showExif ?? true,
+        exif: photo.exif,
+        colorGrading: photo.colorGrading,
+        location: photo.location,
+        captureTime: photo.captureTime,
+        description: photo.description,
+        originalPhotoUrl: photo.originalPhotoUrl,
+        watermarkPhotoUrl: photo.watermarkPhotoUrl,
+        thumbnailPhotoUrl: photo.thumbnailPhotoUrl,
+        watermarkThumbnailPhotoUrl: photo.watermarkThumbnailPhotoUrl,
+        photoType: photo.photoType,
+        visibility: photo.visibility,
+        status: photo.status,
+        photoTags: photo.photoTags,
+      };
+      console.log(photoToUpdate);
 
-    console.log("photosToUpload", photosToUpload);
+      // Call the API to update a single photo and add watermark concurrently
+      return Promise.all([
+        updatePhotos.mutateAsync(photoToUpdate),
+        photo.watermark
+          ? addWatermark.mutateAsync({
+              photoId: photo.signedUpload.photoId,
+              text: photo.watermarkContent,
+            })
+          : Promise.resolve(),
+      ]);
+    });
 
-    // Create the payload
-    const payload = { photos: photosToUpload };
+    try {
+      // Wait for all update and watermark operations to complete
+      await Promise.all(updatePromises);
+      navigate("/profile/my-photos");
+      // Clear state after successful updates
+      clearState();
 
-    // Upload the photos
-    await updatePhotos.mutateAsync(payload.photos);
-
-    clearState();
-
-    message.success("đã lưu các chỉnh sửa!");
-    navigate("/my-photo/photo/all");
+      // Display success message
+      message.success("Đã lưu các chỉnh sửa!");
+      // navigate("/my-photo/photo/all");
+    } catch (error) {
+      // Handle errors if any of the updates fail
+      console.error("Error updating photos:", error);
+      message.error("Có lỗi xảy ra trong quá trình cập nhật!");
+    }
   };
 
   return (
-    <div className="h-full overflow-hidden">
+    <div className="h-full w-full overflow-hidden">
       <div className="w-full h-full flex flex-row">
         {photoArray.length > 0 && (
           <div className="w-5/6 bg-[#36393f]">
             <div
-              className={`w-full ${photoArray.length > 1 ? "visible" : "invisible"}`}
+              className={`w-full ${
+                photoArray.length > 1 ? "visible" : "invisible"
+              }`}
             >
               <Tooltip placement="rightTop" color="geekblue">
                 <div className="flex items-center pl-3">
@@ -251,7 +309,7 @@ export default function CustomUpload() {
               className="w-full h-1/2 bg-[#56bc8a] hover:bg-[#68c397] transition duration-150 flex justify-center items-center cursor-pointer"
               onClick={SubmitUpload}
             >
-              <div className="h-16 w-full flex-shrink-0 m-2 text-6xl text-white flex justify-center items-center">
+              <div className="h-4 w-full m-2 text-6xl text-white flex justify-center items-center">
                 <UploadOutlined />
               </div>
             </div>
@@ -276,7 +334,7 @@ export default function CustomUpload() {
             <div className=" h-full w-full ">
               {photoArray.length > 0 ? (
                 <div className="w-full h-full hover:text-white text-gray-200">
-                  <div className="  flex-shrink-0 m-2 text-6xl">
+                  <div className="   m-2 text-6xl">
                     <PlusCircleOutlined />
                   </div>
                 </div>

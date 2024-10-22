@@ -9,7 +9,7 @@ export default function getDefaultPhoto(photo) {
     id: photo?.id || "",
     location: photo?.location || "",
     originalPhotoUrl: photo?.originalPhotoUrl || "",
-    photoTags: photo?.photoTags || "",
+    photoTags: photo?.photoTags || [],
     photoType: photo?.photoType || "",
     photographerId: photo?.photographerId || "",
     showExif: photo?.showExif || "",
@@ -19,7 +19,9 @@ export default function getDefaultPhoto(photo) {
     updatedAt: photo?.updatedAt || "",
     visibility: photo?.visibility || "",
     watermark: photo?.watermark || "",
+    watermarkContent: photo?.watermarkContent || "",
     watermarkPhotoUrl: photo?.watermarkPhotoUrl || "",
     watermarkThumbnailPhotoUrl: photo?.watermarkThumbnailPhotoUrl || "",
+    status: photo?.status || "",
   };
 }
