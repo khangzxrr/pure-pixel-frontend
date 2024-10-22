@@ -42,6 +42,8 @@ function App() {
       <ReactKeycloakProvider
         initOptions={{
           onLoad: "check-sso",
+          silentCheckSsoRedirectUri:
+            window.location.origin + "/silent-check-sso.html",
         }}
         authClient={UserService.keycloakService}
         onEvent={async (event, error) => {
