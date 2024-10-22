@@ -74,7 +74,7 @@ const MyPhotoFilter = () => {
   };
   return (
     <div className="flex justify-between items-center ">
-      <div className="flex items-center gap-2   px-2 rounded-r-md bg-[#292b2f]">
+      <div className="flex flex-col lg:flex-row items-center gap-2 px-2 rounded-r-md bg-[#292b2f]">
         <span className="font-normal">Bộ lọc ảnh:</span>
         <div className="flex items-center gap-2">
           <div>

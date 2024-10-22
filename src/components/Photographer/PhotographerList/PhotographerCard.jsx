@@ -45,7 +45,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
               />
             </div>
           ))}
-          <div className="absolute overflow-hidden outline outline-2 outline-[#f7f8fa] top-44 left-1/2 transform -translate-x-1/2 md:translate-x-0 md:top-44 md:left-28 rounded-full w-[64px] h-[64px]">
+          <div className="absolute overflow-hidden outline outline-2 outline-[#202225] bg-[#eee] top-44 left-1/2 transform -translate-x-1/2 md:translate-x-0 md:top-44 md:left-28 rounded-full w-[64px] h-[64px]">
             <img
               src={avatar}
               alt={name}
