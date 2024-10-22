@@ -6,7 +6,7 @@ import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
 import { useNavigate } from "react-router-dom";
 import MyPhotoFilter from "./MyPhotoFilter";
 import UseMyPhotoFilter from "../../states/UseMyPhotoFilter";
-
+import { IoMdImages } from "react-icons/io";
 const MyPhotoP = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
@@ -72,31 +72,35 @@ const MyPhotoP = () => {
           listImg={data.objects}
         />
       )}
-      <div className="my-2">
+      <div className="my-[5px]">
         <MyPhotoFilter />
       </div>
-      <div className="flex flex-col min-h-screen py-2 bg-[#2f3136]">
+      <div className="flex flex-col min-h-[620px] py-2 bg-[#2f3136]">
         {/* Pagination Top */}
-        <div className="flex justify-center gap-2 mx-5 my-2">
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-            (pageNumber) => (
-              <button
-                key={pageNumber}
-                onClick={() => handlePageClick(pageNumber)}
-                className={`px-3 py-1 rounded ${
-                  page === pageNumber
-                    ? "bg-[#eee] text-gray-600"
-                    : "bg-gray-600 text-white"
-                }`}
-              >
-                {pageNumber}
-              </button>
-            )
-          )}
-        </div>
+        {data?.objects.length > 0 ? (
+          <div className="flex justify-center gap-2 mx-5 my-2">
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              (pageNumber) => (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageClick(pageNumber)}
+                  className={`px-3 py-1 rounded ${
+                    page === pageNumber
+                      ? "bg-[#eee] text-gray-600"
+                      : "bg-gray-600 text-white"
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              )
+            )}
+          </div>
+        ) : (
+          ""
+        )}
 
         {/* Photos Display */}
-        <div className="grid grid-cols-4 gap-2 mx-2">
+        <div className="grid grid-cols-5 gap-2 mx-2">
           {isError && (
             <div className="text-red-500">{JSON.stringify(error)}</div>
           )}
@@ -124,30 +128,37 @@ const MyPhotoP = () => {
               </div>
             ))
           ) : (
-            <div className="text-white text-center w-full">
-              Không có ảnh để hiển thị
+            <div className="flex justify-center items-center w-full col-span-5 h-[60vh] ">
+              <div className="flex flex-col items-center text-[#8b8d91]">
+                <IoMdImages className="text-[100px] " />
+                <p className="select-none">Không tìm thấy ảnh khả dụng!</p>
+              </div>
             </div>
           )}
         </div>
 
         {/* Pagination Bottom */}
-        <div className="flex justify-center gap-2 mx-5 my-2">
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-            (pageNumber) => (
-              <button
-                key={pageNumber}
-                onClick={() => handlePageClick(pageNumber)}
-                className={`px-3 py-1 rounded ${
-                  page === pageNumber
-                    ? "bg-[#eee] text-gray-600"
-                    : "bg-gray-600 text-white"
-                }`}
-              >
-                {pageNumber}
-              </button>
-            )
-          )}
-        </div>
+        {data?.objects.length > 0 ? (
+          <div className="flex justify-center gap-2 mx-5 my-2">
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              (pageNumber) => (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageClick(pageNumber)}
+                  className={`px-3 py-1 rounded ${
+                    page === pageNumber
+                      ? "bg-[#eee] text-gray-600"
+                      : "bg-gray-600 text-white"
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              )
+            )}
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </>
   );

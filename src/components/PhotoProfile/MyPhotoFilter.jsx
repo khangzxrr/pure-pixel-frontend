@@ -73,14 +73,14 @@ const MyPhotoFilter = () => {
     setFilterByUpVote(name, param);
   };
   return (
-    <div className="flex justify-between items-center mx-2">
-      <div className="flex items-center gap-2">
+    <div className="flex justify-between items-center ">
+      <div className="flex flex-col lg:flex-row items-center gap-2 px-2 rounded-r-md bg-[#292b2f]">
         <span className="font-normal">Bộ lọc ảnh:</span>
         <div className="flex items-center gap-2">
           <div>
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] shadow-sm ring-1 ring-inset ring-gray-300 ">
+                <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] ">
                   <span className="font-normal">Ngày đăng:</span>{" "}
                   {filterByPhotoDate.name || ""}
                   <IoMdArrowDropdown />
@@ -119,7 +119,7 @@ const MyPhotoFilter = () => {
           <div>
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] shadow-sm ring-1 ring-inset ring-gray-300 ">
+                <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] ">
                   <span className="font-normal">Lượt bình chọn:</span>{" "}
                   {filterByUpVote.name || ""}
                   <IoMdArrowDropdown />
@@ -157,7 +157,7 @@ const MyPhotoFilter = () => {
           </div>
         </div>
         <div className="flex gap-2 ">
-          <div className="flex items-center border p-[5px] rounded-md">
+          <div className="flex items-center p-[5px] rounded-md">
             <label class="inline-flex items-center cursor-pointer">
               <input
                 id="watermarkCheckbox"
@@ -173,7 +173,7 @@ const MyPhotoFilter = () => {
               </span>
             </label>
           </div>
-          <div className="flex items-center border p-[5px] rounded-md">
+          <div className="flex items-center p-[5px] rounded-md">
             <label class="inline-flex items-center cursor-pointer">
               <input
                 id="forSaleCheckbox"
