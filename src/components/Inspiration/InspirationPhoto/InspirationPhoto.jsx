@@ -79,20 +79,6 @@ const InspirationPhoto = () => {
       },
     });
 
-  // if (isLoading && !data) {
-  //   return (
-  //     <div className="flex justify-center mt-4">
-  //       <LoadingSpinner />
-  //     </div>
-  //   );
-  // }
-
-  // if (isError) {
-  //   return <div>Lỗi: {error.message}</div>;
-  // }
-
-  // Merge all pages' results
-  // const photoList = data.pages.flatMap((page) => page.objects);
   const photoList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
     : [];
