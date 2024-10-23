@@ -1,49 +1,36 @@
-import React, { useState } from "react";
-import PhotoApi from "../../../apis/PhotoApi";
-import { useNavigate } from "react-router-dom";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
-import InfiniteScroll from "react-infinite-scroll-component";
-import Masonry from "react-masonry-css";
-import { FaRegHeart } from "react-icons/fa6";
-import { FiShare2 } from "react-icons/fi";
-import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
 import { useKeycloak } from "@react-keycloak/web";
-import UseCategoryStore from "../../../states/UseCategoryStore";
-import InsPhotoFilter from "./InsPhotoFilter";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import UseSellingPhotoStore from "../../states/UseSellingPhotoStore";
+import PhotoApi from "../../apis/PhotoApi";
+import Masonry from "react-masonry-css";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import InfiniteScroll from "react-infinite-scroll-component";
+import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
+import { FaRegHeart } from "react-icons/fa";
+import { FiShare2 } from "react-icons/fi";
 import { IoMdImages } from "react-icons/io";
 
-const InspirationPhoto = () => {
+const SellingPhotoList = () => {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
   const [selectedImage, setSelectedImage] = useState(null);
-
-  const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory
+  const isForSellingPhoto = UseSellingPhotoStore(
+    (state) => state.isForSellingPhoto
   );
-  const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate
-  );
-  const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
-  const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
-  const searchResult = UseCategoryStore((state) => state.searchResult);
-  const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle
-  );
-  // const searchCategory = UseCategoryStore((state) => state.searchCategory);
-
+  const selling = isForSellingPhoto;
+  const categoryName = "";
+  const orderByCreatedAt = "";
+  const orderByUpVote = "";
+  const watermark = false;
+  const photographerName = "";
+  const title = "";
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
-    const categoryName = selectedPhotoCategory.name;
-    const orderByCreatedAt = filterByPhotoDate.param;
-    const orderByUpVote = filterByUpVote.param;
-    const watermark = isWatermarkChecked;
-    const selling = isForSaleChecked;
-    const photographerName = searchResult;
-    const title = searchByPhotoTitle;
     const response = await PhotoApi.getPublicPhotos(
       validLimit,
       validPage,
@@ -57,80 +44,52 @@ const InspirationPhoto = () => {
     );
     return response;
   };
-
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: [
-        "public-photos",
-        selectedPhotoCategory,
-        filterByPhotoDate,
-        filterByUpVote,
-        isWatermarkChecked,
-        isForSaleChecked,
-        searchResult,
-        searchByPhotoTitle,
-      ],
+      queryKey: ["public-photos", isForSellingPhoto],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {
+        if (!lastPage || lastPage.totalPage === undefined) {
+          // Nếu không tìm thấy lastPage hoặc totalPage, không tải thêm trang nữa
+          return undefined;
+        }
         // Số trang đã fetch
         const currentPage = pages.length;
         // Trả về số trang tiếp theo nếu còn ảnh
         return currentPage < lastPage.totalPage ? currentPage : undefined;
       },
     });
-
-  // if (isLoading && !data) {
-  //   return (
-  //     <div className="flex justify-center mt-4">
-  //       <LoadingSpinner />
-  //     </div>
-  //   );
-  // }
-
-  // if (isError) {
-  //   return <div>Lỗi: {error.message}</div>;
-  // }
-
-  // Merge all pages' results
-  // const photoList = data.pages.flatMap((page) => page.objects);
   const photoList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
     : [];
-
-  // Breakpoint columns for screen size
   const breakpointColumnsObj = {
     default: 4,
     1100: 3,
     700: 2,
     500: 1,
   };
-
   const handleOnClick = (id) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     setSelectedImage(id);
     // navigate(`/photo/${id}`, { state: { listImg: photoList } });
   };
-
   return (
     <>
       {selectedImage && (
         <DetailedPhotoView
           idImg={selectedImage}
           onClose={() => {
-            navigate(`/explore/inspiration`);
+            navigate(`/explore/selling`);
             setSelectedImage(null);
           }}
           listImg={photoList}
         />
       )}
 
-      <div className="">
-        <div className="font-normal flex my-2 items-center flex-col sm:flex-row">
-          <div className="flex items-center bg-[#383b41] px-2 rounded-r-md">
-            <span className="text-[#eee]">Bộ lọc ảnh:</span>
-            <InsPhotoFilter />
-          </div>
-        </div>
+      <div>
+        {/* <div className="font-normal flex mx-3 my-2 items-center flex-col sm:flex-row">
+          Bộ lọc ảnh: <InsPhotoFilter />
+        </div> */}
         <div>
           {isLoading && (
             <div className="flex justify-center mt-4">
@@ -217,4 +176,4 @@ const InspirationPhoto = () => {
   );
 };
 
-export default InspirationPhoto;
+export default SellingPhotoList;

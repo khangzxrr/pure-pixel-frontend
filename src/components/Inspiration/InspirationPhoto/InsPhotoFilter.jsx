@@ -70,9 +70,9 @@ const InsPhotoFilter = () => {
       <div>
         <Menu as="div" className="relative inline-block text-left">
           <div>
-            <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] shadow-sm ring-1 ring-inset ring-gray-300 ">
-              <span className="font-normal">Ngày đăng:</span>{" "}
-              {filterByPhotoDate.name || ""}
+            <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md   py-2 text-sm font-semibold text-[#eee] ">
+              <span className="font-normal text-[16px]">Ngày đăng:</span>{" "}
+              <div className="text-[16px]">{filterByPhotoDate.name || ""}</div>
               <IoMdArrowDropdown />
             </MenuButton>
           </div>
@@ -83,7 +83,7 @@ const InsPhotoFilter = () => {
           >
             <div className="py-1">
               {filterByDate.map((item) => (
-                <MenuItem className="hover:cursor-pointer">
+                <MenuItem key={item.id} className="hover:cursor-pointer">
                   <div
                     onClick={() =>
                       handleFilterByPhotoDate(item.name, item.param)
@@ -111,9 +111,9 @@ const InsPhotoFilter = () => {
       <div>
         <Menu as="div" className="relative inline-block text-left">
           <div>
-            <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] shadow-sm ring-1 ring-inset ring-gray-300 ">
-              <span className="font-normal">Lượt bình chọn:</span>{" "}
-              {filterByUpVote.name || ""}
+            <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  py-2 text-sm font-semibold text-[#eee] ">
+              <span className="font-normal text-[16px]">Lượt bình chọn:</span>{" "}
+              <div className="text-[16px]">{filterByUpVote.name || ""}</div>
               <IoMdArrowDropdown />
             </MenuButton>
           </div>
@@ -124,7 +124,7 @@ const InsPhotoFilter = () => {
           >
             <div className="py-1">
               {filterByVote.map((item) => (
-                <MenuItem className="hover:cursor-pointer">
+                <MenuItem key={item.id} className="hover:cursor-pointer">
                   <div
                     onClick={() => handleFilterByUpVote(item.name, item.param)}
                     className="block px-4 py-2 text-sm text-[#eee] data-[focus]:bg-[#eee] data-[focus]:text-[#2f3136] transition-colors duration-200 ease-in-out"
@@ -144,38 +144,6 @@ const InsPhotoFilter = () => {
             </div>
           </MenuItems>
         </Menu>
-      </div>
-      <div className="flex items-center border p-[5px] rounded-md">
-        <label class="inline-flex items-center cursor-pointer">
-          <input
-            id="watermarkCheckbox"
-            type="checkbox"
-            value=""
-            class="sr-only peer"
-            checked={isWatermarkChecked}
-            onChange={handleWatermarkChange}
-          />
-          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
-          <span class="ms-3 text-sm font-normal text-gray-900 dark:text-gray-300">
-            Ảnh có watermark
-          </span>
-        </label>
-      </div>
-      <div className="flex items-center border p-[5px] rounded-md">
-        <label class="inline-flex items-center cursor-pointer">
-          <input
-            id="forSaleCheckbox"
-            type="checkbox"
-            value=""
-            class="sr-only peer"
-            checked={isForSaleChecked}
-            onChange={handleForSaleChange}
-          />
-          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
-          <span class="ms-3 text-sm font-normal text-gray-900 dark:text-gray-300">
-            Ảnh đang bán
-          </span>
-        </label>
       </div>
     </div>
   );
