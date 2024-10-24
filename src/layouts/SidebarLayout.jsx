@@ -3,6 +3,8 @@ import React from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import UserApi from "../apis/UserApi";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -19,6 +21,12 @@ const SidebarLayout = ({
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => UserApi.getApplicationProfile(),
+    staleTime: 60000,
+    cacheTime: 300000,
+  });
   // This will give you the current path
   const isUploadRoute = location.pathname === "/upload/public" ? true : false;
 
@@ -42,9 +50,9 @@ const SidebarLayout = ({
                 >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
                     <img
-                      src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+                      src={data?.avatar}
                       alt="avatar"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover bg-[#eee]"
                     />
                   </div>
                   <div className="text-[13px]">{userData.name}</div>

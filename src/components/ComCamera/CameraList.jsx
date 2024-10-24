@@ -1,6 +1,7 @@
 import React from "react";
 import CameraCard from "./CameraCard";
 import CameraChart from "./CameraChart";
+import CameraTableList from "./CameraTableList";
 
 const CameraList = () => {
   return (
@@ -13,18 +14,14 @@ const CameraList = () => {
           <CameraChart />
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
+      <div>
+        <CameraTableList />
       </div>
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+        <CameraCard />
+        <CameraCard />
+        <CameraCard />
+      </div> */}
     </div>
   );
 };

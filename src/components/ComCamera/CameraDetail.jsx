@@ -8,8 +8,8 @@ const CameraDetail = () => {
   const { id } = useParams();
 
   return (
-    <div className="flex flex-col p-2">
-      <div className="flex flex-col lg:flex-row bg-[#2f3136] w-full h-auto gap-4">
+    <div className="flex flex-col m-2">
+      <div className="flex flex-col items-center lg:flex-row bg-[#2f3136]  h-auto gap-4 m-[5px]">
         <div className="w-full md:w-[400px] h-[400px] bg-[#eee] flex items-center justify-center">
           <img
             src="https://www.transparentpng.com/download/-camera/7mDYcE-nikon-camera-transparent-background-photography.png"
@@ -33,30 +33,32 @@ const CameraDetail = () => {
             10524 ảnh tải lên từ 125 người dùng vào hôm qua.
           </div>
           <div className="flex flex-col gap-2">
-            <div className="font-bold text-xl">Thông số kĩ thuật</div>
-            <div className="flex gap-20 border-b-[1px] border-[#565b63] pb-2">
-              <div>Loại máy ảnh: </div>
-              <div className="font-normal">Digital SLR</div>
+            <div className="font-bold text-lg">Thông số kĩ thuật</div>
+            <div className="flex gap-10 border-b-[1px] border-[#565b63] pb-2">
+              <div className="min-w-[150px] text-sm">Loại máy ảnh:</div>
+              <div className="font-normal text-sm">Digital SLR</div>
             </div>
-            <div className="flex gap-5 border-b-[1px] border-[#565b63] pb-2">
-              <div>Độ phân giải của cảm biến: </div>
-              <div className="font-normal">24.2 Megapixel</div>
+            <div className="flex gap-10 border-b-[1px] border-[#565b63] pb-2">
+              <div className="min-w-[150px] text-sm">
+                Độ phân giải cảm biến:
+              </div>
+              <div className="font-normal text-sm">24.2 Megapixel</div>
             </div>
-            <div className="flex gap-5 border-b-[1px] border-[#565b63] pb-2">
-              <div>Cỡ LCD: </div>
-              <div className="font-normal">3 inch</div>
+            <div className="flex gap-10 border-b-[1px] border-[#565b63] pb-2">
+              <div className="min-w-[150px] text-sm">Cỡ LCD:</div>
+              <div className="font-normal text-sm">3 inch</div>
             </div>
-            <div className="flex gap-5 border-b-[1px] border-[#565b63] pb-2">
-              <div>Hổ trợ thẻ nhớ: </div>
-              <div className="font-normal">SD/SDHC/SDXC</div>
+            <div className="flex gap-10 border-b-[1px] border-[#565b63] pb-2">
+              <div className="min-w-[150px] text-sm">Hổ trợ thẻ nhớ:</div>
+              <div className="font-normal text-sm">SD/SDHC/SDXC</div>
             </div>
-            <div className="flex gap-5 border-b-[1px] border-[#565b63] pb-2">
-              <div>Trọng lượng: </div>
-              <div className="font-normal">365g</div>
+            <div className="flex gap-10 border-b-[1px] border-[#565b63] pb-2">
+              <div className="min-w-[150px] text-sm">Trọng lượng:</div>
+              <div className="font-normal text-sm">365g</div>
             </div>
-            <div className="flex gap-5 border-b-[1px] border-[#565b63] pb-2">
-              <div>Vành ống kính: </div>
-              <div className="font-normal">Nikon F</div>
+            <div className="flex gap-10 border-b-[1px] border-[#565b63] pb-2">
+              <div className="min-w-[150px] text-sm">Vành ống kính:</div>
+              <div className="font-normal text-sm">Nikon F</div>
             </div>
           </div>
         </div>
