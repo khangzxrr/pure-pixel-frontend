@@ -2,7 +2,8 @@ import React from "react";
 import { Dropdown, Space } from "antd";
 import { GoBlocked } from "react-icons/go";
 import { SlOptions } from "react-icons/sl";
-import PhotoList from "../../Dashboard/ForYou/PhotoList";
+import PhotoApi from "../../../apis/PhotoApi";
+import { useQuery } from "@tanstack/react-query";
 
 // Hàm để cắt ngắn câu quote nếu quá dài
 const truncateQuote = (quote, maxLength) => {
@@ -25,9 +26,40 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
     },
   ];
 
-  const randomPhotos = [...PhotoList]
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 4);
+  const {
+    data: photoData = {},
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["photographerPhotos", id],
+    queryFn: () =>
+      PhotoApi.getPublicPhotos(
+        10,
+        1,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        id
+      ),
+    staleTime: 300000,
+  });
+
+  const photos = photoData.objects || [];
+
+  // Kiểm tra kiểu dữ liệu trước khi xử lý
+  const randomPhotos =
+    Array.isArray(photos) && photos.length > 0
+      ? photos.sort(() => Math.random() - 0.5).slice(0, 4)
+      : Array(4).fill({
+          signedUrl: {
+            thumbnail:
+              "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg",
+          },
+        }); // Thay thế bằng ảnh mặc định nếu không có ảnh
 
   return (
     <div className="flex flex-col w-full md:w-[340px] h-[450px] rounded-lg text-[#eee] bg-[#202225] group hover:cursor-pointer">
@@ -35,11 +67,11 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
         <div className="grid grid-cols-2 grid-rows-2 gap-2 relative">
           {randomPhotos.map((item, index) => (
             <div
-              key={item.id}
+              key={index}
               className="flex h-[100px] w-full md:w-[144px] justify-center items-center overflow-hidden rounded-lg"
             >
               <img
-                src={item.photo}
+                src={item.signedUrl?.thumbnail}
                 alt={`Photo ${index + 1}`}
                 className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
               />

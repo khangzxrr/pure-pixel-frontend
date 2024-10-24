@@ -111,12 +111,6 @@ const InspirationPhoto = () => {
       )}
 
       <div className="">
-        <div className="font-normal flex my-2 items-center flex-col sm:flex-row">
-          <div className="flex items-center  px-2 rounded-r-md">
-            <span className="text-[#eee]">Bộ lọc ảnh:</span>
-            <InsPhotoFilter />
-          </div>
-        </div>
         <div>
           {isLoading && (
             <div className="flex justify-center mt-4">

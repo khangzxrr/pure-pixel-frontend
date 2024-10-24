@@ -21,7 +21,8 @@ const getPublicPhotos = async (
   watermark,
   selling,
   photographerName,
-  title
+  title,
+  photographerId
 ) => {
   // Tạo một đối tượng chứa các tham số
   const params = {
@@ -50,6 +51,9 @@ const getPublicPhotos = async (
   }
   if (title) {
     params.title = title;
+  }
+  if (photographerId) {
+    params.photographerId = photographerId;
   }
   // Tạo chuỗi truy vấn từ đối tượng params
   const queryString = new URLSearchParams(params).toString();
