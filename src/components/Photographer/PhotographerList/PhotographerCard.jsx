@@ -34,7 +34,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
     queryKey: ["photographerPhotos", id],
     queryFn: () =>
       PhotoApi.getPublicPhotos(
-        10,
+        4,
         1,
         null,
         null,
@@ -53,7 +53,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
   // Kiểm tra kiểu dữ liệu trước khi xử lý
   const randomPhotos =
     Array.isArray(photos) && photos.length > 0
-      ? photos.sort(() => Math.random() - 0.5).slice(0, 4)
+      ? photos
       : Array(4).fill({
           signedUrl: {
             thumbnail:

@@ -10,7 +10,7 @@ import { FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { IoMdImages } from "react-icons/io";
 
-const CameraPhoto = () => {
+const CameraPhoto = ({ nameCamera }) => {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -55,7 +55,7 @@ const CameraPhoto = () => {
   return (
     <div>
       <div className="font-normal text-center my-2">
-        Ảnh được chụp bởi <span className="font-bold">Nikon D3500</span>
+        Ảnh được chụp bởi <span className="font-bold">{nameCamera || ""}</span>
       </div>
       {isLoading && (
         <div className="flex justify-center mt-4">

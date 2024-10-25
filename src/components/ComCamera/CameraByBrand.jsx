@@ -1,0 +1,88 @@
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+import { Link, useParams } from "react-router-dom";
+import CameraApi from "../../apis/CameraApi";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import UseCameraStore from "../../states/UseCameraStore";
+
+const CameraByBrand = () => {
+  const param = useParams(); // Lấy brandId từ params
+  const topCamerasByBrand = 20;
+  const brandId = param.id;
+
+  const nameBrandCamera = UseCameraStore((state) => state.nameBrandCamera);
+  const setNameCamera = UseCameraStore((state) => state.setNameCamera);
+  const brandCamera = UseCameraStore((state) => state.brandCamera);
+  // Thực hiện gọi API
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["camerasByBrand", brandId, topCamerasByBrand],
+    queryFn: () => CameraApi.getTopCamerasByBrandId(brandId, topCamerasByBrand),
+  });
+
+  const handleOnClickCamera = (name) => {
+    setNameCamera(brandCamera, name);
+  };
+  return (
+    <div className="flex flex-col p-4 gap-5">
+      <div className="relative overflow-x-auto">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs uppercase dark:bg-[#1f2123] dark:text-[#eee]">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Xếp hạng
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Các mã máy ảnh {nameBrandCamera}
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Số ảnh
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Số người sử dụng
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-white">
+            {isLoading && (
+              <tr>
+                <td colSpan="4" className="px-6 py-4 text-center">
+                  <LoadingSpinner />
+                </td>
+              </tr>
+            )}
+            {isError && (
+              <tr>
+                <td colSpan="4" className="px-6 py-4 text-center">
+                  Lỗi: {error.message}
+                </td>
+              </tr>
+            )}
+            {data &&
+              data.map((camera, index) => (
+                <tr
+                  key={camera.id}
+                  className="border-b dark:bg-[#2f3136] dark:border-[#434743]"
+                >
+                  <td className="px-6 py-4">{index + 1}</td>
+                  <td className="px-6 py-4 text-blue-500">
+                    <Link
+                      to={`/camera/${camera.id}`}
+                      onClick={() => handleOnClickCamera(camera.name)}
+                    >
+                      <span className="hover:underline underline-offset-2">
+                        {camera.name}
+                      </span>
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4">{camera._count.photos}</td>
+                  <td className="px-6 py-4">{camera._count.cameraOnUsers}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default CameraByBrand;

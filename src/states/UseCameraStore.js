@@ -22,6 +22,13 @@ const UseCameraStore = create((set) => ({
   // Clear the active item
   setHoveredItem: (itemId) => set({ hoveredItem: itemId }),
   clearHoveredItem: () => set({ hoveredItem: null }),
+
+  nameBrandCamera: "",
+  setNameBrandCamera: (name) => set({ nameBrandCamera: name }),
+
+  brandCamera: "", // Trạng thái cho nhãn hiệu camera
+  nameCamera: "", // Trạng thái cho tên camera
+  setNameCamera: (brand, name) => set({ brandCamera: brand, nameCamera: name }),
 }));
 
 export default UseCameraStore;

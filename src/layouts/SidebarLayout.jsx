@@ -1,10 +1,11 @@
 // SidebarLayout.js
-import React from "react";
+import React, { useEffect } from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import UserApi from "../apis/UserApi";
+import UseCameraStore from "../states/UseCameraStore";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -29,6 +30,19 @@ const SidebarLayout = ({
   });
   // This will give you the current path
   const isUploadRoute = location.pathname === "/upload/public" ? true : false;
+
+  const nameBrandCamera = UseCameraStore((state) => state.nameBrandCamera);
+  const setNameBrandCamera = UseCameraStore(
+    (state) => state.setNameBrandCamera
+  );
+  const brandCamera = UseCameraStore((state) => state.brandCamera);
+  const setNameCamera = UseCameraStore((state) => state.setNameCamera);
+  useEffect(() => {
+    // Nếu trở về trang không phải trang nhãn hiệu, reset nameBrandCamera
+    if (location.pathname.includes("/camera/all")) {
+      setNameCamera("", "");
+    }
+  }, [location.pathname, setNameCamera]); // Chạy effect khi pathname thay đổi
 
   return (
     <div className="flex flex-grow max-h-screen">
@@ -117,7 +131,9 @@ const SidebarLayout = ({
             <div className="flex gap-2 items-center lg:items-end">
               <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
                 <div className="text-2xl">{activeIcon}</div>
-                <div className="hidden 2xl:block">{activeTitle}</div>
+                <div className="hidden 2xl:block">
+                  {brandCamera || activeTitle}
+                </div>
               </div>
               <div className="text-sm font-normal pl-2 text-[#a3a3a3] whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] md:max-w-[300px] lg:max-w-none">
                 {activeQuote}

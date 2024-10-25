@@ -3,9 +3,13 @@ import { useParams } from "react-router-dom";
 import CameraChart from "./CameraChart";
 import CameraUseChart from "./CameraUseChart";
 import CameraPhoto from "./CameraPhoto";
+import UseCameraStore from "../../states/UseCameraStore";
 
 const CameraDetail = () => {
   const { id } = useParams();
+  const nameCamera = UseCameraStore((state) => state.nameCamera);
+  const brandCamera = UseCameraStore((state) => state.brandCamera);
+  console.log(nameCamera, brandCamera);
 
   return (
     <div className="flex flex-col m-2">
@@ -18,17 +22,17 @@ const CameraDetail = () => {
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-[500px] p-4">
-          <div className="font-bold text-2xl">Nikon D3500</div>
+          <div className="font-bold text-2xl">{nameCamera}</div>
           <div className="font-normal text-sm">
             Được xếp hạng thứ <span className="font-bold">#12</span> trên 233
             máy ảnh{" "}
             <a
-              href="https://www.nikon-asia.com/"
+              href="#"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-500"
+              className="text-blue-500 hover:underline underline-offset-2"
             >
-              Nikon
+              {brandCamera}
             </a>{" "}
             10524 ảnh tải lên từ 125 người dùng vào hôm qua.
           </div>
@@ -67,7 +71,7 @@ const CameraDetail = () => {
         </div>
       </div>
       <div>
-        <CameraPhoto />
+        <CameraPhoto nameCamera={nameCamera} />
       </div>
     </div>
   );
