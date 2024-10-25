@@ -22,9 +22,8 @@ const BlurhashImage = (props) => {
   }, []);
 
   return (
-    <div ref={targetRef}>
+    <div ref={targetRef} width="100%">
       <Blurhash
-        style={{}}
         height={props.height * ratio}
         hash="LEHV6nWB2yk8pyo0adR*.7kCMdnj"
         punch={1}
