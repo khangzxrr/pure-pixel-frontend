@@ -22,7 +22,7 @@ const BlurhashImage = (props) => {
   }, []);
 
   return (
-    <div ref={targetRef} style={{ position: "relative" }}>
+    <div ref={targetRef}>
       <Blurhash
         style={{
           position: "absolute",
@@ -34,14 +34,19 @@ const BlurhashImage = (props) => {
       />
       <img
         loading="lazy"
+        onClick={() => props.onClick()}
         style={
           !loaded
             ? {
+                width: "100%",
+                height: "100%",
                 position: "absolute",
                 top: 0,
                 opacity: 0,
               }
             : {
+                width: "100%",
+                height: "100%",
                 position: "absolute",
                 top: 0,
                 opacity: 1,

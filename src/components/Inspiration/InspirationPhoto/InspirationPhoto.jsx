@@ -154,6 +154,8 @@ const InspirationPhoto = () => {
                         src={photo.signedUrl.thumbnail}
                         height={photo.height}
                         width={photo.width}
+                        className="w-full h-auto object-cover"
+                        onClick={() => handleOnClick(photo.id)}
                       />
                       {/* <img */}
                       {/*   src={photo.signedUrl.thumbnail} */}
