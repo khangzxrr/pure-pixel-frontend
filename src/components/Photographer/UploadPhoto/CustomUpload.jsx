@@ -4,13 +4,11 @@ import { message, Upload, Tooltip, Switch } from "antd";
 import { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import { useKeycloak } from "@react-keycloak/web";
 import ScrollingBar from "./ScrollingBar";
 import { useNavigate } from "react-router-dom";
 import "./UploadPhoto.css";
 
 import PhotoService from "../../../services/PhotoService";
-import { useNotification } from "../../../Notification/Notification";
 import UserService from "../../../services/Keycloak";
 
 const { Dragger } = Upload;
@@ -21,37 +19,22 @@ export default function CustomUpload() {
   const {
     addPhoto,
     setSelectedPhotoByUid,
-    getPhotoByUid,
     photoArray,
     removePhotoByUid,
     updatePhotoPropertyByUid,
     toggleWatermark,
+    setPhotoUploadResponse,
     clearState,
   } = useUploadPhotoStore();
 
   const userData = UserService.getTokenParsed()?.preferred_username;
-  // notificationApi(
-  //   "success",
-  //   "Thành công",
-  //   <span className="text-blue-500">
-  //     Đã tải ảnh lên thành công, ảnh đang được xử lý
-  //   </span>
-  // );
   const navigate = useNavigate();
 
   //use keycloak to trigger refresh component when new token comes
 
   const uploadPhoto = useMutation({
-    mutationFn: ({ url, file, options }) =>
-      PhotoApi.uploadPhotoUsingPresignedUrl(url, file, options),
-  });
-
-  const getPresignedUploadUrls = useMutation({
-    mutationFn: (filename) => PhotoApi.getPresignedUploadUrls({ filename }),
-  });
-
-  const processPhoto = useMutation({
-    mutationFn: (signedUploads) => PhotoApi.processPhoto(signedUploads),
+    mutationFn: ({ file, onUploadProgress }) =>
+      PhotoApi.uploadPhoto(file, onUploadProgress),
   });
 
   const updatePhotos = useMutation({
@@ -68,7 +51,7 @@ export default function CustomUpload() {
     switch (e.response.data.message) {
       case "RunOutPhotoQuotaException":
         message.error(
-          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
         );
         break;
 
@@ -82,14 +65,14 @@ export default function CustomUpload() {
   const beforeUpload = async (file) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
+      message.error("Chỉ hỗ trợ đuôi ảnh jpeg, jpg");
 
       return false;
     }
 
     const isLt150M = file.size / 1024 / 1024 < 150;
     if (!isLt150M) {
-      message.error("Image must smaller than 150MB!");
+      message.error("Ảnh phải nhỏ hơn 150");
 
       return false;
     }
@@ -104,19 +87,14 @@ export default function CustomUpload() {
     }
 
     try {
-      const presignedData = await getPresignedUploadUrls.mutateAsync(file.name);
-
       const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(file);
-      //set global state by
-      //key = photoId
-      //value { presignedData }
-      addPhoto(file.uid, presignedData.signedUpload.photoId, {
-        signedUpload: presignedData.signedUpload,
+
+      addPhoto(file.uid, {
         reviewUrl,
         file,
         title: file.name,
         exif,
-        watermark: true,
+        watermark: false,
         watermarkContent: `${userData}`,
         visibility: "PUBLIC",
         status: "uploading",
@@ -133,43 +111,30 @@ export default function CustomUpload() {
 
   const customRequest = async ({ file, onError, onSuccess }) => {
     try {
-      const photo = getPhotoByUid(file.uid);
-      console.log(photo);
-
-      // Upload the photo
-      await uploadPhoto.mutateAsync({
-        url: photo.signedUpload.uploadUrl,
+      const response = await uploadPhoto.mutateAsync({
         file,
-        options: {
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 70) / progressEvent.total
-            );
-            updatePhotoPropertyByUid(file.uid, "percent", percentCompleted);
-            console.log(progressEvent, percentCompleted);
-          },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded / progressEvent.total) * 100,
+          );
+
+          updatePhotoPropertyByUid(file.uid, "percent", percentCompleted);
         },
       });
 
-      // Process the photo after upload
-      await processPhoto.mutateAsync(photo.signedUpload);
+      setPhotoUploadResponse(file.uid, response);
+
+      onSuccess();
     } catch (e) {
+      console.log(e);
       onError(e);
     }
   };
 
   const handleChange = async (info) => {
-    console.log(info);
-
     if (info.file.status === "uploading") {
       // updatePhotoPropertyByUid(info.file.uid, "status", "uploading");
       console.log("updatePhotoPropertyByUid: uploading");
-
-      return;
-    }
-    if (info.file.status === "processing") {
-      // updatePhotoPropertyByUid(info.file.uid, "status", "processing");
-      console.log("updatePhotoPropertyByUid: processing");
 
       return;
     }
@@ -188,7 +153,7 @@ export default function CustomUpload() {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
           message.error(
-            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
           );
           break;
 
@@ -215,33 +180,22 @@ export default function CustomUpload() {
     // Loop over each photo and update them individually
     const updatePromises = photoArray.map(async (photo) => {
       const photoToUpdate = {
-        id: photo.signedUpload.photoId,
+        id: photo.response.id,
         categoryId: photo.categoryId,
         title: photo.title,
         watermark: photo.watermark,
-        showExif: photo.showExif ?? true,
-        exif: photo.exif,
-        colorGrading: photo.colorGrading,
-        location: photo.location,
-        captureTime: photo.captureTime,
         description: photo.description,
-        originalPhotoUrl: photo.originalPhotoUrl,
-        watermarkPhotoUrl: photo.watermarkPhotoUrl,
-        thumbnailPhotoUrl: photo.thumbnailPhotoUrl,
-        watermarkThumbnailPhotoUrl: photo.watermarkThumbnailPhotoUrl,
         photoType: photo.photoType,
         visibility: photo.visibility,
-        status: photo.status,
         photoTags: photo.photoTags,
       };
-      console.log(photoToUpdate);
 
       // Call the API to update a single photo and add watermark concurrently
       return Promise.all([
         updatePhotos.mutateAsync(photoToUpdate),
         photo.watermark
           ? addWatermark.mutateAsync({
-              photoId: photo.signedUpload.photoId,
+              photoId: photo.response.id,
               text: photo.watermarkContent,
             })
           : Promise.resolve(),
