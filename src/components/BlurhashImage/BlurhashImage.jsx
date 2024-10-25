@@ -6,18 +6,11 @@ const BlurhashImage = (props) => {
 
   const targetRef = useRef();
 
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
   const [ratio, setRatio] = useState(0);
 
   useLayoutEffect(() => {
     if (targetRef.current) {
       setRatio(targetRef.current.offsetWidth / props.width);
-
-      setDimensions({
-        width: targetRef.current.offsetWidth,
-        height: targetRef.current.offsetHeight,
-      });
     }
   }, []);
 
