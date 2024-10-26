@@ -67,33 +67,27 @@ const getPublicPhotos = async (
   return response.data;
 };
 
-const getPresignedUploadUrls = async ({ filename }) => {
-  const response = await http.post(`/photo/upload`, {
-    filename,
-  });
-
-  return response.data;
-};
-
 const getPhotoTags = async ({ top }) => {
   const response = await http.get(`/photo-tag?top=${top}`);
   return response.data;
 };
-const uploadPhotoUsingPresignedUrl = async (url, file, options) => {
+
+const uploadPhoto = async (file, onUploadProgress) => {
   //FUCK AXIOS
   //waste me 2 hour just for a fucking upload feature???
   //using the RAW axios instead of modified one, or you will get CORS
-  const response = await axios.put(url, file, options);
+  //
+  const formData = new FormData();
+  formData.append("file", file);
 
-  return response.data;
-};
-
-const processPhoto = async (signedUpload) => {
-  const response = await http.post(`photo/process`, {
-    signedUpload,
+  const response = await http.post(`photo/upload`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    onUploadProgress,
   });
 
-  return response;
+  return response.data;
 };
 
 const updatePhotos = async (photo) => {
@@ -161,9 +155,7 @@ const sharePhotoById = async (photoId, quality) => {
 
 const PhotoApi = {
   getPublicPhotos,
-  getPresignedUploadUrls,
-  uploadPhotoUsingPresignedUrl,
-  processPhoto,
+  uploadPhoto,
   updatePhotos,
   deletePhoto,
   getPhotoById,

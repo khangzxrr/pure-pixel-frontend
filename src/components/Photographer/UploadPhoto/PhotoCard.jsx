@@ -5,7 +5,6 @@ import PhotoApi from "../../../apis/PhotoApi";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNotification } from "../../../Notification/Notification";
-import { SmileOutlined } from "@ant-design/icons";
 
 function truncateString(str, num) {
   if (str.length <= num) {
@@ -45,10 +44,10 @@ export default function PhotoCard({ photo }) {
   });
 
   const handleRemove = (photo) => {
-    if (photo.signedUpload.photoId) {
+    if (photo.response) {
       try {
         deletePhoto.mutateAsync(
-          { id: photo.signedUpload.photoId },
+          { id: photo.response.id },
           {
             onSuccess: () => {
               notificationApi(
@@ -57,9 +56,9 @@ export default function PhotoCard({ photo }) {
                 "Bạn đã xóa ảnh thành công",
                 "",
                 0,
-                "delete-photo"
+                "delete-photo",
               );
-              removePhotoById(photo.signedUpload.photoId);
+              removePhotoById(photo.response.id);
               // Additional logic to handle the successful deletion of the photo
             },
             onError: (error) => {
@@ -68,7 +67,7 @@ export default function PhotoCard({ photo }) {
               message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
               // Additional logic to handle the error
             },
-          }
+          },
         );
       } catch (error) {
         console.log("Error deleting photo", error);
@@ -158,7 +157,7 @@ export default function PhotoCard({ photo }) {
                   updatePhotoPropertyByUid(
                     photo.file.uid,
                     "watermark",
-                    e.target.checked
+                    e.target.checked,
                   );
                 }}
                 checked={photo.watermark}

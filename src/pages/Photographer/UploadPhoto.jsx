@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import React, { useEffect } from "react";
+import React from "react";
 import CustomUpload from "../../components/Photographer/UploadPhoto/CustomUpload";
 import UploadPhotoInfoBar from "../../components/Photographer/UploadPhoto/UploadPhotoInfoBar";
 import OverviewModal from "../../components/Photographer/UploadPhoto/OverviewModal";
@@ -15,7 +15,7 @@ export default function UploadPhoto() {
   } = useUploadPhotoStore();
 
   const photoData = getPhotoByUid(selectedPhoto);
-  console.log("photoData", photoData?.file?.uid);
+
   return (
     <div className="h-screen overflow-hidden ">
       <div className="flex flex-col h-[95%] overflow-hidden">
