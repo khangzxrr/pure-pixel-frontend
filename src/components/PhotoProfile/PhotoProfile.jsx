@@ -2,17 +2,24 @@ import React from "react";
 import UserService from "../../services/Keycloak";
 import { IoEyeSharp } from "react-icons/io5";
 import StorageBar from "./StorageBar";
+import UserApi from "../../apis/UserApi";
+import { useQuery } from "@tanstack/react-query";
 
 const PhotoProfile = ({ userData }) => {
   console.log(userData);
-
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => UserApi.getApplicationProfile(),
+    staleTime: 60000,
+    cacheTime: 300000,
+  });
   return (
     <div className="flex justify-between">
       <div className="flex items-center gap-5">
         <div className="w-[120px] h-[120px] overflow-hidden rounded-full">
           <img
-            className="w-full h-full object-cover"
-            src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+            className="w-full h-full object-cover bg-[#eee]"
+            src={data?.avatar}
             alt=""
           />
         </div>

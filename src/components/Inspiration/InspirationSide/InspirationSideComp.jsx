@@ -17,6 +17,7 @@ const InspirationSideComp = () => {
       sideItems={InspirationSideItemF}
       trendItems={InspirationTrendItem}
       activeItem={activeItem}
+      isFilterInspiration={true}
       handleClick={handleClick}
     />
   );

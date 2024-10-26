@@ -17,7 +17,7 @@ export default function UploadPhoto() {
   const photoData = getPhotoByUid(selectedPhoto);
 
   return (
-    <div className="h-screen overflow-hidden bg-red-400">
+    <div className="h-screen overflow-hidden ">
       <div className="flex flex-col h-[95%] overflow-hidden">
         <div className="flex flex-col w-full h-full overflow-hidden">
           <div className={`flex ${photoArray.length > 0 ? "h-1/3" : "h-1/2"}`}>

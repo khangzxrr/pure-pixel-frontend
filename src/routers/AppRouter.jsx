@@ -59,7 +59,10 @@ import PhotoSellingPage from "../pages/PhotoSelling/PhotoSellingPage";
 import Report from "../pages/Manager/Report/Report";
 import BlogManager from "../pages/Manager/Blog/BlogManager";
 import ChatPage from "../pages/Message/ChatPage";
-
+import CameraPage from "../pages/Camera/CameraPage";
+import CameraList from "../components/ComCamera/CameraList";
+import CameraDetail from "../components/ComCamera/CameraDetail";
+import CameraByBrand from "../components/ComCamera/CameraByBrand";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -99,6 +102,25 @@ export const AppRouter = createBrowserRouter([
                 path: "selling",
                 element: <PhotoSellingPage />,
               },
+            ],
+          },
+          {
+            path: "camera",
+            element: <CameraPage />,
+            children: [
+              {
+                path: "",
+                element: <Navigate to="all" replace={true} />,
+              },
+              {
+                path: "all",
+                element: <CameraList />,
+              },
+              {
+                path: ":id",
+                element: <CameraDetail />,
+              },
+              { path: "brand/:id", element: <CameraByBrand /> },
             ],
           },
 
