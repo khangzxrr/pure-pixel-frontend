@@ -10,6 +10,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import CameraApi from "../../apis/CameraApi";
+import { useQuery } from "@tanstack/react-query";
 
 // Đăng ký các thành phần mà Line chart cần
 ChartJS.register(
@@ -37,72 +39,118 @@ const getRandomBackgroundColor = () => {
   return `rgba(${r},${g},${b},0.2)`; // Màu nền (20% opacity)
 };
 
-// Hàm tạo ngẫu nhiên dữ liệu số
-const getRandomData = (numPoints) => {
-  const data = [];
-  for (let i = 0; i < numPoints; i++) {
-    data.push(Math.floor(Math.random() * 100)); // Giá trị ngẫu nhiên từ 0 - 100
-  }
-  return data;
-};
-
 const CameraChart = () => {
-  // Dữ liệu của biểu đồ
-  const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Nikon D3500",
-        data: getRandomData(7), // Gọi hàm để tạo dữ liệu ngẫu nhiên cho 7 điểm
-        borderColor: getRandomColor(),
-        backgroundColor: getRandomBackgroundColor(),
-        tension: 0.4, // Độ cong của đường line
-        fill: true, // Tô màu dưới đường line
-      },
-      {
-        label: "Nikon D5600",
-        data: getRandomData(7), // Gọi hàm để tạo dữ liệu ngẫu nhiên cho 7 điểm
-        borderColor: getRandomColor(),
-        backgroundColor: getRandomBackgroundColor(),
-        tension: 0.4, // Độ cong của đường line
-        fill: true, // Tô màu dưới đường line
-      },
-      {
-        label: "Canon EOS R5",
-        data: getRandomData(7), // Gọi hàm để tạo dữ liệu ngẫu nhiên cho 7 điểm
-        borderColor: getRandomColor(),
-        backgroundColor: getRandomBackgroundColor(),
-        tension: 0.4, // Độ cong của đường line
-        fill: true, // Tô màu dưới đường line
-      },
-      {
-        label: "Sony A7R II",
-        data: getRandomData(7), // Gọi hàm để tạo dữ liệu ngẫu nhiên cho 7 điểm
-        borderColor: getRandomColor(),
-        backgroundColor: getRandomBackgroundColor(),
-        tension: 0.4, // Độ cong của đường line
-        fill: true, // Tô màu dưới đường line
-      },
-    ],
+  const fetchCameraChart = async () => {
+    const response = await CameraApi.getCameraChart();
+    return response;
   };
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["cameraChart"],
+    queryFn: fetchCameraChart,
+  });
+
+  // Xử lý dữ liệu từ API
+  const processData = (apiData) => {
+    // Lấy ra tất cả các timestamps và làm nhãn cho biểu đồ
+    const labels = apiData.map((item) =>
+      new Date(item.timestamp).toLocaleDateString("vi-VN")
+    );
+
+    // Lấy tất cả các cameras và tạo datasets dựa trên tên camera
+    const cameraMap = new Map();
+
+    apiData.forEach((item) => {
+      item.popularCameraDataPoints.forEach((dataPoint) => {
+        const cameraName = dataPoint.camera.name;
+
+        // Nếu camera chưa có trong map, thêm vào
+        if (!cameraMap.has(cameraName)) {
+          cameraMap.set(cameraName, {
+            label: cameraName,
+            data: Array(apiData.length).fill(0), // Mảng số liệu với độ dài bằng số labels
+            borderColor: getRandomColor(),
+            backgroundColor: "#2f3136",
+            tension: 0.4,
+            fill: true,
+          });
+        }
+
+        // Tìm chỉ số của timestamp hiện tại để đặt giá trị userCount
+        const index = labels.findIndex(
+          (label) =>
+            label === new Date(item.timestamp).toLocaleDateString("vi-VN")
+        );
+
+        // Cập nhật dữ liệu cho camera
+        if (index !== -1) {
+          cameraMap.get(cameraName).data[index] = dataPoint.userCount;
+        }
+      });
+    });
+
+    // Chuyển map thành mảng datasets
+    const datasets = Array.from(cameraMap.values());
+
+    return { labels, datasets };
+  };
+
+  // Nếu đang tải hoặc có lỗi, hiển thị thông báo
+  if (isLoading) return <div>Đang tải...</div>;
+  if (isError) return <div>Có lỗi xảy ra</div>;
+
+  // Xử lý dữ liệu từ API
+  const chartData = processData(data || []);
 
   // Cấu hình cho biểu đồ
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top",
+        labels: {
+          color: "#eee", // Đặt màu chữ cho chú giải
+          font: {
+            size: 14, // Kích thước chữ cho chú giải
+          },
+        },
       },
       title: {
         display: true,
-        text: "Những máy ảnh trong công động PurePixel",
+        text: "Các máy ảnh được sử dụng phổ biến theo ngày",
+        color: "#eee", // Đặt màu chữ cho tiêu đề
+        font: {
+          size: 16, // Kích thước chữ cho tiêu đề
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          color: "#565b63", // Đặt màu cho lưới trục x
+        },
+        ticks: {
+          color: "#eee", // Đặt màu chữ cho trục x
+        },
+      },
+      y: {
+        grid: {
+          color: "#565b63", // Đặt màu cho lưới trục y
+        },
+        ticks: {
+          color: "#eee", // Đặt màu chữ cho trục y
+        },
       },
     },
   };
 
   return (
-    <div className="bg-[#eee] p-4 shadow-md rounded-md">
-      <Line data={data} options={options} />
+    <div
+      className="bg-[#2f3136] p-4"
+      style={{ width: "100%", height: "400px" }}
+    >
+      <Line data={chartData} options={options} />
     </div>
   );
 };

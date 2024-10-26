@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import CameraApi from "../../apis/CameraApi";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
@@ -8,16 +8,21 @@ import UseCameraStore from "../../states/UseCameraStore";
 const CameraTableList = () => {
   const topCameras = 25;
 
-  const setNameBrandCamera = UseCameraStore(
-    (state) => state.setNameBrandCamera
+  const setNameCamera = UseCameraStore((state) => state.setNameCamera);
+  const setListTopBrandCamera = UseCameraStore(
+    (state) => state.setListTopBrandCamera
   );
 
-  const setNameCamera = UseCameraStore((state) => state.setNameCamera);
-  const nameCamera = UseCameraStore((state) => state.nameCamera);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["cameras", topCameras],
     queryFn: () => CameraApi.getTopCameras(topCameras),
   });
+
+  useEffect(() => {
+    if (data) {
+      setListTopBrandCamera(data); // Add the fetched array to Zustand store
+    }
+  }, [data, setListTopBrandCamera]);
 
   const handleOnClickCamera = (brand, name) => {
     setNameCamera(brand, name);

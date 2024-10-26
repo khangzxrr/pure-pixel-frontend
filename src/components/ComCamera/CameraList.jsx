@@ -2,13 +2,14 @@ import React from "react";
 import CameraCard from "./CameraCard";
 import CameraChart from "./CameraChart";
 import CameraTableList from "./CameraTableList";
+import CameraPopularBrand from "./CameraPopularBrand";
 
 const CameraList = () => {
   return (
     <div className="flex flex-col p-4 gap-5">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="w-full h-full">
-          <CameraChart />
+      <div className="flex flex-col gap-5">
+        <div>
+          <CameraPopularBrand />
         </div>
         <div className="w-full h-full">
           <CameraChart />

@@ -9,5 +9,10 @@ const getTopCamerasByBrandId = async (brandId, top) => {
   const response = await http.get(`/camera/brand/${brandId}/top?top=${top}`);
   return response.data;
 };
-const CameraApi = { getTopCameras, getTopCamerasByBrandId };
+
+const getCameraChart = async () => {
+  const response = await http.get(`/camera/popular-graph`);
+  return response.data;
+};
+const CameraApi = { getTopCameras, getTopCamerasByBrandId, getCameraChart };
 export default CameraApi;

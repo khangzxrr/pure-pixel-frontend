@@ -1,29 +1,44 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import CameraApi from "../../apis/CameraApi";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import UseCameraStore from "../../states/UseCameraStore";
+import CameraPopular from "./CameraPopular";
 
 const CameraByBrand = () => {
   const param = useParams(); // Lấy brandId từ params
   const topCamerasByBrand = 20;
   const brandId = param.id;
 
-  const nameBrandCamera = UseCameraStore((state) => state.nameBrandCamera);
   const setNameCamera = UseCameraStore((state) => state.setNameCamera);
   const brandCamera = UseCameraStore((state) => state.brandCamera);
+  const setListTopCameraByBrand = UseCameraStore(
+    (state) => state.setListTopCameraByBrand
+  );
+  const listTopCameraByBrand = UseCameraStore(
+    (state) => state.listTopCameraByBrand
+  );
   // Thực hiện gọi API
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["camerasByBrand", brandId, topCamerasByBrand],
     queryFn: () => CameraApi.getTopCamerasByBrandId(brandId, topCamerasByBrand),
   });
 
+  useEffect(() => {
+    if (data) {
+      setListTopCameraByBrand(data); // Add the fetched array to Zustand store
+    }
+  }, [data, setListTopCameraByBrand]);
+
   const handleOnClickCamera = (name) => {
     setNameCamera(brandCamera, name);
   };
   return (
     <div className="flex flex-col p-4 gap-5">
+      <div>
+        <CameraPopular />
+      </div>
       <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs uppercase dark:bg-[#1f2123] dark:text-[#eee]">
@@ -32,7 +47,7 @@ const CameraByBrand = () => {
                 Xếp hạng
               </th>
               <th scope="col" className="px-6 py-3">
-                Các mã máy ảnh {nameBrandCamera}
+                Các mã máy ảnh {brandCamera}
               </th>
               <th scope="col" className="px-6 py-3">
                 Số ảnh

@@ -29,6 +29,12 @@ const UseCameraStore = create((set) => ({
   brandCamera: "", // Trạng thái cho nhãn hiệu camera
   nameCamera: "", // Trạng thái cho tên camera
   setNameCamera: (brand, name) => set({ brandCamera: brand, nameCamera: name }),
+
+  listTopBrandCamera: [],
+  setListTopBrandCamera: (list) => set({ listTopBrandCamera: list }),
+
+  listTopCameraByBrand: [],
+  setListTopCameraByBrand: (list) => set({ listTopCameraByBrand: list }),
 }));
 
 export default UseCameraStore;

@@ -22,21 +22,6 @@ ChartJS.register(
   Legend
 );
 
-// Hàm tạo ngẫu nhiên màu sắc (RGBA)
-const getRandomColor = () => {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgba(${r},${g},${b},1)`; // Màu border (full opacity)
-};
-
-const getRandomBackgroundColor = () => {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgba(${r},${g},${b},0.2)`; // Màu nền (20% opacity)
-};
-
 // Hàm tạo ngẫu nhiên dữ liệu số
 const getRandomData = (numPoints) => {
   const data = [];
@@ -54,8 +39,8 @@ const CameraUseChart = () => {
       {
         label: "Nikon D3500",
         data: getRandomData(7), // Gọi hàm để tạo dữ liệu ngẫu nhiên cho 7 điểm
-        borderColor: getRandomColor(),
-        backgroundColor: getRandomBackgroundColor(),
+        borderColor: "#eee",
+        backgroundColor: "#2f3135",
         tension: 0.4, // Độ cong của đường line
         fill: true, // Tô màu dưới đường line
       },
