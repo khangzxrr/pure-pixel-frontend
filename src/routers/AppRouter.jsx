@@ -59,6 +59,9 @@ import PhotoSellingPage from "../pages/PhotoSelling/PhotoSellingPage";
 import Report from "../pages/Manager/Report/Report";
 import BlogManager from "../pages/Manager/Blog/BlogManager";
 import ChatPage from "../pages/Message/ChatPage";
+import SellerProfile from "../pages/SellerProfile/SellerProfile";
+import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
+import SellUpload from "../components/Upload/SellUpload";
 
 
 export const AppRouter = createBrowserRouter([
@@ -86,6 +89,14 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "inspiration",
                 element: <InspirationPhoto />,
+              },
+              {
+                path: "shop-profile/:id",
+                element: <SellerProfile />,
+              },
+              {
+                path: "product-photo/:id",
+                element: <ProductPhotoDetail />,
               },
               {
                 path: "hot",
@@ -121,6 +132,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "private",
                 element: <PrivateUpload />,
+              },
+              {
+                path: "sell",
+                element: <SellUpload />,
               },
             ],
           },
