@@ -1,4 +1,3 @@
-// SidebarLayout.js
 import React, { useEffect } from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
@@ -50,7 +49,7 @@ const SidebarLayout = ({
         <div
           className={` ${
             isSidebarOpen ? "flex" : "hidden"
-          } xl:flex flex-col w-[256px] bg-[#2f3136] max-h-screen sticky top-0 z-40`}
+          } xl:flex flex-col w-[256px] bg-[#2f3136] max-h-screen sticky top-0 z-40 transition-opacity duration-300`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             {sidebarContent}
