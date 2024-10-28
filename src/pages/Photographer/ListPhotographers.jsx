@@ -41,7 +41,7 @@ const ListPhotographers = () => {
   }
 
   return (
-    <div id="" className="flex flex-col items-center">
+    <div id="" className="flex flex-col items-center px-2 py-3">
       {photographers.length === 0 ? (
         <div className="text-center mt-8">
           <div className="text-xl font-bold">Bạn chưa theo dõi ai cả</div>

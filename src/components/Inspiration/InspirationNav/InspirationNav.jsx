@@ -61,12 +61,12 @@ const InspirationNav = ({
   };
 
   return (
-    <>
+    <div className="flex justify-between items-center w-full">
       <div className="flex items-center space-x-4">
-        <div className="flex gap-2 items-center lg:items-end">
-          <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777] w-full ">
+        <div className="flex gap-2 items-center lg:items-start">
+          <div className="flex items-center  gap-2 pr-4 border-r-[1px] border-[#777777] w-full ">
             <div className="text-left text-2xl">{activeIcon || "#"}</div>
-            <div className="hidden 2xl:block ">{activeTitle}</div>
+            <div className="hidden lg:block ">{activeTitle}</div>
           </div>
         </div>
       </div>
@@ -119,7 +119,7 @@ const InspirationNav = ({
           onKeyDown={handleKeyDown}
           type="text"
           placeholder={`Tìm kiếm ảnh theo tên ${searchCategory.quote}...`}
-          className="font-normal text-sm px-2 py-2 w-[35vw] md:w-[50vw] pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
+          className="font-normal text-sm px-2 py-2 w-[35vw] sm:w-[50vw] pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
         />
         <div className="flex items-center px-3">
           <button className="" onClick={handleSearch}>
@@ -130,7 +130,7 @@ const InspirationNav = ({
       <div className="">
         <Categories />
       </div>
-    </>
+    </div>
   );
 };
 

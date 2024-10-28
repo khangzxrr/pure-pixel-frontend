@@ -53,7 +53,7 @@ const Categories = () => {
     <Menu as="div" className="relative inline-block text-left">
       <div className="text-[#eee]">
         <MenuButton className="inline-flex w-full items-center justify-center gap-x-1.5 rounded-md text-md px-3 py-[6px] font-semibold">
-          <div className="hidden 2xl:block">
+          <div className="hidden sm:block">
             {selectedPhotoCategory.name || "Danh mục"}
           </div>
           <IoOptionsSharp aria-hidden="true" className="-mr-1 h-6 w-6" />

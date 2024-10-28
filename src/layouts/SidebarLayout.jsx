@@ -45,12 +45,13 @@ const SidebarLayout = ({
 
   return (
     <div className="flex flex-grow max-h-screen">
-      <div className="flex">
+      <div className="flex w-full">
         <div
-          className={` ${
+          className={`transform transition-transform duration-300 ease-in-out ${
             isSidebarOpen ? "flex" : "hidden"
           } xl:flex flex-col w-[256px] bg-[#2f3136] max-h-screen sticky top-0 z-40 transition-opacity duration-300`}
         >
+          <></>
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             {sidebarContent}
           </div>
@@ -119,40 +120,28 @@ const SidebarLayout = ({
             )}
           </div>
         </div>
-      </div>
-      <div
-        id="main"
-        className="flex flex-col flex-grow overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
-      >
-        <div className="sticky top-0 px-2 z-50 flex justify-between items-center  bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
-          <div className=" flex items-center space-x-4">
-            <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />
-            <div className="flex gap-2 items-center lg:items-end">
-              <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
-                <div className="text-2xl">{activeIcon}</div>
-                <div className="hidden 2xl:block">
-                  {brandCamera || activeTitle}
+        <div
+          id="main"
+          className="flex flex-col flex-grow overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
+        >
+          <div className="sticky top-0 px-2 z-20 flex justify-between items-center  bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+            <div className=" flex items-center space-x-4">
+              <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />
+              <div className="flex gap-2 items-center lg:items-end">
+                <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
+                  <div className="text-2xl">{activeIcon}</div>
+                  <div className="hidden 2xl:block">
+                    {brandCamera || activeTitle}
+                  </div>
                 </div>
-              </div>
-              <div className="text-sm font-normal pl-2 text-[#a3a3a3] whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] md:max-w-[300px] lg:max-w-none">
+                {/* <div className="text-sm font-normal pl-2 text-[#a3a3a3] whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] md:max-w-[300px] lg:max-w-none">
                 {activeQuote}
+              </div> */}
               </div>
             </div>
           </div>
+          <Outlet />
         </div>
-        <section aria-labelledby="products-heading" className=" ">
-          <div
-            className={`grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-6 ${
-              isUploadRoute ? "h-screen overflow-hidden" : ""
-            }`}
-          >
-            <div className="lg:col-span-6  h-full w-full ">
-              <div>
-                <Outlet />
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   );

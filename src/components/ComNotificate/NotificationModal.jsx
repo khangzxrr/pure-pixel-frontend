@@ -38,7 +38,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
     <div
       id="modal-overlay"
       className={`absolute inset-0 bg-black bg-opacity-50 z-40 flex justify-start transition-opacity duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0"
+        isVisible ? "opacity-100" : "opacity-100"
       }`}
       onClick={handleClickOutside}
     >

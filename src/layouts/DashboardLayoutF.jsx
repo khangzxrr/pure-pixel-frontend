@@ -18,15 +18,13 @@ const DashboardLayoutF = () => {
       <div
         className={`${
           isSidebarOpen ? "flex" : "hidden"
-        } xl:flex flex-col w-[70px] px-2 bg-[#202225] h-screen sticky top-0 z-10`}
+        } xl:flex flex-col w-[70px] px-2 bg-[#202225] h-screen sticky top-0 z-15 inset-0`}
       >
         <ServerSide />
       </div>
 
-      {/* Nút mở Sidebar cho màn hình nhỏ */}
-
       {/* Main content */}
-      <div className="flex flex-grow max-h-screen relative overflow-auto">
+      <div className="flex flex-grow h-screen w-full relative overflow-y-auto overflow-x-hidden z-10 scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
         <Outlet />
         <div className="h-full">
           <NotificationModal

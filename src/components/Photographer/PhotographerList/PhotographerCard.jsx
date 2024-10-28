@@ -62,13 +62,13 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
         }); // Thay thế bằng ảnh mặc định nếu không có ảnh
 
   return (
-    <div className="flex flex-col w-full md:w-[340px] h-[450px] rounded-lg text-[#eee] bg-[#202225] group hover:cursor-pointer">
+    <div className="flex flex-col w-full max-w-[340px] h-[450px] rounded-lg text-[#eee] bg-[#202225] group hover:cursor-pointer mx-auto">
       <div className="flex flex-col gap-3 p-5">
         <div className="grid grid-cols-2 grid-rows-2 gap-2 relative">
           {randomPhotos.map((item, index) => (
             <div
               key={index}
-              className="flex h-[100px] w-full md:w-[144px] justify-center items-center overflow-hidden rounded-lg"
+              className="flex h-[100px] w-full justify-center items-center overflow-hidden rounded-lg"
             >
               <img
                 src={item.signedUrl?.thumbnail}
@@ -81,7 +81,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
             <img
               src={avatar}
               alt={name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-full"
             />
           </div>
         </div>
@@ -89,7 +89,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
           <div className="text-xl font-bold mt-8 text-center">
             <div>{name || "Không xác định"}</div>
           </div>
-          <div className="text-center text-sm font-normal ">
+          <div className="text-center text-sm font-normal">
             <div>“{truncateQuote(quote, maxQuoteLength)}”</div>
           </div>
           <div className="bg-[#6d6d6d] px-5 py-2 rounded-sm mt-5 transition-color duration-300 hover:bg-[#929292] hover:cursor-pointer">

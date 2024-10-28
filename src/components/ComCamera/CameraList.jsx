@@ -6,23 +6,19 @@ import CameraPopularBrand from "./CameraPopularBrand";
 
 const CameraList = () => {
   return (
-    <div className="flex flex-col p-4 gap-5">
-      <div className="flex flex-col gap-5">
-        <div>
-          <CameraPopularBrand />
-        </div>
-        <div className="w-full h-full">
-          <CameraChart />
-        </div>
+    <div className="flex flex-col  gap-2 p-2 px-14 md:px-2  w-full">
+      {/* Responsive CameraPopularBrand Section */}
+      <div className="w-1/2 md:w-full">
+        <CameraPopularBrand />
       </div>
-      <div>
+      {/* Responsive CameraChart Section */}
+      <div className="w-1/2 md:w-full">
+        <CameraChart />
+      </div>
+      {/* Responsive CameraTableList Section */}
+      <div className="w-1/2 md:w-full">
         <CameraTableList />
       </div>
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-        <CameraCard />
-        <CameraCard />
-        <CameraCard />
-      </div> */}
     </div>
   );
 };

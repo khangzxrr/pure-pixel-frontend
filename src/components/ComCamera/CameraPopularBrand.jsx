@@ -15,17 +15,17 @@ const CameraPopularBrand = () => {
   return (
     <div className="bg-[#2f3136] flex flex-col p-4">
       <div className="text-lg font-normal mb-4">Các loại máy ảnh phổ biến</div>
-      <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {list5BrandCamera.map((item, index) => (
           <div
             key={index}
-            className="flex flex-col gap-1 items-center justify-center w-full p-2  "
+            className="flex flex-col gap-1 items-center justify-center p-2"
           >
             <Link
               to={`/camera/brand/${item.maker.id}`}
               onClick={() => handleOnClickCamera(item.maker.name)}
             >
-              <div className="flex flex-col gap-1 items-center justify-center w-full  group">
+              <div className="flex flex-col gap-1 items-center justify-center   group">
                 <div className="w-[120px] h-[120px] overflow-hidden rounded-md bg-[#eee]">
                   <img
                     src={item.maker?.thumbnail}

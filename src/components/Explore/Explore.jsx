@@ -36,9 +36,9 @@ const Explore = () => {
   });
 
   return (
-    <div className="flex flex-grow max-h-screen">
+    <div className="flex flex-grow max-h-screen ">
       {/* Sidebar - Right */}
-      <div className="flex">
+      <div className="flex w-full">
         <div
           className={`${
             isSidebarOpen ? "flex" : "hidden"
@@ -112,39 +112,43 @@ const Explore = () => {
             )}
           </div>
         </div>
-      </div>
-      <div
-        id="inspiration"
-        className="flex flex-col flex-grow overflow-y-scroll
+        <div className="flex flex-col flex-grow w-full">
+          <div
+            id="inspiration"
+            className="flex flex-col l overflow-y-scroll
        scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
-      >
-        <div className="sticky top-0 px-2 z-20 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
-          <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />{" "}
-          {isInspirationActive && (
-            <InspirationNav
-              toggleSidebar={toggleSidebar}
-              activeTitle={activeTitle}
-              activeIcon={activeIcon}
-              activeQuote={activeQuote}
-            />
-          )}
-          {isPhotographerListActive && (
-            <PhotographerNav
-              toggleSidebar={toggleSidebar}
-              activeTitle={activeTitle}
-              activeIcon={activeIcon}
-              activeQuote={activeQuote}
-            />
-          )}
-          {isSellingListActive && (
-            <SellingPhotoNav
-              activeTitle={activeTitle}
-              activeIcon={activeIcon}
-              activeQuote={activeQuote}
-            />
-          )}
+          >
+            <div className="sticky top-0 px-2 z-40 flex  items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+              <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />{" "}
+              {isInspirationActive && (
+                <InspirationNav
+                  toggleSidebar={toggleSidebar}
+                  activeTitle={activeTitle}
+                  activeIcon={activeIcon}
+                  activeQuote={activeQuote}
+                />
+              )}
+              {isPhotographerListActive && (
+                <PhotographerNav
+                  toggleSidebar={toggleSidebar}
+                  activeTitle={activeTitle}
+                  activeIcon={activeIcon}
+                  activeQuote={activeQuote}
+                />
+              )}
+              {isSellingListActive && (
+                <SellingPhotoNav
+                  activeTitle={activeTitle}
+                  activeIcon={activeIcon}
+                  activeQuote={activeQuote}
+                />
+              )}
+            </div>
+            <div className="">
+              <Outlet />
+            </div>
+          </div>
         </div>
-        <Outlet />
       </div>
     </div>
   );
