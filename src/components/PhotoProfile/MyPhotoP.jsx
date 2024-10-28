@@ -122,7 +122,7 @@ const MyPhotoP = () => {
                 <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-md">
                   <div className="flex justify-between px-1">
                     <div>{photo.title || "Không xác định"}</div>
-                    <div>{photo.category.name || "Không xác định"}</div>
+                    <div>{photo.category?.name || "Không xác định"}</div>
                   </div>
                 </div>
               </div>

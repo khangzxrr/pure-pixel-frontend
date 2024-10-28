@@ -47,9 +47,9 @@ const SidebarLayout = ({
       <div className="flex w-full">
         {/* left sidebar */}
         <div
-          className={`flex flex-col bg-[#2f3136] transition-all duration-300 md:w-64 ${
+          className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-64 ${
             isSidebarOpen ? "w-64" : "w-0 overflow-hidden"
-          } md:overflow-visible`}
+          } lg:overflow-visible`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             {sidebarContent}
@@ -127,7 +127,7 @@ const SidebarLayout = ({
         >
           <div className="sticky top-0 px-2 z-20 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
             <div className="flex items-center space-x-4">
-              <IoMenu size={24} className="md:hidden" onClick={toggleSidebar} />
+              <IoMenu size={24} className="lg:hidden" onClick={toggleSidebar} />
               <div className="flex gap-2 items-center lg:items-end">
                 <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
                   <div className="text-2xl">{activeIcon}</div>

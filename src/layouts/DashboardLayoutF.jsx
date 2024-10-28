@@ -18,7 +18,7 @@ const DashboardLayoutF = () => {
       <div
         className={`${
           isSidebarOpen ? "flex" : "hidden"
-        } md:flex flex-col w-[70px] px-2 bg-[#202225] h-screen sticky top-0 z-10 inset-0`}
+        } lg:flex flex-col w-[70px] px-2 bg-[#202225] h-screen sticky top-0 z-10 inset-0`}
       >
         <ServerSide />
       </div>
