@@ -4,6 +4,7 @@ import CustomUpload from "../../components/Photographer/UploadPhoto/CustomUpload
 import UploadPhotoInfoBar from "../../components/Photographer/UploadPhoto/UploadPhotoInfoBar";
 import OverviewModal from "../../components/Photographer/UploadPhoto/OverviewModal";
 import useUploadPhotoStore from "../../states/UploadPhotoState";
+import MapBoxModal from "../../components/Photographer/UploadPhoto/MapBoxModal";
 
 export default function UploadPhoto() {
   const {
@@ -56,6 +57,7 @@ export default function UploadPhoto() {
           )}
 
           <OverviewModal />
+          <MapBoxModal />
         </div>
       </div>
     </div>

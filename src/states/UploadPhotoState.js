@@ -13,6 +13,7 @@ const useUploadPhotoStore = create(
     selectedPhoto: null,
     isUpdatingPhotos: false,
     isOpenDraftModal: false,
+    isOpenMapModal: false,
 
     getPhotoByUid: (uid) => {
       const index = get().uidHashmap[uid];
@@ -193,6 +194,10 @@ const useUploadPhotoStore = create(
     },
 
     setIsOpenDraftModal: (status) => {
+      set({ isOpenDraftModal: status });
+    },
+
+    setIsOpenMapModal: (status) => {
       set({ isOpenDraftModal: status });
     },
 

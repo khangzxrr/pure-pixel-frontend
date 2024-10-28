@@ -12,13 +12,17 @@ import { useKeycloak } from "@react-keycloak/web";
 import UseCategoryStore from "../../../states/UseCategoryStore";
 import InsPhotoFilter from "./InsPhotoFilter";
 import { IoMdImages } from "react-icons/io";
+import useMapboxState from "../../../states/UseMapboxState";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
-  const [selectedImage, setSelectedImage] = useState(null);
+  const { selectedLocate, setSelectedLocate } = useMapboxState(); // Use Zustand store
+  const [selectedImage, setSelectedImage] = useState(
+    selectedLocate ? selectedLocate.id : null
+  );
 
   const selectedPhotoCategory = UseCategoryStore(
     (state) => state.selectedPhotoCategory
@@ -119,6 +123,7 @@ const InspirationPhoto = () => {
           onClose={() => {
             navigate(`/explore/inspiration`);
             setSelectedImage(null);
+            setSelectedLocate(null);
           }}
           listImg={photoList}
         />

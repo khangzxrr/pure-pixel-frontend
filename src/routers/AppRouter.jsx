@@ -59,7 +59,7 @@ import PhotoSellingPage from "../pages/PhotoSelling/PhotoSellingPage";
 import Report from "../pages/Manager/Report/Report";
 import BlogManager from "../pages/Manager/Blog/BlogManager";
 import ChatPage from "../pages/Message/ChatPage";
-
+import PhotoMap from "../pages/PhotoMap/PhotoMap";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -98,6 +98,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "selling",
                 element: <PhotoSellingPage />,
+              },
+              {
+                path: "photo-map",
+                element: <PhotoMap />,
               },
             ],
           },
