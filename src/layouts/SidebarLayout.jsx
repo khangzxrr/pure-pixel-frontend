@@ -1,8 +1,11 @@
 // SidebarLayout.js
-import React from "react";
+import React, { useEffect } from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import UserApi from "../apis/UserApi";
+import UseCameraStore from "../states/UseCameraStore";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -19,8 +22,27 @@ const SidebarLayout = ({
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => UserApi.getApplicationProfile(),
+    staleTime: 60000,
+    cacheTime: 300000,
+  });
   // This will give you the current path
   const isUploadRoute = location.pathname === "/upload/public" ? true : false;
+
+  const nameBrandCamera = UseCameraStore((state) => state.nameBrandCamera);
+  const setNameBrandCamera = UseCameraStore(
+    (state) => state.setNameBrandCamera
+  );
+  const brandCamera = UseCameraStore((state) => state.brandCamera);
+  const setNameCamera = UseCameraStore((state) => state.setNameCamera);
+  useEffect(() => {
+    // Nếu trở về trang không phải trang nhãn hiệu, reset nameBrandCamera
+    if (location.pathname.includes("/camera/all")) {
+      setNameCamera("", "");
+    }
+  }, [location.pathname, setNameCamera]); // Chạy effect khi pathname thay đổi
 
   return (
     <div className="flex flex-grow max-h-screen">
@@ -42,9 +64,9 @@ const SidebarLayout = ({
                 >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
                     <img
-                      src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+                      src={data?.avatar}
                       alt="avatar"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover bg-[#eee]"
                     />
                   </div>
                   <div className="text-[13px]">{userData.name}</div>
@@ -99,14 +121,19 @@ const SidebarLayout = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-col flex-grow overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
-        <div className="sticky top-0 px-2 z-50 flex justify-between items-center border-b-2 border-[#1d1f22] bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+      <div
+        id="main"
+        className="flex flex-col flex-grow overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
+      >
+        <div className="sticky top-0 px-2 z-50 flex justify-between items-center  bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
           <div className=" flex items-center space-x-4">
             <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />
             <div className="flex gap-2 items-center lg:items-end">
               <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
                 <div className="text-2xl">{activeIcon}</div>
-                <div className="hidden 2xl:block">{activeTitle}</div>
+                <div className="hidden 2xl:block">
+                  {brandCamera || activeTitle}
+                </div>
               </div>
               <div className="text-sm font-normal pl-2 text-[#a3a3a3] whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] md:max-w-[300px] lg:max-w-none">
                 {activeQuote}
@@ -121,8 +148,7 @@ const SidebarLayout = ({
             }`}
           >
             <div className="lg:col-span-6  h-full w-full ">
-              <div className={``}>
-                {" "}
+              <div>
                 <Outlet />
               </div>
             </div>

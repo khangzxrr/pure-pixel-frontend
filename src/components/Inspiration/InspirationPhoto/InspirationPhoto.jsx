@@ -13,6 +13,7 @@ import UseCategoryStore from "../../../states/UseCategoryStore";
 import InsPhotoFilter from "./InsPhotoFilter";
 import { IoMdImages } from "react-icons/io";
 import useMapboxState from "../../../states/UseMapboxState";
+import BlurhashImage from "../../BlurhashImage/BlurhashImage";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
@@ -83,20 +84,9 @@ const InspirationPhoto = () => {
       },
     });
 
-  // if (isLoading && !data) {
-  //   return (
-  //     <div className="flex justify-center mt-4">
-  //       <LoadingSpinner />
-  //     </div>
-  //   );
-  // }
-
-  // if (isError) {
-  //   return <div>Lỗi: {error.message}</div>;
-  // }
-
   // Merge all pages' results
   // const photoList = data.pages.flatMap((page) => page.objects);
+
   const photoList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
     : [];
@@ -130,12 +120,6 @@ const InspirationPhoto = () => {
       )}
 
       <div className="">
-        <div className="font-normal flex my-2 items-center flex-col sm:flex-row">
-          <div className="flex items-center bg-[#383b41] px-2 rounded-r-md">
-            <span className="text-[#eee]">Bộ lọc ảnh:</span>
-            <InsPhotoFilter />
-          </div>
-        </div>
         <div>
           {isLoading && (
             <div className="flex justify-center mt-4">
@@ -151,13 +135,8 @@ const InspirationPhoto = () => {
               dataLength={photoList.length}
               next={fetchNextPage}
               hasMore={hasNextPage}
-              scrollThreshold={0.8}
+              scrollThreshold={0.5}
               scrollableTarget="inspiration"
-              loader={
-                <div className="flex justify-center mt-4">
-                  <LoadingSpinner />
-                </div>
-              }
               endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
             >
               <div className="p-[5px]">
@@ -171,12 +150,19 @@ const InspirationPhoto = () => {
                       key={photo.id}
                       className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
                     >
-                      <img
+                      <BlurhashImage
                         src={photo.signedUrl.thumbnail}
-                        alt={`Photo ${photo.id}`}
+                        height={photo.height}
+                        width={photo.width}
                         className="w-full h-auto object-cover"
                         onClick={() => handleOnClick(photo.id)}
                       />
+                      {/* <img */}
+                      {/*   src={photo.signedUrl.thumbnail} */}
+                      {/*   alt={`Photo ${photo.id}`} */}
+                      {/*   className="w-full h-auto object-cover" */}
+                      {/*   onClick={() => handleOnClick(photo.id)} */}
+                      {/* /> */}
                       <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
                         <div className="flex justify-between w-full px-3">
                           <div className="flex items-center gap-2">

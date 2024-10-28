@@ -1,16 +1,16 @@
 import React from "react";
 import Sidebar from "../Sidebar/Sidebar";
 
-const Upload = ({ sideItems, trendItems, handleClick, activeItem }) => {
+const CameraSidebar = ({ sideItems, trendItems, handleClick, activeItem }) => {
   return (
     <Sidebar
       sideItems={sideItems}
       trendItems={trendItems}
       handleClick={handleClick}
       activeItem={activeItem}
-      isUpload={true}
+      isCamera={true}
     />
   );
 };
 
-export default Upload;
+export default CameraSidebar;

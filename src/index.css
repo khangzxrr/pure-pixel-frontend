@@ -23,16 +23,16 @@ code {
 
 .my-masonry-grid {
   display: flex;
-  margin-left: -5px;
+  margin-left: -10px;
   width: auto;
 }
 .my-masonry-grid_column {
-  padding-left: 5px;
+  padding-left: 10px;
   background-clip: padding-box;
 }
 
 .my-masonry-grid_column > div {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -77,7 +77,6 @@ code {
   font-weight: 400;
 }
 
-
 .ant-table-cell.ant-table-column-has-sorters:hover {
   background-color: #2c2e31 !important; /* Màu nền khi hover */
   color: #ffffff !important; /* Màu chữ khi hover */
@@ -95,13 +94,13 @@ code {
   border-top: 1px solid #f0f0f000 !important;
   border-inline-start: 1px solid #f0f0f000;
 }
- 
+
 .ant-table-body::-webkit-scrollbar-track {
   background-color: #f1f1f1; /* Màu nền của thanh cuộn */
 }
 .ant-table-content {
   background-color: blue !important;
 }
-.ant-table-cell{
-border-bottom: 1px solid #888 !important;
+.ant-table-cell {
+  border-bottom: 1px solid #888 !important;
 }

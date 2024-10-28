@@ -53,11 +53,11 @@ const InspirationNav = ({
     <>
       <div className="flex items-center space-x-4">
         <div className="flex gap-2 items-center lg:items-end">
-          <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
+          <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777] w-[130px] md:w-[130px]">
             <div className="text-2xl">{activeIcon || "#"}</div>
-            <div className="hidden lg:block">{activeTitle}</div>
+            <div className="hidden md:block md:text-left">{activeTitle}</div>
           </div>
-          <div className="w-auto hidden 2xl:block text-sm font-normal pl-2 text-[#a3a3a3] whitespace-nowrap overflow-hidden text-ellipsis">
+          <div className="w-auto hidden lg:block  text-sm font-normal pl-2 text-[#a3a3a3] whitespace-nowrap overflow-hidden text-ellipsis">
             {activeQuote}
           </div>
         </div>

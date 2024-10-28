@@ -17,7 +17,7 @@ const useUploadPhotoStore = create(
 
     getPhotoByUid: (uid) => {
       const index = get().uidHashmap[uid];
-      console.log("getPhotoByUid", uid, index, get().uidHashmap);
+
       return get().photoArray[index];
     },
 
@@ -98,18 +98,30 @@ const useUploadPhotoStore = create(
         }
       });
     },
-    addPhoto: (uid, id, payload) =>
+    setPhotoUploadResponse: (uid, response) =>
+      set((state) => {
+        console.log(response);
+
+        const index = state.uidHashmap[uid];
+        state.photoIdHashmap[response.id] = index;
+
+        state.photoArray[index].response = response;
+
+        return {
+          photoIdHashmap: state.photoIdHashmap,
+          photoArray: state.photoArray,
+        };
+      }),
+    addPhoto: (uid, payload) =>
       set((state) => {
         const index = state.photoArray.length;
 
-        state.photoIdHashmap[id] = index;
         state.uidHashmap[uid] = index;
 
         state.photoArray.push(payload);
 
         return {
           photoArray: state.photoArray,
-          photoIdHashmap: state.photoIdHashmap,
           uidHashmap: state.uidHashmap,
         };
       }),
@@ -148,10 +160,10 @@ const useUploadPhotoStore = create(
 
     removePhotoById: (photoId) =>
       set((state) => {
-        const index = state.photoArray.findIndex(
-          (photo) => photo.signedUpload.photoId === photoId
-        );
+        const index = state.photoIdHashmap[photoId];
+
         if (index === -1) return state; // Exit if photoId not found
+
         const uid = state.photoArray[index].file.uid;
 
         // Remove photo from photoArray
@@ -165,7 +177,7 @@ const useUploadPhotoStore = create(
 
         updatedPhotoArray.forEach((photo, idx) => {
           newUidHashmap[photo.file.uid] = idx;
-          newPhotoIdHashmap[photo.signedUpload.photoId] = idx;
+          newPhotoIdHashmap[photo.response.id] = idx;
         });
 
         // Set selectedPhoto as the first element in the newUidHashmap
@@ -198,7 +210,7 @@ const useUploadPhotoStore = create(
     },
 
     setIsOpenMapModal: (status) => {
-      set({ isOpenDraftModal: status });
+      set({ isOpenMapModal: status });
     },
 
     isPhotoExistByUid: (uid) => {

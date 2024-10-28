@@ -23,7 +23,6 @@ const ListPhotographers = () => {
     });
 
   const photographers = data?.pages.flatMap((page) => page.objects) || [];
-  console.log("photographers", photographers);
 
   if (isLoading) {
     return (

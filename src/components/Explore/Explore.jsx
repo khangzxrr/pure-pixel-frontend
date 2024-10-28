@@ -10,6 +10,8 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import InspirationNav from "../Inspiration/InspirationNav/InspirationNav";
 import PhotographerNav from "../Photographer/PhotographerList/PhotographerNav";
 import SellingPhotoNav from "../SellingPhoto/SellingPhotoNav";
+import UserApi from "../../apis/UserApi";
+import { useQuery } from "@tanstack/react-query";
 const Explore = () => {
   const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote, activeItem } =
@@ -25,6 +27,14 @@ const Explore = () => {
   const isInspirationActive = activeItem === 1;
   const isPhotographerListActive = activeItem === 4;
   const isSellingListActive = activeItem === 6;
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => UserApi.getApplicationProfile(),
+    staleTime: 60000,
+    cacheTime: 300000,
+  });
+
   return (
     <div className="flex flex-grow max-h-screen">
       {/* Sidebar - Right */}
@@ -46,9 +56,9 @@ const Explore = () => {
                 >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
                     <img
-                      src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+                      src={`${data?.avatar}`}
                       alt="avatar"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover bg-[#eee]"
                     />
                   </div>
                   <div className="text-[13px]">{userData.name}</div>
