@@ -37,12 +37,11 @@ const Explore = () => {
 
   return (
     <div className="flex flex-grow max-h-screen ">
-      {/* Sidebar - Right */}
       <div className="flex w-full">
         <div
-          className={`${
-            isSidebarOpen ? "flex" : "hidden"
-          } xl:flex flex-col w-[256px] bg-[#2f3136] max-h-screen sticky top-0 z-40`}
+          className={`flex flex-col bg-[#2f3136] transition-all duration-300 md:w-64 ${
+            isSidebarOpen ? "w-64" : "w-0 overflow-hidden"
+          } md:overflow-visible`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             <InspirationSideComp />
@@ -118,7 +117,7 @@ const Explore = () => {
             className="flex flex-col l overflow-y-scroll
        scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
           >
-            <div className="sticky top-0 px-2 z-40 flex  items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+            <div className="sticky top-0 px-2 z-10 flex  items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
               <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />{" "}
               {isInspirationActive && (
                 <InspirationNav
@@ -144,9 +143,7 @@ const Explore = () => {
                 />
               )}
             </div>
-            <div className="">
-              <Outlet />
-            </div>
+            <Outlet />
           </div>
         </div>
       </div>

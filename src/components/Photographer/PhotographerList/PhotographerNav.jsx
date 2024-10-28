@@ -9,7 +9,7 @@ const PhotographerNav = ({
   activeQuote,
 }) => {
   return (
-    <div className="relative flex items-center  space-x-4 w-full">
+    <div className="relative flex items-center justify-between  space-x-4 w-full">
       <div className="relative flex items-center space-x-4">
         <div className="flex gap-2 items-center lg:items-end">
           <div className="flex items-center gap-2 pr-4   border-r-[1px] border-[#777777]">
@@ -21,12 +21,12 @@ const PhotographerNav = ({
           </div> */}
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 transition-all duration-300">
         <div className="">
           <input
             type="text"
             placeholder="Tìm kiếm PurePixel..."
-            className="font-normal text-sm px-2 py-2 w-[50vw]  pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
+            className="font-normal text-sm px-2 py-2 w-[50vw] lg:w-[20vw]  pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
           />
         </div>
       </div>

@@ -6,17 +6,14 @@ import CameraPopularBrand from "./CameraPopularBrand";
 
 const CameraList = () => {
   return (
-    <div className="flex flex-col  gap-2 p-2 px-14 md:px-2  w-full">
-      {/* Responsive CameraPopularBrand Section */}
-      <div className="w-1/2 md:w-full">
+    <div className="flex flex-col w-full gap-5 p-4">
+      <div>
         <CameraPopularBrand />
       </div>
-      {/* Responsive CameraChart Section */}
-      <div className="w-1/2 md:w-full">
+      {/* <div className="flex justify-center">
         <CameraChart />
-      </div>
-      {/* Responsive CameraTableList Section */}
-      <div className="w-1/2 md:w-full">
+      </div> */}
+      <div className="">
         <CameraTableList />
       </div>
     </div>
