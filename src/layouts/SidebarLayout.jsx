@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
+import { IoIosArrowUp } from "react-icons/io";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +21,7 @@ const SidebarLayout = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isVisible, setIsVisible] = useState(false);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["me"],
@@ -37,6 +39,24 @@ const SidebarLayout = ({
       setNameCamera("", "");
     }
   }, [location.pathname, setNameCamera]);
+
+  // Xử lý hiển thị nút cuộn lên đầu
+  const handleScroll = () => {
+    const scrollTop = document.getElementById("main").scrollTop;
+    setIsVisible(scrollTop > 300);
+  };
+
+  const scrollToTop = () => {
+    document.getElementById("main").scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const mainDiv = document.getElementById("main");
+    mainDiv.addEventListener("scroll", handleScroll);
+    return () => {
+      mainDiv.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className="flex flex-grow max-h-screen relative">
@@ -77,9 +97,10 @@ const SidebarLayout = ({
                     </MenuButton>
                     <MenuItems
                       transition
-                      className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-top-right divide-y divide-gray-100 
-                  rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition 
-                  focus:outline-none"
+                      className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-bottom-right divide-y divide-gray-100 
+                      rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition 
+                      focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 
+                      data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                     >
                       <div className="py-1">
                         <MenuItem>
@@ -117,7 +138,9 @@ const SidebarLayout = ({
         {/* content */}
         <div
           id="main"
-          className="flex flex-col flex-grow overflow-y-auto relative scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
+          className={`flex flex-col flex-grow h-full relative lg:overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f] ${
+            isSidebarOpen ? `overflow-y-hidden` : `overflow-y-auto`
+          }`}
         >
           <div className="sticky top-0 px-2 z-20 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
             <div className="flex items-center space-x-4">
@@ -139,16 +162,28 @@ const SidebarLayout = ({
             </div>
             {isSidebarOpen && (
               <div
-                className="absolute inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+                className="absolute  inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
                 onClick={toggleSidebar}
               ></div>
             )}
           </div>
           <Outlet />
+
+          {/* Nút cuộn lên đầu trang */}
+          {isVisible && (
+            <button
+              onClick={scrollToTop}
+              className="fixed bottom-5 right-20 z-20 bg-[#4e535e] border-2 hover:bg-[#777777] text-white p-2 rounded-full transition-colors duration-200"
+            >
+              <IoIosArrowUp size={24} />
+            </button>
+          )}
+
           {/* Overlay for blocking interactions */}
           {isSidebarOpen && (
             <div
-              className="absolute inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+              className="absolute  inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+              style={{ height: "9999px" }}
               onClick={toggleSidebar}
             ></div>
           )}
