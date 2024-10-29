@@ -41,39 +41,37 @@ const ListPhotographers = () => {
   }
 
   return (
-    <div id="" className="flex flex-col items-center px-2 py-3">
-      {photographers.length === 0 ? (
-        <div className="text-center mt-8">
-          <div className="text-xl font-bold">Bạn chưa theo dõi ai cả</div>
-          <div>
-            Bắt đầu theo dõi các nhiếp ảnh gia và cập nhật những bức ảnh mới
-            nhất của họ tại đây!
-          </div>
+    <div id="" className="flex flex-col px-2 py-1">
+      <div className="text-center my-2">
+        <div className="text-xl font-bold">Bạn chưa theo dõi ai cả</div>
+        <div className="font-normal">
+          Bắt đầu theo dõi các nhiếp ảnh gia và cập nhật những bức ảnh mới nhất
+          của họ tại đây!
         </div>
-      ) : (
-        <InfiniteScroll
-          dataLength={photographers.length}
-          next={fetchNextPage}
-          hasMore={hasNextPage}
-          loader={
-            <div className="flex justify-center py-4">
-              <LoadingSpinner />
-            </div>
-          }
-          scrollableTarget="inspiration"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-7 py-3 "
-        >
-          {photographers.map((photographer) => (
-            <PhotographerCard
-              key={photographer.id}
-              id={photographer.id}
-              name={photographer.name}
-              avatar={photographer.avatar}
-              quote={photographer.quote}
-            />
-          ))}
-        </InfiniteScroll>
-      )}
+      </div>
+
+      <InfiniteScroll
+        dataLength={photographers.length}
+        next={fetchNextPage}
+        hasMore={hasNextPage}
+        loader={
+          <div className="flex justify-center py-4">
+            <LoadingSpinner />
+          </div>
+        }
+        scrollableTarget="inspiration"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 py-3 "
+      >
+        {photographers.map((photographer) => (
+          <PhotographerCard
+            key={photographer.id}
+            id={photographer.id}
+            name={photographer.name}
+            avatar={photographer.avatar}
+            quote={photographer.quote}
+          />
+        ))}
+      </InfiniteScroll>
     </div>
   );
 };

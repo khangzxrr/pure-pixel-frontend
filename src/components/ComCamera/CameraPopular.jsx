@@ -17,8 +17,8 @@ const CameraPopular = () => {
   return (
     <div className="bg-[#2f3136] flex flex-col p-4">
       <div className="text-lg font-normal mb-4">
-        Các loại mã máy ảnh <span className="font-semibold">{brandCamera}</span>{" "}
-        phổ biến
+        Các mã máy ảnh <span className="font-semibold">{brandCamera}</span> phổ
+        biến
       </div>
       <div className="w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {top5CameraByBrand.map((item, index) => (

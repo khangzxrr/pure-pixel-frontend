@@ -1,9 +1,10 @@
 import React from "react";
-import { Dropdown, Space } from "antd";
-import { GoBlocked } from "react-icons/go";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { SlOptions } from "react-icons/sl";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useQuery } from "@tanstack/react-query";
+import { FaRegMessage } from "react-icons/fa6";
+import { MdBlock } from "react-icons/md";
 
 // Hàm để cắt ngắn câu quote nếu quá dài
 const truncateQuote = (quote, maxLength) => {
@@ -17,12 +18,21 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
   const items = [
     {
       label: (
-        <div className="flex items-center gap-2 text-xl">
-          <GoBlocked />
-          Block user
+        <div className="flex items-center gap-2 text-lg">
+          <FaRegMessage />
+          Nhắn tin
         </div>
       ),
       key: "0",
+    },
+    {
+      label: (
+        <div className="flex items-center gap-2 text-lg">
+          <MdBlock className="text-xl" />
+          Chặn
+        </div>
+      ),
+      key: "1",
     },
   ];
 
@@ -62,7 +72,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
         }); // Thay thế bằng ảnh mặc định nếu không có ảnh
 
   return (
-    <div className="flex flex-col w-full max-w-[340px] h-[450px] rounded-lg text-[#eee] bg-[#202225] group hover:cursor-pointer mx-auto">
+    <div className="flex flex-col w-full max-w-[340px] h-[450px] rounded-lg text-[#eee] bg-[#2f3136] group hover:cursor-pointer mx-auto">
       <div className="flex flex-col gap-3 p-5">
         <div className="grid grid-cols-2 grid-rows-2 gap-2 relative">
           {randomPhotos.map((item, index) => (
@@ -77,7 +87,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
               />
             </div>
           ))}
-          <div className="absolute overflow-hidden outline outline-2 outline-[#202225] bg-[#eee] top-44 left-1/2 transform -translate-x-1/2 md:translate-x-0 md:top-44 md:left-28 rounded-full w-[64px] h-[64px]">
+          <div className="absolute overflow-hidden outline outline-2 outline-[#202225] bg-[#eee] top-44 left-1/2 transform -translate-x-1/2 md:translate-x-0 md:top-44 md:left-[38%] rounded-full w-[64px] h-[64px]">
             <img
               src={avatar}
               alt={name}
@@ -92,20 +102,38 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 35 }) => {
           <div className="text-center text-sm font-normal">
             <div>“{truncateQuote(quote, maxQuoteLength)}”</div>
           </div>
-          <div className="bg-[#6d6d6d] px-5 py-2 rounded-sm mt-5 transition-color duration-300 hover:bg-[#929292] hover:cursor-pointer">
+          <div className="bg-[#6b7280] px-5 py-2 rounded-sm mt-5 transition-color duration-200 hover:bg-[#4d525c] hover:cursor-pointer">
             <button>Theo dõi</button>
           </div>
         </div>
         <div className="flex justify-end">
-          <Dropdown menu={{ items }} trigger={["click"]}>
-            <a onClick={(e) => e.preventDefault()}>
-              <Space>
-                <div className="flex justify-center text-xl rounded-full p-1 transition-color duration-300 hover:bg-[#929292] hover:text-white">
-                  <SlOptions />
-                </div>
-              </Space>
-            </a>
-          </Dropdown>
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+              <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-full hover:bg-[#6b7280]  p-1 text-sm font-semibold text-gray-900 transition-colors duration-200">
+                <SlOptions className="text-[#eee] text-lg" />
+              </MenuButton>
+            </div>
+
+            <MenuItems
+              transition
+              className="absolute -right-4 top-7 z-10 mt-2 w-32 origin-top rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+            >
+              <div className="py-1">
+                <MenuItem>
+                  <div className="flex items-center gap-2 px-4 py-2 text-sm text-[#eee] data-[focus]:bg-[#36393f] transition-colors duration-200 data-[focus]:text-[#eee]">
+                    <FaRegMessage className="font-bold text-lg" />
+                    Nhắn tin
+                  </div>
+                </MenuItem>
+                <MenuItem>
+                  <div className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 data-[focus]:bg-red-500 transition-colors duration-200 data-[focus]:text-[#eee]">
+                    <MdBlock className="font-bold text-xl" />
+                    Chặn
+                  </div>
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </Menu>
         </div>
       </div>
     </div>

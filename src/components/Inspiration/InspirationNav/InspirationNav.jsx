@@ -65,7 +65,7 @@ const InspirationNav = ({
       <div className="flex items-center space-x-4">
         <div className="flex gap-2 items-center lg:items-start">
           <div className="flex items-center  gap-2 pr-4 border-r-[1px] border-[#777777] w-full ">
-            <div className="text-left text-2xl">{activeIcon || "#"}</div>
+            <div className="text-left text-2xl pl-2">{activeIcon || "#"}</div>
             <div className="hidden lg:block ">{activeTitle}</div>
           </div>
         </div>

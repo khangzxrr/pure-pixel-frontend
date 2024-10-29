@@ -22,18 +22,17 @@ const InspirationPhoto = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory,
+    (state) => state.selectedPhotoCategory
   );
   const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate,
+    (state) => state.filterByPhotoDate
   );
   const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
   const searchResult = UseCategoryStore((state) => state.searchResult);
   const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle,
+    (state) => state.searchByPhotoTitle
   );
-  // const searchCategory = UseCategoryStore((state) => state.searchCategory);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
@@ -54,7 +53,7 @@ const InspirationPhoto = () => {
       watermark,
       selling,
       photographerName,
-      title,
+      title
     );
     return response;
   };
@@ -79,7 +78,6 @@ const InspirationPhoto = () => {
         return currentPage < lastPage.totalPage ? currentPage : undefined;
       },
     });
-
 
   // Merge all pages' results
   // const photoList = data.pages.flatMap((page) => page.objects);

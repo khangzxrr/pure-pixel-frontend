@@ -110,7 +110,10 @@ const MyPhotoP = () => {
             </div>
           ) : data?.objects.length > 0 ? (
             data.objects.map((photo) => (
-              <div key={photo.id} className="relative group">
+              <div
+                key={photo.id}
+                className="relative group hover:cursor-pointer"
+              >
                 <div className="w-full h-[320px] overflow-hidden">
                   <img
                     className="w-full h-full object-cover"
@@ -121,7 +124,9 @@ const MyPhotoP = () => {
                 </div>
                 <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-md">
                   <div className="flex justify-between px-1">
-                    <div>{photo.title || "Không xác định"}</div>
+                    {photo.title?.length > 20
+                      ? `${photo.title.substring(0, 15)}...`
+                      : photo.title || "Không xác định"}
                     <div>{photo.category?.name || "Không xác định"}</div>
                   </div>
                 </div>

@@ -114,11 +114,18 @@ const Explore = () => {
         <div className="flex flex-col flex-grow w-full">
           <div
             id="inspiration"
-            className="flex flex-col l overflow-y-scroll
+            className="flex flex-col l overflow-y-scroll relative 
        scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
           >
             <div className="sticky top-0 px-2 z-10 flex  items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
-              <IoMenu size={24} className="lg:hidden" onClick={toggleSidebar} />{" "}
+              <div className="hover:bg-[#4e535e] p-1 rounded-full transition-colors duration-200">
+                <IoMenu
+                  size={24}
+                  className="lg:hidden hover:cursor-pointer "
+                  onClick={toggleSidebar}
+                />{" "}
+              </div>
+
               {isInspirationActive && (
                 <InspirationNav
                   toggleSidebar={toggleSidebar}
@@ -144,6 +151,12 @@ const Explore = () => {
               )}
             </div>
             <Outlet />
+            {isSidebarOpen && (
+              <div
+                className="absolute inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+                onClick={toggleSidebar}
+              ></div>
+            )}
           </div>
         </div>
       </div>
