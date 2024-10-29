@@ -1,13 +1,33 @@
 import React, { useState, useRef } from "react";
-import { Button, message, Steps, Form, InputNumber, Input, theme } from "antd";
+import { Button, message, Steps, InputNumber, theme } from "antd";
 import { postData, getData } from "../../apis/api";
-
+function formatCurrency(number) {
+  // If the input is a number
+  if (typeof number === "number") {
+    return number.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+  }
+  // If the input is a string that can be converted to a number
+  else if (typeof number === "string" && !isNaN(Number(number))) {
+    return Number(number).toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+  }
+  // If the input is neither a number nor a numeric string, return it as is
+  else {
+    return number;
+  }
+}
 const SellUpload = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [images, setImages] = useState([]);
   const [imageData, setImageData] = useState([]);
   const fileInputRef = useRef(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(null);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -27,6 +47,10 @@ const SellUpload = () => {
   const handleRemove = (index) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     setImageData((prevData) => prevData.filter((_, i) => i !== index));
+    // If the removed image was the current one, reset currentImageIndex
+    if (index === currentImageIndex) {
+      setCurrentImageIndex(null);
+    }
   };
 
   const handleDragOver = (e) => {
@@ -105,6 +129,18 @@ const SellUpload = () => {
         return;
       }
       uploading();
+    } else if (current === 1) {
+      // Kiểm tra nếu tất cả thông tin đã được nhập
+      const allDataFilled = imageData.every(
+        (data) => data.info && data.qualities.every((q) => q.price)
+      );
+      if (!allDataFilled) {
+        message.error(
+          "Vui lòng nhập đầy đủ thông tin cho tất cả các hình ảnh."
+        );
+        return;
+      }
+      setCurrent(current + 1);
     } else {
       setCurrent(current + 1);
     }
@@ -144,28 +180,15 @@ const SellUpload = () => {
     }
   };
 
-  const handleFormChange = (changedValues, allValues, index) => {
+  const handleInputChange = (e, field, index) => {
     const newData = [...imageData];
-    // Cập nhật info
-    if (changedValues.info !== undefined) {
-      newData[index].info = allValues.info;
-    }
-    // Cập nhật qualities
-    if (changedValues.qualities !== undefined) {
-      const updatedQualities = newData[index].qualities.map(
-        (quality, qIndex) => {
-          const newPrice =
-            allValues.qualities &&
-            allValues.qualities[qIndex] &&
-            allValues.qualities[qIndex].price;
-          return {
-            ...quality,
-            price: newPrice !== undefined ? newPrice : quality.price,
-          };
-        }
-      );
-      newData[index].qualities = updatedQualities;
-    }
+    newData[index][field] = e.target.value;
+    setImageData(newData);
+  };
+
+  const handlePriceChange = (value, qIndex, index) => {
+    const newData = [...imageData];
+    newData[index].qualities[qIndex].price = value;
     setImageData(newData);
   };
 
@@ -225,53 +248,80 @@ const SellUpload = () => {
     {
       title: "Nhập thông tin",
       content: (
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 text-white">
-          {imageData.map((data, index) => (
-            <div key={index} className="mb-5">
-              <img
-                src={URL.createObjectURL(data.file)}
-                alt="Ảnh"
-                className="w-36 h-36 mb-4 object-cover"
-              />
-              <Form
-                className="text-white"
-                layout="vertical"
-                initialValues={{
-                  info: data.info,
-                  qualities: data.qualities,
-                }}
-                onValuesChange={(changedValues, allValues) =>
-                  handleFormChange(changedValues, allValues, index)
-                }
-              >
-                <h3 className="text-lg font-semibold">
-                  {data.file.name || `Ảnh ${index + 1}`}
-                </h3>
-                <Form.Item
-                  label="Thông tin"
-                  name="info"
-                  rules={[
-                    { required: true, message: "Vui lòng nhập thông tin!" },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-                <p>Kích thước và giá:</p>
-                {data.qualities.map((quality, qIndex) => (
-                  <div key={qIndex} className="flex items-center mb-2">
-                    <span className="mr-2">Kích thước {quality.size}</span>
-                    <Form.Item
-                      name={["qualities", qIndex, "price"]}
-                      rules={[{ required: true, message: "Nhập giá" }]}
-                      className="flex-1 mr-2"
-                    >
-                      <InputNumber placeholder="Giá" className="w-full" />
-                    </Form.Item>
+        <div className="p-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {imageData.map((data, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={URL.createObjectURL(data.file)}
+                  alt={`Ảnh ${index + 1}`}
+                  className={`w-full h-32 object-cover rounded-lg cursor-pointer ${
+                    currentImageIndex === index
+                      ? "border-4 border-blue-500"
+                      : ""
+                  }`}
+                  onClick={() => setCurrentImageIndex(index)}
+                />
+                {/* Add visual indication if the data is filled */}
+                {data.info && data.qualities.every((q) => q.price) && (
+                  <div className="absolute top-1 left-1 bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-center">
+                    ✓
                   </div>
-                ))}
-              </Form>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Form for the selected image */}
+          {currentImageIndex !== null && (
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-4">
+                Nhập thông tin cho ảnh{" "}
+                {imageData[currentImageIndex].file.name ||
+                  currentImageIndex + 1}
+              </h3>
+              <div className="mb-4">
+                <label
+                  htmlFor="info"
+                  className="block text-white mb-2 font-medium"
+                >
+                  Thông tin
+                </label>
+                <input
+                  type="text"
+                  id="info"
+                  name="info"
+                  className="w-full bg-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={imageData[currentImageIndex].info}
+                  onChange={(e) =>
+                    handleInputChange(e, "info", currentImageIndex)
+                  }
+                />
+              </div>
+              <p className="text-white mb-2">Kích thước và giá:</p>
+              {imageData[currentImageIndex].qualities.map((quality, qIndex) => (
+                <div key={qIndex} className="flex items-center mb-2">
+                  <span className="mr-2 text-white">
+                    Kích thước {quality.size}
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    className="w-full bg-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Giá"
+                    value={quality.price}
+                    onChange={(e) =>
+                      handlePriceChange(
+                        e.target.value,
+                        qIndex,
+                        currentImageIndex
+                      )
+                    }
+                  />
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       ),
     },
@@ -280,11 +330,11 @@ const SellUpload = () => {
       content: (
         <div>
           {imageData.map((data, index) => (
-            <div key={index} className="flex items-start mb-5">
+            <div key={index} className="flex items-start mb-7">
               <img
                 src={URL.createObjectURL(data.file)}
                 alt="Ảnh"
-                className="w-36 h-36 mr-5 object-cover"
+                className="w-[300px] h-32 object-cover rounded-lg cursor-pointer"
               />
               <div className="flex-1">
                 <h3 className="text-lg font-semibold">
@@ -299,7 +349,7 @@ const SellUpload = () => {
                 <ul className="list-disc list-inside">
                   {data.qualities.map((item, idx) => (
                     <li key={idx}>
-                      Kích thước {item.size}: {item.price}
+                      Kích thước {item.size}: {formatCurrency(item.price)}
                     </li>
                   ))}
                 </ul>

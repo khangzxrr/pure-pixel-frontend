@@ -62,6 +62,8 @@ import ChatPage from "../pages/Message/ChatPage";
 import SellerProfile from "../pages/SellerProfile/SellerProfile";
 import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
 import SellUpload from "../components/Upload/SellUpload";
+import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageManagement";
+import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
 
 
 export const AppRouter = createBrowserRouter([
@@ -158,6 +160,18 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "wallet",
                 element: <Wallet />,
+              },
+              {
+                path: "booking",
+                element: <PhotoshootPackageManagement />,
+              },
+              {
+                path: "booking-request",
+                element: <PhotoshootRegistrationTable />,
+              },
+              {
+                path: "photo-selling",
+                element: <SellerProfile />,
               },
             ],
           },

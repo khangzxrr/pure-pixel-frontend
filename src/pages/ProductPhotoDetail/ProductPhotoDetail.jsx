@@ -2,13 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getData, postData } from "../../apis/api";
 import { message } from "antd";
+import UserService from "../../services/Keycloak";
+import { useKeycloak } from "@react-keycloak/web";
 
 const ProductPhotoDetail = () => {
   const [data, setData] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [frameOn, setFrameOn] = useState(true);
   const { id } = useParams();
-
+  const { keycloak } = useKeycloak();
+  const handleLogin = () => keycloak.login();
+  const userData = UserService.getTokenParsed();
+  console.log(userData.sub);
+  console.log(data);
+  
   useEffect(() => {
     // Gọi API để lấy dữ liệu
     getData(`photo/${id}`)
@@ -106,12 +112,13 @@ const ProductPhotoDetail = () => {
           </div>
         </div>
         <div className="lg:w-1/3">
-          <h1 className="text-2xl font-bold mb-2">{data.title}</h1>
-          <p className="text-gray-400 mb-4">
-            {photoSelling ? photoSelling.description : "No description"}
-          </p>
+          <div>
+            <h1 className="text-2xl font-bold mb-2">
+              {photoSelling.description}
+            </h1>
+          </div>
+
           <p className="text-3xl font-bold mb-2">{price.toLocaleString()}Đ</p>
-          <p className="text-green-500 mb-6">Miễn phí vận chuyển</p>
 
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">Kích thước</h2>
@@ -131,35 +138,24 @@ const ProductPhotoDetail = () => {
               ))}
             </div>
           </div>
-
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">Khung</h2>
-            <div className="flex items-center">
-              <span className="mr-2">{frameOn ? "Bật" : "Tắt"}</span>
+          {userData ? (
+            <>
+              {userData.sub === data}
               <button
-                className={`w-12 h-6 rounded-full p-1 ${
-                  frameOn ? "bg-blue-600" : "bg-gray-700"
-                }`}
-                onClick={() => setFrameOn(!frameOn)}
+                className="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition-colors"
+                onClick={handleBuyNow}
               >
-                <div
-                  className={`w-4 h-4 rounded-full bg-white transform transition-transform ${
-                    frameOn ? "translate-x-6" : ""
-                  }`}
-                />
+                Mua ngay
               </button>
-            </div>
-          </div>
-
-          <button className="w-full bg-gray-700 text-white py-3 rounded-lg mb-4 hover:bg-gray-600 transition-colors">
-            Thêm vào giỏ hàng
-          </button>
-          <button
-            className="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition-colors"
-            onClick={handleBuyNow}
-          >
-            Mua ngay
-          </button>
+            </>
+          ) : (
+            <button
+              className="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition-colors"
+              onClick={handleLogin}
+            >
+              Đăng nhập để mua ngay
+            </button>
+          )}
         </div>
       </div>
     </div>

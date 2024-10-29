@@ -23,104 +23,43 @@ const SellerProfile = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
-  const product = [
-    {
-      id: "23915",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Colorful Bird on Pine Branch",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    {
-      id: "23906",
-      image: "https://cdnmedia.baotintuc.vn/2013/03/20/16/45/chim15.jpg",
-      title: "Duck Swimming in Water",
-      price: 30.0,
-    },
-    // Add more products as needed
-  ];
-
   useEffect(() => {
-    getData(`/photographer/${id}/profile`)
-      .then((data) => {
-        setDataUser(data?.data?.photographer);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    getData(`photo/public?limit=10&page=0&photographerId=${id}&selling=true`)
-      .then((data) => {
-        setProducts(data?.data?.objects);
-        console.log(123, data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (id) {
+      getData(`/photographer/${id}/profile`)
+        .then((data) => {
+          setDataUser(data?.data?.photographer);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      getData(`photo/public?limit=10&page=0&photographerId=${id}&selling=true`)
+        .then((data) => {
+          setProducts(data?.data?.objects);
+          console.log(1234, data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      getData(`/me`)
+        .then((data) => {
+          setDataUser(data?.data);
+          console.log(666,data);
+          
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      getData(`photographer/me/photo?limit=10&page=0&selling=true`)
+        .then((data) => {
+          setProducts(data?.data?.objects);
+          console.log(123, data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+ 
   }, [id]);
   return (
     <div className=" min-h-screen">
