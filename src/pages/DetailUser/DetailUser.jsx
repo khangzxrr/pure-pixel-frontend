@@ -268,7 +268,7 @@ export default function DetailUser({ id, data }) {
           </div>
         )}
         {selectedButton === 2 && (
-          <div className="mx-4">
+          <div className="mx-4 mt-2">
             {
               <InfiniteScroll
                 dataLength={photos.length}
