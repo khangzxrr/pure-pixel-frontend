@@ -6,12 +6,15 @@ import ComPriceConverter from "../../ComPriceConverter/ComPriceConverter";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 import { useModalState } from "../../../hooks/useModalState";
 import ComModal from "../../ComModal/ComModal";
+import SubscriptionPopup from "./SubscriptionPopup";
 export default function Package() {
   const [dataUpgrade, setDataUpgrade] = useState([]);
   const [selectUpgrade, setselectUpgrade] = useState({});
+  const [userUpgrade, setUserUpgrade] = useState({});
   const userData = UserService.getTokenParsed();
   const token = UserService.getToken();
   const { keycloak } = useKeycloak();
+  const handleLogin = () => keycloak.login();
   const modal = useModalState();
   const [dataBuy, setDataBuy] = useState({});
 
@@ -20,14 +23,14 @@ export default function Package() {
       .then((e) => {
         console.log("====================================");
         console.log(e);
-        console.log("====================================");
+        setUserUpgrade(e.data.objects);
       })
       .catch((error) => {
         console.log(error);
       });
-    getData(`/upgrade`)
+    getData(`/upgrade-package?limit=10&page=0`)
       .then((e) => {
-        setDataUpgrade(e.data);
+        setDataUpgrade(e.data.objects);
         console.log(e.data);
       })
       .catch((error) => {
@@ -38,16 +41,18 @@ export default function Package() {
     CallApiUser();
   }, []);
   const CallApiUpgrade = (data) => {
-    postData(`/upgrade`, data)
+    postData(`/upgrade-order`, data)
       .then((e) => {
         console.log(e);
-        setDataBuy(e)
-        modal.handleOpen()
+        setDataBuy(e);
+        modal.handleOpen();
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  console.log(dataUpgrade);
+
   const handIcon = (number) => {
     if (number > 0) {
       return <AiOutlineCheck style={{ color: "green", fontSize: "24px" }} />;
@@ -65,31 +70,47 @@ export default function Package() {
         grow, inspire, and earn with a 500px membership—enhance your creative
         journey without any constraints.
       </p>
-      <div className="grid gap-14  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-6 justify-items-center  ">
-        {dataUpgrade.map((e, i) => (
-          <div
-            key={i}
-            className="w-[340px]  flex flex-col justify-between gap-6 "
-          >
-            <div className="bg-white rounded-[20px] h-full p-4">
-              <div className="flex justify-between px-4  py-4 ">
-                <p className="font-inter text-[16px] md:text-[16px]  font-extrabold">
-                  {e.name}
-                  <p className="text-red-600">{e.minOrderMonth} tháng</p>
-                </p>
-                <div>
-                  <p className="font-inter text-[#6bce8e] text-[16px] md:text-[16px] ] font-extrabold bg-[#cdf8d3] p-1 rounded-[10px]">
-                    <ComPriceConverter>{e.price}</ComPriceConverter>/tháng
-                  </p>
+      {userData ? (
+        <div className="grid gap-14  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-6 justify-items-center  ">
+          {dataUpgrade.map((e, i) => (
+            <div
+              key={i}
+              className="w-[340px]  flex flex-col justify-between gap-6 "
+            >
+              <div className="bg-[#202225] rounded-[20px] h-full p-4">
+                <div className="flex justify-between px-4  py-4  text-white">
+                  <div>
+                    <p className="font-inter text-[16px] md:text-[16px]  font-extrabold">
+                      {e.name}
+                    </p>
+                    <p className="text-white">{e.minOrderMonth} tháng</p>
+                  </div>
+                  <div>
+                    <p className="font-inter text-[#6bce8e] text-[16px] md:text-[16px] ] font-extrabold bg-[#cdf8d3] p-1 rounded-[10px]">
+                      <ComPriceConverter>{e.price}</ComPriceConverter>
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px] ">
-                {e.text} Nhiếp ảnh gia đam mê muốn nâng cao kỹ năng và khả năng
-                tiếp xúc với hình ảnh của mình
-              </div>
-              <table className="p-2 w-full">
-                <tbody className="">
-                  <tr>
+                <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px] ">
+                  Nhiếp ảnh gia đam mê muốn nâng cao kỹ năng và khả
+                  năng tiếp xúc với hình ảnh của mình
+                </div>
+                <table className="p-2 w-full">
+                  <tbody className="">
+                    {e.descriptions.map((data, index) => (
+                      <tr key={index}>
+                        <td className="px-4 py-2 mx-4 font-medium text-white">
+                          <div className="flex gap-4">
+                            <AiOutlineCheck
+                              style={{ color: "green", fontSize: "24px" }}
+                            />
+                            {data}
+                          </div>
+                          <div className={`border-b  mt-4`}></div>
+                        </td>
+                      </tr>
+                    ))}
+                    {/* <tr>
                     <td className="px-4 py-2 mx-4 font-medium">
                       <div className="flex gap-4">
                         {handIcon(e.maxPackageCount)}
@@ -124,8 +145,83 @@ export default function Package() {
                       </div>
                       <div className={`border-b`}></div>
                     </td>
-                  </tr>
-                  <tr>
+                  </tr> */}
+                  </tbody>
+                </table>
+              </div>
+              {userUpgrade?.serviceTransactionId === e.id ? (
+                <button
+                  // onClick={() => {
+                  //   CallApiUpgrade({
+                  //     acceptTransfer: true,
+                  //     acceptRemovePendingUpgradeOrder: true,
+                  //     upgradePackageId: e.id,
+                  //     totalMonths: e.minOrderMonth,
+                  //   });
+                  //   setselectUpgrade(e);
+                  // }}
+                  className="text-black px-6 py-2 text-center rounded-[20px] bg-white font-extrabold "
+                >
+                  Đang sửa dụng
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    CallApiUpgrade({
+                      acceptTransfer: true,
+                      acceptRemovePendingUpgradeOrder: true,
+                      upgradePackageId: e.id,
+                      totalMonths: e.minOrderMonth,
+                    });
+                    setselectUpgrade(e);
+                  }}
+                  className="text-black px-6 py-2 text-center rounded-[20px] bg-white font-extrabold "
+                >
+                  Nâng cấp
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-14  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-6 justify-items-center  ">
+          {dataUpgrade.map((e, i) => (
+            <div
+              key={i}
+              className="w-[340px]  flex flex-col justify-between gap-6 "
+            >
+              <div className="bg-white rounded-[20px] h-full p-4">
+                <div className="flex justify-between px-4  py-4 ">
+                  <p className="font-inter text-[16px] md:text-[16px]  font-extrabold">
+                    {e.name}
+                    <p className="text-red-600">{e.minOrderMonth} tháng</p>
+                  </p>
+                  <div>
+                    <p className="font-inter text-[#6bce8e] text-[16px] md:text-[16px] ] font-extrabold bg-[#cdf8d3] p-1 rounded-[10px]">
+                      <ComPriceConverter>{e.price}</ComPriceConverter>
+                    </p>
+                  </div>
+                </div>
+                <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px] ">
+                  {e.text} Nhiếp ảnh gia đam mê muốn nâng cao kỹ năng và khả
+                  năng tiếp xúc với hình ảnh của mình
+                </div>
+                <table className="p-2 w-full">
+                  <tbody className="">
+                    {e.descriptions.map((data, index) => (
+                      <tr>
+                        <td className="px-4 py-2 mx-4 font-medium">
+                          <div className="flex gap-4">
+                            <AiOutlineCheck
+                              style={{ color: "green", fontSize: "24px" }}
+                            />
+                            {data}
+                          </div>
+                          <div className={`border-b`}></div>
+                        </td>
+                      </tr>
+                    ))}
+                    {/* <tr>
                     <td className="px-4 py-2 mx-4 font-medium">
                       <div className="flex gap-4">
                         {handIcon(e.maxPackageCount)}
@@ -135,32 +231,56 @@ export default function Package() {
                     </td>
                   </tr>
                   <tr>
-                    <td className="px-4 py-2 mx-4 font-medium"></td>
+                    <td className="px-4 py-2 mx-4 font-medium">
+                      <div className="flex gap-4">
+                        {handIcon(e.maxBookingPhotoCount)}
+                        {e.maxBookingPhotoCount} ảnh/album
+                      </div>
+                      <div className={`border-b`}></div>
+                    </td>
                   </tr>
-                </tbody>
-              </table>
-            </div>
-            <button
-              onClick={() => {
-                CallApiUpgrade({
-                  acceptTransfer: true,
-                  acceptRemovePendingUpgradeOrder: true,
-                  upgradePackageId: e.id,
-                  totalMonths: e.minOrderMonth,
-                });
-                setselectUpgrade(e);
-              }}
-              className="text-black px-6 py-2 text-center rounded-[20px] bg-white font-extrabold "
-            >
-              Basic Account
-            </button>
-          </div>
-        ))}
-      </div>
+                  <tr>
+                    <td className="px-4 py-2 mx-4 font-medium">
+                      <div className="flex gap-4">
+                        {handIcon(e.maxBookingPhotoCount)}
+                        {e.maxBookingVideoCount} video/album
+                      </div>
+                      <div className={`border-b`}></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-2 mx-4 font-medium">
+                      <div className="flex gap-4">
+                        {handIcon(e.maxPhotoCount)}
+                        {e.maxPhotoCount} ảnh có thể bán
+                      </div>
+                      <div className={`border-b`}></div>
+                    </td>
+                  </tr> */}
+                  </tbody>
+                </table>
+              </div>
 
+              <button
+                onClick={handleLogin}
+                className="text-black px-6 py-2 text-center rounded-[20px] bg-white font-extrabold "
+              >
+                Đăng nhập để nâng cấp
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {modal?.isModalOpen && (
+        <SubscriptionPopup
+          onClose={modal?.handleClose}
+          dataBuy={dataBuy}
+          selectUpgrade={selectUpgrade}
+        />
+      )}
       <ComModal
         width={600}
-        isOpen={modal?.isModalOpen}
+        // isOpen={modal?.isModalOpen}
         onClose={modal?.handleClose}
       >
         <div className="flex justify-center items-center">

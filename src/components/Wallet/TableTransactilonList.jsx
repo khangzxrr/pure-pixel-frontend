@@ -8,16 +8,16 @@ import ComTable from "../ComTable/ComTable";
 import { getData } from "../../apis/api";
 import ComMenuButonTable from "../ComMenuButonTable/ComMenuButonTable";
 import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter";
-import ComStatusWalletConverter from "../ComStatusConverter/ComStatusWalletConverter";
-  function formatCurrency(number) {
-    // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
-    if (typeof number === "number") {
-      return number.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-    }
+import ComStatusWalletConverter from './../ComStatusConverter/ComStatusWalletConverter';
+function formatCurrency(number) {
+  // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
+  if (typeof number === "number") {
+    return number.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
   }
+}
 export default function TableTransactilonList() {
   const [data, setData] = useState([]);
   const { getColumnSearchProps, getColumnApprox, getColumnPriceRangeProps } =
@@ -153,31 +153,30 @@ export default function TableTransactilonList() {
     //   ),
     // },
   ];
-   const reloadData = () => {
-     getData(
-       "/wallet/transaction?limit=9999&page=0&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
-     )
-       .then((e) => {
-         setData(e?.data?.objects);
-         console.log("====================================");
-         console.log(1111, e);
-         console.log("====================================");
-         table.handleCloseLoading();
-       })
-       .catch((error) => {
-           console.error("Error fetching items:", error);
-                 reloadData();
-       });
-   };
-    useEffect(() => {
-        reloadData()
-        
+  const reloadData = () => {
+    getData(
+      "/wallet/transaction?limit=9999&page=0&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
+    )
+      .then((e) => {
+        setData(e?.data?.objects);
+        console.log("====================================");
+        console.log(1111, e);
+        console.log("====================================");
+        table.handleCloseLoading();
+      })
+      .catch((error) => {
+        console.error("Error fetching items:", error);
+        reloadData();
+      });
+  };
+  useEffect(() => {
+    reloadData();
   }, []);
   return (
     <div>
       <ComTable
-              y={"70vh"}
-              x
+        y={"70vh"}
+        x
         columns={columns}
         dataSource={data}
         loading={table.loading}

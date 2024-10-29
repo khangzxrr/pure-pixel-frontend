@@ -15,6 +15,13 @@ const UploadSideItem = [
     link: "/upload/private",
     quote: "",
   },
+  {
+    id: "U3",
+    title: "Ảnh bán",
+    icon: <MdLock />,
+    link: "/upload/sell",
+    quote: "",
+  },
 ];
 
 export default UploadSideItem;
