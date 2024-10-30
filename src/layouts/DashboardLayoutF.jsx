@@ -1,16 +1,30 @@
 import { useKeycloak } from "@react-keycloak/web";
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import ServerSide from "../components/ServerSide/ServerSide";
 import UseSidebarStore from "../states/UseSidebarStore";
 import NotificationModal from "./../components/ComNotificate/NotificationModal";
 import UseNotificationStore from "../states/UseNotificationStore";
-import { IoMenu } from "react-icons/io5"; // Biểu tượng menu
 
 const DashboardLayoutF = () => {
   const { keycloak } = useKeycloak();
-  const { isSidebarOpen, toggleSidebar } = UseSidebarStore(); // Thêm toggleSidebar để mở/đóng
+  const { isSidebarOpen, toggleSidebar, setIsSidebarOpen } = UseSidebarStore(); // Lấy setIsSidebarOpen
   const { isNotificationOpen, closeNotificationModal } = UseNotificationStore();
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && isSidebarOpen) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    // Gọi ngay lập tức và thêm event listener
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    // Dọn dẹp sự kiện khi component unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isSidebarOpen, setIsSidebarOpen]); // Thêm dependencies
 
   return (
     <div className="relative flex bg-[#43474e] text-white font-semibold h-screen">

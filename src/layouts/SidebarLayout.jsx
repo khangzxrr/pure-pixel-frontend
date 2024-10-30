@@ -167,7 +167,9 @@ const SidebarLayout = ({
               ></div>
             )}
           </div>
-          <Outlet />
+          <div className="w-[100%]">
+            <Outlet />
+          </div>
 
           {/* Nút cuộn lên đầu trang */}
           {isVisible && (
