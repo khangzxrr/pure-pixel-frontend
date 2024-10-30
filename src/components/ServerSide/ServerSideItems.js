@@ -7,7 +7,6 @@ import { FaCameraRetro } from "react-icons/fa";
 const ServerSideItems = [
   {
     id: "logo",
-    name: "Home",
     link: "/",
     icon: (
       <img
@@ -19,26 +18,26 @@ const ServerSideItems = [
   },
   {
     id: "blog",
-    name: "Blog",
+    name: "Bài viết",
     link: "/blog",
     authen: true,
     icon: <MdHomeFilled className="text-4xl" />,
   },
   {
     id: "explore",
-    name: "Explore",
+    name: "Khám phá",
     link: "/explore",
     icon: <FaCompass className="text-3xl" />,
   },
   {
     id: "camera",
-    name: "Camera",
+    name: "Máy ảnh",
     link: "/camera",
     icon: <FaCameraRetro className="text-3xl" />,
   },
   {
     id: "upload",
-    name: "Upload",
+    name: "Tải lên",
     link: "/upload",
     author: true,
     authen: true,
@@ -46,13 +45,13 @@ const ServerSideItems = [
   },
   {
     id: "notification",
-    name: "notification",
+    name: "Thông báo",
     authen: true,
     icon: <FaBell className="text-3xl" />,
   },
   {
     id: "message",
-    name: "Message",
+    name: "Tin nhắn",
     link: "/message",
     authen: true,
     icon: <IoMailSharp className="text-3xl" />,

@@ -10,6 +10,7 @@ import { FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { IoMdImages } from "react-icons/io";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
+import BlurhashImage from "../BlurhashImage/BlurhashImage";
 
 const CameraPhoto = ({ nameCamera }) => {
   const { keycloak } = useKeycloak();
@@ -124,6 +125,13 @@ const CameraPhoto = ({ nameCamera }) => {
                       className="w-full h-auto object-cover"
                       onClick={() => handleOnClick(photo.id)}
                     />
+                    {/* <BlurhashImage
+                      src={photo.signedUrl.thumbnail}
+                      height={photo.height}
+                      width={photo.width}
+                      className="w-full h-auto object-cover"
+                      onClick={() => handleOnClick(photo.id)}
+                    /> */}
                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
                       <div className="flex justify-between w-full px-3">
                         <div className="flex items-center gap-2">

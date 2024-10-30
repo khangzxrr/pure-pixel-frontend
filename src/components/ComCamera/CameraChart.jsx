@@ -146,10 +146,7 @@ const CameraChart = () => {
   };
 
   return (
-    <div
-      className="bg-[#2f3136] p-4"
-      style={{ width: "100%", height: "400px" }}
-    >
+    <div className="bg-[#2f3136] p-4" style={{ width: "99%", height: "400px" }}>
       <Line data={chartData} options={options} />
     </div>
   );

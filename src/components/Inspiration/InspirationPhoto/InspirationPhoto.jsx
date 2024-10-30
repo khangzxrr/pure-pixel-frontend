@@ -22,18 +22,17 @@ const InspirationPhoto = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory,
+    (state) => state.selectedPhotoCategory
   );
   const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate,
+    (state) => state.filterByPhotoDate
   );
   const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
   const searchResult = UseCategoryStore((state) => state.searchResult);
   const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle,
+    (state) => state.searchByPhotoTitle
   );
-  // const searchCategory = UseCategoryStore((state) => state.searchCategory);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
@@ -54,7 +53,7 @@ const InspirationPhoto = () => {
       watermark,
       selling,
       photographerName,
-      title,
+      title
     );
     return response;
   };
@@ -79,7 +78,6 @@ const InspirationPhoto = () => {
         return currentPage < lastPage.totalPage ? currentPage : undefined;
       },
     });
-
 
   // Merge all pages' results
   // const photoList = data.pages.flatMap((page) => page.objects);
@@ -146,19 +144,19 @@ const InspirationPhoto = () => {
                       key={photo.id}
                       className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
                     >
-                      <BlurhashImage
+                      {/* <BlurhashImage
                         src={photo.signedUrl.thumbnail}
                         height={photo.height}
                         width={photo.width}
                         className="w-full h-auto object-cover"
                         onClick={() => handleOnClick(photo.id)}
+                      /> */}
+                      <img
+                        src={photo.signedUrl.thumbnail}
+                        alt={`Photo ${photo.id}`}
+                        className="w-full h-auto object-cover"
+                        onClick={() => handleOnClick(photo.id)}
                       />
-                      {/* <img */}
-                      {/*   src={photo.signedUrl.thumbnail} */}
-                      {/*   alt={`Photo ${photo.id}`} */}
-                      {/*   className="w-full h-auto object-cover" */}
-                      {/*   onClick={() => handleOnClick(photo.id)} */}
-                      {/* /> */}
                       <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
                         <div className="flex justify-between w-full px-3">
                           <div className="flex items-center gap-2">
