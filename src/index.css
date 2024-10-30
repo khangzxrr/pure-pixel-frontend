@@ -9,7 +9,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 /* html, */
 body {
@@ -101,6 +101,29 @@ code {
 .ant-table-content {
   background-color: blue !important;
 }
-.ant-table-cell {
-  border-bottom: 1px solid #888 !important;
+.ant-table-cell{
+border-bottom: 1px solid #888 !important;
+}
+
+
+.custom-steps .ant-steps-item-finish .ant-steps-item-title {
+    color: #1677ff !important; /* Màu cho bước đã hoàn thành */
+}
+
+.custom-steps .ant-steps-item-wait .ant-steps-item-title {
+    color: rgb(184, 184, 184) !important; /* Màu cho bước chưa hoàn thành */
+}
+.custom-steps .ant-steps-item-process .ant-steps-item-title {
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.custom-steps .ant-steps-item-finish .ant-steps-icon {
+    color: #1677ff !important; /* Màu cho bước đã hoàn thành */
+}
+
+.custom-steps .ant-steps-item-wait .ant-steps-icon {
+    color: rgb(184, 184, 184) !important; /* Màu cho bước chưa hoàn thành */
+}
+.custom-steps .ant-steps-item-process .ant-steps-icon {
+    color: rgba(255, 255, 255, 0.88) !important;
 }

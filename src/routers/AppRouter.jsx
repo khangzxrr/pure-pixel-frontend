@@ -64,6 +64,12 @@ import CameraPage from "../pages/Camera/CameraPage";
 import CameraList from "../components/ComCamera/CameraList";
 import CameraDetail from "../components/ComCamera/CameraDetail";
 import CameraByBrand from "../components/ComCamera/CameraByBrand";
+import SellerProfile from "../pages/SellerProfile/SellerProfile";
+import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
+import SellUpload from "../components/Upload/SellUpload";
+import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageManagement";
+import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
+
 
 export const AppRouter = createBrowserRouter([
   {
@@ -90,6 +96,14 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "inspiration",
                 element: <InspirationPhoto />,
+              },
+              {
+                path: "shop-profile/:id",
+                element: <SellerProfile />,
+              },
+              {
+                path: "product-photo/:id",
+                element: <ProductPhotoDetail />,
               },
               {
                 path: "hot",
@@ -149,6 +163,10 @@ export const AppRouter = createBrowserRouter([
                 path: "private",
                 element: <PrivateUpload />,
               },
+              {
+                path: "sell",
+                element: <SellUpload />,
+              },
             ],
           },
           {
@@ -170,6 +188,18 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "wallet",
                 element: <Wallet />,
+              },
+              {
+                path: "booking",
+                element: <PhotoshootPackageManagement />,
+              },
+              {
+                path: "booking-request",
+                element: <PhotoshootRegistrationTable />,
+              },
+              {
+                path: "photo-selling",
+                element: <SellerProfile />,
               },
             ],
           },

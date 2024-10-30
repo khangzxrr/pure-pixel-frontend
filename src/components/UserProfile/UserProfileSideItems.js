@@ -1,27 +1,43 @@
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdPhotos } from "react-icons/io";
-import UserService from "../../services/Keycloak";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { FaWallet, FaImages, FaCameraRetro, FaClipboardList, FaMoneyBillTransfer } from "react-icons/fa";
 
-const userData = UserService.getTokenParsed();
 const UserProfileSideItems = [
   {
     id: "NameProfile",
     title: "Hồ sơ",
-    icon: <IoPersonSharp />,
+    icon: <IoPersonSharp />, // Icon cá nhân
     link: "/profile/userprofile",
   },
   {
     id: "MyPhotos",
     title: "Ảnh của tôi",
-    icon: <IoMdPhotos />,
+    icon: <IoMdPhotos />, // Icon ảnh
     link: "/profile/my-photos",
   },
   {
     id: "transaction",
     link: "wallet",
     title: "Ví",
-    icon: <FaMoneyBillTransfer className="text-3xl" />,
+    icon: <FaWallet className="text-3xl" />, // Icon ví
+  },
+  {
+    id: "photo",
+    link: "photo-selling",
+    title: "Ảnh bán",
+    icon: <FaImages className="text-3xl" />, // Icon ảnh bán
+  },
+  {
+    id: "booking",
+    link: "booking",
+    title: "Quản lý gói chụp",
+    icon: <FaCameraRetro className="text-3xl" />, // Icon máy ảnh
+  },
+  {
+    id: "booking-request",
+    link: "booking-request",
+    title: "Quản lý yêu cầu chụp",
+    icon: <FaClipboardList className="text-3xl" />, // Icon quản lý yêu cầu
   },
 ];
 

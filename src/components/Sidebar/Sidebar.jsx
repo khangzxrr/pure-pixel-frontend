@@ -18,7 +18,8 @@ const Sidebar = ({
   isCamera,
 }) => {
   const location = useLocation();
-  const { activeLink, setActiveLink } = UseSidebarStore();
+  const { activeLink, setActiveLink, isSidebarOpen, toggleSidebar } =
+    UseSidebarStore();
 
   const isInspirationPage = location.pathname === "/explore/inspiration";
   useEffect(() => {
@@ -83,6 +84,7 @@ const Sidebar = ({
             onClick={() => {
               handleClick(item.id, item.title, item.icon, item.quote);
               setActiveLink(item.id);
+              toggleSidebar();
             }}
             className={`flex text-[#a3a3a3] items-center gap-3 hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md transition-colors duration-200
             ${
@@ -105,7 +107,7 @@ const Sidebar = ({
             <InsPhotoFilter />
           </div>
         )}
-        {trendItems && (
+        {isInspirationPage && (
           <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1">
             <div className="text-[12px]">TOP 5 THẺ THỊNH HÀNH HIỆN TẠI</div>
             <div className="flex flex-col gap-2">

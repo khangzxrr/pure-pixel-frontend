@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import InspirationSideComp from "../Inspiration/InspirationSide/InspirationSideComp";
 import { IoMenu, IoSettingsSharp } from "react-icons/io5";
@@ -12,11 +12,13 @@ import PhotographerNav from "../Photographer/PhotographerList/PhotographerNav";
 import SellingPhotoNav from "../SellingPhoto/SellingPhotoNav";
 import UserApi from "../../apis/UserApi";
 import { useQuery } from "@tanstack/react-query";
+import { IoIosArrowUp } from "react-icons/io";
 const Explore = () => {
   const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote, activeItem } =
     UseInspirationStore();
   const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
+  const [isVisible, setIsVisible] = useState(false);
   const userData = UserService.getTokenParsed();
   const { keycloak } = useKeycloak();
 
@@ -34,15 +36,31 @@ const Explore = () => {
     staleTime: 60000,
     cacheTime: 300000,
   });
+  const handleScroll = () => {
+    const scrollTop = document.getElementById("inspiration").scrollTop;
+    setIsVisible(scrollTop > 300);
+  };
 
+  const scrollToTop = () => {
+    document
+      .getElementById("inspiration")
+      .scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const mainDiv = document.getElementById("inspiration");
+    mainDiv.addEventListener("scroll", handleScroll);
+    return () => {
+      mainDiv.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
-    <div className="flex flex-grow max-h-screen">
-      {/* Sidebar - Right */}
-      <div className="flex">
+    <div className="flex flex-grow max-h-screen ">
+      <div className="flex w-full">
         <div
-          className={`${
-            isSidebarOpen ? "flex" : "hidden"
-          } xl:flex flex-col w-[256px] bg-[#2f3136] max-h-screen sticky top-0 z-40`}
+          className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-64 ${
+            isSidebarOpen ? "w-64" : "w-0 overflow-hidden"
+          } lg:overflow-visible`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             <InspirationSideComp />
@@ -75,7 +93,7 @@ const Explore = () => {
                     </div>
                     <MenuItems
                       transition
-                      className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-top-right divide-y divide-gray-100 
+                      className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-bottom-right divide-y divide-gray-100 
                       rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition 
                       focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 
                       data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
@@ -112,39 +130,65 @@ const Explore = () => {
             )}
           </div>
         </div>
-      </div>
-      <div
-        id="inspiration"
-        className="flex flex-col flex-grow overflow-y-auto
-       scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"
-      >
-        <div className="sticky top-0 px-2 z-50 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
-          <IoMenu size={24} className="xl:hidden" onClick={toggleSidebar} />{" "}
-          {isInspirationActive && (
-            <InspirationNav
-              toggleSidebar={toggleSidebar}
-              activeTitle={activeTitle}
-              activeIcon={activeIcon}
-              activeQuote={activeQuote}
-            />
-          )}
-          {isPhotographerListActive && (
-            <PhotographerNav
-              toggleSidebar={toggleSidebar}
-              activeTitle={activeTitle}
-              activeIcon={activeIcon}
-              activeQuote={activeQuote}
-            />
-          )}
-          {isSellingListActive && (
-            <SellingPhotoNav
-              activeTitle={activeTitle}
-              activeIcon={activeIcon}
-              activeQuote={activeQuote}
-            />
-          )}
+        <div className="flex flex-col flex-grow w-full">
+          <div
+            id="inspiration"
+            className={`flex flex-col l  relative 
+       scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f] ${
+         isSidebarOpen ? `overflow-hidden` : `overflow-y-scroll`
+       }`}
+          >
+            <div className="sticky top-0 px-2 z-10 flex  items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+              <div className="hover:bg-[#4e535e] p-1 rounded-full transition-colors duration-200">
+                <IoMenu
+                  size={24}
+                  className="lg:hidden hover:cursor-pointer "
+                  onClick={toggleSidebar}
+                />{" "}
+              </div>
+
+              {isInspirationActive && (
+                <InspirationNav
+                  toggleSidebar={toggleSidebar}
+                  activeTitle={activeTitle}
+                  activeIcon={activeIcon}
+                  activeQuote={activeQuote}
+                />
+              )}
+              {isPhotographerListActive && (
+                <PhotographerNav
+                  toggleSidebar={toggleSidebar}
+                  activeTitle={activeTitle}
+                  activeIcon={activeIcon}
+                  activeQuote={activeQuote}
+                />
+              )}
+              {isSellingListActive && (
+                <SellingPhotoNav
+                  activeTitle={activeTitle}
+                  activeIcon={activeIcon}
+                  activeQuote={activeQuote}
+                />
+              )}
+            </div>
+            <Outlet />
+            {isVisible && (
+              <button
+                onClick={scrollToTop}
+                className="fixed bottom-5 right-20 z-20 bg-[#4e535e] border-2 hover:bg-[#777777] text-white p-2 rounded-full transition-colors duration-200"
+              >
+                <IoIosArrowUp size={24} />
+              </button>
+            )}
+            {isSidebarOpen && (
+              <div
+                className="absolute inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+                style={{ height: "9999px" }}
+                onClick={toggleSidebar}
+              ></div>
+            )}
+          </div>
         </div>
-        <Outlet />
       </div>
     </div>
   );
