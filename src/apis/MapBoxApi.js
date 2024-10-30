@@ -1,4 +1,4 @@
-import externalHttp from "../configs/Http";
+import http, { externalHttp } from "../configs/Http";
 
 const BASE_URL = "https://api.mapbox.com/search/geocode/v6";
 
@@ -10,7 +10,26 @@ const getAddressByCoordinate = async (longitude, latitude) => {
   );
   return response.data;
 };
-// const geocodeUrl = `https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(address)}&country=VN&access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`;
+
+const getPhotoListByCoorddinate = async (
+  limit,
+  longitude,
+  latitude,
+  distance
+) => {
+  console.log(
+    "getPhotoListByCoorddinate",
+    limit,
+    longitude,
+    latitude,
+    distance
+  );
+
+  const response = await http.get(
+    `/photo/public?limit=${limit}&page=0&gps=true&longitude=${longitude}&latitude=${latitude}&distance=${distance}`
+  );
+  return response.data;
+};
 
 const getCoordinateByAddress = async (address) => {
   const response = await externalHttp.get(
@@ -21,5 +40,9 @@ const getCoordinateByAddress = async (address) => {
   return response.data;
 };
 
-const MapBoxApi = { getAddressByCoordinate, getCoordinateByAddress };
+const MapBoxApi = {
+  getPhotoListByCoorddinate,
+  getAddressByCoordinate,
+  getCoordinateByAddress,
+};
 export default MapBoxApi;
