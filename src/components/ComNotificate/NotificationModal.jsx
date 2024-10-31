@@ -43,7 +43,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
       onClick={handleClickOutside}
     >
       <div
-        className={`bg-[#1b1b1b] text-[#eee] w-[400px] h-full flex flex-col transform transition-transform duration-300 ${
+        className={`bg-[#1b1b1b] text-[#eee] w-[300px] lg:w-[400px] h-full flex flex-col transform transition-transform duration-300 ${
           isVisible ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -65,7 +65,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="w-[325px]">
+                <div className="w-[225px] lg:w-[335px] text-sm lg:text-base">
                   <span className="font-bold">{notification.name}</span> đã bắt
                   đầu theo dõi bạn
                 </div>

@@ -1,4 +1,3 @@
-import axios from "axios";
 import http from "./../configs/Http";
 
 // const getPublicPhotos = async (limit, page, categoryName) => {

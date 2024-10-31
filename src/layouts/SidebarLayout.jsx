@@ -34,6 +34,7 @@ const SidebarLayout = ({
 
   const brandCamera = UseCameraStore((state) => state.brandCamera);
   const setNameCamera = UseCameraStore((state) => state.setNameCamera);
+
   useEffect(() => {
     if (location.pathname.includes("/camera/all")) {
       setNameCamera("", "");
@@ -167,10 +168,7 @@ const SidebarLayout = ({
               ></div>
             )}
           </div>
-          <div className="w-[100%]">
-            <Outlet />
-          </div>
-
+          <Outlet />
           {/* Nút cuộn lên đầu trang */}
           {isVisible && (
             <button

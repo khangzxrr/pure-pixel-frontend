@@ -69,7 +69,6 @@ import SellUpload from "../components/Upload/SellUpload";
 import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageManagement";
 import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
 
-
 export const AppRouter = createBrowserRouter([
   {
     path: "/",

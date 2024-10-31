@@ -1,6 +1,8 @@
 import React from "react";
 import { IoMenu } from "react-icons/io5";
 import Categories from "../../Explore/Categories";
+import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
+import { FaSearch } from "react-icons/fa";
 
 const PhotographerNav = ({
   toggleSidebar,
@@ -8,6 +10,19 @@ const PhotographerNav = ({
   activeTitle,
   activeQuote,
 }) => {
+  const { inputValue, setInputValue, setSearchResult } =
+    UsePhotographerFilterStore();
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+  const handleSearch = () => {
+    setSearchResult(inputValue);
+  };
   return (
     <div className="relative flex items-center justify-between  space-x-4 w-full">
       <div className="relative flex items-center space-x-4">
@@ -22,12 +37,20 @@ const PhotographerNav = ({
         </div>
       </div>
       <div className="flex items-center gap-2 transition-all duration-300">
-        <div className="">
+        <div className="bg-[#202225] rounded-lg flex items-center">
           <input
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             type="text"
-            placeholder="Tìm kiếm PurePixel..."
+            placeholder="Tìm kiếm nhiếp ảnh gia..."
             className="font-normal text-sm px-2 py-2 w-[50vw] lg:w-[20vw]  pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
           />
+          <div className="flex items-center px-3">
+            <button className="" onClick={handleSearch}>
+              <FaSearch />
+            </button>
+          </div>
         </div>
       </div>
     </div>
