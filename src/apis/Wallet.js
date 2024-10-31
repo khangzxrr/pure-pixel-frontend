@@ -1,4 +1,4 @@
-import http, { testHttp } from "../configs/Http";
+import http, { externalHttp } from "../configs/Http";
 
 const getWallet = async () => {
   const response = await http.get("/wallet");
@@ -39,7 +39,7 @@ const createWithdrawal = async (data) => {
 };
 
 const bankList = async () => {
-  const response = await testHttp.get("https://api.vietqr.io/v2/banks");
+  const response = await externalHttp.get("https://api.vietqr.io/v2/banks");
 
   return response.data;
 };

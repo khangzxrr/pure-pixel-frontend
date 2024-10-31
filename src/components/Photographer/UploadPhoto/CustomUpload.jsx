@@ -1,4 +1,8 @@
-import { PlusCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  LoadingOutlined,
+  PlusCircleOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
 import { message, Upload, Tooltip, Switch } from "antd";
 import { useState } from "react";
@@ -51,7 +55,7 @@ export default function CustomUpload() {
     switch (e.response.data.message) {
       case "RunOutPhotoQuotaException":
         message.error(
-          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
         );
         break;
 
@@ -115,10 +119,13 @@ export default function CustomUpload() {
         file,
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
-            (progressEvent.loaded / progressEvent.total) * 100,
+            (progressEvent.loaded / progressEvent.total) * 100
           );
 
           updatePhotoPropertyByUid(file.uid, "percent", percentCompleted);
+          if (percentCompleted === 100) {
+            updatePhotoPropertyByUid(file.uid, "status", "done");
+          }
         },
       });
 
@@ -153,7 +160,7 @@ export default function CustomUpload() {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
           message.error(
-            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
           );
           break;
 
@@ -188,6 +195,7 @@ export default function CustomUpload() {
         photoType: photo.photoType,
         visibility: photo.visibility,
         photoTags: photo.photoTags,
+        gps: photo.gps,
       };
 
       // Call the API to update a single photo and add watermark concurrently
@@ -260,11 +268,28 @@ export default function CustomUpload() {
         >
           {photoArray.length > 0 && (
             <div
-              className="w-full h-1/2 bg-[#56bc8a] hover:bg-[#68c397] transition duration-150 flex justify-center items-center cursor-pointer"
-              onClick={SubmitUpload}
+              className={`w-full h-1/2 ${
+                photoArray.some((photo) => photo.status === "uploading")
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#56bc8a] hover:bg-[#68c397] cursor-pointer"
+              } transition duration-150 flex justify-center items-center`}
+              onClick={() => {
+                if (!photoArray.some((photo) => photo.status === "uploading")) {
+                  SubmitUpload();
+                }
+              }}
             >
               <div className="h-4 w-full m-2 text-6xl text-white flex justify-center items-center">
-                <UploadOutlined />
+                {photoArray.some((photo) => photo.status === "uploading") ? (
+                  <LoadingOutlined
+                    style={{
+                      fontSize: 48,
+                    }}
+                    spin
+                  />
+                ) : (
+                  <UploadOutlined />
+                )}
               </div>
             </div>
           )}
@@ -288,7 +313,7 @@ export default function CustomUpload() {
             <div className=" h-full w-full ">
               {photoArray.length > 0 ? (
                 <div className="w-full h-full hover:text-white text-gray-200">
-                  <div className="   m-2 text-6xl">
+                  <div className=" m-2 text-6xl">
                     <PlusCircleOutlined />
                   </div>
                 </div>

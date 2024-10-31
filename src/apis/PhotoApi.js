@@ -91,15 +91,19 @@ const uploadPhoto = async (file, onUploadProgress) => {
 };
 
 const updatePhotos = async (photo) => {
-  const response = await http.patch(`photo/${photo.id}`, {
-    photo,
+  // Destructure the photo object to exclude the id field
+  const { id, ...photoWithoutId } = photo;
+
+  const response = await http.patch(`photo/${id}`, {
+    ...photoWithoutId,
   });
 
   return response;
 };
+
+export { updatePhotos };
 const addWatermark = async (photo) => {
-  const res = await http.post("/photo/watermark", {
-    photoId: photo.photoId,
+  const res = await http.post(`/photo/${photo.photoId}/watermark`, {
     text: photo.text,
   });
   return res;
