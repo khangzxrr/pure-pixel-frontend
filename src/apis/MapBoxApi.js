@@ -12,6 +12,7 @@ const getAddressByCoordinate = async (longitude, latitude) => {
 };
 
 const getPhotoListByCoorddinate = async (
+  page,
   limit,
   longitude,
   latitude,
@@ -19,6 +20,7 @@ const getPhotoListByCoorddinate = async (
 ) => {
   console.log(
     "getPhotoListByCoorddinate",
+    page,
     limit,
     longitude,
     latitude,
@@ -26,7 +28,7 @@ const getPhotoListByCoorddinate = async (
   );
 
   const response = await http.get(
-    `/photo/public?limit=${limit}&page=0&gps=true&longitude=${longitude}&latitude=${latitude}&distance=${distance}`
+    `/photo/public?limit=${limit}&page=${page}&gps=true&longitude=${longitude}&latitude=${latitude}&distance=${distance}`
   );
   return response.data;
 };

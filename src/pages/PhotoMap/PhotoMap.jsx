@@ -7,38 +7,72 @@ import { useNavigate } from "react-router-dom";
 import useMapboxState from "../../states/UseMapboxState";
 import MapBoxApi from "../../apis/MapBoxApi";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN; // Set your mapbox token here
-
+const getMultiplier = (zoom) => {
+  if (zoom <= 4) {
+    return 600;
+  } else if (zoom <= 8) {
+    return 300;
+  } else if (zoom <= 14) {
+    return 100;
+  } else {
+    return 1000;
+  }
+};
 export default function PhotoMap() {
   const { selectedLocate, setSelectedLocate } = useMapboxState(); // Use Zustand store
   const [limit, setLimit] = useState(10); // Set limit to 10
+  const [page, setPage] = useState(0); // Set page to 0
   const [viewState, setViewState] = useState({
-    latitude: 11.16667,
-    longitude: 106.66667,
-    zoom: 4,
+    latitude: 16.406507897299164,
+    longitude: 107.44773411517099,
+    zoom: 6,
   });
   const navigate = useNavigate(); // Initialize useNavigate
+
   const {
     data: photos,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["photo-by-coordinates"],
+    queryKey: ["photo-by-coordinates", viewState, limit, page],
     queryFn: () =>
       MapBoxApi.getPhotoListByCoorddinate(
+        page,
         limit,
         viewState.longitude,
         viewState.latitude,
-        viewState.zoom * 1000
+        viewState.zoom * getMultiplier(viewState.zoom)
       ),
+  });
+  const searchByCoordinate = useMutation({
+    mutationFn: ({ longitude, latitude }) =>
+      MapBoxApi.getAddressByCoordinate(longitude, latitude),
+    onSuccess: (data) => {
+      console.log(
+        "Data:",
+        data,
+        data.features[0].properties.full_address,
+        selectedLocate
+      );
+
+      setSelectedLocate({
+        ...selectedLocate,
+        address: data.features[0].properties.full_address,
+      });
+    },
+    onError: (error) => {
+      console.error("Error fetching address:", error);
+    },
   });
   // Function to handle map click and get coordinates
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat; // Extract longitude and latitude
     console.log("Longitude:", lng, "Latitude:", lat); // Log the coordinates
+    setViewState({ longitude: lng, latitude: lat, zoom: 9 });
     // setSelectedLocate({
     //   // Set the selectedLocate to the new coordinates
     //   id: 0,
@@ -49,6 +83,23 @@ export default function PhotoMap() {
     //     "https://transcode-v2.app.engoo.com/image/fetch/f_auto,c_lfill,h_128,dpr_3/https://assets.app.engoo.com/images/46KeGlDhxPjBnsp2yMivAh.png", // Placeholder image
     // });
   };
+  const handleSelectPhoto = (photo) => {
+    console.log("Selected Photo:", photo); // Log the selected photo
+
+    setSelectedLocate({
+      id: photo.id,
+      title: photo.title,
+      photo_url: photo.signedUrl.url,
+      latitude: photo.exif.latitude,
+      longitude: photo.exif.longitude,
+    });
+
+    searchByCoordinate.mutate({
+      longitude: photo.exif.longitude,
+      latitude: photo.exif.latitude,
+    });
+  };
+
   const handleMapMove = (event) => {
     setViewState(event.viewState);
 
@@ -56,12 +107,13 @@ export default function PhotoMap() {
   };
   useEffect(() => {
     if (selectedLocate) {
-      console.log("Selected Location:", photos.exif, photos);
+      console.log("Selected Location:", photos?.exif, photos);
 
       setViewState((prev) => ({
         ...prev,
         latitude: selectedLocate.latitude,
         longitude: selectedLocate.longitude,
+        zoom: 8,
       }));
     }
   }, [selectedLocate]);
@@ -86,33 +138,20 @@ export default function PhotoMap() {
             >
               <div
                 className="marker-btn"
-                onClick={() =>
-                  setSelectedLocate({
-                    id: photo.id,
-                    title: photo.title,
-                    photo_url: photo.signedUrl.url,
-                    latitude: photo.exif.latitude,
-                    longitude: photo.exif.longitude,
-                  })
-                } // Set the selectedLocate to the current photo
+                onClick={() => handleSelectPhoto(photo)}
                 style={{ cursor: "pointer" }}
               >
-                <IoLocationSharp fontSize={39} color="red" />
+                <IoLocationSharp
+                  fontSize={39}
+                  color={
+                    selectedLocate && selectedLocate.id === photo.id
+                      ? "blue"
+                      : "red"
+                  }
+                />{" "}
               </div>
             </Marker>
           ))}
-        {selectedLocate ? (
-          <Marker
-            key={selectedLocate.id}
-            latitude={selectedLocate.latitude}
-            longitude={selectedLocate.longitude}
-            anchor="bottom"
-          >
-            <div className="marker-btn" style={{ cursor: "pointer" }}>
-              <IoLocationSharp fontSize={39} color="yellow" />
-            </div>
-          </Marker>
-        ) : null}
       </Map>
 
       <div className="absolute w-full h-1/6 bottom-9 bg-white flex items-center justify-center p-4 shadow-lg bg-opacity-80">
@@ -127,15 +166,7 @@ export default function PhotoMap() {
                     ? "border-4 border-gray-400 transition duration-300"
                     : ""
                 }`}
-                onClick={() =>
-                  setSelectedLocate({
-                    id: photo.id,
-                    title: photo.title,
-                    photo_url: photo.signedUrl.url,
-                    latitude: photo.exif.latitude,
-                    longitude: photo.exif.longitude,
-                  })
-                }
+                onClick={() => handleSelectPhoto(photo)}
               >
                 <img
                   className="h-full w-full rounded-sm"
@@ -148,7 +179,7 @@ export default function PhotoMap() {
       </div>
 
       {selectedLocate ? (
-        <div className="absolute w-1/6 h-1/3 bottom-1/3 right-3 bg-white flex items-center justify-center p-2 shadow-lg bg-opacity-80">
+        <div className="absolute w-1/6 h-fit top-1/4 right-3 bg-white flex items-center justify-center p-2 shadow-lg bg-opacity-80">
           <div className="flex flex-row items-center">
             <div
               className="flex flex-col h-full m-2 cursor-pointer text-gray-600"
@@ -156,13 +187,19 @@ export default function PhotoMap() {
                 navigate(`/explore/inspiration`);
               }} // Navigate to another route
             >
-              <p className="font-normal">{selectedLocate.title}</p>
-
-              <img
-                className="h-full w-full"
-                src={selectedLocate.photo_url}
-                alt={selectedLocate.title}
-              />
+              <p className="font-normal text-base">
+                {selectedLocate.title.length > 20
+                  ? `${selectedLocate.title.substring(0, 17)}...`
+                  : selectedLocate.title}
+              </p>
+              <p className="font-normal text-sm">{selectedLocate.address}</p>
+              <div className="h-full w-full flex">
+                <img
+                  className="h-full w-full"
+                  src={selectedLocate.photo_url}
+                  alt={selectedLocate.title}
+                />
+              </div>
             </div>
           </div>
         </div>
