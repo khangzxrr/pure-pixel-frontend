@@ -3,14 +3,14 @@ import React from "react";
 function ComTypeWalletConverter({ children }) {
   const convertStatus = (type) => {
     switch (type) {
-      case "SUCCESS":
-        return <p className="text-green-500">✓ Thành công</p>;
-      case "PENDING":
-        return <p className="text-yellow-600">◔ Đang chờ</p>;
-      case "Cancelled":
-        return <p className="text-red-600">Đã hủy</p>;
-      case "Expired":
-        return <p className="text-gray-600">Hết hạn</p>;
+      case "UPGRADE_TO_PHOTOGRAPHER":
+        return <p className="">Nâng cấp tài khoản</p>;
+      case "DEPOSIT":
+        return <p className="">Nạp tiền</p>;
+      case "IMAGE_BUY":
+        return <p className="">Mua ảnh</p>;
+      case "WITHDRAWAL":
+        return <p className="">Rút tiền</p>;
       default:
         return type; // Giá trị mặc định nếu không khớp
     }

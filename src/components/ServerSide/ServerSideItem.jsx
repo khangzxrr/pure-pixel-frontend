@@ -15,8 +15,10 @@ const ServerSideItem = ({
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    setActiveLinkServer(location.pathname);
-  }, [location.pathname, setActiveLinkServer]);
+    if (location.pathname === link) {
+      setActiveLinkServer(link);
+    }
+  }, [location.pathname, link, setActiveLinkServer]);
 
   const handleClick = () => {
     setActiveLinkServer(link);
@@ -39,11 +41,18 @@ const ServerSideItem = ({
         className="relative flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200"
       >
         {icon}
-        {/* {isHovered && (
-          <div className="absolute left-full ml-2 whitespace-nowrap bg-gray-700 text-white text-sm p-1 rounded-md shadow-lg z-50">
+        {isHovered && name && (
+          <div
+            className={`absolute left-full ml-[14px] whitespace-nowrap bg-[#202225] text-[#eee] text-sm rounded-md shadow-lg z-50 px-4 py-[6px] 
+              transition-all duration-300 transform ${
+                isHovered
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 translate-x-2"
+              }`}
+          >
             {name}
           </div>
-        )} */}
+        )}
       </div>
     );
   }
@@ -57,15 +66,23 @@ const ServerSideItem = ({
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200
-        ${isActive ? "bg-gray-500" : ""}`}
+      className={`relative flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200 ${
+        isActive ? "bg-gray-500" : ""
+      }`}
     >
       {icon}
-      {/* {isHovered && (
-        <div className="absolute left-full ml-2 whitespace-nowrap bg-gray-700 text-white text-sm p-1 rounded-md shadow-lg z-9999">
+      {isHovered && name && (
+        <div
+          className={`absolute left-full ml-[14px] whitespace-nowrap bg-[#202225] text-[#eee] font-semibold text-sm px-4 py-[6px] rounded-md shadow-lg z-50
+            transition-all duration-300 transform ${
+              isHovered
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-2"
+            }`}
+        >
           {name}
         </div>
-      )} */}
+      )}
     </Link>
   );
 };

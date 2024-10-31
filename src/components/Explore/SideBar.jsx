@@ -1,7 +1,13 @@
 import React from "react";
 import Sidebar from "../Sidebar/Sidebar";
 
-const SideBar = ({ sideItems, trendItems, handleClick, activeItem }) => {
+const SideBar = ({
+  sideItems,
+  trendItems,
+  handleClick,
+  activeItem,
+  isFilterInspiration,
+}) => {
   return (
     <div>
       <Sidebar
@@ -10,7 +16,7 @@ const SideBar = ({ sideItems, trendItems, handleClick, activeItem }) => {
         handleClick={handleClick}
         activeItem={activeItem}
         isImg={true}
-        isUpload={false}
+        isFilterInspiration={isFilterInspiration}
       />
     </div>
   );

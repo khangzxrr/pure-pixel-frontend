@@ -59,6 +59,15 @@ import PhotoSellingPage from "../pages/PhotoSelling/PhotoSellingPage";
 import Report from "../pages/Manager/Report/Report";
 import BlogManager from "../pages/Manager/Blog/BlogManager";
 import ChatPage from "../pages/Message/ChatPage";
+import CameraPage from "../pages/Camera/CameraPage";
+import CameraList from "../components/ComCamera/CameraList";
+import CameraDetail from "../components/ComCamera/CameraDetail";
+import CameraByBrand from "../components/ComCamera/CameraByBrand";
+import SellerProfile from "../pages/SellerProfile/SellerProfile";
+import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
+import SellUpload from "../components/Upload/SellUpload";
+import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageManagement";
+import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
 
 
 export const AppRouter = createBrowserRouter([
@@ -88,6 +97,14 @@ export const AppRouter = createBrowserRouter([
                 element: <InspirationPhoto />,
               },
               {
+                path: "shop-profile/:id",
+                element: <SellerProfile />,
+              },
+              {
+                path: "product-photo/:id",
+                element: <ProductPhotoDetail />,
+              },
+              {
                 path: "hot",
                 element: <HotPhoto />,
               },
@@ -99,6 +116,25 @@ export const AppRouter = createBrowserRouter([
                 path: "selling",
                 element: <PhotoSellingPage />,
               },
+            ],
+          },
+          {
+            path: "camera",
+            element: <CameraPage />,
+            children: [
+              {
+                path: "",
+                element: <Navigate to="all" replace={true} />,
+              },
+              {
+                path: "all",
+                element: <CameraList />,
+              },
+              {
+                path: ":id",
+                element: <CameraDetail />,
+              },
+              { path: "brand/:id", element: <CameraByBrand /> },
             ],
           },
 
@@ -122,6 +158,10 @@ export const AppRouter = createBrowserRouter([
                 path: "private",
                 element: <PrivateUpload />,
               },
+              {
+                path: "sell",
+                element: <SellUpload />,
+              },
             ],
           },
           {
@@ -143,6 +183,18 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "wallet",
                 element: <Wallet />,
+              },
+              {
+                path: "booking",
+                element: <PhotoshootPackageManagement />,
+              },
+              {
+                path: "booking-request",
+                element: <PhotoshootRegistrationTable />,
+              },
+              {
+                path: "photo-selling",
+                element: <SellerProfile />,
               },
             ],
           },

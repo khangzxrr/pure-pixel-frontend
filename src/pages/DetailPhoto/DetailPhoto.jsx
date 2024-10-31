@@ -11,7 +11,27 @@ import ComModal from "../../components/ComModal/ComModal";
 import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
 import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 import { getData } from "../../apis/api";
-
+function calculateTimeFromNow(dateString) {
+  const startDate = new Date(dateString);
+  const now = new Date();
+  const diffInMilliseconds = now.getTime() - startDate.getTime();
+  const diffInDays = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
+  const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+  const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
+  if (!diffInMinutes) {
+    return ``;
+  }
+  if (diffInDays >= 1) {
+    return `${diffInDays} ngày`;
+  } else if (diffInHours >= 1) {
+    return `${diffInHours} giờ`;
+  } else {
+    if (diffInMinutes < 0) {
+      return `0 phút`;
+    }
+    return `${diffInMinutes} phút`;
+  }
+}
 const Icon = ({ children, className = "" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -48,10 +68,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const popupShare = useModalState();
   const navigate = useNavigate();
   const { prevId, nextId } = getNavigation(selectedImage, listImg);
-  // const getPhotoById = useQuery({
-  //   queryKey: ["get-getPhotoById-by-id", selectedImage],
-  //   queryFn: () => PhotoApi.getPhotoById(selectedImage),
-  // });
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const getImage = () => {
     getData(`photo/${selectedImage}`)
@@ -105,7 +122,15 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const quoteUser = getPhotoById.data?.photographer?.quote;
   const votePhoto = getPhotoById.data?._count?.votes;
   const commentPhoto = getPhotoById.data?._count?.comments;
+  console.log(getPhotoById?.data);
+  // Chuyển đổi đối tượng details thành mảng cặp khóa-giá trị
+  const allDetails = Object?.entries(getPhotoById?.data?.exif || {});
 
+  // // Lấy 3 thông số đầu tiên để hiển thị
+  const mainDetails = allDetails?.slice(0, 3);
+  console.log(categoryName);
+  console.log(categoryName);
+  const extraDetails = allDetails.slice(3);
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
@@ -194,19 +219,43 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                   >
                     {photographerName}
                   </h2>
-                  <p className="text-sm text-gray-400">1 day ago</p>
+                  <p className="text-sm text-gray-400">
+                    {calculateTimeFromNow(getPhotoById?.data?.createdAt)}
+                  </p>
                 </div>
               </div>
-              <button className="p-2 rounded-full hover:bg-gray-800">
-                <Icon>
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                </Icon>
-              </button>
+              <div className="flex">
+                {/* icon tin nhắn */}
+                
+                <button className="p-2 rounded-full hover:bg-gray-800">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    x="0px"
+                    y="0px"
+                    width="24"
+                    height="24"
+                    stroke="currentColor"
+                    viewBox="0 0 50 50"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path
+                      d="M 25 2 C 12.347656 2 2 11.597656 2 23.5 C 2 30.007813 5.132813 35.785156 10 39.71875 L 10 48.65625 L 11.46875 47.875 L 18.6875 44.125 C 20.703125 44.664063 22.800781 45 25 45 C 37.652344 45 48 35.402344 48 23.5 C 48 11.597656 37.652344 2 25 2 Z M 25 4 C 36.644531 4 46 12.757813 46 23.5 C 46 34.242188 36.644531 43 25 43 C 22.835938 43 20.742188 42.6875 18.78125 42.125 L 18.40625 42.03125 L 18.0625 42.21875 L 12 45.375 L 12 38.8125 L 11.625 38.53125 C 6.960938 34.941406 4 29.539063 4 23.5 C 4 12.757813 13.355469 4 25 4 Z M 22.71875 17.71875 L 10.6875 30.46875 L 21.5 24.40625 L 27.28125 30.59375 L 39.15625 17.71875 L 28.625 23.625 Z"
+                      fill="white"
+                    ></path>
+                  </svg>
+                </button>
+                <button className="p-2 rounded-full hover:bg-gray-800">
+                  <Icon>
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                  </Icon>
+                </button>
+              </div>
             </div>
 
-            <div className="flex items-center space-x-4 mb-6 justify-between">
+            {/* <div className="flex items-center space-x-4 mb-6 justify-end">
               <div className="flex items-center">
                 <Icon className="mr-2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -220,7 +269,11 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 </Icon>
                 <span className="text-sm">Inspiration</span>
               </div>
-            </div>
+            </div> */}
+
+            <div className="my-2">{titleT}</div>
+            <div className="my-2">{description}</div>
+            <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div>
 
             <div className="flex items-center space-x-6 mb-6">
               <button className="flex items-center hover:text-red-500">
@@ -235,6 +288,13 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 </Icon>
                 <span>{commentPhoto}</span>
               </button>
+              <div className="flex items-center">
+                <Icon className="mr-2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </Icon>
+                <span>4894</span>
+              </div>
               <button
                 className="hover:text-green-500"
                 onClick={popupShare.handleOpen}
@@ -283,63 +343,39 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               )}
             </div>
 
-            <h1 className="text-2xl font-bold mb-4">Traunfall</h1>
-
+            <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
             <div className="space-y-2 mb-6">
-              <div className="flex items-center">
-                <Icon className="mr-2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </Icon>
-                <span>Austria</span>
-                <img
-                  src="https://youpic.com/flag/in.svg"
-                  alt="Austria flag"
-                  className="w-6 ml-2"
-                />
-              </div>
-              <div className="flex items-center">
-                <Icon className="mr-2">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </Icon>
-                <span>Taken 22/9/2024</span>
-              </div>
-              <div className="flex items-center">
-                <span className="px-2 py-1 bg-gray-800 rounded-full text-sm mr-2">
-                  Landscape
-                </span>
-              </div>
+              {/* Hiển thị 3 thông số đầu tiên */}
+              {mainDetails.map(([key, value], index) => (
+                <div className="flex items-start" key={index}>
+                  <span className="font-semibold mr-2">{key}:</span>
+                  <span>{value}</span>
+                </div>
+              ))}
+
+              {/* Hiển thị thông số còn lại khi mở rộng */}
+              {isExpanded &&
+                extraDetails.map(([key, value], index) => (
+                  <div className="flex items-start" key={index}>
+                    <span className="font-semibold mr-2">{key}:</span>
+                    <span>{value}</span>
+                  </div>
+                ))}
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <Icon className="mr-2">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                  <circle cx="12" cy="13" r="4" />
-                </Icon>
-                <span>SONY ILCE-7CR</span>
-              </div>
-              <div className="flex items-center">
-                <Icon className="mr-2">
-                  <circle cx="12" cy="12" r="10" />
-                  <circle cx="12" cy="12" r="3" />
-                </Icon>
-                <span>FE 14mm F1.8 GM</span>
-                <span className="ml-2">14 mm</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <span>f/11</span>
-                <span>25/10s</span>
-                <span>ISO 100</span>
-              </div>
+            {/* Nút Xem thêm/Ẩn bớt */}
+            <div className="flex justify-center">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className=" text-white rounded-md"
+              >
+                {isExpanded ? "Ẩn bớt" : "Xem thêm"}
+              </button>
             </div>
 
             <div className="mb-6">
               <h2 className="text-lg font-semibold mb-2">
-                {commentPhoto} Comments
+                {commentPhoto} Bình luận
               </h2>
               <CommentPhoto id={selectedImage} reload={getImage} />
             </div>
@@ -353,7 +389,10 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             onClick={popup.handleClose}
           ></div>
           <div className="w-[700px]">
-            <DetailUser />
+            <DetailUser
+              id={photographerId}
+              data={getPhotoById?.data?.photographer}
+            />
           </div>
         </div>
       )}

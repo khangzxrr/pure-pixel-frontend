@@ -9,7 +9,12 @@ const UseCategoryStore = create((set) => ({
   inputValue: "", // Giá trị của input
   searchResult: "", // Lưu trữ kết quả tìm kiếm
   searchByPhotoTitle: "",
-  searchCategory: { name: "Tên ảnh", param: "photoName", quote: "ảnh" },
+  searchCategory: {
+    name: "Tên ảnh",
+    param: "photoName",
+    quote: "ảnh",
+    icon: "FaRegImage",
+  },
   setSelectedPhotoCategory: (name, param) =>
     set({ selectedPhotoCategory: { name, param } }),
   setFilterByPhotoDate: (name, param) =>
@@ -20,8 +25,8 @@ const UseCategoryStore = create((set) => ({
   setInputValue: (value) => set({ inputValue: value }),
   setSearchResult: (result) => set({ searchResult: result }),
   setSearchByPhotoTitle: (result) => set({ searchByPhotoTitle: result }),
-  setSearchCategory: (name, param, quote) =>
-    set({ searchCategory: { name, param, quote } }),
+  setSearchCategory: (name, param, quote, icon) =>
+    set({ searchCategory: { name, param, quote, icon } }),
 }));
 
 export default UseCategoryStore;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const notifications = [
   { id: 1, name: "PurePixel" },
@@ -12,22 +12,41 @@ const notifications = [
 ];
 
 const NotificationModal = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  const [showModal, setShowModal] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setShowModal(true);
+      // Thêm timeout để đảm bảo modal đã render trước khi thêm lớp hiệu ứng
+      setTimeout(() => setIsVisible(true), 10);
+    } else {
+      setIsVisible(false);
+      // Đợi một chút trước khi ẩn hoàn toàn modal để hoàn thành hiệu ứng
+      const timeout = setTimeout(() => setShowModal(false), 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [isOpen]);
 
   const handleClickOutside = (e) => {
-    // Kiểm tra nếu click vào phần overlay (phần không phải modal)
     if (e.target.id === "modal-overlay") {
       onClose();
     }
   };
 
-  return (
+  return showModal ? (
     <div
       id="modal-overlay"
-      className="absolute inset-0 bg-black bg-opacity-50 z-50 flex justify-start"
+      className={`absolute inset-0 bg-black bg-opacity-50 z-40 flex justify-start transition-opacity duration-300 ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
       onClick={handleClickOutside}
     >
-      <div className="bg-[#1b1b1b] text-[#eee] w-[400px] h-full flex flex-col">
+      <div
+        className={`bg-[#1b1b1b] text-[#eee] w-[400px] h-full flex flex-col transform transition-transform duration-300 ${
+          isVisible ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <div>
           <h2 className="text-xl font-semibold p-3">Thông báo</h2>
           <hr className="border-gray-500" />
@@ -53,11 +72,10 @@ const NotificationModal = ({ isOpen, onClose }) => {
               </div>
             </div>
           ))}
-          {/* Thêm nhiều nội dung nếu cần */}
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default NotificationModal;

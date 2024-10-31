@@ -7,8 +7,6 @@ export default function UploadPhotoInfoBar() {
 
   const photoData = getPhotoByUid(selectedPhoto);
 
-  console.log("photoData", photoData);
-
   return (
     <div className="w-full h-full mx-auto overflow-y-auto scrollbar-hidden">
       <div>

@@ -1,4 +1,6 @@
 import React from "react";
+import { BsPersonBoundingBox } from "react-icons/bs";
+import { FaRegImage } from "react-icons/fa6";
 
 const SearchCategoryItems = [
   {
@@ -6,12 +8,14 @@ const SearchCategoryItems = [
     title: "Tên ảnh",
     quote: "ảnh",
     param: "photoName",
+    icon: "FaRegImage",
   },
   {
     id: "s2",
     title: "Nhiếp ảnh gia",
     quote: "nhiếp ảnh gia",
     param: "photographerName",
+    icon: "BsPersonBoundingBox",
   },
 ];
 

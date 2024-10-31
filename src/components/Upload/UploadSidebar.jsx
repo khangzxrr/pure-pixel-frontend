@@ -8,7 +8,6 @@ const Upload = ({ sideItems, trendItems, handleClick, activeItem }) => {
       trendItems={trendItems}
       handleClick={handleClick}
       activeItem={activeItem}
-      isImg={false}
       isUpload={true}
     />
   );
