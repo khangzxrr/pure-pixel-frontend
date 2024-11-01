@@ -12,20 +12,20 @@ function calculateTimeFromNow(dateString) {
   const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
   const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
   if (!diffInMinutes) {
-    return ``;
+    return `vừa xong`;
   }
   if (diffInDays >= 1) {
-    return `${diffInDays} ngày`;
+    return `${diffInDays} ngày trước`;
   } else if (diffInHours >= 1) {
-    return `${diffInHours} giờ`;
+    return `${diffInHours} giờ trước`;
   } else {
-    if (diffInMinutes < 0) {
-      return `0 phút`;
+    if (diffInMinutes < 1) {
+      return `vừa xong`;
     }
     return `${diffInMinutes} phút`;
   }
 }
-export default function CommentPhoto({ id, reload }) {
+export default function CommentPhoto({ id, reload, top }) {
   const [dataComment, setDataComment] = useState([]);
   const [valueComment, setValueComment] = useState("");
   const { keycloak } = useKeycloak();
@@ -83,15 +83,50 @@ export default function CommentPhoto({ id, reload }) {
   };
   return (
     <div className="space-y-4">
+      {top && (
+        <>
+          {userData ? (
+            <div className="">
+              <div className="flex bg-[#202225]">
+                <textarea
+                  className="w-full p-2 border-none focus:ring-0 text-[#eee] placeholder-[#6e6e6e] outline-none resize-none bg-[#202225] rounded-md"
+                  rows="3"
+                  value={valueComment}
+                  onChange={(e) => {
+                    setValueComment(e.target.value);
+                  }}
+                  placeholder="Viết bình luận của bạn..."
+                ></textarea>
+                <div className="flex items-center justify-between mt-2">
+                  <div className="flex space-x-2"></div>
+                  <button
+                    onClick={handComment}
+                    className=" text[#eee] p-2 rounded-sm hover:bg-[#3d3d3d]"
+                  >
+                    <FiSend className="text-2xl" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={handleLogin}
+              className="text-center hover:underline hover:cursor-pointer"
+            >
+              Vui lòng đăng nhập để bình luận
+            </div>
+          )}
+        </>
+      )}
       {dataComment?.map((value, index) => (
         <div key={value.id}>
-          <div className="flex items-start space-x-3 mb-3">
+          <div className="flex items-start space-x-3 mb-3 w-full">
             <img
               src={value?.user?.avatar}
               alt={value?.user?.name}
               className="w-10 h-10 rounded-full"
             />
-            <div>
+            <div className=" flex-1">
               <div className="flex items-center flex-wrap">
                 <span className="font-medium mr-2">{value?.user?.name}</span>
               </div>
@@ -101,7 +136,7 @@ export default function CommentPhoto({ id, reload }) {
               <div className="flex gap-4">
                 <span className="text-xs text-gray-400 ">
                   {/* <ComDateConverter> */}
-                  {calculateTimeFromNow(value?.createdAt)} trước
+                  {calculateTimeFromNow(value?.createdAt)}
                   {/* </ComDateConverter> */}
                 </span>
                 {userData && (
@@ -153,7 +188,7 @@ export default function CommentPhoto({ id, reload }) {
                   {e?.content}
                 </p>
                 <span className="text-xs text-gray-400 ml-2">
-                  {calculateTimeFromNow(e?.createdAt)}trước
+                  {calculateTimeFromNow(e?.createdAt)}
                 </span>
               </div>
             </div>
@@ -161,81 +196,41 @@ export default function CommentPhoto({ id, reload }) {
           <div className="bg-slate-300 h-[1px] px-3 my-3"></div>
         </div>
       ))}
-      {userData ? (
-        <div className="sticky bottom-0 ">
-          <div className="flex bg-[#202225]">
-            <textarea
-              className="w-full p-2 border-none focus:ring-0 text-[#eee] placeholder-[#6e6e6e] outline-none resize-none bg-[#202225] rounded-md"
-              rows="2"
-              value={valueComment}
-              onChange={(e) => {
-                setValueComment(e.target.value);
-              }}
-              placeholder="Viết bình luận của bạn..."
-            ></textarea>
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex space-x-2"></div>
-              <button
-                onClick={handComment}
-                className=" text[#eee] p-2 rounded-sm hover:bg-[#3d3d3d]"
-              >
-                <FiSend className="text-2xl" />
-              </button>
+      {!top && (
+        <>
+          {userData ? (
+            <div className="sticky bottom-0 ">
+              <div className="flex bg-[#202225]">
+                <textarea
+                  className="w-full p-2 border-none focus:ring-0 text-[#eee] placeholder-[#6e6e6e] outline-none resize-none bg-[#202225] rounded-md"
+                  rows="2"
+                  value={valueComment}
+                  onChange={(e) => {
+                    setValueComment(e.target.value);
+                  }}
+                  placeholder="Viết bình luận của bạn..."
+                ></textarea>
+                <div className="flex items-center justify-between mt-2">
+                  <div className="flex space-x-2"></div>
+                  <button
+                    onClick={handComment}
+                    className=" text[#eee] p-2 rounded-sm hover:bg-[#3d3d3d]"
+                  >
+                    <FiSend className="text-2xl" />
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      ) : (
-        <div
-          onClick={handleLogin}
-          className="text-center hover:underline hover:cursor-pointer"
-        >
-          Vui lòng đăng nhập để bình luận
-        </div>
+          ) : (
+            <div
+              onClick={handleLogin}
+              className="text-center hover:underline hover:cursor-pointer"
+            >
+              Vui lòng đăng nhập để bình luận
+            </div>
+          )}
+        </>
       )}
-      {/* <div className="flex items-start space-x-3">
-        <img
-          src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
-          alt="Gianni Meini"
-          className="w-10 h-10 rounded-full"
-        />
-        <div>
-          <div className="flex items-center">
-            <span className="font-medium">Gianni Meini</span>
-            <span className="text-xs text-gray-400 ml-2">2024-09-23 14:07</span>
-          </div>
-          <p className="text-sm">Bravo Gue</p>
-        </div>
-      </div>
-      <div className="flex items-start space-x-3 pl-8">
-        <img
-          src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
-          alt="GueM"
-          className="w-10 h-10 rounded-full"
-        />
-        <div>
-          <div className="flex items-center">
-            <span className="font-medium">GueMss</span>
-            <span className="text-xs text-gray-400 ml-2">
-              Yesterday at 14:55
-            </span>
-          </div>
-          <p className="text-sm">Grazie !!</p>
-        </div>
-      </div>
-      <div className="flex items-start space-x-3">
-        <img
-          src="https://noithatbinhminh.com.vn/wp-content/uploads/2022/08/anh-dep-44.jpg.webp"
-          alt="Gianni Meini"
-          className="w-10 h-10 rounded-full"
-        />
-        <div>
-          <div className="flex items-center">
-            <span className="font-medium">Gianni Meini</span>
-            <span className="text-xs text-gray-400 ml-2">2024-09-23 14:06</span>
-          </div>
-          <p className="text-sm">Congrats, gorgeous image!</p>
-        </div>
-      </div> */}
     </div>
   );
 }
