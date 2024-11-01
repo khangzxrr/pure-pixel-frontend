@@ -11,6 +11,8 @@ import ComModal from "../../components/ComModal/ComModal";
 import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
 import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 import { getData } from "../../apis/api";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import ComReport from "../../components/ComReport/ComReport";
 function calculateTimeFromNow(dateString) {
   const startDate = new Date(dateString);
   const now = new Date();
@@ -32,6 +34,12 @@ function calculateTimeFromNow(dateString) {
     return `${diffInMinutes} phút`;
   }
 }
+
+const userNavigation = [
+  { name: "Báo cáo", href: "#" },
+  { name: "Lưu bài viết", href: "#" },
+];
+
 const Icon = ({ children, className = "" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -65,6 +73,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const [getPhotoById, setGetPhotoById] = useState({});
   const { id } = useParams();
   const popup = useModalState();
+  const popupReport = useModalState();
   const popupShare = useModalState();
   const navigate = useNavigate();
   const { prevId, nextId } = getNavigation(selectedImage, listImg);
@@ -122,7 +131,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const quoteUser = getPhotoById.data?.photographer?.quote;
   const votePhoto = getPhotoById.data?._count?.votes;
   const commentPhoto = getPhotoById.data?._count?.comments;
-  console.log(getPhotoById?.data);
+ 
   // Chuyển đổi đối tượng details thành mảng cặp khóa-giá trị
   const allDetails = Object?.entries(getPhotoById?.data?.exif || {});
 
@@ -226,7 +235,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               </div>
               <div className="flex">
                 {/* icon tin nhắn */}
-                
+
                 <button className="p-2 rounded-full hover:bg-gray-800">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -254,22 +263,6 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 </button>
               </div>
             </div>
-
-            {/* <div className="flex items-center space-x-4 mb-6 justify-end">
-              <div className="flex items-center">
-                <Icon className="mr-2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </Icon>
-                <span>4894</span>
-              </div>
-              <div className="bg-yellow-600 text-white px-2 py-1 rounded-full flex items-center">
-                <Icon className="w-4 h-4 mr-1">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </Icon>
-                <span className="text-sm">Inspiration</span>
-              </div>
-            </div> */}
 
             <div className="my-2">{titleT}</div>
             <div className="my-2">{description}</div>
@@ -307,13 +300,41 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                   <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                 </Icon>
               </button>
-              <button className="hover:text-gray-400">
-                <Icon>
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="19" cy="12" r="1" />
-                  <circle cx="5" cy="12" r="1" />
-                </Icon>
-              </button>
+              <Menu as="div" className="relative">
+                <MenuButton className="-m-1.5 flex items-center p-1.5">
+                  <button className="hover:text-gray-400">
+                    <Icon>
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="19" cy="12" r="1" />
+                      <circle cx="5" cy="12" r="1" />
+                    </Icon>
+                  </button>
+                </MenuButton>
+                <MenuItems
+                  transition
+                  className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                >
+                  <MenuItem>
+                    <button
+                      onClick={() => {}}
+                      className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                    >
+                      Lưu bài viết
+                    </button>
+                  </MenuItem>
+
+                  <MenuItem>
+                    <button
+                      onClick={() => {
+                        popupReport.handleOpen();
+                      }}
+                      className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                    >
+                      Báo cáo bài viết
+                    </button>
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
             </div>
 
             <div className="space-y-4 mb-6">
@@ -395,6 +416,16 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             />
           </div>
         </div>
+      )}
+
+      {popupReport.isModalOpen && (
+        <ComReport
+          onclose={popupReport.handleClose}
+          tile="Báo cáo bài viết"
+          id={getPhotoById.data?.id}
+          // reportType =USER, PHOTO, BOOKING, COMMENT;
+          reportType={"PHOTO"}
+        />
       )}
     </>
   );
