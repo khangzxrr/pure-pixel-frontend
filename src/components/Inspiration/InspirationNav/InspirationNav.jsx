@@ -119,7 +119,7 @@ const InspirationNav = ({
           onKeyDown={handleKeyDown}
           type="text"
           placeholder={`Tìm kiếm ảnh theo tên ${searchCategory.quote}...`}
-          className="font-normal text-sm px-2 py-2 w-[35vw] sm:w-[50vw] pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
+          className="font-normal text-sm px-2 py-2 w-[35vw] sm:w-[40vw] pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
         />
         <div className="flex items-center px-3">
           <button className="" onClick={handleSearch}>

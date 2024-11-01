@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import NotificationApi from "../../apis/NotificationApi";
+import { useQuery } from "@tanstack/react-query";
+import { notification } from "antd";
+import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
 
 const notifications = [
   { id: 1, name: "PurePixel" },
@@ -33,6 +37,25 @@ const NotificationModal = ({ isOpen, onClose }) => {
       onClose();
     }
   };
+  const limit = 10; // Tổng số ảnh
+  const fetchNotifications = async ({ pageParam = 0 }) => {
+    const validLimit = Math.max(1, Math.min(limit, 9999));
+    const validPage = Math.max(0, Math.min(pageParam, 9999));
+    const response = await NotificationApi.getAllNotifactions(
+      validLimit,
+      validPage
+    );
+    return response;
+  };
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: fetchNotifications,
+    staleTime: 60000,
+    cacheTime: 300000,
+  });
+
+  const notificationList = data?.objects;
 
   return showModal ? (
     <div
@@ -52,7 +75,13 @@ const NotificationModal = ({ isOpen, onClose }) => {
           <hr className="border-gray-500" />
         </div>
         <div className="font-normal px-1 flex-1 overflow-y-auto scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
-          {notifications.map((notification) => (
+          {isLoading && (
+            <div className="w-full h-full flex items-center justify-center">
+              <LoadingSpinner />
+            </div>
+          )}
+          {isError && <div>Something went wrong</div>}
+          {notificationList.map((notification) => (
             <div
               className="border-b border-gray-500 px-1 py-2"
               key={notification.id}
@@ -66,8 +95,9 @@ const NotificationModal = ({ isOpen, onClose }) => {
                   />
                 </div>
                 <div className="w-[225px] lg:w-[335px] text-sm lg:text-base">
-                  <span className="font-bold">{notification.name}</span> đã bắt
-                  đầu theo dõi bạn
+                  {/* <span className="font-bold">{notification.name}</span> đã bắt
+                  đầu theo dõi bạn */}
+                  {notification.content}
                 </div>
               </div>
             </div>

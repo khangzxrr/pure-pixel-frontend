@@ -72,8 +72,8 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
         }); // Thay thế bằng ảnh mặc định nếu không có ảnh
 
   return (
-    <div className="relative flex flex-col w-full max-w-[340px] h-[450px] rounded-lg text-[#eee] bg-[#2f3136] group hover:cursor-pointer mx-auto">
-      <div className="flex flex-col gap-3 p-5">
+    <div className=" flex flex-col w-full max-w-[340px] h-[450px] rounded-lg text-[#eee] bg-[#2f3136] group hover:cursor-pointer mx-auto">
+      <div className="relative flex flex-col gap-3 p-5">
         <div className="grid grid-cols-2 grid-rows-2 gap-2 ">
           {randomPhotos.map((item, index) => (
             <div
@@ -87,7 +87,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
               />
             </div>
           ))}
-          <div className="absolute overflow-hidden outline outline-2 outline-[#202225] bg-[#eee] right-[41%] top-[43%] transform -translate-x-1/2 md:translate-x-0  rounded-full w-[64px] h-[64px]">
+          <div className="absolute overflow-hidden outline outline-2 outline-[#202225] bg-[#eee] left-1/2 bottom-[43%] sm:left-[40%] transform -translate-x-1/2 md:translate-x-0  rounded-full w-[64px] h-[64px]">
             <img
               src={avatar}
               alt={name}

@@ -64,7 +64,7 @@ function App() {
             </ChatProvider>
           </NotificationProvider>
         </ConfigProvider>
-        <ReactQueryDevtools buttonPosition="bottom-right" />
+        <ReactQueryDevtools buttonPosition="bottom-left" />
       </ReactKeycloakProvider>
     </QueryClientProvider>
   );

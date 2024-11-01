@@ -67,7 +67,7 @@ const Sidebar = ({
       {isBlog && (
         <div className=" flex-grow">
           <div className="flex px-2 h-[48px] bg-[#36393f] outline outline-bottom outline-2 outline-[#1d1f22] shadow-xl text-[#eee] items-center gap-3">
-            Bài viết
+            Trang chủ
           </div>
         </div>
       )}
