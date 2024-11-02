@@ -26,7 +26,7 @@ const NewfeedCard = () => {
     return `${text.substring(0, truncateIndex)}...`;
   };
   return (
-    <div className="flex flex-col w-[700px] bg-[#2f3136] rounded-xl">
+    <div className="flex flex-col w-[400px] md:w-[700px] bg-[#2f3136] rounded-xl">
       <div className="flex justify-between items-center p-3">
         <div className="flex gap-2 items-center ">
           <div className="size-14 overflow-hidden rounded-full">
@@ -103,7 +103,7 @@ const NewfeedCard = () => {
           <div className="flex gap-1 items-center">
             <div className="text-sm">Tên người bình luận: </div>
             <div className="text-sm font-normal">
-              {truncateText(longCmt, 72)}
+              {truncateText(longCmt, 30)}
             </div>
           </div>
         </div>
