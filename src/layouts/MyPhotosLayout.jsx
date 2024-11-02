@@ -8,7 +8,7 @@ const MyPhotosLayout = () => {
   const userData = UserService.getTokenParsed();
   return (
     <div className="flex flex-col gap-1 p-1">
-      <div className="p-[24px] h-[177px] bg-[#292b2f]">
+      <div className="p-[24px]  bg-[#292b2f]">
         <PhotoProfile userData={userData} />
       </div>
       <div>

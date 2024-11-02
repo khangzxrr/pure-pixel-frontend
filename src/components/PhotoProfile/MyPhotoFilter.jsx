@@ -73,10 +73,10 @@ const MyPhotoFilter = () => {
     setFilterByUpVote(name, param);
   };
   return (
-    <div className="flex justify-between items-center ">
+    <div className="flex flex-col md:flex-row justify-between items-center ">
       <div className="flex flex-col lg:flex-row items-center gap-2 px-2 rounded-r-md ">
         <span className="font-normal">Bộ lọc ảnh:</span>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row items-center gap-2">
           <div>
             <Menu as="div" className="relative inline-block text-left">
               <div>
@@ -156,7 +156,7 @@ const MyPhotoFilter = () => {
             </Menu>
           </div>
         </div>
-        <div className="flex gap-2 ">
+        <div className="flex flex-col md:flex-row gap-2 ">
           <div className="flex items-center p-[5px] rounded-md">
             <label class="inline-flex items-center cursor-pointer">
               <input
