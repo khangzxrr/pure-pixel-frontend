@@ -1,4 +1,4 @@
-import { Checkbox, Input, Select, Tooltip } from "antd";
+import { Button, Checkbox, Input, Select, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,9 +10,10 @@ import { ExifField } from "./PhotoDataFields";
 import { useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../../apis/CategoryApi";
 import TagInputArea from "./TagInputArea";
+import { IoLocationSharp } from "react-icons/io5";
 
 export default function UploadPhotoForm({ selectedPhoto }) {
-  const { updatePhotoPropertyByUid, setIsOpenDraftModal } =
+  const { updatePhotoPropertyByUid, setIsOpenDraftModal, setIsOpenMapModal } =
     useUploadPhotoStore();
   const [categories, setCategories] = useState([]);
 
@@ -151,7 +152,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
           )}
         />
         <p>Vị trí</p>
-        <Controller
+        {/* <Controller
           name="location"
           control={control}
           render={({ field }) => (
@@ -175,7 +176,25 @@ export default function UploadPhotoForm({ selectedPhoto }) {
         />
         {errors.location && (
           <p className=" text-red-500 text-sm p-1">{errors.location.message}</p>
-        )}
+        )} */}
+        <div className="m-2">
+          <Tooltip
+            title={`${
+              selectedPhoto.address ? "Thay đổi" : "Thêm"
+            } vị trí bức ảnh`}
+            color="volcano"
+            placement="right"
+          >
+            <Button
+              color="default"
+              variant="solid"
+              icon={<IoLocationSharp fontSize={19} color="red" />}
+              onClick={() => setIsOpenMapModal(true)}
+            >
+              {selectedPhoto.address ? selectedPhoto.address : "Vị Trí"}
+            </Button>
+          </Tooltip>
+        </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-4">
           {ExifField.map((field) => (
             <div key={field.name}>
