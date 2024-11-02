@@ -36,18 +36,19 @@ const InspirationSideItemF = [
     quote:
       "Theo dõi các nhiếp ảnh gia nổi tiếng để cập nhật các bức ảnh mới nhất của họ",
   },
-  {
-    id: 5,
-    title: "Xếp hạng",
-    icon: <RiVipCrownFill />,
-    link: "/explore/leaderboard",
-  },
+
   {
     id: 6,
     title: "Ảnh đang bán",
     icon: <FaMoneyBill1 />,
     link: "/explore/selling",
     quote: "Những bức ảnh đang được đăng bán",
+  },
+  {
+    id: 5,
+    title: "Xếp hạng",
+    icon: <RiVipCrownFill />,
+    link: "/explore/leaderboard",
   },
   {
     id: 7,

@@ -100,7 +100,7 @@ const MyPhotoP = () => {
         )}
 
         {/* Photos Display */}
-        <div className="grid grid-cols-5 gap-2 mx-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 mx-2">
           {isError && (
             <div className="text-red-500">{JSON.stringify(error)}</div>
           )}

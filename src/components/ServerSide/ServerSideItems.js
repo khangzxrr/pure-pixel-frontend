@@ -18,8 +18,8 @@ const ServerSideItems = [
   },
   {
     id: "blog",
-    name: "Bài viết",
-    link: "/blog",
+    name: "Trang chủ",
+    link: "/home",
     authen: true,
     icon: <MdHomeFilled className="text-4xl" />,
   },

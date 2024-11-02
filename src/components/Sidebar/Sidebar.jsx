@@ -6,6 +6,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import UseCategoryStore from "./../../states/UseCategoryStore";
 import InsPhotoFilter from "./../Inspiration/InspirationPhoto/InsPhotoFilter";
+import PhotographerFilter from "../Photographer/PhotographerList/PhotographerFilter";
 const Sidebar = ({
   sideItems,
   trendItems,
@@ -22,6 +23,7 @@ const Sidebar = ({
     UseSidebarStore();
 
   const isInspirationPage = location.pathname === "/explore/inspiration";
+  const isPhotographer = location.pathname === "/explore/photographers";
   useEffect(() => {
     const currentItem = sideItems.find(
       (item) => item.link === location.pathname
@@ -65,7 +67,7 @@ const Sidebar = ({
       {isBlog && (
         <div className=" flex-grow">
           <div className="flex px-2 h-[48px] bg-[#36393f] outline outline-bottom outline-2 outline-[#1d1f22] shadow-xl text-[#eee] items-center gap-3">
-            Bài viết
+            Trang chủ
           </div>
         </div>
       )}
@@ -113,6 +115,12 @@ const Sidebar = ({
             <div className="flex flex-col gap-2">
               <PhotoTagsTrend />
             </div>
+          </div>
+        )}
+        {isPhotographer && (
+          <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1 border-y-[1px] border-[#a3a3a3] py-2">
+            <div>Bộ lọc nhiếp ảnh gia</div>
+            <PhotographerFilter />
           </div>
         )}
       </div>
