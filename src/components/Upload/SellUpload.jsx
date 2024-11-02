@@ -1,26 +1,24 @@
-import React, { useState, useRef } from "react";
-import { Button, message, Steps, InputNumber, theme } from "antd";
+import React, { useState, useRef, useEffect } from "react";
+import { Button, message, Steps, theme } from "antd";
 import { postData, getData } from "../../apis/api";
+import { useNavigate } from "react-router-dom";
+
 function formatCurrency(number) {
-  // If the input is a number
   if (typeof number === "number") {
     return number.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
     });
-  }
-  // If the input is a string that can be converted to a number
-  else if (typeof number === "string" && !isNaN(Number(number))) {
+  } else if (typeof number === "string" && !isNaN(Number(number))) {
     return Number(number).toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
     });
-  }
-  // If the input is neither a number nor a numeric string, return it as is
-  else {
+  } else {
     return number;
   }
 }
+
 const SellUpload = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
@@ -28,18 +26,23 @@ const SellUpload = () => {
   const [imageData, setImageData] = useState([]);
   const fileInputRef = useRef(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (current === 1 && currentImageIndex === null && imageData.length > 0) {
+      setCurrentImageIndex(0);
+    }
+  }, [current, currentImageIndex, imageData.length]);
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    // Thêm các tệp mới vào danh sách images hiện có
+    const files = Array.from(e?.target?.files);
     setImages((prevImages) => [...prevImages, ...files]);
-    // Khởi tạo imageData với các tệp mới
     const newImageData = files.map((file) => ({
       file,
       info: "",
       sizes: [],
       qualities: [],
       id: null,
+      title: "", // Thêm trường title
     }));
     setImageData((prevData) => [...prevData, ...newImageData]);
   };
@@ -47,7 +50,6 @@ const SellUpload = () => {
   const handleRemove = (index) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     setImageData((prevData) => prevData.filter((_, i) => i !== index));
-    // If the removed image was the current one, reset currentImageIndex
     if (index === currentImageIndex) {
       setCurrentImageIndex(null);
     }
@@ -59,17 +61,17 @@ const SellUpload = () => {
 
   const handleDrop = (e) => {
     e.preventDefault();
-    const files = Array.from(e.dataTransfer.files).filter((file) =>
+    const files = Array.from(e?.dataTransfer?.files).filter((file) =>
       file.type.startsWith("image/")
     );
     setImages((prevImages) => [...prevImages, ...files]);
-    // Khởi tạo imageData với các tệp mới
     const newImageData = files.map((file) => ({
       file,
       info: "",
       sizes: [],
       qualities: [],
       id: null,
+      title: "", // Thêm trường title
     }));
     setImageData((prevData) => [...prevData, ...newImageData]);
   };
@@ -81,7 +83,7 @@ const SellUpload = () => {
     for (let index = 0; index < imageData.length; index++) {
       const element = imageData[index];
       const formData = new FormData();
-      formData.append("file", element.file);
+      formData.append("file", element?.file);
 
       postData("/photo/upload", formData)
         .then((data) => {
@@ -89,9 +91,7 @@ const SellUpload = () => {
           getData(`/photo/${data.id}/available-resolution`)
             .then((resolutions) => {
               console.log(resolutions);
-              // Kiểm tra và lấy dữ liệu từ resolutions
               const sizeArray = resolutions.data || resolutions;
-              // Cập nhật sizes, qualities và id cho element
               newImageData[index] = {
                 ...element,
                 id: data.id,
@@ -102,7 +102,6 @@ const SellUpload = () => {
                 })),
               };
               uploadCount++;
-              // Kiểm tra nếu tất cả các ảnh đã được xử lý
               if (uploadCount === imageData.length) {
                 setImageData(newImageData);
                 setCurrent(current + 1);
@@ -111,13 +110,13 @@ const SellUpload = () => {
             .catch((error) => {
               console.log(error);
               message.error(
-                `Lỗi khi lấy kích thước ảnh cho hình ảnh ${element.file.name}`
+                `Lỗi khi lấy kích thước ảnh cho hình ảnh ${element?.file.name}`
               );
             });
         })
         .catch((error) => {
           console.log(error);
-          message.error(`Lỗi khi tải lên hình ảnh ${element.file.name}`);
+          message.error(`Lỗi khi tải lên hình ảnh ${element?.file.name}`);
         });
     }
   };
@@ -130,13 +129,15 @@ const SellUpload = () => {
       }
       uploading();
     } else if (current === 1) {
-      // Kiểm tra nếu tất cả thông tin đã được nhập
       const allDataFilled = imageData.every(
-        (data) => data.info && data.qualities.every((q) => q.price)
+        (data) =>
+          data.title &&
+          data.info &&
+          data.qualities.every((q) => q.price && q.price > 1000)
       );
       if (!allDataFilled) {
         message.error(
-          "Vui lòng nhập đầy đủ thông tin cho tất cả các hình ảnh."
+          "Vui lòng nhập đầy đủ thông tin và giá tiền phải lớn hơn 1000 cho tất cả các hình ảnh."
         );
         return;
       }
@@ -151,11 +152,11 @@ const SellUpload = () => {
   };
 
   const submitData = () => {
-    // Gửi dữ liệu lên API /photo/{id}/sell cho mỗi hình ảnh
     let submitCount = 0;
     for (let index = 0; index < imageData.length; index++) {
       const data = imageData[index];
       const payload = {
+        title: data.title,
         description: data.info,
         pricetags: data.qualities.map((item) => ({
           size: item.size,
@@ -170,12 +171,23 @@ const SellUpload = () => {
           submitCount++;
           if (submitCount === imageData.length) {
             message.success("Đã gửi tất cả dữ liệu thành công!");
-            // Bạn có thể điều hướng hoặc thực hiện hành động khác tại đây
+            setTimeout(() => {
+              navigate("/profile/photo-selling");
+            }, 2000);
           }
         })
         .catch((error) => {
           console.log(error);
-          message.error(`Lỗi khi gửi dữ liệu cho hình ảnh ${data.file.name}`);
+          switch (error.data.message) {
+            case "FailToPerformOnDuplicatedPhotoException":
+              message.error(
+                `Lỗi khi gửi dữ liệu cho hình ảnh ${data?.file.name},Lý do: Hình ảnh bị trùng lập`
+              );
+              break;
+
+            default:
+              break;
+          }
         });
     }
   };
@@ -262,12 +274,13 @@ const SellUpload = () => {
                   }`}
                   onClick={() => setCurrentImageIndex(index)}
                 />
-                {/* Add visual indication if the data is filled */}
-                {data.info && data.qualities.every((q) => q.price) && (
-                  <div className="absolute top-1 left-1 bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-center">
-                    ✓
-                  </div>
-                )}
+                {data.title &&
+                  data.info &&
+                  data.qualities.every((q) => q.price && q.price > 1000) && (
+                    <div className="absolute top-1 left-1 bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-center">
+                      ✓
+                    </div>
+                  )}
               </div>
             ))}
           </div>
@@ -276,10 +289,28 @@ const SellUpload = () => {
           {currentImageIndex !== null && (
             <div className="mt-6">
               <h3 className="text-lg font-semibold mb-4">
-                Nhập thông tin cho ảnh{" "}
-                {imageData[currentImageIndex].file.name ||
+                Nhập thông tin cho ảnh {" "}
+                {imageData[currentImageIndex]?.file?.name ||
                   currentImageIndex + 1}
               </h3>
+              <div className="mb-4">
+                <label
+                  htmlFor="title"
+                  className="block text-white mb-2 font-medium"
+                >
+                  Tiêu đề
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  className="w-full bg-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={imageData[currentImageIndex]?.title}
+                  onChange={(e) =>
+                    handleInputChange(e, "title", currentImageIndex)
+                  }
+                />
+              </div>
               <div className="mb-4">
                 <label
                   htmlFor="info"
@@ -292,14 +323,14 @@ const SellUpload = () => {
                   id="info"
                   name="info"
                   className="w-full bg-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={imageData[currentImageIndex].info}
+                  value={imageData[currentImageIndex]?.info}
                   onChange={(e) =>
                     handleInputChange(e, "info", currentImageIndex)
                   }
                 />
               </div>
               <p className="text-white mb-2">Kích thước và giá:</p>
-              {imageData[currentImageIndex].qualities.map((quality, qIndex) => (
+              {imageData[currentImageIndex]?.qualities.map((quality, qIndex) => (
                 <div key={qIndex} className="flex items-center mb-2">
                   <span className="mr-2 text-white">
                     Kích thước {quality.size}
@@ -338,7 +369,7 @@ const SellUpload = () => {
               />
               <div className="flex-1">
                 <h3 className="text-lg font-semibold">
-                  {data.file.name || `Ảnh ${index + 1}`}
+                  {data.title || data.file.name || `Ảnh ${index + 1}`}
                 </h3>
                 <p>
                   <strong>Thông tin:</strong> {data.info}

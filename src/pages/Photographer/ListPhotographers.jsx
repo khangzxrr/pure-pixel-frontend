@@ -4,13 +4,34 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PhotographerApi from "../../apis/PhotographerApi";
+import { useKeycloak } from "@react-keycloak/web";
+import UserService from "../../services/Keycloak";
+import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
 
 const ListPhotographers = () => {
+  const { keyloack } = useKeycloak();
+  const userData = UserService.getTokenParsed();
+  const userId = userData?.sub;
+
+  const filterByVote = UsePhotographerFilterStore(
+    (state) => state.filterByVote
+  );
+  const searchResult = UsePhotographerFilterStore(
+    (state) => state.searchResult
+  );
+  const orderByVoteCount = filterByVote.param;
+  const photographerName = searchResult;
   const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
     useInfiniteQuery({
-      queryKey: ["photographers"],
+      queryKey: ["photographers", searchResult, filterByVote],
       queryFn: ({ pageParam = 0 }) =>
-        PhotographerApi.getAllPhotographers(10, pageParam),
+        PhotographerApi.getAllPhotographers(
+          10,
+          pageParam,
+          photographerName,
+          null,
+          orderByVoteCount
+        ),
       getNextPageParam: (lastPage, allPages) => {
         // Kiểm tra số trang đã tải và tổng số bản ghi
         const totalRecords = lastPage.totalRecord; // Tổng số bản ghi từ API
@@ -22,7 +43,10 @@ const ListPhotographers = () => {
       },
     });
 
-  const photographers = data?.pages.flatMap((page) => page.objects) || [];
+  const photographers =
+    data?.pages
+      .flatMap((page) => page.objects)
+      .filter((photographer) => photographer.id !== userId) || [];
 
   if (isLoading) {
     return (
@@ -60,7 +84,7 @@ const ListPhotographers = () => {
           </div>
         }
         scrollableTarget="inspiration"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 py-3 "
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-6 py-3 "
       >
         {photographers.map((photographer) => (
           <PhotographerCard

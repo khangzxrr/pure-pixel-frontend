@@ -86,7 +86,7 @@ const CameraTableList = () => {
                     onClick={() => handleOnClickCamera(item.maker.name)}
                   >
                     <span className="hover:underline underline-offset-2">
-                      {item.maker.name}
+                      {item.maker.name.split(" ")[0]}
                     </span>
                   </Link>
                 </td>

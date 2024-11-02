@@ -174,7 +174,7 @@ export const TableReport = forwardRef((props, ref) => {
   }));
   const reloadData = () => {
     table.handleOpenLoading();
-    getData("/report?limit=9999&page=0")
+    getData("/manager/report?limit=9999&page=0")
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");

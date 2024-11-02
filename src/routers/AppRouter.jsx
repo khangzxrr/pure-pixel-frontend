@@ -71,6 +71,9 @@ import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageM
 import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
 import BookingPage from "../pages/BookingPage/BookingPage";
 import BookingDetail from "../pages/BookingPage/BookingDetail";
+import { useKeycloak } from "@react-keycloak/web";
+import UserService from "../services/Keycloak";
+import NewfeedPage from "../pages/NewFeed/NewfeedPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -213,13 +216,17 @@ export const AppRouter = createBrowserRouter([
             ],
           },
           {
-            path: "blog",
+            path: "home",
             // element: <BlogList />,
             element: <Blog />,
             children: [
               {
                 path: "",
                 element: <Navigate to="list" replace={true} />,
+              },
+              {
+                path: "newfeed",
+                element: <NewfeedPage />,
               },
               {
                 path: "list",

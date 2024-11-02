@@ -6,16 +6,19 @@ import UserApi from "../../apis/UserApi";
 import { useQuery } from "@tanstack/react-query";
 
 const PhotoProfile = ({ userData }) => {
-  console.log(userData);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["me"],
     queryFn: () => UserApi.getApplicationProfile(),
     staleTime: 60000,
     cacheTime: 300000,
   });
+
+  const quotaTotal = data?.maxPhotoQuota;
+  const quotaUsed = data?.photoQuotaUsage;
+
   return (
-    <div className="flex justify-between">
-      <div className="flex items-center gap-5">
+    <div className="flex flex-col md:flex-row  justify-center md:justify-between ">
+      <div className="flex flex-col md:flex-row items-center gap-5">
         <div className="w-[120px] h-[120px] overflow-hidden rounded-full">
           <img
             className="w-full h-full object-cover bg-[#eee]"
@@ -40,8 +43,8 @@ const PhotoProfile = ({ userData }) => {
           </div>
         </div>
       </div>
-      <div>
-        <StorageBar used={35.6} total={100} />
+      <div className="flex justify-center md:justify-start">
+        <StorageBar used={quotaUsed} total={quotaTotal} />
       </div>
     </div>
   );
