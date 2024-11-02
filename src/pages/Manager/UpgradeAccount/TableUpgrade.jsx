@@ -15,16 +15,16 @@ import { useNotification } from "../../../Notification/Notification";
 import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
 import ComModal from "../../../components/ComModal/ComModal";
 import DetailUpgrede from "./DetailUpgrede";
-import EditUpgrede from './EditUpgrede';
-  function formatCurrency(number) {
-    // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
-    if (typeof number === "number") {
-      return number.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-    }
+import EditUpgrede from "./EditUpgrede";
+function formatCurrency(number) {
+  // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
+  if (typeof number === "number") {
+    return number.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
   }
+}
 export const TableUpgrade = forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState({});
@@ -43,7 +43,7 @@ export const TableUpgrade = forwardRef((props, ref) => {
   const columns = [
     {
       title: "Tên gói",
-      width: 150,
+      width: "10%",
       fixed: "left",
       dataIndex: "name",
       key: "name",

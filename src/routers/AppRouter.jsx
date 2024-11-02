@@ -69,7 +69,8 @@ import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
 import SellUpload from "../components/Upload/SellUpload";
 import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageManagement";
 import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
-
+import BookingPage from "../pages/BookingPage/BookingPage";
+import BookingDetail from "../pages/BookingPage/BookingDetail";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -120,6 +121,14 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "photo-map",
                 element: <PhotoMap />,
+              },
+              {
+                path: "booking-package",
+                element: <BookingPage />,
+              },
+              {
+                path: "booking-package/:packageId",
+                element: <BookingDetail />,
               },
             ],
           },
@@ -202,10 +211,6 @@ export const AppRouter = createBrowserRouter([
                 element: <SellerProfile />,
               },
             ],
-          },
-          {
-            path: "test_scroll",
-            element: <ScrollingBar />,
           },
           {
             path: "blog",
