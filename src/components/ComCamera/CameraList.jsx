@@ -10,9 +10,9 @@ const CameraList = () => {
       <div>
         <CameraPopularBrand />
       </div>
-      {/* <div className="flex justify-center">
+      <div className="flex justify-center">
         <CameraChart />
-      </div> */}
+      </div>
       <div className="">
         <CameraTableList />
       </div>

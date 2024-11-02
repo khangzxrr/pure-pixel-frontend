@@ -216,7 +216,7 @@ export const AppRouter = createBrowserRouter([
             children: [
               {
                 path: "",
-                element: <Navigate to="list" replace={true} />,
+                element: <Navigate to="newfeed" replace={true} />,
               },
               {
                 path: "newfeed",

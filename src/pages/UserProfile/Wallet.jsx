@@ -169,7 +169,9 @@ export default function Wallet() {
           </div>
 
           <TransactionList />
-         <div className="mt-4"> <TableTransactilonList /></div>
+          <div className="mt-4">
+            <TableTransactilonList />
+          </div>
           {/* Phần Gửi ảnh */}
         </div>
 
