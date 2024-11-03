@@ -9,7 +9,6 @@ const getKeycloakProfile = async () => {
 
 const getApplicationProfile = async () => {
   const response = await http.get("/me");
-
   return response.data;
 };
 
