@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import UseServerSideStore from "../../states/UseServerSideStore";
+import UseNotificationStore from "../../states/UseNotificationStore";
 
 const ServerSideItem = ({
   id,
@@ -13,7 +14,7 @@ const ServerSideItem = ({
   const location = useLocation();
   const { activeLinkServer, setActiveLinkServer } = UseServerSideStore();
   const [isHovered, setIsHovered] = useState(false);
-
+  const { closeNotificationModal } = UseNotificationStore();
   useEffect(() => {
     if (location.pathname === link) {
       setActiveLinkServer(link);
@@ -22,6 +23,7 @@ const ServerSideItem = ({
 
   const handleClick = () => {
     setActiveLinkServer(link);
+    closeNotificationModal();
   };
 
   const handleMouseEnter = () => {

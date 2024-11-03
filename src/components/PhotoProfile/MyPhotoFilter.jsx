@@ -3,6 +3,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import UseMyPhotoFilter from "../../states/UseMyPhotoFilter";
 import { FaSearch } from "react-icons/fa";
+import { FaFilterCircleXmark } from "react-icons/fa6";
 const filterByDateList = [
   {
     id: "d1",
@@ -44,17 +45,6 @@ const MyPhotoFilter = () => {
     const isChecked = event.target.checked;
     setIsForSaleChecked(isChecked);
   };
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  };
-  const handleSearch = () => {
-    setSearchResult(inputValue);
-  };
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      handleSearch();
-    }
-  };
 
   const setFilterByPhotoDate = UseMyPhotoFilter(
     (state) => state.setFilterByPhotoDate
@@ -72,11 +62,46 @@ const MyPhotoFilter = () => {
   const handleFilterMyUpVote = (name, param) => {
     setFilterByUpVote(name, param);
   };
+
   return (
-    <div className="flex justify-between items-center ">
-      <div className="flex flex-col lg:flex-row items-center gap-2 px-2 rounded-r-md ">
-        <span className="font-normal">Bộ lọc ảnh:</span>
-        <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-2 justify-between items-center w-[300px] md:w-[450px] ">
+      <span className="flex justify-center w-full font-normal bg-[#202225] rounded-t-lg p-2 ">
+        Bộ lọc ảnh
+      </span>
+      <div className="flex flex-col md:flex-row  items-center gap-2 px-2 rounded-r-md p-4">
+        <div className="flex flex-col  gap-2 ">
+          <div className="flex items-center p-[5px] rounded-md">
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                id="watermarkCheckbox"
+                type="checkbox"
+                value=""
+                class="sr-only peer"
+                checked={isWatermarkChecked}
+                onChange={handleWatermarkChange}
+              />
+              <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
+              <span class="ms-3  font-normal text-[#eee] ">
+                Ảnh có watermark
+              </span>
+            </label>
+          </div>
+          <div className="flex items-center p-[5px] rounded-md">
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                id="forSaleCheckbox"
+                type="checkbox"
+                value=""
+                class="sr-only peer"
+                checked={isForSaleChecked}
+                onChange={handleForSaleChange}
+              />
+              <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
+              <span class="ms-3 text-[#eee] font-normal ">Ảnh đang bán</span>
+            </label>
+          </div>
+        </div>
+        <div className="flex flex-col  gap-2">
           <div>
             <Menu as="div" className="relative inline-block text-left">
               <div>
@@ -154,58 +179,6 @@ const MyPhotoFilter = () => {
                 </div>
               </MenuItems>
             </Menu>
-          </div>
-        </div>
-        <div className="flex gap-2 ">
-          <div className="flex items-center p-[5px] rounded-md">
-            <label class="inline-flex items-center cursor-pointer">
-              <input
-                id="watermarkCheckbox"
-                type="checkbox"
-                value=""
-                class="sr-only peer"
-                checked={isWatermarkChecked}
-                onChange={handleWatermarkChange}
-              />
-              <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
-              <span class="ms-3 text-sm font-normal text-gray-900 dark:text-gray-300">
-                Ảnh có watermark
-              </span>
-            </label>
-          </div>
-          <div className="flex items-center p-[5px] rounded-md">
-            <label class="inline-flex items-center cursor-pointer">
-              <input
-                id="forSaleCheckbox"
-                type="checkbox"
-                value=""
-                class="sr-only peer"
-                checked={isForSaleChecked}
-                onChange={handleForSaleChange}
-              />
-              <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
-              <span class="ms-3 text-sm font-normal text-gray-900 dark:text-gray-300">
-                Ảnh đang bán
-              </span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div className="flex items-center bg-[#202225] rounded-lg">
-          <input
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            type="text"
-            placeholder={`Tìm kiếm ảnh theo tên ảnh...`}
-            className="font-normal text-sm px-2 py-2 min-w-[270px] pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
-          />
-          <div className="flex items-center px-3">
-            <button className="" onClick={handleSearch}>
-              <FaSearch />
-            </button>
           </div>
         </div>
       </div>

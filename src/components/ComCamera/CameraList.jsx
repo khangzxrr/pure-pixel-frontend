@@ -6,13 +6,13 @@ import CameraPopularBrand from "./CameraPopularBrand";
 
 const CameraList = () => {
   return (
-    <div className="flex flex-col w-full gap-5 p-4">
+    <div className="flex flex-col  gap-5 p-4">
       <div>
         <CameraPopularBrand />
       </div>
-      {/* <div className="flex justify-center">
+      <div className="flex justify-center">
         <CameraChart />
-      </div> */}
+      </div>
       <div className="">
         <CameraTableList />
       </div>

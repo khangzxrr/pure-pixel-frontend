@@ -59,6 +59,7 @@ import PhotoSellingPage from "../pages/PhotoSelling/PhotoSellingPage";
 import Report from "../pages/Manager/Report/Report";
 import BlogManager from "../pages/Manager/Blog/BlogManager";
 import ChatPage from "../pages/Message/ChatPage";
+import PhotoMap from "../pages/PhotoMap/PhotoMap";
 import CameraPage from "../pages/Camera/CameraPage";
 import CameraList from "../components/ComCamera/CameraList";
 import CameraDetail from "../components/ComCamera/CameraDetail";
@@ -68,7 +69,9 @@ import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
 import SellUpload from "../components/Upload/SellUpload";
 import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageManagement";
 import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
-
+import { useKeycloak } from "@react-keycloak/web";
+import UserService from "../services/Keycloak";
+import NewfeedPage from "../pages/NewFeed/NewfeedPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -115,6 +118,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "selling",
                 element: <PhotoSellingPage />,
+              },
+              {
+                path: "photo-map",
+                element: <PhotoMap />,
               },
             ],
           },
@@ -203,13 +210,17 @@ export const AppRouter = createBrowserRouter([
             element: <ScrollingBar />,
           },
           {
-            path: "blog",
+            path: "home",
             // element: <BlogList />,
             element: <Blog />,
             children: [
               {
                 path: "",
-                element: <Navigate to="list" replace={true} />,
+                element: <Navigate to="newfeed" replace={true} />,
+              },
+              {
+                path: "newfeed",
+                element: <NewfeedPage />,
               },
               {
                 path: "list",

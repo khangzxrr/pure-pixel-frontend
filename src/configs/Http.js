@@ -12,7 +12,7 @@ const http = axios.create({
   },
 });
 
-export const testHttp = axios.create({
+export const externalHttp = axios.create({
   baseURL: "",
 
   timeout: 30000,

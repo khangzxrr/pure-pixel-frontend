@@ -6,6 +6,7 @@ export default function getDefaultPhoto(photo) {
     createdAt: photo?.createdAt || "",
     description: photo?.description || "",
     exif: photo?.exif || "",
+    gps: photo?.gps || {},
     id: photo?.id || "",
     location: photo?.location || "",
     originalPhotoUrl: photo?.originalPhotoUrl || "",

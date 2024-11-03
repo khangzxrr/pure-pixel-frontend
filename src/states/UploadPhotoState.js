@@ -13,6 +13,7 @@ const useUploadPhotoStore = create(
     selectedPhoto: null,
     isUpdatingPhotos: false,
     isOpenDraftModal: false,
+    isOpenMapModal: false,
 
     getPhotoByUid: (uid) => {
       const index = get().uidHashmap[uid];
@@ -132,7 +133,7 @@ const useUploadPhotoStore = create(
 
         // Remove photo from photoArray
         const updatedPhotoArray = state.photoArray.filter(
-          (_, idx) => idx !== index,
+          (_, idx) => idx !== index
         );
 
         // Regenerate uidHashmap and photoIdHashmap with new indices
@@ -167,7 +168,7 @@ const useUploadPhotoStore = create(
 
         // Remove photo from photoArray
         const updatedPhotoArray = state.photoArray.filter(
-          (_, idx) => idx !== index,
+          (_, idx) => idx !== index
         );
 
         // Regenerate uidHashmap and photoIdHashmap with new indices
@@ -208,6 +209,10 @@ const useUploadPhotoStore = create(
       set({ isOpenDraftModal: status });
     },
 
+    setIsOpenMapModal: (status) => {
+      set({ isOpenMapModal: status });
+    },
+
     isPhotoExistByUid: (uid) => {
       const state = useUploadPhotoStore.getState();
       return state.photoArray.some((photo) => photo.uid === uid);
@@ -216,7 +221,7 @@ const useUploadPhotoStore = create(
     deleteImageById: (id) =>
       set((state) => {
         const updatedPhotoArray = state.photoArray.filter(
-          (image) => image.id !== id,
+          (image) => image.id !== id
         );
         const isDeletedSelected = state.selectedPhoto.id === id;
 
@@ -283,7 +288,7 @@ const useUploadPhotoStore = create(
         return { selectedPhoto: previousUid };
       });
     },
-  })),
+  }))
 );
 
 export default useUploadPhotoStore;

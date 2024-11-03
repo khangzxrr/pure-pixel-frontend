@@ -1,0 +1,51 @@
+[
+  {
+    "id": "00955aa3-4d95-4c3e-b5b6-8db7fb7780a6",
+    "title": "Photo 1",
+    "photo_url": "https://static0.carbuzzimages.com/wordpress/wp-content/uploads/gallery-images/original/1211000/900/1211930.jpg",
+    "latitude": 11.16667,
+    "longitude": 106.66667
+  },
+  {
+    "id": "00ab8994-5c87-4d5b-baef-4ade4f647a94",
+    "title": "00ab8994-5c87-4d5b-baef-4ade4f647a94",
+    "photo_url": "https://plus.unsplash.com/premium_photo-1673643405538-de0f82933fcb?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D",
+    "latitude": 11.16845,
+    "longitude": 106.66212
+  },
+  {
+    "id": "00db4fa8-9d62-47da-8ff2-8f7bb9bef4c0",
+    "title": "00db4fa8-9d62-47da-8ff2-8f7bb9bef4c0",
+    "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_FWF2judaujT30K9sMf-tZFhMWpgP6xCemw&s",
+    "latitude": 11.16412,
+    "longitude": 106.66898
+  },
+  {
+    "id": "00f636b8-3b3f-4575-90d0-757b536a6e6e",
+    "title": "00f636b8-3b3f-4575-90d0-757b536a6e6e",
+    "photo_url": "https://t4.ftcdn.net/jpg/07/10/82/17/360_F_710821781_R8VGPBrV55dd8HTA0JVVC4f9ZRwwpUAg.jpg",
+    "latitude": 11.17005,
+    "longitude": 106.67034
+  },
+  {
+    "id": "00df17e6-d5ab-4001-8271-c13d8e44c7d5",
+    "title": "00df17e6-d5ab-4001-8271-c13d8e44c7d5",
+    "photo_url": "https://plus.unsplash.com/premium_photo-1673643405538-de0f82933fcb?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bmF0dXJhbHxlbnwwfHwwfHx8MA%3D%3D",
+    "latitude": 11.1659,
+    "longitude": 106.66356
+  },
+  {
+    "id": "00fbf720-17bb-4f01-bdf7-7bd4ccf4f156",
+    "title": "Photo 6",
+    "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_FWF2judaujT30K9sMf-tZFhMWpgP6xCemw&s",
+    "latitude": 11.16988,
+    "longitude": 106.66425
+  },
+  {
+    "id": "011112dd-a2e1-425c-aa09-9f9899ecb3c8",
+    "title": "Photo 7",
+    "photo_url": "https://t4.ftcdn.net/jpg/07/10/82/17/360_F_710821781_R8VGPBrV55dd8HTA0JVVC4f9ZRwwpUAg.jpg",
+    "latitude": 11.16734,
+    "longitude": 106.66945
+  }
+]
