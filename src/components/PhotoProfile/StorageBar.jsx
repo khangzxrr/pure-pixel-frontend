@@ -6,7 +6,7 @@ const StorageBar = ({ used, total }) => {
   const percentage = (usedGB / totalGB) * 100;
 
   return (
-    <div className=" md:w-[17vw] w-[60vw] p-4 font-normal rounded-lg ">
+    <div className=" md:w-[18.3vw] w-[60vw] p-4 font-normal rounded-lg ">
       <div className="flex flex-col mb-2">
         <span className="text-[#eee] mb-2">
           Dung lượng đã sử dụng:{" "}

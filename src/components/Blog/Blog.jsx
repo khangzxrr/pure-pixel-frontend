@@ -5,8 +5,10 @@ import UserService from "../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
 import BlogSide from "./BlogSide";
 import SidebarLayout from "../../layouts/SidebarLayout";
+import { useNavigate } from "react-router-dom";
 
 const Blog = () => {
+  const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote } = UseBlogStore();
   const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
   const userData = UserService.getTokenParsed();
@@ -14,7 +16,10 @@ const Blog = () => {
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-  const handleLogout = () => keycloak.logout();
+  const handleLogout = () => {
+    navigate("/");
+    keycloak.logout();
+  };
 
   return (
     <SidebarLayout

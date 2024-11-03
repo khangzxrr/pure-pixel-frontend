@@ -1,15 +1,25 @@
 import { useKeycloak } from "@react-keycloak/web";
 import React, { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import ServerSide from "../components/ServerSide/ServerSide";
 import UseSidebarStore from "../states/UseSidebarStore";
 import NotificationModal from "./../components/ComNotificate/NotificationModal";
 import UseNotificationStore from "../states/UseNotificationStore";
+import UserService from "../services/Keycloak";
 
 const DashboardLayoutF = () => {
   const { keycloak } = useKeycloak();
   const { isSidebarOpen, toggleSidebar, setIsSidebarOpen } = UseSidebarStore(); // Lấy setIsSidebarOpen
   const { isNotificationOpen, closeNotificationModal } = UseNotificationStore();
+  const userData = UserService.getTokenParsed();
+  const role = userData?.resource_access.purepixel.roles;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (role?.includes("purepixel-admin")) {
+      navigate("/admin");
+    }
+  }, [role]);
 
   useEffect(() => {
     const handleResize = () => {

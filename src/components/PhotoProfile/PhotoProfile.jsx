@@ -4,6 +4,8 @@ import { IoEyeSharp } from "react-icons/io5";
 import StorageBar from "./StorageBar";
 import UserApi from "../../apis/UserApi";
 import { useQuery } from "@tanstack/react-query";
+import UpgradeToPtg from "./UpgradeToPtg";
+import { FaImages } from "react-icons/fa6";
 
 const PhotoProfile = ({ userData }) => {
   const { data, isLoading, isError, error } = useQuery({
@@ -13,6 +15,9 @@ const PhotoProfile = ({ userData }) => {
     cacheTime: 300000,
   });
 
+  const PhotoTotal = data?._count.photos;
+  const FollowerCount = data?._count.followers;
+  const UserAvarta = data?.avatar;
   const quotaTotal = data?.maxPhotoQuota;
   const quotaUsed = data?.photoQuotaUsage;
 
@@ -22,7 +27,7 @@ const PhotoProfile = ({ userData }) => {
         <div className="w-[120px] h-[120px] overflow-hidden rounded-full">
           <img
             className="w-full h-full object-cover bg-[#eee]"
-            src={data?.avatar}
+            src={UserAvarta}
             alt=""
           />
         </div>
@@ -35,16 +40,24 @@ const PhotoProfile = ({ userData }) => {
           </div>
           <div className="flex gap-2">
             <div className="px-[12px] py-[4px] bg-[#fff3] rounded-full">
-              2 người theo dõi
+              {FollowerCount} người theo dõi
             </div>
             <div className="flex items-center gap-1 px-[12px] py-[4px] bg-[#fff3] rounded-full">
-              64 <IoEyeSharp />
+              {PhotoTotal} <FaImages />
             </div>
           </div>
         </div>
       </div>
       <div className="flex justify-center md:justify-start">
-        <StorageBar used={quotaUsed} total={quotaTotal} />
+        {userData?.resource_access?.purepixel?.roles.includes(
+          "photographer"
+        ) ? (
+          <StorageBar used={quotaUsed} total={quotaTotal} />
+        ) : (
+          <div>
+            <UpgradeToPtg />
+          </div>
+        )}
       </div>
     </div>
   );
