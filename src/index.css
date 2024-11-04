@@ -85,7 +85,7 @@ code {
   height: 8px; /* Chiều cao của thanh cuộn ngang */
 }
 .ant-table-body::-webkit-scrollbar-thumb {
-  background-color: #888; /* Màu của thanh cuộn */
+  background-color: #fff; /* Màu của thanh cuộn */
 }
 
 .ant-table-container {
@@ -95,7 +95,7 @@ code {
 }
 
 .ant-table-body::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* Màu nền của thanh cuộn */
+  background-color: #888; /* Màu nền của thanh cuộn */
 }
 .ant-table-content {
   background-color: blue !important;
@@ -124,4 +124,8 @@ code {
 }
 .custom-steps .ant-steps-item-process .ant-steps-icon {
   color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.ant-table-wrapper .ant-table {
+  background-color: #ffffff00;
 }

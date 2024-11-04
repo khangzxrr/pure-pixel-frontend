@@ -80,12 +80,13 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getImage = () => {
-    getData(`photo/${selectedImage}`)
+    getData(`photo/${id ? id : selectedImage}`)
       .then((e) => {
         setGetPhotoById(e);
       })
       .catch((error) => {
         console.log(error);
+        navigate("/404");
       });
   };
 
@@ -140,6 +141,8 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   console.log(categoryName);
   console.log(categoryName);
   const extraDetails = allDetails.slice(3);
+
+
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
