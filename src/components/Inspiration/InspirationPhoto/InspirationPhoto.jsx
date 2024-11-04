@@ -14,6 +14,8 @@ import InsPhotoFilter from "./InsPhotoFilter";
 import { IoMdImages } from "react-icons/io";
 import useMapboxState from "../../../states/UseMapboxState";
 import BlurhashImage from "../../BlurhashImage/BlurhashImage";
+import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
+import UseUserProfileStore from "../../../states/UseUserProfileStore";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
@@ -37,6 +39,10 @@ const InspirationPhoto = () => {
   const searchByPhotoTitle = UseCategoryStore(
     (state) => state.searchByPhotoTitle
   );
+  const setNamePhotographer = UsePhotographerFilterStore(
+    (state) => state.setNamePhotographer
+  );
+  const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
@@ -172,7 +178,14 @@ const InspirationPhoto = () => {
                                 className="w-full h-full object-cover"
                               />
                             </div>
-                            <div>
+                            <div
+                              className="hover:underline cursor-pointer underline-offset-2"
+                              onClick={() => {
+                                navigate(`/user/${photo.photographer.id}`);
+                                setNamePhotographer(photo.photographer.name);
+                                setActiveTitle(null);
+                              }}
+                            >
                               {photo.photographer.name || "Tên tác giả"}
                             </div>
                           </div>

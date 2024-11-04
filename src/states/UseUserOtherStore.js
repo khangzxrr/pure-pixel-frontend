@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const UseUserProfileStore = create((set) => ({
+const UseUserOtherStore = create((set) => ({
   isSidebarOpen: false,
   activeItem: null,
   activeIcon: null,
@@ -18,9 +18,10 @@ const UseUserProfileStore = create((set) => ({
       activeIcon: icon,
       activeQuote: quote,
     })),
-  setActiveTitle: (title) => set(() => ({ activeTitle: title })),
+
   // Clear the active item
   setHoveredItem: (itemId) => set({ hoveredItem: itemId }),
   clearHoveredItem: () => set({ hoveredItem: null }),
 }));
-export default UseUserProfileStore;
+
+export default UseUserOtherStore;
