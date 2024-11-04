@@ -72,6 +72,11 @@ import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistra
 import { useKeycloak } from "@react-keycloak/web";
 import UserService from "../services/Keycloak";
 import NewfeedPage from "../pages/NewFeed/NewfeedPage";
+import UserProfileV2 from "../pages/UserProfile/UserProfileV2";
+import UserOther from "../components/UserOther/UserOther";
+import PhotosUser from "../components/UserOther/PhotosUser";
+import PackagesUser from "../components/UserOther/PackagesUser";
+import SellingUser from "../components/UserOther/SellingUser";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -172,6 +177,34 @@ export const AppRouter = createBrowserRouter([
             ],
           },
           {
+            path: "user",
+            element: <UserOther />,
+            children: [
+              {
+                path: "",
+                element: <Navigate to=":id/photos" replace={true} />,
+              },
+              {
+                path: ":id",
+                element: <UserProfileV2 />,
+                children: [
+                  {
+                    path: "photos",
+                    element: <PhotosUser />,
+                  },
+                  {
+                    path: "packages",
+                    element: <PackagesUser />,
+                  },
+                  {
+                    path: "selling",
+                    element: <SellingUser />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
             path: "profile",
             element: <User />,
             children: [
@@ -183,6 +216,7 @@ export const AppRouter = createBrowserRouter([
                 path: "userprofile",
                 element: <UserProfile />,
               },
+
               {
                 path: "my-photos",
                 element: <MyPhotosPage />,
@@ -205,6 +239,7 @@ export const AppRouter = createBrowserRouter([
               },
             ],
           },
+          {},
           {
             path: "test_scroll",
             element: <ScrollingBar />,

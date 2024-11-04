@@ -8,6 +8,9 @@ const UsePhotographerFilterStore = create((set) => ({
 
   filterByVote: { name: "", param: "" },
   setFilterByVote: (name, param) => set({ filterByVote: { name, param } }),
+
+  namePhotographer: "",
+  setNamePhotographer: (name) => set({ namePhotographer: name }),
 }));
 
 export default UsePhotographerFilterStore;

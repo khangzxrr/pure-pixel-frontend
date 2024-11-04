@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
@@ -14,6 +18,9 @@ import InsPhotoFilter from "./InsPhotoFilter";
 import { IoMdImages } from "react-icons/io";
 import useMapboxState from "../../../states/UseMapboxState";
 import BlurhashImage from "../../BlurhashImage/BlurhashImage";
+import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
+import UseUserProfileStore from "../../../states/UseUserProfileStore";
+import VoteApi from "./../../../apis/VoteApi";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
@@ -24,6 +31,8 @@ const InspirationPhoto = () => {
   const [selectedImage, setSelectedImage] = useState(
     selectedLocate ? selectedLocate.id : null
   );
+
+  const [isLiked, setIsLiked] = useState(false);
 
   const selectedPhotoCategory = UseCategoryStore(
     (state) => state.selectedPhotoCategory
@@ -37,6 +46,10 @@ const InspirationPhoto = () => {
   const searchByPhotoTitle = UseCategoryStore(
     (state) => state.searchByPhotoTitle
   );
+  const setNamePhotographer = UsePhotographerFilterStore(
+    (state) => state.setNamePhotographer
+  );
+  const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
@@ -82,9 +95,6 @@ const InspirationPhoto = () => {
         return currentPage < lastPage.totalPage ? currentPage : undefined;
       },
     });
-
-  // Merge all pages' results
-  // const photoList = data.pages.flatMap((page) => page.objects);
 
   const photoList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
@@ -172,7 +182,16 @@ const InspirationPhoto = () => {
                                 className="w-full h-full object-cover"
                               />
                             </div>
-                            <div>
+                            <div
+                              className="hover:underline cursor-pointer underline-offset-2"
+                              onClick={() => {
+                                navigate(
+                                  `/user/${photo.photographer.id}/photos`
+                                );
+                                setNamePhotographer(photo.photographer.name);
+                                setActiveTitle(null);
+                              }}
+                            >
                               {photo.photographer.name || "Tên tác giả"}
                             </div>
                           </div>
