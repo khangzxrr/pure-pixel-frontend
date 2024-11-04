@@ -5,6 +5,7 @@ import PhotoApi from "../../../apis/PhotoApi";
 import { useQuery } from "@tanstack/react-query";
 import { FaRegMessage } from "react-icons/fa6";
 import { MdBlock } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 // Hàm để cắt ngắn câu quote nếu quá dài
 const truncateQuote = (quote, maxLength) => {
@@ -15,6 +16,7 @@ const truncateQuote = (quote, maxLength) => {
 };
 
 const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
+  const navigate = useNavigate();
   const items = [
     {
       label: (
@@ -97,7 +99,12 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
           <div className="text-xl font-bold mt-8 text-center">
-            <div>{name || "Không xác định"}</div>
+            <div
+              onClick={() => navigate(`/user/${id}/photos`)}
+              className="hover:underline underline-offset-2"
+            >
+              {name || "Không xác định"}
+            </div>
           </div>
           <div className="text-center text-sm font-normal">
             <div>“{truncateQuote(quote, maxQuoteLength)}”</div>

@@ -75,6 +75,8 @@ import NewfeedPage from "../pages/NewFeed/NewfeedPage";
 import UserProfileV2 from "../pages/UserProfile/UserProfileV2";
 import UserOther from "../components/UserOther/UserOther";
 import PhotosUser from "../components/UserOther/PhotosUser";
+import PackagesUser from "../components/UserOther/PackagesUser";
+import SellingUser from "../components/UserOther/SellingUser";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -180,7 +182,7 @@ export const AppRouter = createBrowserRouter([
             children: [
               {
                 path: "",
-                element: <Navigate to=":id" replace={true} />,
+                element: <Navigate to=":id/photos" replace={true} />,
               },
               {
                 path: ":id",
@@ -189,6 +191,14 @@ export const AppRouter = createBrowserRouter([
                   {
                     path: "photos",
                     element: <PhotosUser />,
+                  },
+                  {
+                    path: "packages",
+                    element: <PackagesUser />,
+                  },
+                  {
+                    path: "selling",
+                    element: <SellingUser />,
                   },
                 ],
               },

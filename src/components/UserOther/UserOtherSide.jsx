@@ -5,7 +5,8 @@ import UserService from "../../services/Keycloak";
 import UserOtherSidebar from "./UserOtherSidebar";
 import { useParams } from "react-router-dom";
 import { IoPersonSharp } from "react-icons/io5";
-import { FaImages } from "react-icons/fa6";
+import { IoMdPhotos } from "react-icons/io";
+import { FaCameraRetro, FaMoneyBillWave } from "react-icons/fa6";
 
 const UserOtherSide = () => {
   const { activeItem, setActiveItem } = UseUserOtherStore();
@@ -18,17 +19,29 @@ const UserOtherSide = () => {
   const handleClick = (id, title, icon, quote) =>
     setActiveItem(id, title, icon, quote);
   const UserOtherItem = [
-    {
-      id: "UO1",
-      title: "Hồ sơ",
-      icon: <IoPersonSharp />,
-      link: `/user/${params.id}`,
-    },
+    // {
+    //   id: "UO1",
+    //   title: "Hồ sơ",
+    //   icon: <IoPersonSharp />,
+    //   link: `/user/${params.id}`,
+    // },
     {
       id: "UO2",
-      title: "Ảnh",
-      icon: <FaImages />,
+      title: "Hồ sơ",
+      icon: <IoPersonSharp />,
       link: `/user/${params.id}/photos`,
+    },
+    {
+      id: "UO3",
+      title: "Các gói dịch vụ",
+      icon: <FaCameraRetro />,
+      link: `/user/${params.id}/packages`,
+    },
+    {
+      id: "UO4",
+      title: "Các ảnh đang bán",
+      icon: <FaMoneyBillWave />,
+      link: `/user/${params.id}/selling`,
     },
   ];
   return (

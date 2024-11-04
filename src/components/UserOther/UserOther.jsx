@@ -31,6 +31,9 @@ const UserOther = () => {
       activeTitle={activeTitle}
       activeQuote={activeQuote}
       sidebarContent={<UserOtherSide />}
+      onLogout={handleLogout}
+      onLogin={handleLogin}
+      onRegister={handleRegister}
     />
   );
 };
