@@ -168,7 +168,7 @@ const SidebarLayout = ({
               ></div>
             )}
           </div>
-          <Outlet />
+          <div className="min-h-screen"><Outlet /></div>
           {/* Nút cuộn lên đầu trang */}
           {isVisible && (
             <button
