@@ -13,6 +13,7 @@ import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 import { getData } from "../../apis/api";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
+import LikeButton from "./../../components/ComLikeButton/LikeButton";
 function calculateTimeFromNow(dateString) {
   const startDate = new Date(dateString);
   const now = new Date();
@@ -89,6 +90,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
         navigate("/404");
       });
   };
+  console.log("selectedImage", selectedImage);
 
   useEffect(() => {
     getImage();
@@ -132,7 +134,9 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   const quoteUser = getPhotoById.data?.photographer?.quote;
   const votePhoto = getPhotoById.data?._count?.votes;
   const commentPhoto = getPhotoById.data?._count?.comments;
- 
+  const viewCount = getPhotoById.data?.viewCount;
+  console.log(getPhotoById.data);
+
   // Chuyển đổi đối tượng details thành mảng cặp khóa-giá trị
   const allDetails = Object?.entries(getPhotoById?.data?.exif || {});
 
@@ -141,7 +145,6 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
   console.log(categoryName);
   console.log(categoryName);
   const extraDetails = allDetails.slice(3);
-
 
   return (
     <>
@@ -215,7 +218,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
           </div>
 
           {/* Right side - Details */}
-          <div className="w-full md:w-96 p-6 bg-zinc-900 overflow-y-auto">
+          <div className="w-full md:w-96 p-6 bg-zinc-900 overflow-y-auto scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center space-x-3">
                 <img
@@ -257,13 +260,6 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                     ></path>
                   </svg>
                 </button>
-                <button className="p-2 rounded-full hover:bg-gray-800">
-                  <Icon>
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                  </Icon>
-                </button>
               </div>
             </div>
 
@@ -272,12 +268,16 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div>
 
             <div className="flex items-center space-x-6 mb-6">
-              <button className="flex items-center hover:text-red-500">
-                <Icon className="mr-2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </Icon>
+              <div className="flex items-center gap-2">
+                <LikeButton
+                  size="size-5"
+                  reloadData={getImage}
+                  photoId={selectedImage}
+                  key={selectedImage}
+                />
                 <span>{votePhoto}</span>
-              </button>
+              </div>
+
               <button className="flex items-center hover:text-blue-500">
                 <Icon className="mr-2">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
@@ -289,7 +289,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                   <circle cx="12" cy="12" r="3" />
                 </Icon>
-                <span>4894</span>
+                <span>{viewCount}</span>
               </div>
               <button
                 className="hover:text-green-500"
@@ -340,7 +340,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               </Menu>
             </div>
 
-            <div className="space-y-4 mb-6">
+            {/* <div className="space-y-4 mb-6">
               {["COMPOSITION", "CONTENT", "CREATIVITY", "TECHNIQUE"].map(
                 (category, index) => (
                   <div key={category}>
@@ -365,7 +365,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                   </div>
                 )
               )}
-            </div>
+            </div> */}
 
             <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
             <div className="space-y-2 mb-6">
