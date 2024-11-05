@@ -62,7 +62,8 @@ const Explore = () => {
             isSidebarOpen ? "w-64" : "w-0 overflow-hidden"
           } lg:overflow-visible`}
         >
-          <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
+          {/* <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"> */}
+          <div className="flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar">
             <InspirationSideComp />
           </div>
           <div className="sticky bottom-0 bg-[#2a2d31] p-[12.5px]">
@@ -134,7 +135,7 @@ const Explore = () => {
           <div
             id="inspiration"
             className={`flex flex-col l  relative 
-       scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f] ${
+       custom-scrollbar ${
          isSidebarOpen ? `overflow-hidden` : `overflow-y-scroll`
        }`}
           >
