@@ -29,25 +29,24 @@ const CameraTableList = () => {
   };
   return (
     <div className="relative overflow-x-auto">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs uppercase dark:bg-[#1f2123] dark:text-[#eee]">
           <tr>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3 md:px-6">
               Xếp hạng
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3 md:px-6">
               Nhãn hiệu
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3 hidden md:table-cell">
               Các mẫu hàng đầu
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-4 py-3 md:px-6">
               Số người sử dụng
             </th>
           </tr>
         </thead>
         <tbody className="text-white">
-          {/* Hiển thị thông báo trong bảng */}
           {isLoading && (
             <tr>
               <td colSpan="4" className="px-6 py-4 text-center">
@@ -69,12 +68,9 @@ const CameraTableList = () => {
                 key={item.maker.id}
                 className="border-b dark:bg-[#2f3136] dark:border-[#434743]"
               >
-                <td className="px-6 py-4">{index + 1}</td>
-                <td
-                  scope="row"
-                  className="px-6 py-4 font-medium whitespace-nowrap flex items-center gap-2 text-blue-500"
-                >
-                  <div className="w-8 h-8">
+                <td className="px-4 py-4 md:px-6">{index + 1}</td>
+                <td className="px-4 py-4 md:px-6 flex items-center gap-2 text-blue-500">
+                  <div className="w-6 h-6 md:w-8 md:h-8">
                     <img
                       src={item.maker.thumbnail}
                       alt={item.maker.name}
@@ -90,24 +86,23 @@ const CameraTableList = () => {
                     </span>
                   </Link>
                 </td>
-                <td className="px-6 py-4 text-blue-500">
+                <td className="px-4 py-4 md:px-6 text-blue-500 hidden md:table-cell">
                   {item.maker.cameras.slice(0, 2).map((camera, idx) => (
                     <React.Fragment key={camera.id}>
-                      <span className="font-normal hover:underline underline-offset-2">
-                        <Link
-                          to={`/camera/${camera.id}`}
-                          onClick={() =>
-                            handleOnClickCamera(item.maker.name, camera.name)
-                          }
-                        >
-                          {camera.name}
-                        </Link>
-                      </span>
+                      <Link
+                        to={`/camera/${camera.id}`}
+                        onClick={() =>
+                          handleOnClickCamera(item.maker.name, camera.name)
+                        }
+                        className="font-normal hover:underline underline-offset-2"
+                      >
+                        {camera.name}
+                      </Link>
                       {idx < item.maker.cameras.slice(0, 2).length - 1 && ", "}
                     </React.Fragment>
                   ))}
                 </td>
-                <td className="px-6 py-4">{item.userCount}</td>
+                <td className="px-4 py-4 md:px-6">{item.userCount}</td>
               </tr>
             ))}
         </tbody>

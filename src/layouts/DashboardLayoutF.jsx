@@ -1,15 +1,25 @@
 import { useKeycloak } from "@react-keycloak/web";
 import React, { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import ServerSide from "../components/ServerSide/ServerSide";
 import UseSidebarStore from "../states/UseSidebarStore";
 import NotificationModal from "./../components/ComNotificate/NotificationModal";
 import UseNotificationStore from "../states/UseNotificationStore";
+import UserService from "../services/Keycloak";
 
 const DashboardLayoutF = () => {
   const { keycloak } = useKeycloak();
   const { isSidebarOpen, toggleSidebar, setIsSidebarOpen } = UseSidebarStore(); // Lấy setIsSidebarOpen
   const { isNotificationOpen, closeNotificationModal } = UseNotificationStore();
+  const userData = UserService.getTokenParsed();
+  const role = userData?.resource_access.purepixel.roles;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (role?.includes("purepixel-admin")) {
+      navigate("/admin");
+    }
+  }, [role]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -36,16 +46,16 @@ const DashboardLayoutF = () => {
       >
         <ServerSide />
       </div>
+      <div className="">
+        <NotificationModal
+          isOpen={isNotificationOpen}
+          onClose={closeNotificationModal}
+        />
+      </div>
 
       {/* Main content */}
-      <div className="flex flex-grow h-screen w-full relative overflow-y-auto overflow-x-hidden z-10 scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
+      <div className="  w-full  overflow-y-auto overflow-x-hidden z-10 scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
         <Outlet />
-        <div className="h-full">
-          <NotificationModal
-            isOpen={isNotificationOpen}
-            onClose={closeNotificationModal}
-          />
-        </div>
       </div>
     </div>
   );

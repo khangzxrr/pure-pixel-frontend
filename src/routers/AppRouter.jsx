@@ -75,6 +75,11 @@ import { useKeycloak } from "@react-keycloak/web";
 import UserService from "../services/Keycloak";
 import NewfeedPage from "../pages/NewFeed/NewfeedPage";
 import BookingRequestDetail from "../pages/UserProfile/BookingRequestDetail";
+import UserProfileV2 from "../pages/UserProfile/UserProfileV2";
+import UserOther from "../components/UserOther/UserOther";
+import PhotosUser from "../components/UserOther/PhotosUser";
+import PackagesUser from "../components/UserOther/PackagesUser";
+import SellingUser from "../components/UserOther/SellingUser";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -183,6 +188,34 @@ export const AppRouter = createBrowserRouter([
             ],
           },
           {
+            path: "user",
+            element: <UserOther />,
+            children: [
+              {
+                path: "",
+                element: <Navigate to=":id/photos" replace={true} />,
+              },
+              {
+                path: ":id",
+                element: <UserProfileV2 />,
+                children: [
+                  {
+                    path: "photos",
+                    element: <PhotosUser />,
+                  },
+                  {
+                    path: "packages",
+                    element: <PackagesUser />,
+                  },
+                  {
+                    path: "selling",
+                    element: <SellingUser />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
             path: "profile",
             element: <User />,
             children: [
@@ -194,6 +227,7 @@ export const AppRouter = createBrowserRouter([
                 path: "userprofile",
                 element: <UserProfile />,
               },
+
               {
                 path: "my-photos",
                 element: <MyPhotosPage />,
@@ -220,6 +254,7 @@ export const AppRouter = createBrowserRouter([
               },
             ],
           },
+          {},
           {
             path: "home",
             // element: <BlogList />,
@@ -227,7 +262,7 @@ export const AppRouter = createBrowserRouter([
             children: [
               {
                 path: "",
-                element: <Navigate to="list" replace={true} />,
+                element: <Navigate to="newfeed" replace={true} />,
               },
               {
                 path: "newfeed",

@@ -17,6 +17,7 @@ const Sidebar = ({
   nameUser,
   isBlog,
   isCamera,
+  isOtherProfile,
 }) => {
   const location = useLocation();
   const { activeLink, setActiveLink, isSidebarOpen, toggleSidebar } =
@@ -75,6 +76,13 @@ const Sidebar = ({
         <div className=" flex-grow">
           <div className="flex px-2 h-[48px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
             Máy ảnh
+          </div>
+        </div>
+      )}{" "}
+      {isOtherProfile && (
+        <div className=" flex-grow">
+          <div className="flex px-2 h-[48px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
+            Hồ sơ
           </div>
         </div>
       )}

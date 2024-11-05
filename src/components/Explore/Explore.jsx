@@ -175,7 +175,7 @@ const Explore = () => {
             {isVisible && (
               <button
                 onClick={scrollToTop}
-                className="fixed bottom-5 right-20 z-20 bg-[#4e535e] border-2 hover:bg-[#777777] text-white p-2 rounded-full transition-colors duration-200"
+                className="fixed bottom-5 right-10 z-20 bg-[#4e535e] border-2 hover:bg-[#777777] text-white p-2 rounded-full transition-colors duration-200"
               >
                 <IoIosArrowUp size={24} />
               </button>

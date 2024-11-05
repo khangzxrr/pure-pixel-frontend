@@ -9,7 +9,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
 }
 /* html, */
 body {
@@ -86,7 +85,7 @@ code {
   height: 8px; /* Chiều cao của thanh cuộn ngang */
 }
 .ant-table-body::-webkit-scrollbar-thumb {
-  background-color: #888; /* Màu của thanh cuộn */
+  background-color: #fff; /* Màu của thanh cuộn */
 }
 
 .ant-table-container {
@@ -96,7 +95,7 @@ code {
 }
 
 .ant-table-body::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* Màu nền của thanh cuộn */
+  background-color: #888; /* Màu nền của thanh cuộn */
 }
 .ant-table-content {
   background-color: blue !important;
@@ -149,4 +148,8 @@ code {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #6b6b6b; /* Color on hover */
+}
+
+.ant-table-wrapper .ant-table {
+  background-color: #ffffff00;
 }
