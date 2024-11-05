@@ -5,6 +5,7 @@ import { PiClockCountdownBold } from "react-icons/pi";
 import { RiVipCrownFill } from "react-icons/ri";
 import { BsPersonBoundingBox } from "react-icons/bs";
 import { TbMap2 } from "react-icons/tb";
+import { MdAddAPhoto } from "react-icons/md";
 
 const InspirationSideItemF = [
   {
@@ -55,6 +56,13 @@ const InspirationSideItemF = [
     title: "Bản đồ ảnh",
     icon: <TbMap2 />,
     link: "/explore/photo-map",
+    quote: "Những bức ảnh đang được đăng bán",
+  },
+  {
+    id: 8,
+    title: "Các gói chụp ảnh",
+    icon: <MdAddAPhoto />,
+    link: "/explore/booking-package",
     quote: "Những bức ảnh đang được đăng bán",
   },
 ];

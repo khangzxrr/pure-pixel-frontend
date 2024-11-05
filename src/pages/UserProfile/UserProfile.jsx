@@ -21,7 +21,7 @@ const UserProfile = () => {
     queryKey: ["user-profile", userId],
     queryFn: () => UserProfileApi.getUserProfileById(userId),
   });
-  console.log(userDataKeyCloak, userData, "userData");
+  console.log(userDataKeyCloak, userData, isLoading, "userData");
 
   const [scrollY, setScrollY] = useState(0);
   const defaultHeight = 350;
@@ -65,11 +65,9 @@ const UserProfile = () => {
               className="w-full"
             >
               {/* Button positioned absolutely */}
-              <button className="absolute top-4 left-4 z-10 bg-white text-black px-4 py-2 rounded shadow">
-                Back
-              </button>
+
               <img
-                src={userData?.avatar} // Use coverPhoto from userData
+                src={userData?.cover} // Use coverPhoto from userData
                 alt="Cover"
                 className="w-full h-auto" // Image maintains its full width and natural height
               />
@@ -82,9 +80,7 @@ const UserProfile = () => {
               alt="Profile"
               className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
             />
-            <h1 className="text-2xl font-bold text-center">
-              {userData?.username}
-            </h1>
+            <h1 className="text-2xl font-bold text-center">{userData?.name}</h1>
             <p className="text-gray-600 text-center flex">
               {userData.location ? (
                 <>
@@ -111,25 +107,19 @@ const UserProfile = () => {
               <div className="flex gap-5">
                 <div className="flex items-center gap-1">
                   <div className="font-bold">
-                    {formatNumber(userData?.photoLikes)}
+                    {formatNumber(userData?._count.photos)}
                   </div>
-                  <div>ảnh yêu thích</div>
+                  <div>ảnh</div>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="font-bold">
-                    {formatNumber(userData?.followers)}
+                    {formatNumber(userData?._count.followers)}
                   </div>
                   <div>người theo dõi</div>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="font-bold">
-                    {formatNumber(userData?.photoImpressions)}
-                  </div>
-                  <div>ảnh ấn tượng</div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="font-bold">
-                    {formatNumber(userData?.following)}
+                    {formatNumber(userData?._count.followings)}
                   </div>
                   <div>đang theo dõi</div>
                 </div>

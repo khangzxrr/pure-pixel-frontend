@@ -6,3 +6,48 @@
 .scrollbar-hidden::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+.overflow-x-scrollbar {
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin; /* For Firefox */
+}
+
+.overflow-x-scrollbar::-webkit-scrollbar {
+  height: 6px; /* Adjust scrollbar height */
+}
+
+.overflow-x-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar color */
+  border-radius: 4px; /* Rounded scrollbar */
+}
+
+.overflow-x-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Scrollbar color on hover */
+}
+/* Customize scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #4a4a4a #2f2f2f; /* For Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Adjust the width as needed */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #2f2f2f; /* Background color */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a; /* Thumb color */
+  border-radius: 10px; /* Roundness of the thumb */
+  border: 2px solid #2f2f2f; /* Space around the thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #6b6b6b; /* Color on hover */
+}
+.custom-progress-text .ant-progress-text {
+  color: #ff4d4f; /* Replace with your desired text color */
+}
+/* Customize the border and background color */

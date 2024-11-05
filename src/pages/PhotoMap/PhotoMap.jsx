@@ -1,13 +1,12 @@
 import * as React from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Map, { Marker, Popup } from "react-map-gl";
-import data from "./FakeJson.json";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import useMapboxState from "../../states/UseMapboxState";
 import MapBoxApi from "../../apis/MapBoxApi";
 import { useState, useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN; // Set your mapbox token here
 const getMultiplier = (zoom) => {
@@ -31,6 +30,7 @@ export default function PhotoMap() {
     zoom: 6,
   });
   const navigate = useNavigate(); // Initialize useNavigate
+  const queryClient = useQueryClient(); // Initialize the QueryClient
 
   const {
     data: photos,
@@ -38,7 +38,7 @@ export default function PhotoMap() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["photo-by-coordinates", viewState, limit, page],
+    queryKey: ["photo-by-coordinates", limit, page],
     queryFn: () =>
       MapBoxApi.getPhotoListByCoorddinate(
         page,
@@ -47,6 +47,7 @@ export default function PhotoMap() {
         viewState.latitude,
         viewState.zoom * getMultiplier(viewState.zoom)
       ),
+    keepPreviousData: true, // Add this option to keep previous data while fetching
   });
   const searchByCoordinate = useMutation({
     mutationFn: ({ longitude, latitude }) =>
@@ -105,6 +106,12 @@ export default function PhotoMap() {
 
     console.log("Current Zoom Level:", event); // Log the current zoom level
   };
+
+  const handleMapMoveEnd = (event) => {
+    queryClient.invalidateQueries(["photo-by-coordinates"]);
+
+    console.log("map move end", event); // Log the current zoom level
+  };
   useEffect(() => {
     if (selectedLocate) {
       console.log("Selected Location:", photos?.exif, photos);
@@ -126,6 +133,7 @@ export default function PhotoMap() {
         style={{ width: "100%", height: "100%" }}
         onClick={handleMapClick} // Handle map click
         onMove={(evt) => handleMapMove(evt)}
+        onMoveEnd={(evt) => handleMapMoveEnd(evt)}
       >
         {photos &&
           photos.objects.length > 0 &&

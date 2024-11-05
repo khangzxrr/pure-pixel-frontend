@@ -42,6 +42,7 @@ export default function ChatPage() {
   return (
     <>
       <ChannelList filters={filters} />
+
       <Channel>
         <Window>
           <ChannelHeader />

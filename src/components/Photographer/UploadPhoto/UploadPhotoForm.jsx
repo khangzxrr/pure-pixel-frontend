@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, Select, Tooltip } from "antd";
+import { Button, Checkbox, ConfigProvider, Input, Select, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -6,16 +6,17 @@ import TextArea from "antd/es/input/TextArea";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import { uploadPhotoInputSchema } from "../../../yup/UploadPhotoInput";
 import getDefaultPhoto from "../../../entities/DefaultPhoto";
-import { ExifField } from "./PhotoDataFields";
+import { IoLocationSharp } from "react-icons/io5";
 import { useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../../apis/CategoryApi";
 import TagInputArea from "./TagInputArea";
-import { IoLocationSharp } from "react-icons/io5";
 
 export default function UploadPhotoForm({ selectedPhoto }) {
   const { updatePhotoPropertyByUid, setIsOpenDraftModal, setIsOpenMapModal } =
     useUploadPhotoStore();
   const [categories, setCategories] = useState([]);
+
+  console.log("selectphoto", selectedPhoto);
 
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
@@ -37,11 +38,9 @@ export default function UploadPhotoForm({ selectedPhoto }) {
   } = useForm({
     resolver: yupResolver(uploadPhotoInputSchema),
     defaultValues: getDefaultPhoto(selectedPhoto),
+    mode: "onChange", // Enable validation onChange
+    reValidateMode: "onChange", // Revalidate onChange
   });
-
-  const handleTagChange = (value) => {
-    console.log(`selected ${value}`);
-  };
 
   const onSubmit = async (data) => {
     setIsOpenDraftModal(true);
@@ -53,310 +52,276 @@ export default function UploadPhotoForm({ selectedPhoto }) {
   }, [selectedPhoto, reset]);
 
   return (
-    <div className="px-2 lg:px-6 text-white font-normal lg:text-base text-xs">
+    <div className="px-2 lg:px-6 text-[#d7d7d8] font-normal lg:text-base text-xs">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <p>Tựa đề</p>
-        <Controller
-          name="title"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-full px-2 m-2 border-[1px] lg:text-base text-xs ${
-                errors.title ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="text"
-              placeholder="Enter image title"
-              onChange={(e) => {
-                field.onChange(e);
-                updatePhotoPropertyByUid(
-                  selectedPhoto.file.uid,
-                  "title",
-                  e.target.value
-                );
-              }}
-            />
+        <ConfigProvider
+          theme={{
+            components: {
+              Select: {
+                colorBgContainer: "#292b2f",
+                colorBorder: "#4c4e52",
+                activeBorderColor: "#e0e0e0",
+                colorPrimaryHover: "#e0e0e0",
+                colorPrimary: "#e0e0e0",
+                controlItemBgActive: "#e6f4ff",
+                colorText: "#d7d7d8",
+                colorTextPlaceholder: "#d7d7d8",
+                controlItemBgHover: "rgba(0, 0, 0, 0.04)",
+                fontSize: 14,
+                optionSelectedFontWeight: 400,
+                optionSelectedColor: "black",
+              },
+            },
+          }}
+        >
+          {/* Title Field */}
+          <p>Tựa đề</p>
+          <Controller
+            name="title"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
+                  errors.title ? "border-red-500" : "border-[#4c4e52]"
+                }`}
+                type="text"
+                placeholder="Enter image title"
+                onChange={(e) => {
+                  field.onChange(e);
+                  updatePhotoPropertyByUid(
+                    selectedPhoto.file.uid,
+                    "title",
+                    e.target.value
+                  );
+                }}
+              />
+            )}
+          />
+          {errors.title && (
+            <p className="text-red-500 text-sm p-1">{errors.title.message}</p>
           )}
-        />
-        {errors.title && (
-          <p className=" text-red-500 text-sm p-1">{errors.title.message}</p>
-        )}
-        <p>Mô tả </p>
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <TextArea
-              {...field}
-              className={`w-full p-2 m-2 border-[1px] ${
-                errors.description ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              placeholder="Enter description"
-              onChange={(e) => {
-                field.onChange(e);
-                updatePhotoPropertyByUid(
-                  selectedPhoto.file.uid,
-                  "description",
-                  e.target.value
-                );
-              }}
-            />
+
+          {/* Description Field */}
+          <p>Mô tả</p>
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <TextArea
+                {...field}
+                className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
+                  errors.description ? "border-red-500" : "border-[#4c4e52]"
+                }`}
+                placeholder="Enter description"
+                onChange={(e) => {
+                  field.onChange(e);
+                  updatePhotoPropertyByUid(
+                    selectedPhoto.file.uid,
+                    "description",
+                    e.target.value
+                  );
+                }}
+              />
+            )}
+          />
+          {errors.description && (
+            <p className="text-red-500 text-sm p-1">
+              {errors.description.message}
+            </p>
           )}
-        />
-        {errors.description && (
-          <p className=" text-red-500 text-sm p-1">
-            {errors.description.message}
-          </p>
-        )}
-        <p>Thể loại</p>
-        <Controller
-          name="photoType"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              showSearch
-              placeholder="Select a type"
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={categories}
-              className="w-3/5 max-w-full m-2"
-              onChange={(value) => {
-                field.onChange(value);
-                updatePhotoPropertyByUid(
-                  selectedPhoto.file.uid,
-                  "photoType",
-                  value
-                );
-              }}
-            />
+
+          {/* Category Field */}
+          <p>Thể loại</p>
+          <Controller
+            name="categoryIds"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                mode="multiple" // Enable multiple selection
+                showSearch
+                placeholder="Select types"
+                filterOption={(input, option) =>
+                  (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={categories}
+                className={`w-full max-w-full m-2 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] ${
+                  errors.categoryIds ? "border-red-500" : "border-[#4c4e52]"
+                }`}
+                onChange={(value) => {
+                  field.onChange(value);
+                  updatePhotoPropertyByUid(
+                    selectedPhoto.file.uid,
+                    "categoryIds",
+                    value
+                  );
+                }}
+              />
+            )}
+          />
+          {errors.categoryIds && (
+            <p className="text-red-500 text-sm p-1">
+              {errors.categoryIds.message}
+            </p>
           )}
-        />
-        {errors.type && (
-          <p className=" text-red-500 text-sm p-1">{errors.type.message}</p>
-        )}
-        <p>Gắn thẻ</p>
-        <Controller
-          name="photoTags"
-          control={control}
-          render={({ field }) => (
-            <TagInputArea
-              field={field}
-              updatePhotoPropertyByUid={updatePhotoPropertyByUid}
-              selectedPhoto={selectedPhoto}
-              isError={errors.photoTags}
-            />
+
+          {/* Tags Field */}
+          <p>Gắn thẻ</p>
+          <Controller
+            name="photoTags"
+            control={control}
+            render={({ field }) => (
+              <TagInputArea
+                field={field}
+                updatePhotoPropertyByUid={updatePhotoPropertyByUid}
+                selectedPhoto={selectedPhoto}
+                isError={errors.photoTags}
+                className={`w-full max-w-full m-2 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] ${
+                  errors.photoTags ? "border-red-500" : "border-[#4c4e52]"
+                }`}
+              />
+            )}
+          />
+          {errors.photoTags && (
+            <p className="text-red-500 text-sm p-1">
+              {errors.photoTags.message}
+            </p>
           )}
-        />
-        <p>Vị trí</p>
-        {/* <Controller
-          name="location"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-full px-2 m-2 border-[1px] ${
-                errors.location ? "border-red-500" : "border-[#e0e0e0]"
-              } focus:outline-none focus:border-[#e0e0e0]`}
-              type="text"
-              placeholder="Enter location"
-              onChange={(e) => {
-                field.onChange(e);
-                updatePhotoPropertyByUid(
-                  selectedPhoto.file.uid,
-                  "location",
-                  e.target.value
-                );
-              }}
-            />
-          )}
-        />
-        {errors.location && (
-          <p className=" text-red-500 text-sm p-1">{errors.location.message}</p>
-        )} */}
-        <div className="m-2">
-          <Tooltip
-            title={`${
-              selectedPhoto.address ? "Thay đổi" : "Thêm"
-            } vị trí bức ảnh`}
-            color="volcano"
-            placement="right"
-          >
-            <Button
-              color="default"
-              variant="solid"
-              icon={<IoLocationSharp fontSize={19} color="red" />}
-              onClick={() => setIsOpenMapModal(true)}
+
+          {/* Location Field */}
+          <p>Vị trí</p>
+          <div className="m-2">
+            <Tooltip
+              title={`${
+                selectedPhoto.address ? "Thay đổi" : "Thêm"
+              } vị trí bức ảnh`}
+              color="volcano"
+              placement="right"
             >
-              {selectedPhoto.address ? selectedPhoto.address : "Vị Trí"}
-            </Button>
-          </Tooltip>
-        </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-          {ExifField.map((field) => (
-            <div key={field.name}>
-              <p>{field.placeholder}</p>
+              <Button
+                color="default"
+                variant="solid"
+                icon={<IoLocationSharp fontSize={19} color="red" />}
+                onClick={() => setIsOpenMapModal(true)}
+                className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0]`}
+              >
+                {selectedPhoto.address ? selectedPhoto.address : "Vị Trí"}
+              </Button>
+            </Tooltip>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full mt-1">
+            {/* Visibility Field */}
+            <div>
               <Controller
-                name={field.name}
+                name="visibility"
                 control={control}
-                render={({ field: controllerField }) => (
-                  <Input
-                    {...controllerField}
-                    className={`w-full px-2 m-2 lg:text-base text-xs border-[1px] ${
-                      errors[field.name] ? "border-red-500" : "border-[#e0e0e0]"
-                    } focus:outline-none focus:border-[#e0e0e0]`}
-                    type={field.type}
-                    placeholder={field.placeholder}
-                    onChange={(e) => {
-                      let value = e.target.value;
-                      controllerField.onChange(value);
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    placeholder="Photo privacy"
+                    options={[
+                      { label: "Công khai", value: "PUBLIC" },
+                      { label: "Riêng tư", value: "PRIVATE" },
+                      { label: "Liên kết riêng tư", value: "SHARE_LINK" },
+                    ]}
+                    className={`w-full m-2 ${
+                      errors.visibility ? "border-red-500" : "border-[#4c4e52]"
+                    }`}
+                    onChange={(value) => {
+                      field.onChange(value);
                       updatePhotoPropertyByUid(
                         selectedPhoto.file.uid,
-                        field.name,
+                        "visibility",
                         value
                       );
                     }}
                   />
                 )}
               />
-              {errors[field.name] && (
+              {errors.visibility && (
                 <p className="text-red-500 text-sm p-1">
-                  {errors[field.name].message}
+                  {errors.visibility.message}
                 </p>
               )}
             </div>
-          ))}
-        </div>
-        <div className="flex flex-col w-full mt-1">
-          <div className="flex flex-row w-full">
-            <Controller
-              name="watermark"
-              control={control}
-              render={({ field: controllerField }) => (
-                <Tooltip
-                  placement="left"
-                  color="geekblue"
-                  title={selectedPhoto?.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
-                >
+
+            {/* Exif Field */}
+            <div>
+              <Controller
+                name="showExif"
+                control={control}
+                render={({ field }) => (
                   <Checkbox
-                    {...controllerField}
+                    {...field}
                     className="m-2"
-                    checked={selectedPhoto?.watermark}
+                    checked={field.value}
                     onChange={(e) => {
-                      const checked = e.target.checked;
-                      controllerField.onChange(checked);
+                      field.onChange(e.target.checked);
                       updatePhotoPropertyByUid(
                         selectedPhoto.file.uid,
-                        "watermark",
-                        checked
+                        "showExif",
+                        e.target.checked
                       );
                     }}
                   >
                     <p className="text-white lg:text-sm text-xs my-2">
-                      Thêm Nhãn
+                      Hiện thông số bức ảnh
                     </p>
                   </Checkbox>
-                </Tooltip>
-              )}
-            />
-            {errors.watermark && (
-              <p className="text-red-500 text-sm p-1">
-                {errors.watermark.message}
-              </p>
-            )}
-
-            <div className={selectedPhoto?.watermark ? "visible" : "invisible"}>
-              <Controller
-                name="watermarkContent"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className={`w-full px-2 m-2 border-[1px] lg:text-sm text-xs ${
-                      errors.watermarkContent
-                        ? "border-red-500"
-                        : "border-[#e0e0e0]"
-                    } focus:outline-none focus:border-[#e0e0e0]`}
-                    type="text"
-                    placeholder="Thông tin gắn nhãn"
-                    onChange={(e) => {
-                      field.onChange(e);
-                      updatePhotoPropertyByUid(
-                        selectedPhoto.file.uid,
-                        "watermarkContent",
-                        e.target.value
-                      );
-                    }}
-                  />
                 )}
               />
-              {errors.watermarkContent && (
+              {errors.showExif && (
                 <p className="text-red-500 text-sm p-1">
-                  {errors.watermarkContent.message}
+                  {errors.showExif.message}
+                </p>
+              )}
+            </div>
+
+            {/* Watermark Field */}
+            <div>
+              <Controller
+                name="watermark"
+                control={control}
+                render={({ field: controllerField }) => (
+                  <Tooltip
+                    placement="left"
+                    color="geekblue"
+                    title={selectedPhoto?.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
+                  >
+                    <Checkbox
+                      {...controllerField}
+                      className="m-2"
+                      checked={selectedPhoto?.watermark}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        controllerField.onChange(checked);
+                        updatePhotoPropertyByUid(
+                          selectedPhoto.file.uid,
+                          "watermark",
+                          checked
+                        );
+                      }}
+                    >
+                      <p className="text-white lg:text-sm text-xs my-2">
+                        Thêm Nhãn
+                      </p>
+                    </Checkbox>
+                  </Tooltip>
+                )}
+              />
+              {errors.watermark && (
+                <p className="text-red-500 text-sm p-1">
+                  {errors.watermark.message}
                 </p>
               )}
             </div>
           </div>
-        </div>
-        <Controller
-          name="showExif"
-          control={control}
-          render={({ field }) => (
-            <Checkbox
-              {...field}
-              className="m-2"
-              checked={field.value}
-              onChange={(e) => {
-                field.onChange(e.target.checked);
-                updatePhotoPropertyByUid(
-                  selectedPhoto.file.uid,
-                  "showExif",
-                  e.target.checked
-                );
-              }}
-            >
-              <p className="text-white lg:text-sm text-xs">
-                Hiện thông số bức ảnh
-              </p>
-            </Checkbox>
-          )}
-        />
-        {errors.showExif && (
-          <p className="text-red-500 text-sm p-1">{errors.showExif.message}</p>
-        )}
-        <Controller
-          name="visibility"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              placeholder="Photo privacy"
-              options={[
-                { label: "Công khai", value: "PUBLIC" },
-                { label: "Riêng tư", value: "PRIVATE" },
-                { label: "Liên kết riêng tư", value: "SHARE_LINK" },
-              ]}
-              className="w-5/6 m-2 lg:text-sm text-xs"
-              onChange={(value) => {
-                field.onChange(value);
-                updatePhotoPropertyByUid(
-                  selectedPhoto.file.uid,
-                  "visibility",
-                  value
-                );
-              }}
-            />
-          )}
-        />
-        {errors.visibility && (
-          <p className="text-red-500 text-sm p-1">
-            {errors.visibility.message}
-          </p>
-        )}
-        <div className="h-24"></div>{" "}
+
+          <div className="h-24"></div>
+        </ConfigProvider>
       </form>
     </div>
   );
