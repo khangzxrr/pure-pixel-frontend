@@ -7,9 +7,9 @@ import UseCameraStore from "../../states/UseCameraStore";
 import CameraPopular from "./CameraPopular";
 
 const CameraByBrand = () => {
-  const param = useParams(); // Lấy brandId từ params
+  const { cameraId } = useParams(); // Lấy brandId từ params
   const topCamerasByBrand = 20;
-  const brandId = param.id;
+  const brandId = cameraId;
 
   const setNameCamera = UseCameraStore((state) => state.setNameCamera);
   const brandCamera = UseCameraStore((state) => state.brandCamera);

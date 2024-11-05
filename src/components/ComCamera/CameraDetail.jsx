@@ -6,7 +6,6 @@ import CameraPhoto from "./CameraPhoto";
 import UseCameraStore from "../../states/UseCameraStore";
 
 const CameraDetail = () => {
-  const { id } = useParams();
   const nameCamera = UseCameraStore((state) => state.nameCamera);
   const brandCamera = UseCameraStore((state) => state.brandCamera);
   console.log(nameCamera, brandCamera);

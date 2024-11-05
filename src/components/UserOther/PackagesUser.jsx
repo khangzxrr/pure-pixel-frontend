@@ -6,13 +6,13 @@ import { FaArrowRight } from "react-icons/fa6";
 import { FiCameraOff } from "react-icons/fi";
 
 const PackagesUser = () => {
-  const { id } = useParams();
+  const { userId } = useParams();
   const limit = 10;
 
   const fetchPackages = ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
-    const photographerId = id;
+    const photographerId = userId;
     const response = PhotoshootPackageApi.getPackagesByPhotographerId(
       photographerId,
       validLimit,
@@ -23,7 +23,7 @@ const PackagesUser = () => {
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["packages", id],
+      queryKey: ["packages", userId],
       queryFn: fetchPackages,
       getNextPageParam: (lastPage, pages) => {
         const currentPage = pages.length;

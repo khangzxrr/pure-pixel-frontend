@@ -143,10 +143,10 @@ export const AppRouter = createBrowserRouter([
                 element: <CameraList />,
               },
               {
-                path: ":id",
+                path: ":cameraId",
                 element: <CameraDetail />,
               },
-              { path: "brand/:id", element: <CameraByBrand /> },
+              { path: "brand/:cameraId", element: <CameraByBrand /> },
             ],
           },
 
@@ -185,7 +185,7 @@ export const AppRouter = createBrowserRouter([
                 element: <Navigate to=":id/photos" replace={true} />,
               },
               {
-                path: ":id",
+                path: ":userId",
                 element: <UserProfileV2 />,
                 children: [
                   {

@@ -18,8 +18,8 @@ const CameraPhoto = ({ nameCamera }) => {
   const queryClient = useQueryClient();
   const limit = 20;
   const [selectedImage, setSelectedImage] = useState(null);
-  const { id } = useParams();
-  console.log(id);
+  const { cameraId } = useParams();
+  console.log("cameraId", cameraId);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
@@ -35,14 +35,14 @@ const CameraPhoto = ({ nameCamera }) => {
       null,
       null,
       null,
-      id
+      cameraId
     );
     return response;
   };
 
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["public-photos", id],
+      queryKey: ["public-photos", cameraId],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {
         // Số trang đã fetch
@@ -63,9 +63,9 @@ const CameraPhoto = ({ nameCamera }) => {
     500: 1,
   };
 
-  const handleOnClick = (id) => {
+  const handleOnClick = (photoId) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    setSelectedImage(id);
+    setSelectedImage(photoId);
   };
 
   return (
@@ -74,7 +74,7 @@ const CameraPhoto = ({ nameCamera }) => {
         <DetailedPhotoView
           idImg={selectedImage}
           onClose={() => {
-            navigate(`/camera/${id}`);
+            navigate(`/camera/${cameraId}`);
             setSelectedImage(null);
           }}
           listImg={photoList}

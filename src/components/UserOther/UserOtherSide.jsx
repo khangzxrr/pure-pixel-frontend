@@ -12,7 +12,8 @@ const UserOtherSide = () => {
   const { activeItem, setActiveItem } = UseUserOtherStore();
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
-  const params = useParams();
+  const { userId } = useParams();
+
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
   const handleLogout = () => keycloak.logout();
@@ -29,19 +30,19 @@ const UserOtherSide = () => {
       id: "UO2",
       title: "Hồ sơ",
       icon: <IoPersonSharp />,
-      link: `/user/${params.id}/photos`,
+      link: `/user/${userId}/photos`,
     },
     {
       id: "UO3",
       title: "Các gói dịch vụ",
       icon: <FaCameraRetro />,
-      link: `/user/${params.id}/packages`,
+      link: `/user/${userId}/packages`,
     },
     {
       id: "UO4",
       title: "Các ảnh đang bán",
       icon: <FaMoneyBillWave />,
-      link: `/user/${params.id}/selling`,
+      link: `/user/${userId}/selling`,
     },
   ];
   return (

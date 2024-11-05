@@ -6,7 +6,7 @@ import {
   Image,
   UserCheck,
 } from "lucide-react";
-import React, { useState } from "react"; // Nhập useState để quản lý trạng thái hover
+import React, { useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import PhotographerApi from "../../apis/PhotographerApi";
 import { useQuery } from "@tanstack/react-query";
@@ -15,18 +15,18 @@ import { FaImages } from "react-icons/fa6";
 
 const UserProfileV2 = () => {
   const navigate = useNavigate();
-  const params = useParams();
+  const { userId } = useParams();
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["user", params],
-    queryFn: () => PhotographerApi.getPhotographerById(params.id),
+    queryKey: ["user", userId],
+    queryFn: () => PhotographerApi.getPhotographerById(userId),
   });
+  console.log(data);
 
   const [hoveredIcon, setHoveredIcon] = useState(null); // State để theo dõi icon nào đang được hover
 
   const handleMouseEnter = (icon) => setHoveredIcon(icon);
   const handleMouseLeave = () => setHoveredIcon(null);
-
   return (
     <div className="min-h-screen">
       {/* Seller Profile Header */}

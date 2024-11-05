@@ -13,7 +13,7 @@ import PhotoApi from "../../apis/PhotoApi";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
 
 const PhotosUser = () => {
-  const { id } = useParams();
+  const { userId } = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const limit = 20;
@@ -22,7 +22,7 @@ const PhotosUser = () => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
 
-    const photographerId = id;
+    const photographerId = userId;
     const response = await PhotoApi.getPublicPhotos(
       validLimit,
       validPage,
@@ -40,7 +40,7 @@ const PhotosUser = () => {
   };
   const { data, error, isLoading, isError, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["user-photos", id],
+      queryKey: ["user-photos", userId],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {
         const currentPage = pages.length;
@@ -59,9 +59,9 @@ const PhotosUser = () => {
     700: 2,
     500: 1,
   };
-  const handleOnClick = (id) => {
+  const handleOnClick = (photoId) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    setSelectedImage(id);
+    setSelectedImage(photoId);
   };
   return (
     <>
@@ -69,7 +69,7 @@ const PhotosUser = () => {
         <DetailedPhotoView
           idImg={selectedImage}
           onClose={() => {
-            navigate(`/user/${id}/photos`);
+            navigate(`/user/${userId}/photos`);
             setSelectedImage(null);
           }}
           listImg={photoList}
@@ -111,7 +111,10 @@ const PhotosUser = () => {
                     src={photo.signedUrl.thumbnail}
                     alt={`Photo ${photo.id}`}
                     className="w-full h-auto object-cover"
-                    onClick={() => handleOnClick(photo.id)}
+                    onClick={() => {
+                      handleOnClick(photo.id);
+                      console.log("PtUser", photo.id);
+                    }}
                   />
                   {/* <BlurhashImage
                       src={photo.signedUrl.thumbnail}
