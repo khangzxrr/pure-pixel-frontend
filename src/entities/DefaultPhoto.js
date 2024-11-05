@@ -11,7 +11,7 @@ export default function getDefaultPhoto(photo) {
     location: photo?.location || "",
     originalPhotoUrl: photo?.originalPhotoUrl || "",
     photoTags: photo?.photoTags || [],
-    photoType: photo?.photoType || "",
+    categoryIds: photo?.categoryIds || [],
     photographerId: photo?.photographerId || "",
     showExif: photo?.showExif || "",
     status: photo?.status || "",

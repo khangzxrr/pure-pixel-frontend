@@ -69,9 +69,17 @@ import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
 import SellUpload from "../components/Upload/SellUpload";
 import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageManagement";
 import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
+import BookingPage from "../pages/BookingPage/BookingPage";
+import BookingDetail from "../pages/BookingPage/BookingDetail";
 import { useKeycloak } from "@react-keycloak/web";
 import UserService from "../services/Keycloak";
 import NewfeedPage from "../pages/NewFeed/NewfeedPage";
+import BookingRequestDetail from "../pages/UserProfile/BookingRequestDetail";
+import UserProfileV2 from "../pages/UserProfile/UserProfileV2";
+import UserOther from "../components/UserOther/UserOther";
+import PhotosUser from "../components/UserOther/PhotosUser";
+import PackagesUser from "../components/UserOther/PackagesUser";
+import SellingUser from "../components/UserOther/SellingUser";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -123,6 +131,14 @@ export const AppRouter = createBrowserRouter([
                 path: "photo-map",
                 element: <PhotoMap />,
               },
+              {
+                path: "booking-package",
+                element: <BookingPage />,
+              },
+              {
+                path: "booking-package/:packageId",
+                element: <BookingDetail />,
+              },
             ],
           },
           {
@@ -138,10 +154,10 @@ export const AppRouter = createBrowserRouter([
                 element: <CameraList />,
               },
               {
-                path: ":id",
+                path: ":cameraId",
                 element: <CameraDetail />,
               },
-              { path: "brand/:id", element: <CameraByBrand /> },
+              { path: "brand/:cameraId", element: <CameraByBrand /> },
             ],
           },
 
@@ -172,6 +188,34 @@ export const AppRouter = createBrowserRouter([
             ],
           },
           {
+            path: "user",
+            element: <UserOther />,
+            children: [
+              {
+                path: "",
+                element: <Navigate to=":id/photos" replace={true} />,
+              },
+              {
+                path: ":userId",
+                element: <UserProfileV2 />,
+                children: [
+                  {
+                    path: "photos",
+                    element: <PhotosUser />,
+                  },
+                  {
+                    path: "packages",
+                    element: <PackagesUser />,
+                  },
+                  {
+                    path: "selling",
+                    element: <SellingUser />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
             path: "profile",
             element: <User />,
             children: [
@@ -183,6 +227,7 @@ export const AppRouter = createBrowserRouter([
                 path: "userprofile",
                 element: <UserProfile />,
               },
+
               {
                 path: "my-photos",
                 element: <MyPhotosPage />,
@@ -200,15 +245,16 @@ export const AppRouter = createBrowserRouter([
                 element: <PhotoshootRegistrationTable />,
               },
               {
+                path: "booking-request/:bookingId",
+                element: <BookingRequestDetail />,
+              },
+              {
                 path: "photo-selling",
                 element: <SellerProfile />,
               },
             ],
           },
-          {
-            path: "test_scroll",
-            element: <ScrollingBar />,
-          },
+          {},
           {
             path: "home",
             // element: <BlogList />,

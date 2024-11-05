@@ -91,7 +91,7 @@ const CameraUseChart = () => {
   };
 
   return (
-    <div className="bg-[#2f3136] p-4 w-[90%] h-[400px]">
+    <div className="bg-[#2f3136] p-4 md:w-[90%] w-[380px] h-[400px]">
       <Line data={data} options={options} />
     </div>
   );

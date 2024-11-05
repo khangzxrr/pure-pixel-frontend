@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
@@ -14,6 +18,13 @@ import InsPhotoFilter from "./InsPhotoFilter";
 import { IoMdImages } from "react-icons/io";
 import useMapboxState from "../../../states/UseMapboxState";
 import BlurhashImage from "../../BlurhashImage/BlurhashImage";
+import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
+import UseUserProfileStore from "../../../states/UseUserProfileStore";
+import VoteApi from "./../../../apis/VoteApi";
+import LikeButton from "./../../ComLikeButton/LikeButton";
+import ComModal from "../../ComModal/ComModal";
+import ComSharePhoto from "../../ComSharePhoto/ComSharePhoto";
+import { useModalState } from "../../../hooks/useModalState";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
@@ -24,6 +35,8 @@ const InspirationPhoto = () => {
   const [selectedImage, setSelectedImage] = useState(
     selectedLocate ? selectedLocate.id : null
   );
+  const [selectedPhotoId, setSelectedPhotoId] = useState(null);
+  const [isLiked, setIsLiked] = useState(false);
 
   const selectedPhotoCategory = UseCategoryStore(
     (state) => state.selectedPhotoCategory
@@ -37,13 +50,18 @@ const InspirationPhoto = () => {
   const searchByPhotoTitle = UseCategoryStore(
     (state) => state.searchByPhotoTitle
   );
-
+  const setNamePhotographer = UsePhotographerFilterStore(
+    (state) => state.setNamePhotographer
+  );
+  const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
+  const popupShare = useModalState();
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
     const categoryName = selectedPhotoCategory.name;
     const orderByCreatedAt = filterByPhotoDate.param;
     const orderByUpVote = filterByUpVote.param;
+
     const watermark = isWatermarkChecked;
     const selling = isForSaleChecked;
     const photographerName = searchResult;
@@ -83,9 +101,6 @@ const InspirationPhoto = () => {
       },
     });
 
-  // Merge all pages' results
-  // const photoList = data.pages.flatMap((page) => page.objects);
-
   const photoList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
     : [];
@@ -106,6 +121,17 @@ const InspirationPhoto = () => {
 
   return (
     <>
+      <ComModal
+        isOpen={popupShare.isModalOpen}
+        onClose={popupShare.handleClose}
+        // width={800}
+        // className={"bg-black"}
+      >
+        <ComSharePhoto
+          idImg={selectedPhotoId}
+          onClose={popupShare.handleClose}
+        />
+      </ComModal>
       {selectedImage && (
         <DetailedPhotoView
           idImg={selectedImage}
@@ -145,50 +171,55 @@ const InspirationPhoto = () => {
                   columnClassName="my-masonry-grid_column"
                 >
                   {photoList.map((photo) => (
-                    <div
-                      key={photo.id}
-                      className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
-                    >
-                      {/* <BlurhashImage
-                        src={photo.signedUrl.thumbnail}
-                        height={photo.height}
-                        width={photo.width}
-                        className="w-full h-auto object-cover"
-                        onClick={() => handleOnClick(photo.id)}
-                      /> */}
-                      <img
-                        src={photo.signedUrl.thumbnail}
-                        alt={`Photo ${photo.id}`}
-                        className="w-full h-auto object-cover"
-                        onClick={() => handleOnClick(photo.id)}
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
-                        <div className="flex justify-between w-full px-3">
-                          <div className="flex items-center gap-2">
-                            <div className="size-7 rounded-full overflow-hidden outline outline-1 outline-white">
-                              <img
-                                src={photo.photographer.avatar}
-                                alt=""
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              {photo.photographer.name || "Tên tác giả"}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3">
+                    <>
+                      <div
+                        key={photo.id}
+                        className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
+                      >
+                        <img
+                          src={photo.signedUrl.thumbnail}
+                          alt={`Photo ${photo.id}`}
+                          className="w-full h-auto object-cover"
+                          onClick={() => handleOnClick(photo.id)}
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
+                          <div className="flex justify-between w-full px-3">
                             <div className="flex items-center gap-2">
-                              <FaRegHeart className="size-7" />
-                              {photo._count?.votes || 0}
+                              <div className="size-7 rounded-full overflow-hidden outline outline-1 outline-white">
+                                <img
+                                  src={photo.photographer.avatar}
+                                  alt=""
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div
+                                className="hover:underline cursor-pointer underline-offset-2"
+                                onClick={() => {
+                                  navigate(
+                                    `/user/${photo.photographer.id}/photos`
+                                  );
+                                  setNamePhotographer(photo.photographer.name);
+                                  setActiveTitle(null);
+                                }}
+                              >
+                                {photo.photographer.name || "Tên tác giả"}
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <FiShare2 className="size-7" />
-                              {0}
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2">
+                                <FiShare2
+                                  className="size-7"
+                                  onClick={() => {
+                                    popupShare.handleOpen();
+                                    setSelectedPhotoId(photo.id);
+                                  }}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   ))}
                 </Masonry>
               </div>

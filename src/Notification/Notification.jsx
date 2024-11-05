@@ -28,10 +28,10 @@ export const NotificationProvider = ({ children }) => {
       description:
         typeof description === "string"
           ? capitalizeFirstLetter(description)
-          : description,
-      icon: icon ? icon : "",
-      key: key ? key : "",
-      duration: duration ? (duration === "unlimit" ? 0 : duration) : 3,
+          : description, //can be add react element
+      icon: icon ? icon : "", //can be use another icon
+      key: key ? key : "", //check update notificate by the same key
+      duration: duration ? (duration === "unlimit" ? 0 : duration) : 3, //set the time for notification
     });
   };
 

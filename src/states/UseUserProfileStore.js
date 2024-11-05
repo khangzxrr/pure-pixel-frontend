@@ -18,7 +18,7 @@ const UseUserProfileStore = create((set) => ({
       activeIcon: icon,
       activeQuote: quote,
     })),
-
+  setActiveTitle: (title) => set(() => ({ activeTitle: title })),
   // Clear the active item
   setHoveredItem: (itemId) => set({ hoveredItem: itemId }),
   clearHoveredItem: () => set({ hoveredItem: null }),

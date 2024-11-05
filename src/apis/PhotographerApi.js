@@ -79,10 +79,16 @@ const getMyPhotos = async (
   return response.data;
 };
 
+const getPhotographerById = async (id) => {
+  const response = await http.get(`/photographer/${id}/profile`);
+  return response.data;
+};
+
 const PhotographerApi = {
   getPresignedUploadUrls,
   getAllPhotographers,
   getMyPhotos,
+  getPhotographerById,
 };
 
 export default PhotographerApi;

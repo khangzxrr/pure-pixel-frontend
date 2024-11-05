@@ -6,6 +6,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import UserApi from "../apis/UserApi";
 import UseCameraStore from "../states/UseCameraStore";
+import UsePhotographerFilterStore from "../states/UsePhotographerFilterStore";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -34,6 +35,12 @@ const SidebarLayout = ({
 
   const brandCamera = UseCameraStore((state) => state.brandCamera);
   const setNameCamera = UseCameraStore((state) => state.setNameCamera);
+  const namePhotographer = UsePhotographerFilterStore(
+    (state) => state.namePhotographer
+  );
+  const setNamePhotographer = UsePhotographerFilterStore(
+    (state) => state.setNamePhotographer
+  );
 
   useEffect(() => {
     if (location.pathname.includes("/camera/all")) {
@@ -140,10 +147,12 @@ const SidebarLayout = ({
         <div
           id="main"
           className={`flex flex-col flex-grow h-full relative lg:overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f] ${
-            isSidebarOpen ? `overflow-y-hidden` : `overflow-y-auto`
+            isSidebarOpen
+              ? `overflow-y-hidden`
+              : `overflow-y-auto custom-scrollbar`
           }`}
         >
-          <div className="sticky top-0 px-2 z-20 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
+          <div className="sticky top-0 px-2 z-20 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3  w-full">
             <div className="flex items-center space-x-4">
               <div className="hover:bg-[#4e535e] p-1 rounded-full transition-colors duration-200">
                 <IoMenu
@@ -155,6 +164,7 @@ const SidebarLayout = ({
               <div className="flex gap-2 items-center lg:items-end">
                 <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
                   <div className="text-2xl">{activeIcon}</div>
+
                   <div className="hidden 2xl:block">
                     {brandCamera || activeTitle}
                   </div>
@@ -168,7 +178,7 @@ const SidebarLayout = ({
               ></div>
             )}
           </div>
-          <Outlet />
+          <div className="min-h-screen"><Outlet /></div>
           {/* Nút cuộn lên đầu trang */}
           {isVisible && (
             <button

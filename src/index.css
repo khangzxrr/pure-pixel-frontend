@@ -85,7 +85,7 @@ code {
   height: 8px; /* Chiều cao của thanh cuộn ngang */
 }
 .ant-table-body::-webkit-scrollbar-thumb {
-  background-color: #888; /* Màu của thanh cuộn */
+  background-color: #fff; /* Màu của thanh cuộn */
 }
 
 .ant-table-container {
@@ -95,7 +95,7 @@ code {
 }
 
 .ant-table-body::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* Màu nền của thanh cuộn */
+  background-color: #888; /* Màu nền của thanh cuộn */
 }
 .ant-table-content {
   background-color: blue !important;
@@ -124,4 +124,32 @@ code {
 }
 .custom-steps .ant-steps-item-process .ant-steps-icon {
   color: rgba(255, 255, 255, 0.88) !important;
+}
+
+/* Custom the default scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #4a4a4a #2f2f2f; /* For Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Adjust the width as needed */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #2f2f2f; /* Background color */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a; /* Thumb color */
+  border-radius: 10px; /* Roundness of the thumb */
+  border: 2px solid #2f2f2f; /* Space around the thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #6b6b6b; /* Color on hover */
+}
+
+.ant-table-wrapper .ant-table {
+  background-color: #ffffff00;
 }

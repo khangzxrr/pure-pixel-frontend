@@ -1,9 +1,7 @@
 import http from "../configs/Http";
 
 const getUserProfileById = async (id) => {
-  const response = await http.get(
-    `me?id=${id}&transactions=false&upgradeOrders=false`
-  );
+  const response = await http.get(`/me`);
 
   return response.data;
 };

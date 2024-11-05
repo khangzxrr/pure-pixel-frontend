@@ -7,38 +7,56 @@ import { FaClipboard } from "react-icons/fa";
 import { useNotification } from "./../../Notification/Notification";
 import { useState } from "react";
 import { getData, postData } from "./../../apis/api";
+import { useKeycloak } from "@react-keycloak/web";
 export default function ComSharePhoto({ idImg, onClose }) {
   const { notificationApi } = useNotification();
+  const { keycloak } = useKeycloak();
   const [linkShare, setLinkShare] = useState(null);
+  const [loading, setLoading] = useState(1);
+  const [AvailableResolutions, setAvailableResolutions] = useState([]);
   const handleChange = (value) => {
     console.log(`selected ${value}`);
     callApiShare(value);
   };
-  const callApiShare = (value) => {
-    setLinkShare(null);
-    postData(`/photo/share`, {
-      photoId: idImg,
-      resolution: value,
-    })
+  useEffect(() => {
+    getData(`photo/${idImg}`)
       .then((e) => {
-        console.log("====================================");
-        console.log(e.shareUrl);
-        console.log("====================================");
-        setLinkShare(e.shareUrl);
+        if (e.data.photographer.id === keycloak?.tokenParsed?.sub || null) {
+          setLoading(2);
+          getData(`photo/${idImg}/available-resolution`)
+            .then((e) => {
+              setAvailableResolutions(e.data);
+              console.log(e.data);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          setLoading(3);
+        }
       })
       .catch((error) => {
         console.log(error);
-        setLinkShare(null);
       });
+  }, []);
+
+  const callApiShare = (value) => {
+    setLinkShare(null);
+    if (value) {
+      postData(`/photo/share`, {
+        photoId: idImg,
+        size: value,
+      })
+        .then((e) => {
+          setLinkShare(e.shareUrl);
+        })
+        .catch((error) => {
+          console.log(error);
+          setLinkShare(null);
+        });
+    }
   };
-
-
-  const AvailableResolutions = useQuery({
-    queryKey: ["getAvailableResolutionsByPhotoId", idImg],
-    queryFn: () => PhotoApi.getAvailableResolutionsByPhotoId(idImg),
-  });
-
-  console.log(AvailableResolutions);
+  console.log("loading", loading);
 
   const baseURL = window.location.origin;
   const copyToClipboard = () => {
@@ -52,15 +70,25 @@ export default function ComSharePhoto({ idImg, onClose }) {
         console.error("Failed to copy link: ", err);
       });
   };
-  const resolutionOptions = AvailableResolutions?.data?.map((res) => ({
-    value: res.resolution,
-    label: res.resolution,
+  const resolutionOptions = AvailableResolutions?.map((res) => ({
+    value: res,
+    label: res,
   }));
-    useEffect(() => {
-      try {
-        callApiShare(resolutionOptions[0]?.value);
-      } catch (error) {}
-    }, [AvailableResolutions?.data]);
+  console.log(resolutionOptions);
+  console.log(4444, AvailableResolutions);
+
+  useEffect(() => {
+    try {
+      if (resolutionOptions != []) {
+        console.log(11111, resolutionOptions);
+        console.log(22222, resolutionOptions[0]);
+
+        callApiShare(resolutionOptions[0]);
+      }
+    } catch (error) {}
+  }, [AvailableResolutions]);
+  console.log(resolutionOptions[0]?.value);
+  
   return (
     <div className="bg-white text-gray-800 py-8 px-1 max-w-md mx-auto">
       <div className="flex items-center justify-between mb-4">
@@ -69,9 +97,8 @@ export default function ComSharePhoto({ idImg, onClose }) {
           <Info size={20} />
         </button>
       </div>
-      {AvailableResolutions?.isLoadingError ? (
-        <Skeleton active />
-      ) : AvailableResolutions?.data ? (
+      {loading === 1 && <Skeleton active />}
+      {loading === 2 && (
         <>
           <h3 className="text-lg font-semibold mb-2">Lựa chọn </h3>
           <div className="flex items-center justify-between bg-gray-100 p-3 rounded-md mb-6">
@@ -81,7 +108,8 @@ export default function ComSharePhoto({ idImg, onClose }) {
             </div>
             <div className="flex items-center">
               <Select
-                defaultValue={resolutionOptions[0].value}
+                // value={resolutionOptions[0]?.value}
+                placeholder="Chất lượng"
                 variant="borderless"
                 style={{
                   width: 120,
@@ -109,7 +137,8 @@ export default function ComSharePhoto({ idImg, onClose }) {
             </button>
           </div>
         </>
-      ) : (
+      )}
+      {loading === 3 && (
         <>
           <div className="flex items-center justify-between bg-gray-100 p-3 rounded-md mb-6">
             <span className="text-gray-800 font-mono mr-2 overflow-hidden whitespace-nowrap text-ellipsis">
