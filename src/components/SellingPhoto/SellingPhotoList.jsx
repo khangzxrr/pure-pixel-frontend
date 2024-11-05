@@ -1,5 +1,9 @@
 import { useKeycloak } from "@react-keycloak/web";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UseSellingPhotoStore from "../../states/UseSellingPhotoStore";
@@ -12,175 +16,138 @@ import { FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { IoMdImages } from "react-icons/io";
 import BlurhashImage from "../BlurhashImage/BlurhashImage";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 const SellingPhotoList = () => {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const limit = 20; // Tổng số ảnh
+  const itemsPerPage = 9; // Tổng số ảnh
+  const [page, setPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
-  const isForSellingPhoto = UseSellingPhotoStore(
-    (state) => state.isForSellingPhoto
-  );
-  const selling = isForSellingPhoto;
-  const categoryName = "";
-  const orderByCreatedAt = "";
-  const orderByUpVote = "";
-  const watermark = false;
-  const photographerName = "";
-  const title = "";
-  const fetchPhotos = async ({ pageParam = 0 }) => {
-    const validLimit = Math.max(1, Math.min(limit, 9999));
-    const validPage = Math.max(0, Math.min(pageParam, 9999));
-    const response = await PhotoApi.getPublicPhotos(
-      validLimit,
-      validPage,
-      categoryName,
-      orderByCreatedAt,
-      orderByUpVote,
-      watermark,
-      selling,
-      photographerName,
-      title
-    );
-    return response;
+
+  const selling = true;
+
+  const { data, isLoading, isError, error, isFetching } = useQuery({
+    queryKey: ["public-photos-selling", page],
+    queryFn: () =>
+      PhotoApi.getPublicPhotos(
+        itemsPerPage,
+        page - 1,
+        null,
+        null,
+        null,
+        null,
+        selling,
+        null,
+        null,
+        null,
+        null
+      ),
+    keepPreviousData: true,
+  });
+  const totalPages = data?.totalPage || 1;
+  const handlePageClick = (pageNumber) => {
+    if (pageNumber !== page) {
+      setPage(pageNumber);
+    }
   };
-  const { data, isLoading, isError, error, fetchNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ["public-photos", isForSellingPhoto],
-      queryFn: fetchPhotos,
-      getNextPageParam: (lastPage, pages) => {
-        if (!lastPage || lastPage.totalPage === undefined) {
-          // Nếu không tìm thấy lastPage hoặc totalPage, không tải thêm trang nữa
-          return undefined;
-        }
-        // Số trang đã fetch
-        const currentPage = pages.length;
-        // Trả về số trang tiếp theo nếu còn ảnh
-        return currentPage < lastPage.totalPage ? currentPage : undefined;
-      },
-    });
-  const photoList = data?.pages
-    ? data.pages.flatMap((page) => page.objects)
-    : [];
-  const breakpointColumnsObj = {
-    default: 4,
-    1100: 3,
-    700: 2,
-    500: 1,
+  const formatPrice = (price) => {
+    return price > 0
+      ? price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ"
+      : "Chưa có giá";
   };
   const handleOnClick = (id) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     setSelectedImage(id);
-    // navigate(`/photo/${id}`, { state: { listImg: photoList } });
   };
   return (
-    <>
-      {selectedImage && (
-        <DetailedPhotoView
-          idImg={selectedImage}
-          onClose={() => {
-            navigate(`/explore/selling`);
-            setSelectedImage(null);
-          }}
-          listImg={photoList}
-        />
-      )}
-
+    <div className="h-screen">
       <div>
-        {/* <div className="font-normal flex mx-3 my-2 items-center flex-col sm:flex-row">
-          Bộ lọc ảnh: <InsPhotoFilter />
-        </div> */}
-        <div>
-          {isLoading && (
-            <div className="flex justify-center mt-4">
+        {data?.objects.length > 0 ? (
+          <div className="flex justify-center gap-2 mx-5 my-2">
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              (pageNumber) => (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageClick(pageNumber)}
+                  className={`px-3 py-1 rounded ${
+                    page === pageNumber
+                      ? "bg-[#eee] text-gray-600"
+                      : "bg-gray-600 text-white"
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              )
+            )}
+          </div>
+        ) : (
+          ""
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 pb-4">
+          {isFetching && (
+            <div className="flex justify-center items-center col-span-3 h-[200px]">
               <LoadingSpinner />
             </div>
           )}
-          {isError && (
-            <div className="text-center text-red-500">Lỗi: {error.message}</div>
-          )}
+          {data?.objects.length > 0 ? (
+            data.objects.map((photo) => {
+              const prices =
+                photo.photoSellings?.flatMap(
+                  (selling) =>
+                    selling.pricetags?.map((pricetag) => pricetag.price) || []
+                ) || [];
 
-          {!isLoading && !isError && photoList.length > 0 ? (
-            <InfiniteScroll
-              dataLength={photoList.length}
-              next={fetchNextPage}
-              hasMore={hasNextPage}
-              scrollThreshold={0.8}
-              scrollableTarget="inspiration"
-              loader={
-                <div className="flex justify-center mt-4">
-                  <LoadingSpinner />
-                </div>
-              }
-              endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
-            >
-              <div className="p-[5px]">
-                <Masonry
-                  breakpointCols={breakpointColumnsObj}
-                  className="my-masonry-grid"
-                  columnClassName="my-masonry-grid_column"
+              const highestPrice = prices.length > 0 ? Math.max(...prices) : 0;
+              const lowestPrice = prices.length > 0 ? Math.min(...prices) : 0;
+
+              return (
+                <div
+                  key={photo.id}
+                  className="relative group hover:cursor-pointer "
                 >
-                  {photoList.map((photo) => (
-                    <div
-                      key={photo.id}
-                      className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
-                    >
-                      <img
-                        src={photo.signedUrl.thumbnail}
-                        alt={`Photo ${photo.id}`}
-                        className="w-full h-auto object-cover"
-                        onClick={() => handleOnClick(photo.id)}
-                      />
-                      {/* <BlurhashImage
-                        src={photo.signedUrl.thumbnail}
-                        height={photo.height}
-                        width={photo.width}
-                        className="w-full h-auto object-cover"
-                        onClick={() => handleOnClick(photo.id)}
-                      /> */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
-                        <div className="flex justify-between w-full px-3">
-                          <div className="flex items-center gap-2">
-                            <div className="size-7 rounded-full overflow-hidden outline outline-1 outline-white">
-                              <img
-                                src={photo.photographer.avatar}
-                                alt=""
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              {photo.photographer.name || "Tên tác giả"}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2">
-                              <FaRegHeart className="size-7" />
-                              {photo._count?.votes || 0}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <FiShare2 className="size-7" />
-                              {0}
-                            </div>
-                          </div>
-                        </div>
+                  <div
+                    onClick={() =>
+                      navigate(`/explore/product-photo/${photo.id}`)
+                    }
+                    className="h-[320px] overflow-hidden rounded-lg"
+                  >
+                    <img
+                      className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+                      src={photo.signedUrl.thumbnail} // Cần thêm URL của ảnh
+                      alt={photo.title || "Ảnh"}
+                    />
+                  </div>
+                  <div className="absolute bottom-0 left-0 w-full rounded-b-lg bg-black bg-opacity-50 text-white text-center py-2 transition-opacity duration-300 backdrop-blur-md">
+                    <div className="flex justify-between px-1">
+                      {photo.title || "Không xác định"}
+                      <div className="">
+                        {lowestPrice === highestPrice ? (
+                          <span>{formatPrice(highestPrice)}</span>
+                        ) : (
+                          <span className="flex gap-2 items-center">
+                            {formatPrice(lowestPrice)} <FaArrowRightLong />{" "}
+                            {formatPrice(highestPrice)}
+                          </span>
+                        )}
                       </div>
                     </div>
-                  ))}
-                </Masonry>
-              </div>
-            </InfiniteScroll>
+                  </div>
+                </div>
+              );
+            })
           ) : (
-            <div className="flex justify-center items-center  h-[90vh] ">
+            <div className="flex justify-center items-center w-full col-span-5 h-[200px]">
               <div className="flex flex-col items-center text-[#8b8d91]">
-                <IoMdImages className="text-[100px] " />
+                <IoMdImages className="text-[100px]" />
                 <p className="select-none">Không tìm thấy ảnh khả dụng!</p>
               </div>
             </div>
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

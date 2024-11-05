@@ -9,14 +9,14 @@ import PhotoApi from "../../apis/PhotoApi";
 import { FaArrowRightLong } from "react-icons/fa6";
 
 const SellingUser = () => {
-  const { id } = useParams();
+  const { userId } = useParams();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 9;
 
   const selling = true;
   const { data, isFetching, isError, error } = useQuery({
-    queryKey: ["selling-user", page, id],
+    queryKey: ["selling-user", page, userId],
     queryFn: () =>
       PhotoApi.getPublicPhotos(
         itemsPerPage,
@@ -28,7 +28,7 @@ const SellingUser = () => {
         selling,
         null,
         null,
-        id,
+        userId,
         null
       ),
     keepPreviousData: true,
@@ -95,7 +95,10 @@ const SellingUser = () => {
                 key={photo.id}
                 className="relative group hover:cursor-pointer "
               >
-                <div className="h-[320px] overflow-hidden rounded-lg">
+                <div
+                  onClick={() => navigate(`/user/product-photo/${photo.id}`)}
+                  className="h-[320px] overflow-hidden rounded-lg"
+                >
                   <img
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
                     src={photo.signedUrl.thumbnail} // Cần thêm URL của ảnh
