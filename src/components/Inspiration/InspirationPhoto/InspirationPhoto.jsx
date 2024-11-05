@@ -144,7 +144,7 @@ const InspirationPhoto = () => {
         />
       )}
 
-      <div className="">
+      <div className="min-h-screen">
         <div>
           {isLoading && (
             <div className="flex justify-center mt-4">
