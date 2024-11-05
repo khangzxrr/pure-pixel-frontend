@@ -1,4 +1,5 @@
 import * as exifr from "exifr";
+import { notificationApi } from "../Notification/Notification";
 
 // Define EXIF parsing options
 const exifOptions = {
@@ -25,8 +26,39 @@ const exifOptions = {
 
 // Function to extract EXIF data from a file (returns a Promise)
 
-const getExifData = (file) => {
-  return exifr.parse(file, exifOptions);
+const getExifData = async (file) => {
+  console.log("getExifData called with file:", file);
+
+  try {
+    // Ensure the file type is supported before parsing
+    if (file.type !== "image/jpeg" && file.type !== "image/png") {
+      console.error("Unsupported file type:", file.type);
+      throw new Error(
+        "Unsupported file format. Only JPEG and PNG are supported."
+      );
+    }
+
+    // Attempt to parse EXIF data
+    const exifData = await exifr.parse(file, exifOptions);
+    console.log("EXIF data parsed successfully:", exifData);
+
+    return exifData;
+  } catch (error) {
+    console.log("Error stack:", error.stack);
+    if (error.message === "Unknown file format") {
+      notificationApi(
+        "error",
+        "Tải ảnh lên thất bại",
+        "Ảnh bạn chọn không phải ảnh gốc hợp lệ",
+        "",
+        0,
+        "upload-photo-dragger-error"
+      );
+
+      return false;
+    }
+    return null;
+  }
 };
 
 const validateExifData = (exifData) => {

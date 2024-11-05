@@ -140,7 +140,9 @@ const SidebarLayout = ({
         <div
           id="main"
           className={`flex flex-col flex-grow h-full relative lg:overflow-y-auto scrollbar scrollbar-width: thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f] ${
-            isSidebarOpen ? `overflow-y-hidden` : `overflow-y-auto`
+            isSidebarOpen
+              ? `overflow-y-hidden`
+              : `overflow-y-auto custom-scrollbar`
           }`}
         >
           <div className="sticky top-0 px-2 z-20 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">

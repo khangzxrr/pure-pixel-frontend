@@ -5,7 +5,7 @@ const initPhotoIdHashMap = {};
 const initUiHashMap = {};
 const initPhotoArray = [];
 
-const useUploadPhotoStore = create(
+const useBookingPhotoStore = create(
   devtools((set, get) => ({
     photoIdHashmap: initPhotoIdHashMap,
     uidHashmap: initUiHashMap,
@@ -39,8 +39,6 @@ const useUploadPhotoStore = create(
       });
     },
     updatePhotoPropertyByUid: (uid, key, value) => {
-      console.log("");
-
       set((state) => {
         const index = state.uidHashmap[uid];
 
@@ -102,7 +100,7 @@ const useUploadPhotoStore = create(
     },
     setPhotoUploadResponse: (uid, response) =>
       set((state) => {
-        console.log("setPhotoUploadResponse", uid, response);
+        console.log(response);
 
         const index = state.uidHashmap[uid];
         state.photoIdHashmap[response.id] = index;
@@ -144,7 +142,7 @@ const useUploadPhotoStore = create(
 
         updatedPhotoArray.forEach((photo, idx) => {
           newUidHashmap[photo.file.uid] = idx;
-          // newPhotoIdHashmap[photo.signedUpload.photoId] = idx;
+          newPhotoIdHashmap[photo.signedUpload.photoId] = idx;
         });
 
         // Set selectedPhoto as the first element in the newUidHashmap
@@ -216,7 +214,7 @@ const useUploadPhotoStore = create(
     },
 
     isPhotoExistByUid: (uid) => {
-      const state = useUploadPhotoStore.getState();
+      const state = useBookingPhotoStore.getState();
       return state.photoArray.some((photo) => photo.uid === uid);
     },
 
@@ -293,4 +291,4 @@ const useUploadPhotoStore = create(
   }))
 );
 
-export default useUploadPhotoStore;
+export default useBookingPhotoStore;

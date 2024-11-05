@@ -18,15 +18,21 @@ export default function UploadPhoto() {
   const photoData = getPhotoByUid(selectedPhoto);
 
   return (
-    <div className="h-screen overflow-hidden ">
-      <div className="flex flex-col h-[95%] overflow-hidden">
-        <div className="flex flex-col w-full h-full overflow-hidden">
-          <div className={`flex ${photoArray.length > 0 ? "h-1/3" : "h-1/2"}`}>
+    <div className="h-screen">
+      <div className="flex flex-col h-[95vh]">
+        <div className="flex flex-col w-full h-full">
+          <div
+            className={`flex ${
+              photoArray.some((photo) => photo.status === "done")
+                ? "h-1/4 lg:h-1/3"
+                : "h-1/2"
+            }`}
+          >
             <CustomUpload />
           </div>
-          {photoArray.length > 0 && (
-            <div className="w-full h-2/3 flex overflow-hidden">
-              <div className="w-2/3 h-full bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden">
+          {photoArray.some((photo) => photo.status === "done") && (
+            <div className="grid grid-cols-1 md:grid-cols-10 gap-4 h-3/4 lg:h-2/3 bg-[#2f3136]">
+              <div className="col-span-10 md:col-span-4 h-full bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden">
                 {photoArray.length > 1 && (
                   <>
                     <div
@@ -50,7 +56,7 @@ export default function UploadPhoto() {
                 />
               </div>
 
-              <div className="w-1/3 h-full px-3 bg-[#2f3136] overflow-hidden">
+              <div className="col-span-10 md:col-span-6 h-full overflow-hidden">
                 <UploadPhotoInfoBar />
               </div>
             </div>

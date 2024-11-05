@@ -26,10 +26,37 @@ const handleRequestByPhotographer = async (bookingId, type) => {
   );
   return response.data;
 };
+const getBookingDetail = async (bookingId) => {
+  const response = await http.get(`/photographer/booking/${bookingId}`);
+  return response.data;
+};
+const uploadBookingPhoto = async (bookingId, file, onUploadProgress) => {
+  //FUCK AXIOS
+  //waste me 2 hour just for a fucking upload feature???
+  //using the RAW axios instead of modified one, or you will get CORS
+  //
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await http.post(
+    `/photographer/booking/${bookingId}/upload`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress,
+    }
+  );
+
+  return response.data;
+};
 const PhotoShootApi = {
   getPhotoShootPackageById,
   getBookingByCustomer,
   requestBookingByCustomer,
   handleRequestByPhotographer,
+  getBookingDetail,
+  uploadBookingPhoto,
 };
 export default PhotoShootApi;

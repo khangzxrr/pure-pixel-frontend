@@ -1,43 +1,20 @@
-import { Checkbox, message, Progress, Spin, Tooltip } from "antd";
+import { Checkbox, message, Progress, Tooltip } from "antd";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import { DeleteOutlined } from "@ant-design/icons"; // Ensure you have this import
+import { DeleteOutlined } from "@ant-design/icons";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNotification } from "../../../Notification/Notification";
-
-function truncateString(str, num) {
-  if (str.length <= num) {
-    return str;
-  }
-  return str.slice(0, num) + "...";
-}
-const getAspectRatio = (url) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-      const aspectRatio = img.width / img.height;
-      resolve(aspectRatio);
-    };
-    img.onerror = (error) => {
-      reject(error);
-    };
-  });
-};
+import "./UploadPhoto.css";
 export default function PhotoCard({ photo }) {
   const {
     setSelectedPhotoByUid,
-    getPhotoByUid,
     removePhotoByUid,
     removePhotoById,
     updatePhotoPropertyByUid,
     selectedPhoto,
   } = useUploadPhotoStore();
   const { notificationApi } = useNotification();
-  const [displayTitle, setDisplayTitle] = useState("Untitled");
-
-  // const photoData = getPhotoByUid(photo.file.uid);
 
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
@@ -45,84 +22,77 @@ export default function PhotoCard({ photo }) {
 
   const handleRemove = (photo) => {
     if (photo.response) {
+      console.log("deletephoto", photo);
+
       try {
         deletePhoto.mutateAsync(
           { id: photo.response.id },
           {
             onSuccess: () => {
-              notificationApi(
-                "success",
-                "Xóa ảnh thành công",
-                "Bạn đã xóa ảnh thành công",
-                "",
-                0,
-                "delete-photo",
-              );
               removePhotoById(photo.response.id);
-              // Additional logic to handle the successful deletion of the photo
             },
             onError: (error) => {
-              console.log("Error deleting photo", error);
-
-              message.error("Chưa thể xóa ảnh"); // Additional logic to handle the successful deletion of the photo
-              // Additional logic to handle the error
+              message.error("Chưa thể xóa ảnh");
             },
-          },
+          }
         );
       } catch (error) {
-        console.log("Error deleting photo", error);
         message.error("Chưa thể xóa ảnh");
       }
     } else {
       removePhotoByUid(photo.file.uid);
     }
   };
+
   const handleSelect = () => {
     setSelectedPhotoByUid(photo.file.uid);
   };
 
-  useEffect(() => {
-    const fetchAspectRatio = async () => {
-      if (photo?.reviewUrl) {
-        try {
-          const ratio = await getAspectRatio(photo.reviewUrl);
-          if (ratio < 1) {
-            setDisplayTitle(truncateString(photo.title, 10));
-          } else {
-            setDisplayTitle(truncateString(photo.title, 20));
-          }
-        } catch (error) {
-          console.error("Error loading image:", error);
-        }
-      }
-    };
-
-    fetchAspectRatio();
-  }, [photo]);
-
   return (
-    <div className="relative h-56 flex-shrink-0 p-2">
-      <img
-        src={photo?.reviewUrl}
-        className={`h-3/4 w-full object-cover rounded-md cursor-pointer ${
-          photo.file.uid === selectedPhoto
-            ? "border-4 border-white transition duration-300"
-            : ""
-        }`}
-        alt="Ban Thao"
-        onClick={() => handleSelect(photo)}
-      />
-      <p className="text-slate-300 font-semibold text-center overflow-hidden">
-        {displayTitle}
-      </p>
-      {photo.status !== "parsed" && (
-        <div
-          className={`absolute m-1 h-48 inset-0   ${
+    <div className="relative grid grid-rows-2 p-2">
+      <div className="lg:w-[200px] lg:h-[150px] w-[180px] h-[135px]">
+        <img
+          src={photo?.reviewUrl}
+          className={`w-full h-full object-cover rounded-md cursor-pointer ${
             photo.file.uid === selectedPhoto
-              ? " bg-gray-300 opacity-80 hover:opacity-70 "
-              : " bg-gray-500 opacity-70 hover:opacity-80 "
-          } z-10 flex flex-col items-center justify-center rounded-lg cursor-pointer `}
-          onClick={() => handleSelect(photo)}
+              ? "border-4 border-white transition duration-300"
+              : ""
+          }`}
+          alt="Photo"
+          onClick={handleSelect}
+        />
+        <div className="flex justify-between">
+          <p className="text-slate-300 pr-4 font-semibold text-center overflow-hidden whitespace-nowrap text-ellipsis">
+            {photo.title}
+          </p>
+          <div className=" bottom-3 right-3 z-20">
+            <Tooltip
+              placement="topRight"
+              color="geekblue"
+              title={photo.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
+            >
+              <Checkbox
+                onChange={(e) => {
+                  updatePhotoPropertyByUid(
+                    photo.file.uid,
+                    "watermark",
+                    e.target.checked
+                  );
+                }}
+                checked={photo.watermark}
+              />
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+      {photo.status !== "done" && (
+        <div
+          className={`absolute inset-0 grid place-items-center ${
+            photo.file.uid === selectedPhoto
+              ? "bg-gray-300 opacity-80 hover:opacity-70"
+              : "bg-gray-500 opacity-70 hover:opacity-80"
+          } z-10 rounded-lg`}
+          onClick={handleSelect}
         >
           <Progress type="circle" percent={photo.percent} size={60} />
           <p className="text-blue-500">
@@ -131,41 +101,17 @@ export default function PhotoCard({ photo }) {
         </div>
       )}
 
-      <>
-        <div className="h-8 w-8 absolute top-2 right-2 flex justify-center items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md   rounded-full">
-          <Tooltip title="Delete Photo">
-            <DeleteOutlined
-              className="text-white text-xl cursor-pointer hover:text-red-500"
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent triggering the parent onClick
-                handleRemove(photo);
-              }}
-            />
-          </Tooltip>
-        </div>
-
-        <div className="h-4 w-4  absolute bottom-16 right-3 flex justify-center items-center z-20">
-          <div className="absolute">
-            <Tooltip
-              placement="topRight"
-              color="geekblue"
-              title={photo.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
-            >
-              <Checkbox
-                onChange={(e) => {
-                  console.log("Checkbox onChange", e.target.checked);
-                  updatePhotoPropertyByUid(
-                    photo.file.uid,
-                    "watermark",
-                    e.target.checked,
-                  );
-                }}
-                checked={photo.watermark}
-              />
-            </Tooltip>
-          </div>
-        </div>
-      </>
+      <div className="absolute top-3 right-3 flex items-center z-10 p-2  rounded-xl hover:bg-opacity-80 bg-opacity-30 bg-gray-200">
+        <Tooltip title="Xóa ảnh">
+          <DeleteOutlined
+            className="text-white text-xl hover:text-red-500 cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRemove(photo);
+            }}
+          />
+        </Tooltip>
+      </div>
     </div>
   );
 }

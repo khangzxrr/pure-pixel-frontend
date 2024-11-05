@@ -74,6 +74,7 @@ import BookingDetail from "../pages/BookingPage/BookingDetail";
 import { useKeycloak } from "@react-keycloak/web";
 import UserService from "../services/Keycloak";
 import NewfeedPage from "../pages/NewFeed/NewfeedPage";
+import BookingRequestDetail from "../pages/UserProfile/BookingRequestDetail";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -208,6 +209,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "booking-request",
                 element: <PhotoshootRegistrationTable />,
+              },
+              {
+                path: "booking-request/:bookingId",
+                element: <BookingRequestDetail />,
               },
               {
                 path: "photo-selling",

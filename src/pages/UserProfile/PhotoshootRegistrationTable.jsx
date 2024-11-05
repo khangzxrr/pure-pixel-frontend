@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, message, Avatar } from "antd";
+import { Typography, message, Avatar, ConfigProvider } from "antd";
 import ComDateConverter from "../../components/ComDateConverter/ComDateConverter";
 import ComMenuButonTable from "../../components/ComMenuButonTable/ComMenuButonTable";
 import { getData } from "../../apis/api";
@@ -8,6 +8,8 @@ import useColumnFilters from "../../components/ComTable/utils";
 import { useTableState } from "../../hooks/useTableState";
 import { useMutation } from "@tanstack/react-query";
 import PhotoShootApi from "../../apis/PhotoShootApi";
+import { useNavigate } from "react-router-dom";
+import "./UserProfile.css";
 
 function formatCurrency(number) {
   if (typeof number === "number") {
@@ -24,9 +26,17 @@ function formatCurrency(number) {
     return number;
   }
 }
-
+const customTheme = {
+  components: {
+    Table: {
+      rowHoverBg: "#f0f0f0",
+    },
+  },
+};
 export default function PhotoshootRegistrationTable() {
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
+
   const { getColumnSearchProps, getColumnApprox, getColumnPriceRangeProps } =
     useColumnFilters();
   const table = useTableState();
@@ -164,6 +174,11 @@ export default function PhotoshootRegistrationTable() {
       title: "Thao tác",
       key: "operation",
       width: "10%",
+      onCell: () => ({
+        onClick: (e) => {
+          e.stopPropagation(); // Prevents the default row click event
+        },
+      }),
       render: (_, record) => (
         <div style={{ textAlign: "center" }}>
           {record.status === "REQUESTED" ? (
@@ -221,16 +236,27 @@ export default function PhotoshootRegistrationTable() {
   }, []);
 
   return (
-    <div className="p-4 flex w-[80vw]">
-      <ComTable
-        x={"60vw"}
-        y={"90vh"}
-        columns={columns}
-        dataSource={data}
-        loading={table.loading}
-        rowKey="id"
-        // scroll={{ x: 1500, y: 500 }}
-      />
-    </div>
+    <ConfigProvider theme={customTheme}>
+      <div className="p-4 flex w-[80vw]">
+        <ComTable
+          x={"60vw"}
+          y={"90vh"}
+          columns={columns}
+          dataSource={data}
+          loading={table.loading}
+          rowKey="id"
+          // scroll={{ x: 1500, y: 500 }}
+          rowClassName={(record, index) => {
+            // Add a specific class to each row
+            return "hover-row";
+          }}
+          onRow={(record) => ({
+            onClick: () => {
+              navigate(`/profile/booking-request/${record.id}`);
+            },
+          })}
+        />
+      </div>
+    </ConfigProvider>
   );
 }
