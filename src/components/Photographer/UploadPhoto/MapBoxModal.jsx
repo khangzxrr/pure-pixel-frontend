@@ -27,6 +27,30 @@ export default function MapBoxModal() {
   });
   const sessionToken = uuidv4(); // Generate a session token
 
+  // Get user's current location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setViewState((prev) => ({
+            ...prev,
+            latitude,
+            longitude,
+          }));
+          if (!selectedLocate) {
+            setSelectedLocate({ latitude, longitude });
+          }
+        },
+        (error) => {
+          console.error("Error getting current location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
   // Update viewState whenever selectedLocate changes
   useEffect(() => {
     if (selectedLocate) {
@@ -67,6 +91,7 @@ export default function MapBoxModal() {
       updatePhotoPropertyByUid(selectedPhoto, "address", selectedLocate.title);
     }
     setIsOpenMapModal(false);
+    //
   };
 
   const handleCancel = () => {
