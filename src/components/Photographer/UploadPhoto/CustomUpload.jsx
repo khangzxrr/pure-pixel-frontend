@@ -162,9 +162,8 @@ export default function CustomUpload() {
     const exif = await PhotoService.getExifData(file);
 
     console.log("exif", exif);
-    const isValidExif = PhotoService.validateExifData(exif);
 
-    console.log("true false", isJpgOrPng && isLt150M && isValidExif);
+    console.log("true false", isJpgOrPng && isLt150M);
 
     if (!isJpgOrPng) {
       notificationApi(
@@ -193,8 +192,8 @@ export default function CustomUpload() {
       return false;
     }
 
-    console.log("isValidExif", isValidExif, exif);
-    if (!isValidExif || exif === undefined) {
+    console.log("isValidExif", exif);
+    if (exif === undefined) {
       notificationApi(
         "error",
         "Tải ảnh lên thất bại",
