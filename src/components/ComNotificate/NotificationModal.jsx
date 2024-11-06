@@ -1,19 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NotificationApi from "../../apis/NotificationApi";
 import { useQuery } from "@tanstack/react-query";
-import { notification } from "antd";
 import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
-
-const notifications = [
-  { id: 1, name: "PurePixel" },
-  { id: 2, name: "John Doe" },
-  { id: 3, name: "Jane Smith" },
-  { id: 4, name: "Alice Johnson Alice Johnson Alice Johnson" },
-  { id: 5, name: "Bob Brown" },
-  { id: 6, name: "Bob Brown" },
-  { id: 7, name: "Bob Brown" },
-  { id: 8, name: "Bob Brown" },
-];
 
 const NotificationModal = ({ isOpen, onClose }) => {
   const [showModal, setShowModal] = useState(false);

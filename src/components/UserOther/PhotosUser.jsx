@@ -11,6 +11,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
 import PhotoApi from "../../apis/PhotoApi";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
+import { useModalState } from "../../hooks/useModalState";
+import ComModal from "../ComModal/ComModal";
+import ComSharePhoto from "../ComSharePhoto/ComSharePhoto";
 
 const PhotosUser = () => {
   const { userId } = useParams();
@@ -18,6 +21,8 @@ const PhotosUser = () => {
   const navigate = useNavigate();
   const limit = 20;
   const [selectedImage, setSelectedImage] = useState(null);
+  const popupShare = useModalState();
+  const [selectedPhotoId, setSelectedPhotoId] = useState(null);
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
@@ -65,6 +70,17 @@ const PhotosUser = () => {
   };
   return (
     <>
+      <ComModal
+        isOpen={popupShare.isModalOpen}
+        onClose={popupShare.handleClose}
+        // width={800}
+        // className={"bg-black"}
+      >
+        <ComSharePhoto
+          idImg={selectedPhotoId}
+          onClose={popupShare.handleClose}
+        />
+      </ComModal>
       {selectedImage && (
         <DetailedPhotoView
           idImg={selectedImage}
@@ -132,12 +148,13 @@ const PhotosUser = () => {
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
-                          <FaRegHeart className="size-7" />
-                          {photo._count?.votes || 0}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <FiShare2 className="size-7" />
-                          {0}
+                          <FiShare2
+                            className="size-7"
+                            onClick={() => {
+                              popupShare.handleOpen();
+                              setSelectedPhotoId(photo.id);
+                            }}
+                          />
                         </div>
                       </div>
                     </div>
