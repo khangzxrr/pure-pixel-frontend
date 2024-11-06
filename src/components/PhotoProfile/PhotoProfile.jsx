@@ -15,8 +15,8 @@ const PhotoProfile = ({ userData }) => {
     cacheTime: 300000,
   });
 
-  const PhotoTotal = data?._count.photos;
-  const FollowerCount = data?._count.followers;
+  const PhotoTotal = data?._count?.photos;
+  const FollowerCount = data?._count?.followers;
   const UserAvarta = data?.avatar;
   const quotaTotal = data?.maxPhotoQuota;
   const quotaUsed = data?.photoQuotaUsage;
