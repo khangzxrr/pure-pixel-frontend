@@ -107,19 +107,19 @@ const UserProfile = () => {
               <div className="flex gap-5">
                 <div className="flex items-center gap-1">
                   <div className="font-bold">
-                    {formatNumber(userData?._count.photos)}
+                    {formatNumber(userData?._count?.photos)}
                   </div>
                   <div>ảnh</div>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="font-bold">
-                    {formatNumber(userData?._count.followers)}
+                    {formatNumber(userData?._count?.followers)}
                   </div>
                   <div>người theo dõi</div>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="font-bold">
-                    {formatNumber(userData?._count.followings)}
+                    {formatNumber(userData?._count?.followings)}
                   </div>
                   <div>đang theo dõi</div>
                 </div>
