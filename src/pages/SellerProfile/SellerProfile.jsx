@@ -44,8 +44,7 @@ const SellerProfile = () => {
       getData(`/me`)
         .then((data) => {
           setDataUser(data?.data);
-          console.log(666,data);
-          
+          console.log(666, data);
         })
         .catch((error) => {
           console.log(error);
@@ -59,7 +58,6 @@ const SellerProfile = () => {
           console.log(error);
         });
     }
- 
   }, [id]);
   return (
     <div className=" min-h-screen">
@@ -105,7 +103,9 @@ const SellerProfile = () => {
           {products.map((product) => (
             <div
               key={product.id}
-              onClick={()=>{navigate(`/explore/product-photo/${product.id}`);}}
+              onClick={() => {
+                navigate(`/profile/product-photo/${product.id}`);
+              }}
               className="rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer"
             >
               <img

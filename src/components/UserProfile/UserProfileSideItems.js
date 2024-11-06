@@ -1,6 +1,13 @@
 import { IoPersonSharp } from "react-icons/io5";
 import { IoMdPhotos } from "react-icons/io";
-import { FaWallet, FaImages, FaCameraRetro, FaClipboardList, FaMoneyBillTransfer } from "react-icons/fa";
+import {
+  FaWallet,
+  FaImages,
+  FaCameraRetro,
+  FaClipboardList,
+  FaMoneyBillTransfer,
+} from "react-icons/fa";
+import { BiMoneyWithdraw } from "react-icons/bi";
 
 const UserProfileSideItems = [
   {
@@ -16,16 +23,22 @@ const UserProfileSideItems = [
     link: "/profile/my-photos",
   },
   {
-    id: "transaction",
-    link: "wallet",
-    title: "Ví",
-    icon: <FaWallet className="text-3xl" />, // Icon ví
+    id: "MyPhotosSelling",
+    title: "Ảnh đã mua",
+    icon: <BiMoneyWithdraw />, // Icon ảnh
+    link: "/profile/photos-bought",
   },
   {
     id: "photo",
     link: "photo-selling",
     title: "Ảnh bán",
     icon: <FaImages className="text-3xl" />, // Icon ảnh bán
+  },
+  {
+    id: "transaction",
+    link: "wallet",
+    title: "Ví",
+    icon: <FaWallet className="text-3xl" />, // Icon ví
   },
   {
     id: "booking",

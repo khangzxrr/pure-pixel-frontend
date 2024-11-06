@@ -48,24 +48,8 @@ const ListPhotographers = () => {
       .flatMap((page) => page.objects)
       .filter((photographer) => photographer.id !== userId) || [];
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="text-center text-red-500">
-        Không thể tải danh sách đang theo dõi: {error.message}
-      </div>
-    );
-  }
-
   return (
-    <div id="" className="flex flex-col px-2 py-1">
+    <div id="" className="flex flex-col px-2 py-1 h-screen">
       <div className="text-center my-2">
         <div className="text-xl font-bold">Bạn chưa theo dõi ai cả</div>
         <div className="font-normal">
@@ -86,15 +70,23 @@ const ListPhotographers = () => {
         scrollableTarget="inspiration"
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-6 py-3 "
       >
-        {photographers.map((photographer) => (
-          <PhotographerCard
-            key={photographer.id}
-            id={photographer.id}
-            name={photographer.name}
-            avatar={photographer.avatar}
-            quote={photographer.quote}
-          />
-        ))}
+        {isLoading && (
+          <div className="flex justify-center col-span-4">
+            <LoadingSpinner />
+          </div>
+        )}
+        {isError && <div>{error.message}</div>}
+        {!isLoading &&
+          !isError &&
+          photographers.map((photographer) => (
+            <PhotographerCard
+              key={photographer.id}
+              id={photographer.id}
+              name={photographer.name}
+              avatar={photographer.avatar}
+              quote={photographer.quote}
+            />
+          ))}
       </InfiniteScroll>
     </div>
   );

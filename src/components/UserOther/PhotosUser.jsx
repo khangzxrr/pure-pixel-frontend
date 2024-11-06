@@ -11,18 +11,23 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
 import PhotoApi from "../../apis/PhotoApi";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
+import { useModalState } from "../../hooks/useModalState";
+import ComModal from "../ComModal/ComModal";
+import ComSharePhoto from "../ComSharePhoto/ComSharePhoto";
 
 const PhotosUser = () => {
-  const { id } = useParams();
+  const { userId } = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const limit = 20;
   const [selectedImage, setSelectedImage] = useState(null);
+  const popupShare = useModalState();
+  const [selectedPhotoId, setSelectedPhotoId] = useState(null);
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
 
-    const photographerId = id;
+    const photographerId = userId;
     const response = await PhotoApi.getPublicPhotos(
       validLimit,
       validPage,
@@ -40,7 +45,7 @@ const PhotosUser = () => {
   };
   const { data, error, isLoading, isError, fetchNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ["user-photos", id],
+      queryKey: ["user-photos", userId],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {
         const currentPage = pages.length;
@@ -59,17 +64,28 @@ const PhotosUser = () => {
     700: 2,
     500: 1,
   };
-  const handleOnClick = (id) => {
+  const handleOnClick = (photoId) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    setSelectedImage(id);
+    setSelectedImage(photoId);
   };
   return (
     <>
+      <ComModal
+        isOpen={popupShare.isModalOpen}
+        onClose={popupShare.handleClose}
+        // width={800}
+        // className={"bg-black"}
+      >
+        <ComSharePhoto
+          idImg={selectedPhotoId}
+          onClose={popupShare.handleClose}
+        />
+      </ComModal>
       {selectedImage && (
         <DetailedPhotoView
           idImg={selectedImage}
           onClose={() => {
-            navigate(`/user/${id}/photos`);
+            navigate(`/user/${userId}/photos`);
             setSelectedImage(null);
           }}
           listImg={photoList}
@@ -111,7 +127,10 @@ const PhotosUser = () => {
                     src={photo.signedUrl.thumbnail}
                     alt={`Photo ${photo.id}`}
                     className="w-full h-auto object-cover"
-                    onClick={() => handleOnClick(photo.id)}
+                    onClick={() => {
+                      handleOnClick(photo.id);
+                      console.log("PtUser", photo.id);
+                    }}
                   />
                   {/* <BlurhashImage
                       src={photo.signedUrl.thumbnail}
@@ -129,12 +148,13 @@ const PhotosUser = () => {
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
-                          <FaRegHeart className="size-7" />
-                          {photo._count?.votes || 0}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <FiShare2 className="size-7" />
-                          {0}
+                          <FiShare2
+                            className="size-7"
+                            onClick={() => {
+                              popupShare.handleOpen();
+                              setSelectedPhotoId(photo.id);
+                            }}
+                          />
                         </div>
                       </div>
                     </div>

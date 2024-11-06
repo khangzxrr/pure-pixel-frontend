@@ -80,6 +80,8 @@ import UserOther from "../components/UserOther/UserOther";
 import PhotosUser from "../components/UserOther/PhotosUser";
 import PackagesUser from "../components/UserOther/PackagesUser";
 import SellingUser from "../components/UserOther/SellingUser";
+import PhotosBought from "../components/PhotoBought/PhotosBought";
+import PhotoBoughtDetail from "../components/PhotoBought/PhotoBoughtDetail";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -111,10 +113,7 @@ export const AppRouter = createBrowserRouter([
                 path: "shop-profile/:id",
                 element: <SellerProfile />,
               },
-              {
-                path: "product-photo/:id",
-                element: <ProductPhotoDetail />,
-              },
+
               {
                 path: "hot",
                 element: <HotPhoto />,
@@ -139,6 +138,10 @@ export const AppRouter = createBrowserRouter([
                 path: "booking-package/:packageId",
                 element: <BookingDetail />,
               },
+              {
+                path: "product-photo/:id",
+                element: <ProductPhotoDetail />,
+              },
             ],
           },
           {
@@ -154,10 +157,14 @@ export const AppRouter = createBrowserRouter([
                 element: <CameraList />,
               },
               {
-                path: ":id",
+                path: ":cameraId",
                 element: <CameraDetail />,
               },
-              { path: "brand/:id", element: <CameraByBrand /> },
+              { path: "brand/:cameraId", element: <CameraByBrand /> },
+              {
+                path: "product-photo/:id",
+                element: <ProductPhotoDetail />,
+              },
             ],
           },
 
@@ -193,10 +200,10 @@ export const AppRouter = createBrowserRouter([
             children: [
               {
                 path: "",
-                element: <Navigate to=":id/photos" replace={true} />,
+                element: <Navigate to="photos" replace={true} />,
               },
               {
-                path: ":id",
+                path: ":userId",
                 element: <UserProfileV2 />,
                 children: [
                   {
@@ -212,6 +219,10 @@ export const AppRouter = createBrowserRouter([
                     element: <SellingUser />,
                   },
                 ],
+              },
+              {
+                path: "product-photo/:id",
+                element: <ProductPhotoDetail />,
               },
             ],
           },
@@ -251,6 +262,18 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "photo-selling",
                 element: <SellerProfile />,
+              },
+              {
+                path: "photos-bought",
+                element: <PhotosBought />,
+              },
+              {
+                path: "photo-bought/:boughtId",
+                element: <PhotoBoughtDetail />,
+              },
+              {
+                path: "product-photo/:id",
+                element: <ProductPhotoDetail />,
               },
             ],
           },
