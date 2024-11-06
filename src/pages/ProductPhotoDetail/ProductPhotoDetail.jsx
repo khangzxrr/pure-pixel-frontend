@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getData, postData } from "../../apis/api";
 import { message } from "antd";
 import UserService from "../../services/Keycloak";
@@ -21,9 +21,9 @@ const ProductPhotoDetail = () => {
   const { keycloak } = useKeycloak();
   const handleLogin = () => keycloak.login();
   const userData = UserService.getTokenParsed();
-
+  const navigate = useNavigate();
   const reload = () => {
-        getData(`photo/${id}`)
+    getData(`photo/${id}`)
       .then((response) => {
         setData(response.data);
 
@@ -39,9 +39,9 @@ const ProductPhotoDetail = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }
+  };
   useEffect(() => {
-reload()
+    reload();
   }, [id]);
 
   useEffect(() => {
@@ -61,6 +61,7 @@ reload()
               clearInterval(intervalId);
               setTimeout(() => {
                 modal?.handleClose();
+                navigate(`/profile/photos-bought`);
               }, 1000);
             } else if (status === "FAILED") {
               setPaymentStatus("FAILED");
