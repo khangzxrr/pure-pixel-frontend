@@ -91,6 +91,7 @@ export default function MapBoxModal() {
       updatePhotoPropertyByUid(selectedPhoto, "address", selectedLocate.title);
     }
     setIsOpenMapModal(false);
+    //
   };
 
   const handleCancel = () => {
