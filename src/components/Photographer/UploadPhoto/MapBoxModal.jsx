@@ -39,7 +39,11 @@ export default function MapBoxModal() {
             longitude,
           }));
           if (!selectedLocate) {
-            setSelectedLocate({ latitude, longitude });
+            setSelectedLocate({
+              latitude,
+              longitude,
+              title: "Vị trí hiện tại của bạn",
+            });
           }
         },
         (error) => {
