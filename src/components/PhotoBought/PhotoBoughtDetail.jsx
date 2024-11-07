@@ -30,7 +30,13 @@ const PhotoBoughtDetail = () => {
     return <div>Loading...</div>;
   }
 
-  return <PhotoBoughtPreviewComponent photo={photoData} sizeList={sizeList} />;
+  return (
+    <PhotoBoughtPreviewComponent
+      photo={photoData}
+      sizeList={sizeList}
+      photoBoughtId={boughtId}
+    />
+  );
 };
 
 export default PhotoBoughtDetail;

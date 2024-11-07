@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import formatPrice from "./../../utils/FormatPriceUtils";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
+import PhotoExchange from "../../apis/PhotoExchange";
 
-const PhotoBoughtPreviewComponent = ({ photo, sizeList }) => {
+const PhotoBoughtPreviewComponent = ({ photo, sizeList, photoBoughtId }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [previewPhoto, setPreviewPhoto] = useState(photo.signedUrl.thumbnail);
 
@@ -19,46 +20,45 @@ const PhotoBoughtPreviewComponent = ({ photo, sizeList }) => {
     setPreviewPhoto(pricetagEqualSize.preview);
   };
 
-  const handleDownload = async () => {};
-  // const handleDownload = async () => {
-  //   if (selectedSize) {
-  //     try {
-  //       const data = await PhotoExchange.getPhotoBoughtDetailDownload(
-  //         boughtId,
-  //         selectedSize.id
-  //       );
+  const handleDownload = async () => {
+    if (selectedSize) {
+      try {
+        const data = await PhotoExchange.getPhotoBoughtDetailDownload(
+          photoBoughtId,
+          selectedSize.id
+        );
 
-  //       // Tạo link tải về từ dữ liệu nhận được
-  //       const href = URL.createObjectURL(data);
+        // Tạo link tải về từ dữ liệu nhận được
+        const href = URL.createObjectURL(data);
 
-  //       // Tạo tên file động (dùng `selectedSize` hoặc thông tin từ `data`)
-  //       const fileName = `${photoTitle}-${
-  //         selectedSize.photoSellHistory.size + `px`
-  //       }.jpg`; // Hoặc có thể thay đổi thành định dạng khác nếu cần
+        // Tạo tên file động (dùng `selectedSize` hoặc thông tin từ `data`)
+        const fileName = `${photo.title}-${
+          selectedSize.photoSellHistory.size + `px`
+        }.jpg`; // Hoặc có thể thay đổi thành định dạng khác nếu cần
 
-  //       // Tạo phần tử <a> và tự động click để tải
-  //       const link = document.createElement("a");
-  //       link.href = href;
-  //       link.setAttribute("download", fileName); // Sử dụng tên file động
-  //       document.body.appendChild(link);
-  //       link.click();
+        // Tạo phần tử <a> và tự động click để tải
+        const link = document.createElement("a");
+        link.href = href;
+        link.setAttribute("download", fileName); // Sử dụng tên file động
+        document.body.appendChild(link);
+        link.click();
 
-  //       // Dọn dẹp bộ nhớ và phần tử <a>
-  //       document.body.removeChild(link);
-  //       URL.revokeObjectURL(href);
-  //     } catch (error) {
-  //       console.error("Error downloading file:", error);
-  //       alert("Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.");
-  //     }
-  //   } else {
-  //     alert("Vui lòng chọn một kích thước trước khi tải ảnh.");
-  //   }
-  // };
+        // Dọn dẹp bộ nhớ và phần tử <a>
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+        alert("Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.");
+      }
+    } else {
+      alert("Vui lòng chọn một kích thước trước khi tải ảnh.");
+    }
+  };
 
   return (
     <div className="">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-[#292b2f] h-screen">
-        <div className="flex items-center justify-center   max-h-[95vh] w-full overflow-hidden bg-black col-span-2">
+      <div className="flex flex-col  ">
+        <div className="flex items-center justify-center p-4  col-span-2 bg-[#202225]">
           <img src={previewPhoto} alt="" className="" />
         </div>
 
@@ -69,9 +69,21 @@ const PhotoBoughtPreviewComponent = ({ photo, sizeList }) => {
             </div>
 
             <div className="font-normal">{photo.description}</div>
-            <div className="font-normal"></div>
+            <div className="font-normal flex items-center gap-2">
+              Mua từ:{" "}
+              <span className="font-semibold flex items-center gap-2">
+                <div className="size-[20px] bg-[#eee] overflow-hidden rounded-full">
+                  <img
+                    src={photo.photographer.avatar}
+                    alt=""
+                    className="size-full object-cover"
+                  />
+                </div>{" "}
+                {photo.photographer.name}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 ">
             <div className="text-xl">Chọn kích thước để tải:</div>
             <div className="flex flex-wrap gap-2">
               <ul className="grid w-full gap-6 md:grid-cols-3">
@@ -88,7 +100,7 @@ const PhotoBoughtPreviewComponent = ({ photo, sizeList }) => {
                     />
                     <label
                       htmlFor={`size-${size.id}`}
-                      className="inline-flex items-center justify-center w-full py-2 text-[#eee] rounded-full cursor-pointer bg-[#1f2937]    peer-checked:text-black peer-checked:bg-[#eee] "
+                      className="inline-flex items-center justify-center  py-2 text-[#eee] rounded-full cursor-pointer bg-[#1f2937]    peer-checked:text-black peer-checked:bg-[#eee] "
                     >
                       <div className="block">
                         <div className="w-full text-lg font-semibold">
@@ -133,19 +145,6 @@ const PhotoBoughtPreviewComponent = ({ photo, sizeList }) => {
                       selectedSize.userToUserTransaction.fromUserTransaction
                         .paymentMethod
                     }
-                  </span>
-                </div>
-                <div className="font-normal flex items-center gap-2">
-                  Mua từ:{" "}
-                  <span className="font-semibold flex items-center gap-2">
-                    <div className="size-[20px] bg-[#eee] overflow-hidden rounded-full">
-                      <img
-                        src={photo.photographer.avatar}
-                        alt=""
-                        className="size-full object-cover"
-                      />
-                    </div>{" "}
-                    {photo.photographer.name}
                   </span>
                 </div>
               </div>
