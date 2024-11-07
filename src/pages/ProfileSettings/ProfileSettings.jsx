@@ -37,8 +37,6 @@ export default function ProfileSettings() {
   return (
     <div className="min-h-screen bg-[#36393f] text-gray-200 p-6">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Profile Settings</h1>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="bg-gray-700 p-4 rounded-lg">
             <h2 className="text-sm font-semibold mb-2">Avatar</h2>
