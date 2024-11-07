@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getData, postData } from "../../apis/api";
 import { message } from "antd";
 import UserService from "../../services/Keycloak";
@@ -8,7 +8,44 @@ import { useModalState } from "./../../hooks/useModalState";
 import { ChevronLeft } from "lucide-react";
 import ComPriceConverter from "./../../components/ComPriceConverter/ComPriceConverter";
 import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
-
+import DetailUser from "../DetailUser/DetailUser";
+import {Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import ComReport from "../../components/ComReport/ComReport";
+function calculateTimeFromNow(dateString) {
+  const startDate = new Date(dateString);
+  const now = new Date();
+  const diffInMilliseconds = now.getTime() - startDate.getTime();
+  const diffInDays = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
+  const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+  const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
+  if (!diffInMinutes) {
+    return ``;
+  }
+  if (diffInDays >= 1) {
+    return `${diffInDays} ngày`;
+  } else if (diffInHours >= 1) {
+    return `${diffInHours} giờ`;
+  } else {
+    if (diffInMinutes < 0) {
+      return `0 phút`;
+    }
+    return `${diffInMinutes} phút`;
+  }
+}
+const Icon = ({ children, className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className={`h-5 w-5 ${className}`}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {children}
+  </svg>
+);
 const ProductPhotoDetail = () => {
   const [data, setData] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -21,9 +58,12 @@ const ProductPhotoDetail = () => {
   const { keycloak } = useKeycloak();
   const handleLogin = () => keycloak.login();
   const userData = UserService.getTokenParsed();
+  const navigate = useNavigate();
+  const popup = useModalState();
+  const popupReport = useModalState();
 
   const reload = () => {
-        getData(`photo/${id}`)
+    getData(`photo/${id}`)
       .then((response) => {
         setData(response.data);
 
@@ -39,9 +79,9 @@ const ProductPhotoDetail = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }
+  };
   useEffect(() => {
-reload()
+    reload();
   }, [id]);
 
   useEffect(() => {
@@ -61,6 +101,7 @@ reload()
               clearInterval(intervalId);
               setTimeout(() => {
                 modal?.handleClose();
+                navigate(`/profile/photos-bought`);
               }, 1000);
             } else if (status === "FAILED") {
               setPaymentStatus("FAILED");
@@ -82,7 +123,8 @@ reload()
   if (!data) {
     return <div className="min-h-screen text-white p-8">Loading...</div>;
   }
-
+  console.log(data);
+  
   const photoSelling =
     data.photoSellings && data.photoSellings.length > 0
       ? data.photoSellings[0]
@@ -159,38 +201,116 @@ reload()
   };
 
   return (
-    <div className="min-h-screen text-white p-8">
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
-        <div className="lg:w-2/3">
-          <div className="bg-gray-800 p-4 rounded-lg">
+    <div className="min-h-screen text-white p-8 ">
+      <div className=" mx-auto flex flex-col lg:flex-row gap-8">
+        <div className="lg:w-2/3 flex items-center bg-[#505050]  ">
+          <div className=" p-4 rounded-lg">
             <img
               src={data.signedUrl.url}
               alt={data.title}
-              className="w-full h-auto rounded-lg"
+              className="w-full h-auto border-4 border-black "
             />
           </div>
         </div>
+        {popup.isModalOpen && (
+          <div className="fixed inset-0 flex items-stretch justify-between z-50 overflow-y-auto">
+            <div
+              className="w-full h-auto bg-[rgba(0,0,0,0.5)]"
+              onClick={popup.handleClose}
+            ></div>
+            <div className="w-[700px]">
+              <DetailUser id={data.photographer.id} data={data?.photographer} />
+            </div>
+          </div>
+        )}
         <div className="lg:w-1/3">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center space-x-3">
+              <img
+                src={data.photographer.avatar}
+                alt="GueM"
+                onClick={popup.handleOpen}
+                className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
+              />
+              <div>
+                <h2
+                  className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
+                  onClick={popup.handleOpen}
+                >
+                  {data.photographer.name}
+                </h2>
+                <p className="text-sm text-gray-400">
+                  {calculateTimeFromNow(data?.createdAt)}
+                </p>
+              </div>
+            </div>
+            <div className="flex">
+              <Menu as="div" className="relative">
+                <MenuButton className="-m-1.5 flex items-center p-1.5">
+                  <button className="hover:text-gray-400">
+                    <Icon>
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="19" cy="12" r="1" />
+                      <circle cx="5" cy="12" r="1" />
+                    </Icon>
+                  </button>
+                </MenuButton>
+                <MenuItems
+                  transition
+                  className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                >
+                  <MenuItem>
+                    <button
+                      onClick={() => {}}
+                      className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                    >
+                      Lưu bài viết
+                    </button>
+                  </MenuItem>
+
+                  <MenuItem>
+                    <button
+                      onClick={() => {
+                        popupReport.handleOpen();
+                      }}
+                      className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                    >
+                      Báo cáo bài viết
+                    </button>
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+            </div>
+          </div>
+          {popupReport.isModalOpen && (
+            <ComReport
+              onclose={popupReport.handleClose}
+              tile="Báo cáo ảnh bán"
+              id={data?.id}
+              // reportType =USER, PHOTO, BOOKING, COMMENT;
+              reportType={"PHOTO"}
+            />
+          )}
           <div>
-            <h1 className="text-2xl font-bold mb-2">{data.title}</h1>
-            <h1 className="text-xl font-bold mb-2 mt-4">Chi tiết:</h1>
-            <h1 className="text-lg font-bold mb-2">
-              {photoSelling.description}
-            </h1>
+            <h1 className="text-2xl font-medium mb-2">{data.title}</h1>
+            <h1 className="text-xl mb-2 mt-4">Chi tiết:</h1>
+            <h1 className="text-lg mb-2">{photoSelling.description}</h1>
           </div>
 
-          <p className="text-3xl font-bold mb-2">{price.toLocaleString()}Đ</p>
+          <p className="text-3xl font-semibold mb-2">
+            {price.toLocaleString()}Đ
+          </p>
 
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">Kích thước</h2>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 px-3">
               {sizes.map((size) => (
                 <button
                   key={size}
-                  className={`px-4 py-2 rounded-full ${
+                  className={`px-4 py-2 rounded-full w-[80px] h-[80px] ${
                     selectedSize === size
-                      ? "bg-white text-gray-900"
-                      : "bg-gray-700 text-white"
+                      ? "bg-[#292b2f] text-white border-2 border-white "
+                      : "bg-[#292b2f] text-white border-2 border-[#292b2f]"
                   }`}
                   onClick={() => handleSizeChange(size)}
                 >

@@ -156,7 +156,8 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
           // className={"bg-black"}
         >
           <ComSharePhoto
-            idImg={selectedImage}
+            photoId={selectedImage}
+            userId={getPhotoById.data?.photographer.id}
             onClose={popupShare.handleClose}
           />
         </ComModal>
@@ -188,11 +189,11 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                 <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" />
               </Icon>
             </button>
-            <div className="flex  justify-center">
+            <div className="flex  justify-center items-center  h-screen">
               <img
                 src={getPhotoById?.data?.signedUrl?.url}
                 alt="Traunfall waterfall"
-                className="w-auto h-screen object-cover "
+                className="w-auto h-auto max-h-screen"
               />
             </div>
             {prevId && (
