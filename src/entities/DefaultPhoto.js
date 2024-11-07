@@ -19,7 +19,7 @@ export default function getDefaultPhoto(photo) {
     title: photo?.title || "",
     updatedAt: photo?.updatedAt || "",
     visibility: photo?.visibility || "",
-    watermark: photo?.watermark || "",
+    watermark: photo?.watermark || false,
     watermarkContent: photo?.watermarkContent || "",
     watermarkPhotoUrl: photo?.watermarkPhotoUrl || "",
     watermarkThumbnailPhotoUrl: photo?.watermarkThumbnailPhotoUrl || "",
