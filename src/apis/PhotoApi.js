@@ -72,8 +72,6 @@ const getPhotoTags = async ({ top }) => {
 };
 
 const uploadPhoto = async (file, onUploadProgress) => {
-  //FUCK AXIOS
-  //waste me 2 hour just for a fucking upload feature???
   //using the RAW axios instead of modified one, or you will get CORS
   //
   const formData = new FormData();
@@ -100,7 +98,6 @@ const updatePhotos = async (photo) => {
   return response;
 };
 
-export { updatePhotos };
 const addWatermark = async (photo) => {
   const res = await http.post(`/photo/${photo.photoId}/watermark`, {
     text: photo.text,

@@ -17,6 +17,7 @@ import { MdDateRange } from "react-icons/md";
 import { ConfigProvider, Pagination, Tooltip } from "antd";
 import { motion } from "framer-motion";
 import UpdateDropdown from "./UpdateDropdown";
+import { thumbnail } from "exifr";
 
 const MyPhotoP = () => {
   const navigate = useNavigate();
@@ -264,7 +265,24 @@ const MyPhotoP = () => {
                     onClick={() => handleOnClick(photo.id)}
                   />
                 </div>
-                <UpdateDropdown photoId={photo.id} />
+                <UpdateDropdown
+                  photo={{
+                    id: photo.id,
+                    watermark: photo.watermark,
+                    title: photo.title,
+                    description: photo.description,
+                    visibility: photo.visibility,
+                    categories: photo.categories,
+                    photoTags: photo.photoTags,
+                    exif: photo.exif,
+                    gps: {
+                      longitute: photo.exif.longitude,
+                      latitude: photo.exif.latitude,
+                    },
+                    originalPhotoUrl: photo.signedUrl.url,
+                    thumbnailPhotoUrl: photo.signedUrl.thumbnail,
+                  }}
+                />
                 <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-md">
                   <div className="flex justify-between px-1">
                     {photo.title?.length > 20

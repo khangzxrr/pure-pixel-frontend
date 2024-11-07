@@ -86,7 +86,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   errors.title ? "border-red-500" : "border-[#4c4e52]"
                 }`}
                 type="text"
-                placeholder="Enter image title"
+                placeholder="Nhập tựa đề cho ảnh"
                 onChange={(e) => {
                   field.onChange(e);
                   updatePhotoPropertyByUid(

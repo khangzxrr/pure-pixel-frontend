@@ -5,12 +5,19 @@ import UserService from "../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
 import UpgradeToPtg from "../components/PhotoProfile/UpgradeToPtg";
 import { MdNoPhotography } from "react-icons/md";
+import UpdatePhotoModal from "../components/PhotoProfile/UpdatePhotoModal";
+import useModalStore from "../states/UseModalStore";
+import UpdateMapModal from "../components/PhotoProfile/UpdateMapModal";
 const MyPhotosLayout = () => {
+  const { isUpdatePhotoModal, isUpdateOpenMapModal } = useModalStore();
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
 
   return (
     <div className="flex flex-col gap-1 p-1">
+      {isUpdatePhotoModal && !isUpdateOpenMapModal && <UpdatePhotoModal />}{" "}
+      {!isUpdatePhotoModal && isUpdateOpenMapModal && <UpdateMapModal />}{" "}
+      {/* Render Modal conditionally */}
       <div className="p-[24px]  bg-[#292b2f]">
         <PhotoProfile userData={userData} />
       </div>
