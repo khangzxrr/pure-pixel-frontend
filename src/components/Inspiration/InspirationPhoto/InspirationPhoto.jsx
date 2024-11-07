@@ -33,25 +33,25 @@ const InspirationPhoto = () => {
   const limit = 20; // Tổng số ảnh
   const { selectedLocate, setSelectedLocate } = useMapboxState(); // Use Zustand store
   const [selectedImage, setSelectedImage] = useState(
-    selectedLocate ? selectedLocate.id : null
+    selectedLocate ? selectedLocate.id : null,
   );
-  const [selectedPhotoId, setSelectedPhotoId] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
   const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory
+    (state) => state.selectedPhotoCategory,
   );
   const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate
+    (state) => state.filterByPhotoDate,
   );
   const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
   const searchResult = UseCategoryStore((state) => state.searchResult);
   const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle
+    (state) => state.searchByPhotoTitle,
   );
   const setNamePhotographer = UsePhotographerFilterStore(
-    (state) => state.setNamePhotographer
+    (state) => state.setNamePhotographer,
   );
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const popupShare = useModalState();
@@ -75,7 +75,7 @@ const InspirationPhoto = () => {
       watermark,
       selling,
       photographerName,
-      title
+      title,
     );
     return response;
   };
@@ -113,9 +113,9 @@ const InspirationPhoto = () => {
     500: 1,
   };
 
-  const handleOnClick = (id) => {
+  const handleOnClick = (photo) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    setSelectedImage(id);
+    setSelectedImage(photo);
     // navigate(`/photo/${id}`, { state: { listImg: photoList } });
   };
 
@@ -128,13 +128,14 @@ const InspirationPhoto = () => {
         // className={"bg-black"}
       >
         <ComSharePhoto
-          idImg={selectedPhotoId}
+          photoId={selectedPhoto?.id}
+          userId={selectedPhoto?.photographer.id}
           onClose={popupShare.handleClose}
         />
       </ComModal>
       {selectedImage && (
         <DetailedPhotoView
-          idImg={selectedImage}
+          idImg={selectedImage.id}
           onClose={() => {
             navigate(`/explore/inspiration`);
             setSelectedImage(null);
@@ -180,7 +181,7 @@ const InspirationPhoto = () => {
                           src={photo.signedUrl.thumbnail}
                           alt={`Photo ${photo.id}`}
                           className="w-full h-auto object-cover"
-                          onClick={() => handleOnClick(photo.id)}
+                          onClick={() => handleOnClick(photo)}
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
                           <div className="flex justify-between w-full px-3">
@@ -196,7 +197,7 @@ const InspirationPhoto = () => {
                                 className="hover:underline cursor-pointer underline-offset-2"
                                 onClick={() => {
                                   navigate(
-                                    `/user/${photo.photographer.id}/photos`
+                                    `/user/${photo.photographer.id}/photos`,
                                   );
                                   setNamePhotographer(photo.photographer.name);
                                   setActiveTitle(null);
@@ -211,7 +212,9 @@ const InspirationPhoto = () => {
                                   className="size-7"
                                   onClick={() => {
                                     popupShare.handleOpen();
-                                    setSelectedPhotoId(photo.id);
+
+                                    console.log("hi");
+                                    setSelectedPhoto(photo);
                                   }}
                                 />
                               </div>

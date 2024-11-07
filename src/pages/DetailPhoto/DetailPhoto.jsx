@@ -156,7 +156,8 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
           // className={"bg-black"}
         >
           <ComSharePhoto
-            idImg={selectedImage}
+            photoId={selectedImage}
+            userId={getPhotoById.data?.photographer.id}
             onClose={popupShare.handleClose}
           />
         </ComModal>

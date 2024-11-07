@@ -22,7 +22,7 @@ const getPublicPhotos = async (
   photographerName,
   title,
   photographerId,
-  cameraId
+  cameraId,
 ) => {
   // Tạo một đối tượng chứa các tham số
   const params = {
@@ -147,10 +147,10 @@ const getAvailableResolutionsByPhotoId = async (id) => {
   return response.data;
 };
 
-const sharePhotoById = async (photoId, quality) => {
+const sharePhotoById = async (photoId, size) => {
   const response = await http.post(`photo/share`, {
     photoId,
-    quality,
+    size,
   });
 
   return response.data;
