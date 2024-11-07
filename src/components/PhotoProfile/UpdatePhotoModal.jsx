@@ -205,7 +205,7 @@ export default function UpdatePhotoModal() {
         onCancel={() => setIsUpdatePhotoModal(false)} // Close the modal on cancel
         footer={null}
         width={1000} // Set the width of the modal
-        style={{ top: 20 }} // Set the top position of the modal
+        style={{ top: 22 }} // Set the top position of the modal
       >
         <div className="px-2 grid grid-cols-10 lg:px-2 text-[#d7d7d8] font-normal lg:text-base text-xs gap-2 h-[86vh]">
           <div className="col-span-10 md:col-span-5 flex justify-center my-auto">
