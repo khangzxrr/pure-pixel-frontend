@@ -40,7 +40,7 @@ export default function EditPhotoshootPackage({
     setDisabled(true);
     if (!image) {
       // No image change; use patchData
-      patchData("/photoshoot-package", selectedPackage.id, {
+      patchData("/photographer/photoshoot-package", selectedPackage.id, {
         title: data.title,
         subtitle: data.subtitle,
         price: data.price,
@@ -68,7 +68,7 @@ export default function EditPhotoshootPackage({
       formData.append("price", data.price);
       formData.append("description", data.description);
 
-      putData("/photoshoot-package", selectedPackage.id, formData)
+      putData("/photographer/photoshoot-package", selectedPackage.id, formData)
         .then((response) => {
           notificationApi("success", "Thành công", "Đã cập nhật");
           setDisabled(false);

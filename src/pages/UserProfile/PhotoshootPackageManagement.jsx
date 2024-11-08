@@ -115,12 +115,12 @@ export default function PhotoshootPackageManagement() {
             }}
             showModalDelete={() => {
               ComConfirmDeleteModal(
-                `/photoshoot-package`,
+                `photographer/photoshoot-package`,
                 record.id,
                 `Bạn có chắc chắn muốn xóa?`,
                 reloadData,
                 notificationSuccess,
-                notificationError
+                notificationError,
               );
             }}
             excludeDefaultItems={["details"]}
@@ -135,8 +135,9 @@ export default function PhotoshootPackageManagement() {
   const notificationError = () => {
     notificationApi("error", "Lỗi", "Lỗi");
   };
+
   const reloadData = () => {
-    getData("/photoshoot-package/me?limit=9999&page=0")
+    getData("photographer/photoshoot-package?limit=9999&page=0")
       .then((response) => {
         setData(response?.data?.objects || []);
         table.handleCloseLoading();
