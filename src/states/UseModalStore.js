@@ -6,7 +6,9 @@ const useModalStore = create(
     isUpdatePhotoModal: false,
     isUpdateOpenMapModal: false,
     selectedUpdatePhoto: {},
-
+    isUpdateProfileModalVisible: false, // Initial state of the modal
+    setIsUpdateProfileModalVisible: (value) =>
+      set({ isUpdateProfileModalVisible: value }), // Function to update the modal state
     setIsUpdatePhotoModal: (value) => set({ isUpdatePhotoModal: value }),
     setIsUpdateOpenMapModal: (value) => set({ isUpdateOpenMapModal: value }),
 

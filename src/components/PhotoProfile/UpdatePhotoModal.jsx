@@ -216,7 +216,7 @@ export default function UpdatePhotoModal() {
             />
           </div>
 
-          <div className="col-span-10 md:col-span-5 w-full overflow-scroll custom-scrollbar">
+          <div className="col-span-10 md:col-span-5 w-full overflow-y-scroll custom-scrollbar">
             <form onSubmit={handleSubmit(handleFinish)}>
               {/* Title Field */}
               <p>Tựa đề</p>
@@ -281,7 +281,7 @@ export default function UpdatePhotoModal() {
                     showSearch
                     placeholder="Chọn thể loại"
                     options={categories}
-                    className={`w-11/12 m-2  ${
+                    className={`w-11/12 m-2 cursor-pointer  ${
                       errors.categoryIds ? "border-red-500" : "border-[#4c4e52]"
                     }`}
                     onChange={(value) => {
