@@ -46,13 +46,16 @@ const Icon = ({ children, className = "" }) => (
     {children}
   </svg>
 );
+
 const ProductPhotoDetail = () => {
   const [data, setData] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedPricetagId, setSelectedPricetagId] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("SEPAY");
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [transactionId, setTransactionId] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [pricetagStatus, setPricetagStatus] = useState({});
+  const [purchasedImageUrl, setPurchasedImageUrl] = useState(null);
   const modal = useModalState();
   const { id } = useParams();
   const { keycloak } = useKeycloak();
@@ -62,28 +65,76 @@ const ProductPhotoDetail = () => {
   const popup = useModalState();
   const popupReport = useModalState();
   const [isExpanded, setIsExpanded] = useState(false);
-  const allDetails = Object?.entries(data?.exif || {});
-  const mainDetails = allDetails?.slice(0, 4);
-  const extraDetails = allDetails.slice(4);
 
   const reload = () => {
     getData(`photo/${id}`)
       .then((response) => {
         setData(response.data);
 
-        if (
-          response.data.photoSellings &&
-          response.data.photoSellings[0] &&
-          response.data.photoSellings[0].pricetags &&
-          response.data.photoSellings[0].pricetags[0]
-        ) {
-          setSelectedSize(response.data.photoSellings[0].pricetags[0].size);
+        const photoSelling = response.data.photoSellings
+          ? response.data.photoSellings[0]
+          : null;
+
+        const pricetags = photoSelling ? photoSelling.pricetags : [];
+
+        if (pricetags && pricetags.length > 0) {
+          const defaultPricetagId = pricetags[0].id;
+          setSelectedPricetagId(defaultPricetagId);
+        }
+
+        const pricetagStatus = {};
+
+        pricetags.forEach((pricetag) => {
+          pricetagStatus[pricetag.id] = {
+            isPurchased: false,
+            purchasedImageUrl: null,
+          };
+        });
+
+        // Kiểm tra xem người dùng đã mua pricetag nào
+        if (userData) {
+          const userId = userData.sub;
+          if (photoSelling) {
+            const photoSellHistories = photoSelling.photoSellHistories;
+
+            photoSellHistories.forEach((history) => {
+              const boughtByUser = history.photoBuy.some(
+                (buy) => buy.buyerId === userId
+              );
+              if (boughtByUser) {
+                // Tìm pricetag tương ứng
+                const matchingPricetag = pricetags.find(
+                  (pricetag) =>
+                    pricetag.width === history.width &&
+                    pricetag.height === history.height &&
+                    pricetag.price === history.price
+                );
+                if (matchingPricetag) {
+                  pricetagStatus[matchingPricetag.id].isPurchased = true;
+                  pricetagStatus[matchingPricetag.id].purchasedImageUrl =
+                    response.data.signedUrl.url; // Sử dụng URL từ data
+                }
+              }
+            });
+          }
+        }
+
+        setPricetagStatus(pricetagStatus);
+
+        // Kiểm tra nếu pricetag mặc định đã mua
+        if (pricetagStatus[selectedPricetagId]?.isPurchased) {
+          setPurchasedImageUrl(
+            pricetagStatus[selectedPricetagId].purchasedImageUrl
+          );
+        } else {
+          setPurchasedImageUrl(null);
         }
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
+
   useEffect(() => {
     reload();
   }, [id]);
@@ -92,17 +143,29 @@ const ProductPhotoDetail = () => {
     let intervalId;
 
     if (transactionId && paymentStatus === "PENDING") {
-      // Start polling every 5 seconds
+      // Bắt đầu polling mỗi 3 giây
       intervalId = setInterval(() => {
         getData(`payment/transaction/${transactionId}`)
           .then((response) => {
-            const status = response.data.status; // Adjust based on actual API response
-            console.log(response);
+            const status = response.data.status;
 
             if (status === "SUCCESS") {
               setPaymentStatus("SUCCESS");
               message.success("Thanh toán thành công!");
               clearInterval(intervalId);
+
+              // Cập nhật trạng thái pricetag
+              setPricetagStatus((prevStatus) => {
+                const newStatus = { ...prevStatus };
+                newStatus[selectedPricetagId] = {
+                  isPurchased: true,
+                  purchasedImageUrl: data.signedUrl.url,
+                };
+                return newStatus;
+              });
+
+              setPurchasedImageUrl(data.signedUrl.url);
+
               setTimeout(() => {
                 modal?.handleClose();
                 navigate(`/profile/photos-bought`);
@@ -116,7 +179,7 @@ const ProductPhotoDetail = () => {
           .catch((error) => {
             console.error("Error checking payment status:", error);
           });
-      }, 3000); // Poll every 5 seconds
+      }, 3000);
     }
 
     return () => {
@@ -127,27 +190,24 @@ const ProductPhotoDetail = () => {
   if (!data) {
     return <div className="min-h-screen text-white p-8">Loading...</div>;
   }
-  console.log(data);
+
+  const allDetails = Object?.entries(data?.exif || {});
+  const mainDetails = allDetails?.slice(0, 4);
+  const extraDetails = allDetails.slice(4);
 
   const photoSelling =
     data.photoSellings && data.photoSellings.length > 0
       ? data.photoSellings[0]
       : null;
 
-  const sizes =
-    photoSelling && photoSelling.pricetags
-      ? photoSelling.pricetags.map((pricetag) => pricetag.size)
-      : [];
-
   const selectedPricetag =
-    photoSelling && photoSelling.pricetags
-      ? photoSelling.pricetags.find(
-          (pricetag) => pricetag.size === selectedSize
+    photoSelling && photoSelling?.pricetags
+      ? photoSelling?.pricetags.find(
+          (pricetag) => pricetag.id === selectedPricetagId
         )
       : null;
 
   const price = selectedPricetag ? selectedPricetag.price : 0;
-  console.log(3333, selectedPricetag);
 
   const handleConfirmPayment = () => {
     handleBuyNow(selectedPaymentMethod);
@@ -166,17 +226,27 @@ const ProductPhotoDetail = () => {
         }
       )
         .then((response) => {
-          console.log("Mua ngay thành công:", response);
-
           if (paymentMethod === "SEPAY") {
             setTransactionId(
               response?.userToUserTransaction?.fromUserTransaction?.id
-            ); // Adjust based on actual API response
+            );
             setQrCodeUrl(response.mockQrCode);
             setPaymentStatus("PENDING");
           } else if (paymentMethod === "WALLET") {
             modal?.handleClose();
             message.success("Thanh toán bằng ví thành công!");
+
+            // Cập nhật trạng thái pricetag
+            setPricetagStatus((prevStatus) => {
+              const newStatus = { ...prevStatus };
+              newStatus[pricetagId] = {
+                isPurchased: true,
+                purchasedImageUrl: data.signedUrl.url,
+              };
+              return newStatus;
+            });
+
+            setPurchasedImageUrl(data.signedUrl.url);
           }
         })
         .catch((error) => {
@@ -184,6 +254,17 @@ const ProductPhotoDetail = () => {
           switch (error?.data?.message) {
             case "ExistSuccessedPhotoBuyException":
               message.error("Bạn đã mua hình ảnh này rồi");
+              // Cập nhật trạng thái pricetag
+              setPricetagStatus((prevStatus) => {
+                const newStatus = { ...prevStatus };
+                newStatus[pricetagId] = {
+                  isPurchased: true,
+                  purchasedImageUrl: data.signedUrl.url,
+                };
+                return newStatus;
+              });
+
+              setPurchasedImageUrl(data.signedUrl.url);
               break;
             case "CannotBuyOwnedPhotoException":
               message.error("Bạn không thể mua ảnh của chính mình");
@@ -198,20 +279,37 @@ const ProductPhotoDetail = () => {
     }
   };
 
-  const handleSizeChange = (size) => {
-    setSelectedSize(size);
+  const handlePricetagChange = (id) => {
+    setSelectedPricetagId(id);
     setQrCodeUrl("");
     setTransactionId(null);
     setPaymentStatus(null);
+
+    if (pricetagStatus[id]?.isPurchased) {
+      setPurchasedImageUrl(pricetagStatus[id].purchasedImageUrl);
+    } else {
+      setPurchasedImageUrl(null);
+    }
   };
 
+  const isPricetagPurchased = pricetagStatus[selectedPricetagId]?.isPurchased;
+
+  console.log("====================================");
+  console.log(111111111, purchasedImageUrl);
+  console.log(111111111, selectedPricetag?.preview);
+  console.log(111111111, data);
+  console.log("====================================");
   return (
     <div className="min-h-screen text-white p-8 ">
       <div className=" mx-auto flex flex-col lg:flex-row gap-8">
         <div className="lg:w-2/3 flex items-center bg-[#505050] justify-center  ">
           <div className=" p-4 rounded-lg">
             <img
-              src={selectedPricetag?.preview || data.signedUrl.url}
+              src={
+                 selectedPricetag?.preview
+                  ? selectedPricetag?.preview
+                  : purchasedImageUrl
+              }
               alt={data.title}
               className="w-full h-auto border-4 border-black "
             />
@@ -263,12 +361,12 @@ const ProductPhotoDetail = () => {
                 </MenuButton>
                 <MenuItems
                   transition
-                  className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none"
                 >
                   <MenuItem>
                     <button
                       onClick={() => {}}
-                      className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                      className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50"
                     >
                       Lưu bài viết
                     </button>
@@ -279,7 +377,7 @@ const ProductPhotoDetail = () => {
                       onClick={() => {
                         popupReport.handleOpen();
                       }}
-                      className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                      className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 hover:bg-gray-50"
                     >
                       Báo cáo bài viết
                     </button>
@@ -293,7 +391,6 @@ const ProductPhotoDetail = () => {
               onclose={popupReport.handleClose}
               tile="Báo cáo ảnh bán"
               id={data?.id}
-              // reportType =USER, PHOTO, BOOKING, COMMENT;
               reportType={"PHOTO"}
             />
           )}
@@ -309,34 +406,48 @@ const ProductPhotoDetail = () => {
               className="mb-2"
               style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
             >
-              {photoSelling.description}
+              {photoSelling?.description}
             </h1>
           </div>
 
           <p className="text-3xl font-semibold mb-2">
-            {price.toLocaleString()}Đ
+            {selectedPricetag ? selectedPricetag.price.toLocaleString() : 0}Đ
           </p>
 
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">Kích thước</h2>
             <div className="flex flex-wrap gap-4 px-3">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  className={`px-4 py-2 rounded-full w-[80px] h-[80px] ${
-                    selectedSize === size
-                      ? "bg-[#292b2f] text-white border-2 border-white "
-                      : "bg-[#292b2f] text-white border-2 border-[#292b2f]"
-                  }`}
-                  onClick={() => handleSizeChange(size)}
-                >
-                  {size}px
-                </button>
-              ))}
+              {photoSelling?.pricetags.map((pricetag) => {
+                const isPurchased = pricetagStatus[pricetag.id]?.isPurchased;
+                return (
+                  <button
+                    key={pricetag.id}
+                    className={`px-4 py-2 text-sm rounded-full w-[80px] h-[80px] flex flex-col items-center justify-center 
+                   
+                     ${
+                       selectedPricetagId === pricetag.id
+                         ? "bg-[#292b2f] text-white border-2 border-white"
+                         : "bg-[#292b2f] text-white border-2 border-[#292b2f]"
+                     }     `}
+                    onClick={() => handlePricetagChange(pricetag.id)}
+                  >
+                    <p>{pricetag.width}</p>
+                    <p>x</p>
+                    <p>{pricetag.height}</p>
+                    {/* {isPurchased && (
+                      <span className="text-xs text-green-500">Đã mua</span>
+                    )} */}
+                  </button>
+                );
+              })}
             </div>
           </div>
           {userData ? (
-            <>
+            pricetagStatus[selectedPricetagId]?.isPurchased ? (
+              <div className="text-green-500 text-center font-semibold">
+                Bạn đã mua kích thước này
+              </div>
+            ) : (
               <button
                 className="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition-colors"
                 onClick={() => {
@@ -345,7 +456,7 @@ const ProductPhotoDetail = () => {
               >
                 Mua ngay
               </button>
-            </>
+            )
           ) : (
             <button
               className="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition-colors"
@@ -426,15 +537,19 @@ const ProductPhotoDetail = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="font-semibold">
-                            {photoSelling.description}
+                            {photoSelling?.description}
                           </h4>
                           <p className="text-sm text-gray-400">
-                            {selectedSize}px
+                            {selectedPricetag
+                              ? `${selectedPricetag.width} x ${selectedPricetag.height}px`
+                              : ""}
                           </p>
                         </div>
                         <div className="text-right">
                           <span className="font-semibold">
-                            <ComPriceConverter>{price}</ComPriceConverter>
+                            <ComPriceConverter>
+                              {selectedPricetag ? selectedPricetag.price : 0}
+                            </ComPriceConverter>
                           </span>
                         </div>
                       </div>
@@ -445,7 +560,9 @@ const ProductPhotoDetail = () => {
                             Tổng tiền phải trả
                           </span>
                           <span className="font-semibold text-xl">
-                            <ComPriceConverter>{price}</ComPriceConverter>
+                            <ComPriceConverter>
+                              {selectedPricetag ? selectedPricetag.price : 0}
+                            </ComPriceConverter>
                           </span>
                         </div>
                         {selectedPaymentMethod === "WALLET" && (
@@ -490,6 +607,13 @@ const ProductPhotoDetail = () => {
       </div>
       <h1 className="text-xl mb-2 mt-4">Thông số:</h1>
       <div className="space-y-2 mb-6 grid  grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Hiển thị độ phân giải */}
+        <div className="flex items-start">
+          <span className="font-semibold mr-2">Độ phân giải:</span>
+          <span className="font-light">
+            {data.height} x {data.width}
+          </span>
+        </div>
         {/* Hiển thị 3 thông số đầu tiên */}
         {mainDetails.map(([key, value], index) => (
           <div className="flex items-start" key={index}>
@@ -536,5 +660,4 @@ const ProductPhotoDetail = () => {
     </div>
   );
 };
-
 export default ProductPhotoDetail;
