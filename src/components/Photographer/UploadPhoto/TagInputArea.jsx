@@ -50,7 +50,9 @@ export default function TagInputArea({
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === "Enter"
+      // || e.key === " "
+    ) {
       e.preventDefault();
       handleInputConfirm();
     }
@@ -118,8 +120,11 @@ export default function TagInputArea({
         size="small"
         style={{
           width: "100%",
+          backgroundColor: "#292b2f", // Đặt màu nền
+          color: "#d7d7d8", // Đặt màu chữ
+          borderColor: isError ? "#ff4d4f" : "#4c4e52", // Đổi màu border khi có lỗi
         }}
-        className={`w-full p-2 m-2 border-[1px] ${
+        className={`w-full p-2 m-2 border-[1px] placeholder:text-[#d7d7d8] ${
           isError ? "border-red-500" : "border-gray-300"
         } focus:outline-none focus:border-[#e0e0e0]`}
         value={inputValue}
