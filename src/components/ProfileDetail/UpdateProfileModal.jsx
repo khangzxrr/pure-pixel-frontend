@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
   Button,
-  Checkbox,
   ConfigProvider,
   Input,
   Select,
-  Tooltip,
   Modal,
   Spin,
   Upload,
@@ -13,15 +11,13 @@ import {
 import { LoadingOutlined, UploadOutlined } from "@ant-design/icons";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IoLocationSharp } from "react-icons/io5";
+import { IoPencil } from "react-icons/io5";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import UserProfileApi from "../../apis/UserProfile";
 import { useNotification } from "../../Notification/Notification";
 import useModalStore from "../../states/UseModalStore";
 import PhotoService from "../../services/PhotoService";
-// import "./PhotoProfile.css";
-
-const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
+import { updateProfileInputSchema } from "../../yup/UpdateProfileInput";
 
 export default function UpdateProfileModal({ userData }) {
   const { notificationApi } = useNotification();
@@ -39,6 +35,7 @@ export default function UpdateProfileModal({ userData }) {
     reset,
     formState: { errors },
   } = useForm({
+    resolver: yupResolver(updateProfileInputSchema),
     defaultValues: {
       name: userData?.name || "",
       quote: userData?.quote || "",
@@ -58,7 +55,7 @@ export default function UpdateProfileModal({ userData }) {
     });
     setCoverPreview(userData?.cover || null);
     setAvatarPreview(userData?.avatar || null);
-  }, [userData, reset]);
+  }, [userData, isUpdateProfileModalVisible, reset]);
 
   const updateProfile = useMutation({
     mutationFn: (data) => UserProfileApi.updateUserProfile(data),
@@ -126,51 +123,72 @@ export default function UpdateProfileModal({ userData }) {
       >
         <div
           onSubmit={handleSubmit(onSubmit)}
-          className="px-4 grid gap-4 h-[88vh] overflow-y-scroll custom-scrollbar"
+          className="px-4 grid gap-1 md:gap-4 h-[88vh] overflow-y-scroll custom-scrollbar"
         >
-          {/* Avatar Upload */}
-          <label className="text-[#e0e0e0]">Ảnh đại diện</label>
-          <Upload
-            accept="image/*"
-            showUploadList={false}
-            beforeUpload={() => false}
-            onChange={(info) =>
-              handleUpload(info, setAvatarFile, setAvatarPreview)
-            }
-          >
-            <Button icon={<UploadOutlined />}>Tải ảnh đại diện</Button>
-          </Upload>
-          {avatarPreview && (
-            <div className="mt-2">
-              <img
-                src={avatarPreview}
-                alt="Avatar Preview"
-                className="w-20 h-20 rounded-full"
-              />
-            </div>
-          )}
+          <div className="grid grid-cols-9 gap-4">
+            <div className="col-span-9 md:col-span-3">
+              <label className="text-[#e0e0e0]">Ảnh đại diện</label>
 
-          {/* Cover Image Upload */}
-          <label className="text-[#e0e0e0]">Ảnh bìa</label>
-          <Upload
-            accept="image/*"
-            showUploadList={false}
-            beforeUpload={() => false}
-            onChange={(info) =>
-              handleUpload(info, setCoverFile, setCoverPreview)
-            }
-          >
-            <Button icon={<UploadOutlined />}>Tải ảnh bìa</Button>
-          </Upload>
-          {coverPreview && (
-            <div className="mt-2">
-              <img
-                src={coverPreview}
-                alt="Cover Preview"
-                className="w-4/5 h-[200px] object-cover"
-              />
+              <div className="flex flex-col items-center mx-auto h-full justify-between">
+                {/* Avatar Preview - Centered */}
+                {avatarPreview && (
+                  <div className="flex-grow flex items-center justify-center">
+                    <img
+                      src={avatarPreview}
+                      alt="Avatar Preview"
+                      className="w-20 md:w-28 h-20 md:h-28 rounded-full"
+                    />
+                  </div>
+                )}
+
+                {/* Edit Avatar - Positioned at the bottom */}
+                <Upload
+                  accept="image/*"
+                  showUploadList={false}
+                  beforeUpload={() => false}
+                  onChange={(info) =>
+                    handleUpload(info, setAvatarFile, setAvatarPreview)
+                  }
+                >
+                  <div className="text-[#e0e0e0] hover:text-white font-normal flex flex-row cursor-pointer rounded-lg items-center mb-4">
+                    <IoPencil className="m-1" />
+                    <p>Chỉnh sửa đại diện</p>
+                  </div>
+                </Upload>
+              </div>
             </div>
-          )}
+            <div className="col-span-9 md:col-span-6">
+              {/* Cover Image Upload */}
+              <label className="text-[#e0e0e0]">Ảnh bìa</label>
+              <div className="flex flex-col items-center mx-auto h-full justify-between">
+                {/* Cover Preview - Centered */}
+                {coverPreview && (
+                  <div className="flex-grow flex items-center justify-center mt-2">
+                    <img
+                      src={coverPreview}
+                      alt="Cover Preview"
+                      className="h-[130px] md:h-[200px] object-cover"
+                    />
+                  </div>
+                )}
+
+                {/* Edit Cover - Positioned at the bottom */}
+                <Upload
+                  accept="image/*"
+                  showUploadList={false}
+                  beforeUpload={() => false}
+                  onChange={(info) =>
+                    handleUpload(info, setCoverFile, setCoverPreview)
+                  }
+                >
+                  <div className="text-[#e0e0e0] hover:text-white font-normal flex flex-row cursor-pointer rounded-lg items-center mb-4">
+                    <IoPencil className="m-1" />
+                    <p>Chỉnh sửa ảnh bìa</p>
+                  </div>
+                </Upload>
+              </div>
+            </div>
+          </div>
 
           {/* Name Field */}
           <label className="text-[#e0e0e0]">Tên</label>
