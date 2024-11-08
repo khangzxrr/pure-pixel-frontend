@@ -120,8 +120,10 @@ const SellingPhotoList = () => {
                     />
                   </div>
                   <div className="absolute bottom-0 left-0 w-full rounded-b-lg bg-black bg-opacity-50 text-white text-center py-2 transition-opacity duration-300 backdrop-blur-md">
-                    <div className="flex justify-between px-1">
-                      {photo.title || "Không xác định"}
+                    <div className="flex justify-between px-1 ">
+                      <div className="truncate max-w-[200px]">
+                        {photo.title || "Không xác định"}
+                      </div>
                       <div className="">
                         {lowestPrice === highestPrice ? (
                           <span>{formatPrice(highestPrice)}</span>
