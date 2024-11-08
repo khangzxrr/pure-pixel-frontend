@@ -6,7 +6,7 @@ const getUserProfileById = async () => {
   return response.data;
 };
 
-const updateUserProfile = async (data, onUploadProgress) => {
+const updateUserProfile = async (data) => {
   const formData = new FormData();
 
   // Append cover image if present
@@ -59,11 +59,11 @@ const updateUserProfile = async (data, onUploadProgress) => {
   }
 
   // Send the PATCH request to update the user's profile
-  const response = await http.patch(`photo/upload`, formData, {
+  const response = await http.patch(`me`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
-    onUploadProgress,
+    // onUploadProgress,
   });
 
   // Return the response data from the server

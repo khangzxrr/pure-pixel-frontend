@@ -30,3 +30,7 @@
 .photo-privacy-select .ant-select-selection-item {
   background-color: #292b2f !important; /* Ensures the color is black */
 }
+
+.ant-modal-close {
+  color: white !important; /* Ensures the color is white */
+}
