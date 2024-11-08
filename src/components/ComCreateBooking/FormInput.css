@@ -1,0 +1,20 @@
+/* Đổi màu nền và màu chữ của dropdown */
+.rdw-dropdown-selectedtext {
+  background-color: #292b2f; /* Màu nền tối hơn */
+  color: #ffffff; /* Màu chữ sáng */
+}
+
+.rdw-dropdown-optionwrapper {
+  background-color: #292b2f; /* Màu nền cho menu */
+  color: #ffffff; /* Màu chữ cho menu */
+}
+
+.rdw-dropdown-optionwrapper .rdw-option-wrapper {
+  background-color: #292b2f; /* Màu nền cho từng option */
+  color: #ffffff; /* Màu chữ */
+}
+
+.rdw-dropdown-optionwrapper .rdw-option-wrapper:hover {
+  background-color: #40444b; /* Màu nền khi hover */
+  color: #ffffff; /* Màu chữ khi hover */
+}
