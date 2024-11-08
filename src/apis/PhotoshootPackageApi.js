@@ -8,7 +8,7 @@ const getPackagesByPhotographerId = async (photographerId, limit, page) => {
 };
 
 const findAll = async () => {
-  const response = await http.get("/photoshoot-package?limit=10&page=0");
+  const response = await http.get("/photoshoot-package?limit=9999&page=0");
 
   return response.data;
 };
