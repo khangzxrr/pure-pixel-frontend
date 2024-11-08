@@ -9,11 +9,12 @@
   box-shadow: none !important; /* Removes any additional shadow */
 }
 .ant-select-selection-item {
-  background-color: rgb(
+  /* background-color: rgb(
     123,
     123,
     123
-  ) !important; /* Ensures the color is black */
+  ) !important;  */
+  /* Ensures the color is black */
   color: white !important; /* Ensures the color is white */
 }
 
@@ -23,7 +24,8 @@
     123,
     123,
     123
-  ) !important; /* Ensures the color is black */
+  ) !important; 
+  /* Ensures the color is black */
   color: white !important; /* Ensures the color is white */
 }
 

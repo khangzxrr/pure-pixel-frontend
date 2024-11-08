@@ -9,7 +9,7 @@ import { ChevronLeft } from "lucide-react";
 import ComPriceConverter from "./../../components/ComPriceConverter/ComPriceConverter";
 import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 import DetailUser from "../DetailUser/DetailUser";
-import {Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 function calculateTimeFromNow(dateString) {
   const startDate = new Date(dateString);
@@ -61,6 +61,10 @@ const ProductPhotoDetail = () => {
   const navigate = useNavigate();
   const popup = useModalState();
   const popupReport = useModalState();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const allDetails = Object?.entries(data?.exif || {});
+  const mainDetails = allDetails?.slice(0, 4);
+  const extraDetails = allDetails.slice(4);
 
   const reload = () => {
     getData(`photo/${id}`)
@@ -124,7 +128,7 @@ const ProductPhotoDetail = () => {
     return <div className="min-h-screen text-white p-8">Loading...</div>;
   }
   console.log(data);
-  
+
   const photoSelling =
     data.photoSellings && data.photoSellings.length > 0
       ? data.photoSellings[0]
@@ -143,6 +147,7 @@ const ProductPhotoDetail = () => {
       : null;
 
   const price = selectedPricetag ? selectedPricetag.price : 0;
+  console.log(3333, selectedPricetag);
 
   const handleConfirmPayment = () => {
     handleBuyNow(selectedPaymentMethod);
@@ -203,10 +208,10 @@ const ProductPhotoDetail = () => {
   return (
     <div className="min-h-screen text-white p-8 ">
       <div className=" mx-auto flex flex-col lg:flex-row gap-8">
-        <div className="lg:w-2/3 flex items-center bg-[#505050]  ">
+        <div className="lg:w-2/3 flex items-center bg-[#505050] justify-center  ">
           <div className=" p-4 rounded-lg">
             <img
-              src={data.signedUrl.url}
+              src={selectedPricetag?.preview || data.signedUrl.url}
               alt={data.title}
               className="w-full h-auto border-4 border-black "
             />
@@ -225,7 +230,7 @@ const ProductPhotoDetail = () => {
         )}
         <div className="lg:w-1/3">
           <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-1">
               <img
                 src={data.photographer.avatar}
                 alt="GueM"
@@ -236,6 +241,7 @@ const ProductPhotoDetail = () => {
                 <h2
                   className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
                   onClick={popup.handleOpen}
+                  style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
                 >
                   {data.photographer.name}
                 </h2>
@@ -292,9 +298,19 @@ const ProductPhotoDetail = () => {
             />
           )}
           <div>
-            <h1 className="text-2xl font-medium mb-2">{data.title}</h1>
-            <h1 className="text-xl mb-2 mt-4">Chi tiết:</h1>
-            <h1 className="text-lg mb-2">{photoSelling.description}</h1>
+            <h1
+              className="text-2xl font-medium mb-2"
+              style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+            >
+              {data.title}
+            </h1>
+
+            <h1
+              className="mb-2"
+              style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+            >
+              {photoSelling.description}
+            </h1>
           </div>
 
           <p className="text-3xl font-semibold mb-2">
@@ -471,6 +487,45 @@ const ProductPhotoDetail = () => {
             </div>
           )}
         </div>
+      </div>
+      <h1 className="text-xl mb-2 mt-4">Thông số:</h1>
+      <div className="space-y-2 mb-6 grid  grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Hiển thị 3 thông số đầu tiên */}
+        {mainDetails.map(([key, value], index) => (
+          <div className="flex items-start" key={index}>
+            <span className="font-semibold mr-2">{key}:</span>
+
+            <span
+              className="font-light"
+              style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+            >
+              {value}
+            </span>
+          </div>
+        ))}
+
+        {/* Hiển thị thông số còn lại khi mở rộng */}
+        {isExpanded &&
+          extraDetails.map(([key, value], index) => (
+            <div className="flex items-start" key={index}>
+              <span className="font-semibold mr-2">{key}:</span>
+              <span
+                className="font-light"
+                style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+              >
+                {value}
+              </span>
+            </div>
+          ))}
+      </div>
+      {/* Nút Xem thêm/Ẩn bớt */}
+      <div className="flex justify-center">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className=" text-white rounded-md"
+        >
+          {isExpanded ? "Ẩn bớt" : "Xem thêm"}
+        </button>
       </div>
       <div className="mb-6 mt-8">
         <h2 className="text-2xl font-semibold mb-2">

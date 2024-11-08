@@ -16,13 +16,13 @@ const ServerSideItems = [
       />
     ),
   },
-  {
-    id: "blog",
-    name: "Trang chủ",
-    link: "/home",
-    authen: true,
-    icon: <MdHomeFilled className="text-4xl" />,
-  },
+  // {
+  //   id: "blog",
+  //   name: "Trang chủ",
+  //   link: "/home",
+  //   authen: true,
+  //   icon: <MdHomeFilled className="text-4xl" />,
+  // },
   {
     id: "explore",
     name: "Khám phá",

@@ -148,9 +148,46 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                     .includes(input.toLowerCase())
                 }
                 options={categories}
-                className={`w-full max-w-full m-2 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] ${
+                dropdownRender={(menu) => (
+                  <div
+                    style={{
+                      color: "#000",
+                      backgroundColor: "#fff",
+                      padding: 2,
+                    }}
+                  >
+                    {menu}
+                  </div>
+                )}
+                className={`w-full max-w-full m-2  text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f]  lg:text-base text-xs focus:outline-none   ${
                   errors.categoryIds ? "border-red-500" : "border-[#4c4e52]"
                 }`}
+                tagRender={(props) => {
+                  const { label, value, closable, onClose } = props;
+
+                  return (
+                    <div
+                      style={{
+                        backgroundColor: "#474747",
+                        color: "#fff",
+                        padding: "2px 8px",
+                        margin: 3,
+                        borderRadius: "4px",
+                        marginRight: "4px",
+                      }}
+                    >
+                      {label}
+                      {closable && (
+                        <span
+                          style={{ marginLeft: "8px", cursor: "pointer" }}
+                          onClick={onClose}
+                        >
+                          ×
+                        </span>
+                      )}
+                    </div>
+                  );
+                }}
                 onChange={(value) => {
                   field.onChange(value);
                   updatePhotoPropertyByUid(
@@ -176,6 +213,15 @@ export default function UploadPhotoForm({ selectedPhoto }) {
             render={({ field }) => (
               <TagInputArea
                 field={field}
+                tagStyle={{
+                  color: "#000", // Màu chữ đen
+                  backgroundColor: "#e0e0e0", // Màu nền
+                }}
+                inputStyle={{
+                  backgroundColor: "#292b2f", // Đặt màu nền của input
+                  color: "#d7d7d8", // Đặt màu chữ
+                  border: "1px solid #4c4e52",
+                }}
                 updatePhotoPropertyByUid={updatePhotoPropertyByUid}
                 selectedPhoto={selectedPhoto}
                 isError={errors.photoTags}
@@ -227,6 +273,10 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                       { label: "Riêng tư", value: "PRIVATE" },
                       { label: "Liên kết riêng tư", value: "SHARE_LINK" },
                     ]}
+                    style={{
+                      backgroundColor: "#292b2f", // Màu nền tùy chỉnh
+                      color: "#d7d7d8", // Màu chữ tùy chỉnh
+                    }}
                     className={`w-full m-2 ${
                       errors.visibility ? "border-red-500" : "border-[#4c4e52]"
                     }`}

@@ -196,6 +196,11 @@ export default function CommentPhoto({ id, reload, top }) {
           <div className="bg-slate-300 h-[1px] px-3 my-3"></div>
         </div>
       ))}
+      {dataComment.length === 0 && (
+        <div className="h-16">
+          <p className="text-center ">Chưa có bình luận</p>
+        </div>
+      )}
       {!top && (
         <>
           {userData ? (
