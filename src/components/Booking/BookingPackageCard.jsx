@@ -1,14 +1,16 @@
 import { MessageCircleMore } from "lucide-react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import formatPrice from "../../utils/FormatPriceUtils";
 
-const BookingPackageCard = () => {
-  const navigate = useNavigate();
+const PhotoshootPackageCard = ({ key, photoshootPackage }) => {
+  //never useNavigate in children because it will cause parent to unmount then lost state
+  // const navigate = useNavigate();
+
   return (
     <div className="flex flex-col group h-auto  bg-[#36393f] rounded-lg overflow-hidden">
       <div className="h-[200px] overflow-hidden rounded-t-lg relative">
         <img
-          src="https://picsum.photos/seed/picsum/1920/1080"
+          src={photoshootPackage.thumbnail}
           alt=""
           className="w-full h-full object-cover"
         />
@@ -17,13 +19,13 @@ const BookingPackageCard = () => {
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 overflow-hidden rounded-full">
                 <img
-                  src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
+                  src={photoshootPackage.user.avatar}
                   alt=""
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="truncate max-w-[100px] hover:underline underline-offset-2 hover:cursor-pointer sm:max-w-[150px] text-sm sm:text-base">
-                Trung Nguyen
+                {photoshootPackage.user.name}
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
@@ -37,32 +39,34 @@ const BookingPackageCard = () => {
           </div>
         </div>
       </div>
+
       <div
-        onClick={() => navigate(`/explore/booking-package/${123}`)}
+        // onClick={() => }
         className="flex flex-col gap-2 px-4 py-2 hover:cursor-pointer"
       >
         <div className="text-lg sm:text-2xl font-semibold">
-          Gói chụp cá nhân
+          {photoshootPackage.title}
         </div>
-        <div className="font-normal text-base sm:text-lg">1.000.000đ</div>
+        <div className="font-normal text-base sm:text-lg">
+          {formatPrice(photoshootPackage.price)}
+        </div>
         <div>
-          <div className="text-sm sm:text-base font-semibold">Sản phẩm:</div>
+          <div className="text-sm sm:text-base font-semibold">Mô tả chung:</div>
           <div className="font-normal text-xs sm:text-sm">
             <ul className="list-disc list-inside">
-              <li>20 file ảnh </li>
-              <li>1 album khổ 20x30 (hoặc 25x35) 10 tờ tương đương 20 trang</li>
-              <li>1 ảnh cổng ép gỗ 60x90cm</li>
-              <li>10 ảnh chỉnh sửa và ép lụa 13x18cm</li>
-              <li>1 Slideshow trình chiếu nhà hàng </li>
+              <li>{photoshootPackage.description}</li>
             </ul>
           </div>
         </div>
-      </div>
-      <div className="flex items-center justify-end px-4 pb-2 ">
-        <span className="text-sm  font-normal text-gray-400">12 lượt thuê</span>
+
+        <div className="flex items-center justify-end px-4 pb-2 ">
+          <span className="text-sm  font-normal text-gray-400">
+            12 lượt thuê
+          </span>
+        </div>
       </div>
     </div>
   );
 };
 
-export default BookingPackageCard;
+export default PhotoshootPackageCard;

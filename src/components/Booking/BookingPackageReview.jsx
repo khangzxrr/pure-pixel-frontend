@@ -1,7 +1,7 @@
 import React from "react";
 import BookingPackageReviewCard from "./BookingPackageReviewCard";
 
-const BookingPackageReview = () => {
+const BookingPackageReviewList = () => {
   return (
     <div className="bg-[#292b2f] rounded-lg p-4 flex flex-col gap-2">
       <div>Đánh giá của khách hàng đã sử dụng dịch vụ</div>
@@ -15,4 +15,4 @@ const BookingPackageReview = () => {
   );
 };
 
-export default BookingPackageReview;
+export default BookingPackageReviewList;
