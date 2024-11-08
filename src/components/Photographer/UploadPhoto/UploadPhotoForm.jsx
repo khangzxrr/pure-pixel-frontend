@@ -171,7 +171,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                         backgroundColor: "#474747",
                         color: "#fff",
                         padding: "2px 8px",
-                        margin:3,
+                        margin: 3,
                         borderRadius: "4px",
                         marginRight: "4px",
                       }}
@@ -273,6 +273,10 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                       { label: "Riêng tư", value: "PRIVATE" },
                       { label: "Liên kết riêng tư", value: "SHARE_LINK" },
                     ]}
+                    style={{
+                      backgroundColor: "#292b2f", // Màu nền tùy chỉnh
+                      color: "#d7d7d8", // Màu chữ tùy chỉnh
+                    }}
                     className={`w-full m-2 ${
                       errors.visibility ? "border-red-500" : "border-[#4c4e52]"
                     }`}
