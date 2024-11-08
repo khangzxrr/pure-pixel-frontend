@@ -82,6 +82,9 @@ import PackagesUser from "../components/UserOther/PackagesUser";
 import SellingUser from "../components/UserOther/SellingUser";
 import PhotosBought from "../components/PhotoBought/PhotosBought";
 import PhotoBoughtDetail from "../components/PhotoBought/PhotoBoughtDetail";
+import BookingsPage from "../components/Booking/BookingsPage";
+import BookingDetailL from "../components/Booking/BookingDetailL";
+import CreateBookingPackage from "../components/ComCreateBooking/CreateBookingPackage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -132,11 +135,11 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "booking-package",
-                element: <BookingPage />,
+                element: <BookingsPage />,
               },
               {
                 path: "booking-package/:packageId",
-                element: <BookingDetail />,
+                element: <BookingDetailL />,
               },
               {
                 path: "product-photo/:id",
@@ -274,6 +277,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "product-photo/:id",
                 element: <ProductPhotoDetail />,
+              },
+              {
+                path: "create-booking-package",
+                element: <CreateBookingPackage />,
               },
             ],
           },
