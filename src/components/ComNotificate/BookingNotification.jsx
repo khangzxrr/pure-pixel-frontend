@@ -11,7 +11,25 @@ export default function BookingNotification({ notification }) {
     queryKey: [`booking-by-${notification.referenceId}`],
     queryFn: () => PhotoShootApi.getBookingDetail(notification.referenceId),
   });
-  console.log(bookingDetail, isLoading, isError, "bookingDetail");
+  const getTitleByStatus = (status) => {
+    switch (status) {
+      case "ACCEPTED":
+        return "Yêu cầu đã được chấp nhận";
+      case "DENIED":
+        return "Yêu cầu đã bị từ chối";
+      case "REQUESTED":
+        return "Yêu cầu gói chụp mới";
+      default:
+        return "Yêu cầu đang được xử lý";
+    }
+  };
+  console.log(
+    bookingDetail,
+    bookingDetail?.status,
+    isLoading,
+    isError,
+    "bookingDetail"
+  );
 
   return (
     <div className="flex items-center gap-2 p-2 rounded-sm hover:cursor-pointer hover:bg-gray-500 transition-colors duration-200">
@@ -25,7 +43,9 @@ export default function BookingNotification({ notification }) {
       <div className="w-[225px] lg:w-[335px] text-sm lg:text-base">
         {/* <span className="font-bold">{notification.name}</span> đã bắt
   đầu theo dõi bạn */}
-        {bookingDetail?.status ? notification.title : "Yêu cầu đang được xử lý"}
+        {bookingDetail?.status
+          ? getTitleByStatus(bookingDetail.status)
+          : notification.title}
       </div>
     </div>
   );

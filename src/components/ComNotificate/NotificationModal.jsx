@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import NotificationApi from "../../apis/NotificationApi";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
-import BookingNotificate from "./BookingNotificate";
 import BookingNotification from "./BookingNotification";
 
 const NotificationModal = ({ isOpen, onClose }) => {

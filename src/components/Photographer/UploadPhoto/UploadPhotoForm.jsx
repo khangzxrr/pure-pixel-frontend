@@ -9,12 +9,20 @@ import getDefaultPhoto from "../../../entities/DefaultPhoto";
 import { IoLocationSharp } from "react-icons/io5";
 import { useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../../apis/CategoryApi";
-import TagInputArea from "./TagInputArea";
+import Map, { Marker, Popup } from "react-map-gl";
+import MapBoxApi from "../../../apis/MapBoxApi";
+import ExifList from "./ExifList";
 
 export default function UploadPhotoForm({ selectedPhoto }) {
-  const { updatePhotoPropertyByUid, setIsOpenDraftModal, setIsOpenMapModal } =
+  const { updatePhotoPropertyByUid, isOpenMapModal, setIsOpenMapModal } =
     useUploadPhotoStore();
   const [categories, setCategories] = useState([]);
+  const [viewState, setViewState] = useState({
+    latitude: 10.762622,
+    longitude: 106.66667,
+    zoom: 14,
+  });
+  const [selectedLocate, setSelectedLocate] = useState();
 
   console.log("selectphoto", selectedPhoto);
 
@@ -30,6 +38,21 @@ export default function UploadPhotoForm({ selectedPhoto }) {
     },
   });
 
+  const searchByCoordinate = useMutation({
+    mutationFn: ({ longitude, latitude }) =>
+      MapBoxApi.getAddressByCoordinate(longitude, latitude),
+    onSuccess: (data) => {
+      console.log("selectedPhoto", selectedPhoto.gps);
+
+      setSelectedLocate({
+        ...selectedLocate,
+        address: data.features[0].properties.full_address,
+      });
+    },
+    onError: (error) => {
+      console.error("Error fetching address:", error);
+    },
+  });
   const {
     control,
     handleSubmit,
@@ -43,13 +66,40 @@ export default function UploadPhotoForm({ selectedPhoto }) {
   });
 
   const onSubmit = async (data) => {
-    setIsOpenDraftModal(true);
+    // setIsOpenDraftModal(true);
   };
 
   useEffect(() => {
     reset(getDefaultPhoto(selectedPhoto));
     getAllCategories.mutate();
-  }, [selectedPhoto, reset]);
+    console.log(
+      "selectedPhoto",
+      selectedPhoto?.gps?.longitude,
+      selectedPhoto?.gps?.longitude === undefined
+    );
+
+    if (
+      selectedPhoto?.gps &&
+      selectedPhoto?.gps?.longitude !== undefined &&
+      selectedPhoto?.gps?.latitude !== undefined
+    ) {
+      searchByCoordinate.mutate({
+        longitude: selectedPhoto.gps.longitude,
+        latitude: selectedPhoto.gps.latitude,
+      });
+      setViewState((prev) => ({
+        ...prev,
+        latitude: selectedPhoto.gps.latitude,
+        longitude: selectedPhoto.gps.longitude,
+      }));
+      setSelectedLocate({
+        latitude: selectedPhoto.gps.latitude,
+        longitude: selectedPhoto.gps.longitude,
+      });
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, [selectedPhoto, isOpenMapModal, reset]);
 
   return (
     <div className="px-2 lg:px-6 text-[#d7d7d8] font-normal lg:text-base text-xs">
@@ -62,10 +112,10 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                 colorBorder: "#4c4e52",
                 activeBorderColor: "#e0e0e0",
                 colorPrimaryHover: "#e0e0e0",
-                colorPrimary: "#e0e0e0",
-                controlItemBgActive: "#e6f4ff",
-                colorText: "#d7d7d8",
-                colorTextPlaceholder: "#d7d7d8",
+                colorPrimary: "#292b2f",
+                controlItemBgActive: "#e3e3e3",
+                colorText: "e0e0e0",
+                colorTextPlaceholder: "e0e0e0",
                 controlItemBgHover: "rgba(0, 0, 0, 0.04)",
                 fontSize: 14,
                 optionSelectedFontWeight: 400,
@@ -74,7 +124,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
             },
           }}
         >
-          {/* Title Field */}
+          {/* Trường Tựa đề */}
           <p>Tựa đề</p>
           <Controller
             name="title"
@@ -102,7 +152,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
             <p className="text-red-500 text-sm p-1">{errors.title.message}</p>
           )}
 
-          {/* Description Field */}
+          {/* Trường Mô tả */}
           <p>Mô tả</p>
           <Controller
             name="description"
@@ -113,7 +163,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                 className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
                   errors.description ? "border-red-500" : "border-[#4c4e52]"
                 }`}
-                placeholder="Enter description"
+                placeholder="Nhập mô tả"
                 onChange={(e) => {
                   field.onChange(e);
                   updatePhotoPropertyByUid(
@@ -131,7 +181,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
             </p>
           )}
 
-          {/* Category Field */}
+          {/* Trường Thể loại */}
           <p>Thể loại</p>
           <Controller
             name="categoryIds"
@@ -139,9 +189,9 @@ export default function UploadPhotoForm({ selectedPhoto }) {
             render={({ field }) => (
               <Select
                 {...field}
-                mode="multiple" // Enable multiple selection
+                mode="multiple" // Cho phép chọn nhiều
                 showSearch
-                placeholder="Select types"
+                placeholder="Chọn thể loại"
                 filterOption={(input, option) =>
                   (option?.label ?? "")
                     .toLowerCase()
@@ -159,7 +209,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                     {menu}
                   </div>
                 )}
-                className={`w-full max-w-full m-2  text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f]  lg:text-base text-xs focus:outline-none   ${
+                className={`w-full m-2 cursor-pointer  ${
                   errors.categoryIds ? "border-red-500" : "border-[#4c4e52]"
                 }`}
                 tagRender={(props) => {
@@ -205,29 +255,28 @@ export default function UploadPhotoForm({ selectedPhoto }) {
             </p>
           )}
 
-          {/* Tags Field */}
+          {/* Trường Gắn thẻ */}
           <p>Gắn thẻ</p>
           <Controller
             name="photoTags"
             control={control}
             render={({ field }) => (
-              <TagInputArea
-                field={field}
-                tagStyle={{
-                  color: "#000", // Màu chữ đen
-                  backgroundColor: "#e0e0e0", // Màu nền
+              <Select
+                {...field}
+                mode="tags" // Cho phép gắn thẻ
+                placeholder="Gắn thẻ cho ảnh"
+                onChange={(value) => {
+                  field.onChange(value);
+                  updatePhotoPropertyByUid(
+                    selectedPhoto.file.uid,
+                    "photoTags",
+                    value
+                  );
                 }}
-                inputStyle={{
-                  backgroundColor: "#292b2f", // Đặt màu nền của input
-                  color: "#d7d7d8", // Đặt màu chữ
-                  border: "1px solid #4c4e52",
-                }}
-                updatePhotoPropertyByUid={updatePhotoPropertyByUid}
-                selectedPhoto={selectedPhoto}
-                isError={errors.photoTags}
-                className={`w-full max-w-full m-2 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] ${
-                  errors.photoTags ? "border-red-500" : "border-[#4c4e52]"
-                }`}
+                options={[]} // Các tùy chọn thẻ, nếu có sẵn
+                open={false} // Không mở dropdown
+                suffixIcon={null} // Xóa biểu tượng mũi tên mặc định
+                className="w-full m-2 "
               />
             )}
           />
@@ -237,47 +286,22 @@ export default function UploadPhotoForm({ selectedPhoto }) {
             </p>
           )}
 
-          {/* Location Field */}
-          <p>Vị trí</p>
-          <div className="m-2">
-            <Tooltip
-              title={`${
-                selectedPhoto.address ? "Thay đổi" : "Thêm"
-              } vị trí bức ảnh`}
-              color="volcano"
-              placement="right"
-            >
-              <Button
-                color="default"
-                variant="solid"
-                icon={<IoLocationSharp fontSize={19} color="red" />}
-                onClick={() => setIsOpenMapModal(true)}
-                className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0]`}
-              >
-                {selectedPhoto.address ? selectedPhoto.address : "Vị Trí"}
-              </Button>
-            </Tooltip>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full mt-1">
-            {/* Visibility Field */}
-            <div>
+          <div className="grid grid-cols-4 gap-4 w-full mt-1">
+            {/* Trường Hiển thị */}
+            <div className="col-span-2">
               <Controller
                 name="visibility"
                 control={control}
                 render={({ field }) => (
                   <Select
                     {...field}
-                    placeholder="Photo privacy"
+                    placeholder="Quyền riêng tư của ảnh"
                     options={[
                       { label: "Công khai", value: "PUBLIC" },
                       { label: "Riêng tư", value: "PRIVATE" },
                       { label: "Liên kết riêng tư", value: "SHARE_LINK" },
                     ]}
-                    style={{
-                      backgroundColor: "#292b2f", // Màu nền tùy chỉnh
-                      color: "#d7d7d8", // Màu chữ tùy chỉnh
-                    }}
-                    className={`w-full m-2 ${
+                    className={`photo-privacy-select w-full m-2 ${
                       errors.visibility ? "border-red-500" : "border-[#4c4e52]"
                     }`}
                     onChange={(value) => {
@@ -298,46 +322,14 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               )}
             </div>
 
-            {/* Exif Field */}
-            <div>
-              <Controller
-                name="showExif"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    className="m-2"
-                    checked={field.value}
-                    onChange={(e) => {
-                      field.onChange(e.target.checked);
-                      updatePhotoPropertyByUid(
-                        selectedPhoto.file.uid,
-                        "showExif",
-                        e.target.checked
-                      );
-                    }}
-                  >
-                    <p className="text-white lg:text-sm text-xs my-2">
-                      Hiện thông số bức ảnh
-                    </p>
-                  </Checkbox>
-                )}
-              />
-              {errors.showExif && (
-                <p className="text-red-500 text-sm p-1">
-                  {errors.showExif.message}
-                </p>
-              )}
-            </div>
-
-            {/* Watermark Field */}
-            <div>
+            {/* Trường Nhãn */}
+            <div className="col-span-1">
               <Controller
                 name="watermark"
                 control={control}
                 render={({ field: controllerField }) => (
                   <Tooltip
-                    placement="left"
+                    placement="bottom"
                     color="geekblue"
                     title={selectedPhoto?.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
                   >
@@ -369,7 +361,60 @@ export default function UploadPhotoForm({ selectedPhoto }) {
               )}
             </div>
           </div>
-
+          {/* Trường Vị trí */}
+          <p>Vị trí</p>
+          <div className="m-2">
+            {selectedPhoto.gps ? (
+              <div className="relative w-full h-[40vh]">
+                <Map
+                  {...viewState}
+                  mapStyle="mapbox://styles/mapbox/streets-v9"
+                  mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+                  style={{ width: "100%", height: "100%" }}
+                  onClick={() => setIsOpenMapModal(true)}
+                >
+                  {selectedLocate && (
+                    <>
+                      <Marker
+                        latitude={selectedLocate.latitude}
+                        longitude={selectedLocate.longitude}
+                        anchor="bottom"
+                      >
+                        <div
+                          className="marker-btn"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <IoLocationSharp fontSize={39} color="red" />
+                        </div>
+                      </Marker>
+                      <Popup
+                        latitude={selectedLocate.latitude}
+                        longitude={selectedLocate.longitude}
+                        anchor="top"
+                        closeOnClick={false}
+                        closeButton={false}
+                      >
+                        <div style={{ cursor: "pointer" }}>
+                          <h2 className="text-black">
+                            {selectedLocate.address}
+                          </h2>
+                        </div>
+                      </Popup>
+                    </>
+                  )}
+                </Map>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsOpenMapModal(true)}
+                className={`border-[#4c4e52] w-full flex flex-row justify-center text-white py-1 rounded-lg bg-[#292b2f] hover:border-[#e0e0e0] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] `}
+              >
+                <IoLocationSharp color="red" size={22} />
+                Nhấn để thêm vị trí bức ảnh
+              </button>
+            )}
+          </div>
+          <ExifList exifData={selectedPhoto.exif} />
           <div className="h-24"></div>
         </ConfigProvider>
       </form>
