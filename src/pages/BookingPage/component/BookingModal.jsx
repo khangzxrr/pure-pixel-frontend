@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, ConfigProvider, DatePicker, Button, Input } from "antd"; // Importing Ant Design components
+import { Modal, ConfigProvider, DatePicker, Input } from "antd"; // Importing Ant Design components
 import vi_VN from "antd/es/locale/vi_VN"; // Import Vietnamese locale for Ant Design
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
@@ -9,9 +9,6 @@ import * as yup from "yup";
 import "../BookingPage.css"; // Import custom CSS
 import PhotoShootApi from "../../../apis/PhotoShootApi";
 import { useMutation } from "@tanstack/react-query";
-import { SearchBox } from "@mapbox/search-js-react"; // Import SearchBox from Mapbox
-
-const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN; // Set your Mapbox token here
 
 // Set dayjs to use the Vietnamese locale
 dayjs.locale("vi");
@@ -34,7 +31,7 @@ const validationSchema = yup.object().shape({
           startDate &&
           dayjs(startDate).isAfter(currentDate.add(1, "day"), "day")
         );
-      }
+      },
     )
     .test(
       "end-date-check",
@@ -47,19 +44,16 @@ const validationSchema = yup.object().shape({
           endDate &&
           dayjs(endDate).isAfter(dayjs(startDate).add(3, "hour"))
         );
-      }
+      },
     ),
   expect: yup.string(), // Validation for "expect"
   locate: yup.string(), // Validation for "locate"
 });
 
 export default function BookingModal({ photoPackage, onClose }) {
-  const [selectedLocation, setSelectedLocation] = useState(""); // State for selected location text
-
   const {
     handleSubmit,
     control,
-    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -97,36 +91,6 @@ export default function BookingModal({ photoPackage, onClose }) {
 
   const handleCancel = () => {
     onClose(); // Close the modal when "Cancel" is clicked
-  };
-
-  // Handle the selection of a location from the SearchBox
-  const handleRetrieve = (res) => {
-    if (res && res.features && res.features.length > 0) {
-      const place_name = res.features[0].properties.name;
-
-      let full_address = res.features[0].properties.full_address
-        .split(", ")
-        .slice(0, -2)
-        .join(", ");
-      // if (full_address) {
-      //   // Split the full_address by commas
-      //   const addressParts = full_address.split(", ");
-
-      //   // Remove the last two elements if there are more than two parts
-      //   if (addressParts.length > 2) {
-      //     full_address = addressParts.slice(0, -2).join(", ");
-      //   } else {
-      //     // If there are only one or two parts, just use the first part
-      //     full_address = addressParts[0];
-      //   }
-      // }
-      console.log("Selected location:", full_address);
-
-      setSelectedLocation(place_name, "-", full_address);
-      console.log("Selected location:", place_name, "-", full_address);
-
-      setValue("locate", place_name, "-", full_address); // Update the form value for the "locate" field
-    }
   };
 
   return (
