@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 
 import BookingRequestCard from "./BookingRequestCard";
@@ -7,14 +7,12 @@ import BookingRequestCard from "./BookingRequestCard";
 const BookingRequestPending = () => {
   const { isPending, data } = useQuery({
     queryKey: ["findAllRequestingBooking"],
-    queryFn: PhotographerBookingApi.photographerFindAllBooking,
+    queryFn: () => PhotographerBookingApi.findAllBooking("REQUESTED"),
   });
 
   if (isPending) {
     return "loading...";
   }
-
-  console.log(data);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">

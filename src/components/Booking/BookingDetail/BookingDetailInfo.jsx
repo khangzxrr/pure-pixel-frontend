@@ -1,40 +1,47 @@
 import React from "react";
 import BookingDetailBill from "./BookingDetailBill";
 import { Calendar, FilePenLine } from "lucide-react";
+import formatPrice from "../../../utils/FormatPriceUtils";
 
-const BookingDetailInfo = () => {
+const BookingDetailInfo = ({ bookingDetail }) => {
+  console.log(bookingDetail);
+
   return (
     <div className="flex flex-col gap-1 ">
       <div className="flex flex-col gap-2 m-2 bg-[#2d2f34] rounded-lg">
         <div className="h-[200px] overflow-hidden">
           <img
-            src="https://picsum.photos/1920/1080"
+            src={bookingDetail.photoshootPackageHistory.thumbnail}
             alt=""
             className="size-full object-cover rounded-t-lg"
           />
         </div>
         <div className="flex flex-col py-2 px-4 gap-2">
           <div className="flex items-center justify-between">
-            <div className="text-xl font-bold">Tiêu đề</div>
+            <div className="text-xl font-bold">
+              {bookingDetail.photoshootPackageHistory.title}
+            </div>
             <div className="font-normal text-sm text-blue-500">
               Đang thực hiện
             </div>
           </div>
-          <div className="underline underline-offset-2">1.000.000đ</div>
+          <div className="underline underline-offset-2">
+            {formatPrice(bookingDetail.photoshootPackageHistory.price)}
+          </div>
           <div className="flex items-center gap-2">
             <div className="size-7 overflow-hidden rounded-full">
               <img
-                src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
+                src={bookingDetail.user.avatar}
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
-            <div>Trung Nguyen</div>
+            <div>{bookingDetail.user.name}</div>
           </div>
           <div className="flex flex-col mt-2 gap-1">
             <div>Ghi chú:</div>
             <ul className="list-disc list-inside font-normal text-sm">
-              <li>Tôi muốn chụp concept tiểu thư, cá tính</li>
+              <li>{bookingDetail.description}</li>
             </ul>
           </div>
 
@@ -42,7 +49,10 @@ const BookingDetailInfo = () => {
             <div>Thời gian hẹn:</div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              <div className="font-normal text-sm">08/11/2024 09:00AM</div>
+              <div className="font-normal text-sm">
+                {bookingDetail.startDate}
+              </div>
+              <div className="font-normal text-sm">{bookingDetail.endDate}</div>
             </div>
           </div>
 
@@ -53,15 +63,14 @@ const BookingDetailInfo = () => {
             </div>
             <div className="px-3 border-b border-spacing-2 pb-3">
               <ul className="list-disc list-inside font-normal text-sm">
-                <li className="flex justify-between">
-                  • Quà <span className="">200.000đ</span>
-                </li>
-                <li className="flex justify-between">
-                  • Concept <span className="">200.000đ</span>
-                </li>
-                <li className="flex justify-between">
-                  • Giảm giá <span className="">300.000đ</span>
-                </li>
+                {bookingDetail.billItems?.map((bi) => {
+                  return (
+                    <li className="flex justify-between">
+                      • {bi.title}{" "}
+                      <span className="">{formatPrice(bi.price)}</span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
             <div className="flex items-center justify-between gap-2">

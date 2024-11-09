@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import BookingRejectWarningModel from "./BookingRejectWarningModel";
 import { useNavigate } from "react-router-dom";
 import formatPrice from "../../../utils/FormatPriceUtils";
+import { useMutation } from "@tanstack/react-query";
+import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
+import useNotification from "antd/es/notification/useNotification";
 
 const BookingRequestCard = ({ booking }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const { notificationApi } = useNotification();
 
-  console.log(`map card`);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const navigate = useNavigate();
 
@@ -18,12 +21,37 @@ const BookingRequestCard = ({ booking }) => {
   const handleHideModal = () => {
     setIsModalVisible(false);
   };
+
+  const acceptBookingMutation = useMutation({
+    mutationFn: () => PhotographerBookingApi.acceptBooking(booking.id),
+  });
+
+  const handleAcceptButtonOnClick = () => {
+    acceptBookingMutation.mutate();
+
+    notificationApi("success", "Thành công", "Đã chấp nhận lịch hẹn này");
+
+    navigate(`/profile/booking/${booking.id}`);
+  };
+
+  const handleBookingOnClick = () => {
+    if (booking.status === "ACCEPTED") {
+      navigate(`/profile/booking/${booking.id}`);
+    }
+  };
+
   return (
     <>
       {isModalVisible && (
-        <BookingRejectWarningModel onClose={handleHideModal} />
+        <BookingRejectWarningModel
+          booking={booking}
+          onClose={handleHideModal}
+        />
       )}
-      <div className="flex flex-col group h-auto  bg-[#36393f] rounded-lg overflow-hidden pb-2">
+      <div
+        onClick={() => handleBookingOnClick()}
+        className="flex flex-col group h-auto  bg-[#36393f] rounded-lg overflow-hidden pb-2"
+      >
         <div className="h-[200px] overflow-hidden rounded-t-lg relative">
           <img
             src={booking.photoshootPackageHistory.thumbnail}
@@ -32,10 +60,7 @@ const BookingRequestCard = ({ booking }) => {
           />
         </div>
 
-        <div
-          // onClick={() => }
-          className="flex flex-col gap-1 px-4 py-2 hover:cursor-pointer"
-        >
+        <div className="flex flex-col gap-1 px-4 py-2 hover:cursor-pointer">
           <div className="flex justify-between items-center">
             <div className="text-xl font-semibold">
               {booking.photoshootPackageHistory.title}
@@ -78,9 +103,12 @@ const BookingRequestCard = ({ booking }) => {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between gap-2 p-2 px-5">
-          {booking.status === "REQUESTED" && (
-            <>
+
+        {booking.status === "REQUESTED" &&
+          (acceptBookingMutation.isPending ? (
+            <div>Đang chấp nhận lịch hẹn này...</div>
+          ) : (
+            <div className="flex items-center justify-between gap-2 p-2 px-5">
               <button
                 onClick={handleShowModal}
                 className="transition duration-300 text-red-500 border border-red-500 w-full px-2 py-1 rounded-lg hover:text-[#eee] hover:bg-red-500"
@@ -89,14 +117,14 @@ const BookingRequestCard = ({ booking }) => {
               </button>
 
               <button
-                onClick={() => navigate(`/profile/booking/${123}`)}
+                onClick={() => handleAcceptButtonOnClick()}
+                // onClick={() => navigate(`/profile/booking/${123}`)}
                 className="transition duration-300 bg-[#eee] text-[#202225] w-full px-2 py-1 rounded-lg hover:bg-[#c0c0c0]"
               >
                 Xác nhận
               </button>
-            </>
-          )}
-        </div>
+            </div>
+          ))}
       </div>
     </>
   );
