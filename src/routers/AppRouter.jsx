@@ -66,6 +66,12 @@ import PhotoBoughtDetail from "../components/PhotoBought/PhotoBoughtDetail";
 import CreateBookingPackage from "../components/ComCreateBooking/CreateBookingPackage";
 import PhotoshootPackageList from "../components/Booking/PhotoshootPackageList";
 import PhotoshootPackageDetail from "../components/Booking/PhotoshootPackageDetail";
+import BookingRequestList from "../components/Booking/BookingRequestList";
+import BookingRequestPending from "../components/Booking/BookingRequestState/BookingRequestPending";
+import BookingRequestInProgress from "../components/Booking/BookingRequestState/BookingRequestInProgress";
+import BookingRequestCompleted from "../components/Booking/BookingRequestState/BookingRequestCompleted";
+import BookingRequestCancelled from "../components/Booking/BookingRequestState/BookingRequestCancelled";
+import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -232,16 +238,42 @@ export const AppRouter = createBrowserRouter([
                 element: <Wallet />,
               },
               {
-                path: "booking",
+                path: "photoshoot-package",
                 element: <PhotoshootPackageManagement />,
               },
               {
                 path: "booking-request",
-                element: <PhotoshootRegistrationTable />,
+                element: <BookingRequestList />,
+                children: [
+                  {
+                    path: "",
+                    element: <Navigate to="pending" replace={true} />,
+                  },
+                  {
+                    path: "pending",
+                    element: <BookingRequestPending />,
+                  },
+                  {
+                    path: "in-progress",
+                    element: <BookingRequestInProgress />,
+                  },
+                  {
+                    path: "completed",
+                    element: <BookingRequestCompleted />,
+                  },
+                  {
+                    path: "cancelled",
+                    element: <BookingRequestCancelled />,
+                  },
+                ],
               },
+              // {
+              //   path: "booking-request/:bookingId",
+              //   element: <BookingRequestDetail />,
+              // },
               {
-                path: "booking-request/:bookingId",
-                element: <BookingRequestDetail />,
+                path: "booking/:bookingId",
+                element: <BookingDetail />,
               },
               {
                 path: "photo-selling",

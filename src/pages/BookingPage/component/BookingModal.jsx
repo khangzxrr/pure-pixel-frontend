@@ -53,8 +53,7 @@ const validationSchema = yup.object().shape({
   locate: yup.string(), // Validation for "locate"
 });
 
-export default function BookingModal({ photoPackage }) {
-  const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
+export default function BookingModal({ photoPackage, onClose }) {
   const [selectedLocation, setSelectedLocation] = useState(""); // State for selected location text
 
   const {
@@ -71,10 +70,6 @@ export default function BookingModal({ photoPackage }) {
     mutationFn: async ({ packageId, body }) =>
       await PhotoShootApi.requestBookingByCustomer(packageId, body),
   });
-
-  const showModal = () => {
-    setIsModalVisible(true); // Show the modal when the button is clicked
-  };
 
   const handleOk = (data) => {
     if (data.dateRange && data.dateRange.length === 2) {
@@ -97,11 +92,11 @@ export default function BookingModal({ photoPackage }) {
     } else {
       console.log("Date range is not properly selected.");
     }
-    setIsModalVisible(false); // Close the modal
+    onClose(); // Close the modal
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false); // Close the modal when "Cancel" is clicked
+    onClose(); // Close the modal when "Cancel" is clicked
   };
 
   // Handle the selection of a location from the SearchBox
@@ -136,114 +131,104 @@ export default function BookingModal({ photoPackage }) {
 
   return (
     <ConfigProvider locale={vi_VN}>
-      <div>
-        <button
-          onClick={showModal}
-          className="w-full bg-white text-black py-2 rounded-lg font-semibold hover:bg-gray-300 transition"
-        >
-          Đặt lịch
-        </button>
-        {/* Ant Design Modal */}
-        <Modal
-          visible={isModalVisible}
-          onOk={handleSubmit(handleOk)} // Use handleSubmit from React Hook Form
-          onCancel={handleCancel}
-        >
-          <div>
-            <p className="text-lg font-bold">{photoPackage?.title}</p>
-            <p className="text-xs text-gray-600 m-1">
-              {photoPackage?.subtitle}
+      {/* Ant Design Modal */}
+      <Modal
+        visible={true}
+        onOk={handleSubmit(handleOk)}
+        onCancel={handleCancel}
+      >
+        <div>
+          <p className="text-lg font-bold">{photoPackage?.title}</p>
+          <p className="text-xs text-gray-600 m-1">{photoPackage?.subtitle}</p>
+          <p className="text-sm text-gray-400">{photoPackage?.description}</p>
+
+          {/* Ant Design RangePicker with React Hook Form */}
+          <form onSubmit={handleSubmit(handleOk)} className="mt-2">
+            <p className="text-sm py-3 text-gray-600">Chọn ngày hẹn</p>
+            <Controller
+              name="dateRange"
+              control={control}
+              defaultValue={null} // Set an initial value if needed
+              render={({ field }) => (
+                <>
+                  <RangePicker
+                    {...field}
+                    format="HH:mm DD-MM-YYYY"
+                    showTime={{
+                      format: "HH-mm",
+                      defaultValue: [dayjs().hour(0), dayjs().hour(23)],
+                    }}
+                    placeholder={[
+                      "Chọn giờ & ngày bắt đầu",
+                      "Chọn giờ & ngày kết thúc",
+                    ]}
+                    className={`w-full ${
+                      errors.dateRange ? "border-red-500" : ""
+                    }`}
+                    onChange={(value) => field.onChange(value)}
+                  />
+                  {errors.dateRange && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.dateRange.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
+
+            {/* TextArea for "expect" */}
+            <p className="text-sm py-3 text-gray-600 mt-4">
+              Bạn có thể chia sẻ thêm về kỳ vọng của bạn cho buổi chụp ảnh
+              không?
             </p>
-            <p className="text-sm text-gray-400">{photoPackage?.description}</p>
 
-            {/* Ant Design RangePicker with React Hook Form */}
-            <form onSubmit={handleSubmit(handleOk)} className="mt-2">
-              <p className="text-sm py-3 text-gray-600">Chọn ngày hẹn</p>
-              <Controller
-                name="dateRange"
-                control={control}
-                defaultValue={null} // Set an initial value if needed
-                render={({ field }) => (
-                  <>
-                    <RangePicker
-                      {...field}
-                      format="HH:mm DD-MM-YYYY"
-                      showTime={{
-                        format: "HH-mm",
-                        defaultValue: [dayjs().hour(0), dayjs().hour(23)],
-                      }}
-                      placeholder={[
-                        "Chọn giờ & ngày bắt đầu",
-                        "Chọn giờ & ngày kết thúc",
-                      ]}
-                      className={`w-full ${
-                        errors.dateRange ? "border-red-500" : ""
-                      }`}
-                      onChange={(value) => field.onChange(value)}
-                    />
-                    {errors.dateRange && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.dateRange.message}
-                      </p>
-                    )}
-                  </>
-                )}
+            <Controller
+              name="expect"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <>
+                  <Input.TextArea
+                    {...field}
+                    placeholder="Nhập kỳ vọng của bạn"
+                    className={`w-full ${
+                      errors.expect ? "border-red-500" : ""
+                    }`}
+                    rows={4}
+                  />
+                  {errors.expect && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.expect.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
+
+            {/* SearchBox for "locate" */}
+            {/* <div className="mt-3">
+              <p className="text-sm py-3 text-gray-600">Chọn địa điểm</p>
+
+              <SearchBox
+                accessToken={MAPBOX_TOKEN}
+                onRetrieve={handleRetrieve}
+                options={{
+                  language: "vi",
+                  country: "vn",
+                }}
+                placeholder="Tìm kiếm địa điểm..."
+                value={selectedLocation || ""} // Show the full address
               />
 
-              {/* TextArea for "expect" */}
-              <p className="text-sm py-3 text-gray-600 mt-4">
-                Bạn có thể chia sẻ thêm về kỳ vọng của bạn cho buổi chụp ảnh
-                không?
-              </p>
-
-              <Controller
-                name="expect"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <>
-                    <Input.TextArea
-                      {...field}
-                      placeholder="Nhập kỳ vọng của bạn"
-                      className={`w-full ${
-                        errors.expect ? "border-red-500" : ""
-                      }`}
-                      rows={4}
-                    />
-                    {errors.expect && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.expect.message}
-                      </p>
-                    )}
-                  </>
-                )}
-              />
-
-              {/* SearchBox for "locate" */}
-              <div className="mt-3">
-                <p className="text-sm py-3 text-gray-600">Chọn địa điểm</p>
-
-                <SearchBox
-                  accessToken={MAPBOX_TOKEN}
-                  onRetrieve={handleRetrieve}
-                  options={{
-                    language: "vi",
-                    country: "vn",
-                  }}
-                  placeholder="Tìm kiếm địa điểm..."
-                  value={selectedLocation || ""} // Show the full address
-                />
-
-                {errors.locate && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.locate.message}
-                  </p>
-                )}
-              </div>
-            </form>
-          </div>
-        </Modal>
-      </div>
+              {errors.locate && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.locate.message}
+                </p>
+              )}
+            </div> */}
+          </form>
+        </div>
+      </Modal>
     </ConfigProvider>
   );
 }
