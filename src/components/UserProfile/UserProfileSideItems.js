@@ -42,7 +42,7 @@ const UserProfileSideItems = [
   },
   {
     id: "booking",
-    link: "booking",
+    link: "photoshoot-package",
     title: "Quản lý gói chụp",
     icon: <FaCameraRetro className="text-3xl" />, // Icon máy ảnh
   },
