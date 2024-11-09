@@ -124,6 +124,27 @@ export default function PhotoMap() {
       }));
     }
   }, [selectedLocate]);
+  // Get user's current location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setViewState((prev) => ({
+            ...prev,
+            latitude,
+            longitude,
+            zoom: 9,
+          }));
+        },
+        (error) => {
+          console.error("Error getting current location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
   return (
     <div className="relative w-full h-screen">
       <Map
