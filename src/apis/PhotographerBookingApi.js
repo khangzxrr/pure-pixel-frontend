@@ -49,6 +49,17 @@ const upload = async (id, file) => {
   return response.data;
 };
 
+const addBillItem = async (id, { title, description, price, type }) => {
+  const response = await http.post(`/photographer/booking/${id}/bill-item`, {
+    title,
+    description,
+    price,
+    type,
+  });
+
+  return response;
+};
+
 export const PhotographerBookingApi = {
   findAllBooking,
   denyBooking,
