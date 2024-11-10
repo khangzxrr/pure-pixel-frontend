@@ -2,6 +2,7 @@ import React from "react";
 import BookingDetailBill from "./BookingDetailBill";
 import { Calendar, FilePenLine } from "lucide-react";
 import formatPrice from "../../../utils/FormatPriceUtils";
+import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 
 const BookingDetailInfo = ({ bookingDetail }) => {
   console.log(bookingDetail);
@@ -50,9 +51,11 @@ const BookingDetailInfo = ({ bookingDetail }) => {
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               <div className="font-normal text-sm">
-                {bookingDetail.startDate}
+                {FormatDateTime(bookingDetail.startDate)}
               </div>
-              <div className="font-normal text-sm">{bookingDetail.endDate}</div>
+              <div className="font-normal text-sm">
+                {FormatDateTime(bookingDetail.endDate)}
+              </div>
             </div>
           </div>
 

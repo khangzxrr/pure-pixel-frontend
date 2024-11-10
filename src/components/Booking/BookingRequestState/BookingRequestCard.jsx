@@ -6,6 +6,7 @@ import formatPrice from "../../../utils/FormatPriceUtils";
 import { useMutation } from "@tanstack/react-query";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import useNotification from "antd/es/notification/useNotification";
+import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 
 const BookingRequestCard = ({ booking }) => {
   const { notificationApi } = useNotification();
@@ -98,7 +99,8 @@ const BookingRequestCard = ({ booking }) => {
             <div className="flex gap-1 font-normal items-center text-sm">
               <Calendar className="w-4 h-4" />
               <div>
-                {booking.startDate} - {booking.endDate}
+                {FormatDateTime(booking.startDate)} -{" "}
+                {FormatDateTime(booking.endDate)}
               </div>
             </div>
           </div>
