@@ -1,7 +1,8 @@
 import React from "react";
 import BookingDetailBill from "./BookingDetailBill";
-import { Calendar, FilePenLine } from "lucide-react";
+import { ArrowRight, Calendar, FilePenLine } from "lucide-react";
 import formatPrice from "../../../utils/FormatPriceUtils";
+import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 
 const BookingDetailInfo = ({ bookingDetail }) => {
   console.log(bookingDetail);
@@ -50,9 +51,12 @@ const BookingDetailInfo = ({ bookingDetail }) => {
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               <div className="font-normal text-sm">
-                {bookingDetail.startDate}
+                {FormatDateTime(bookingDetail.startDate)}
               </div>
-              <div className="font-normal text-sm">{bookingDetail.endDate}</div>
+              <ArrowRight className="w-4 h-4" />
+              <div className="font-normal text-sm">
+                {FormatDateTime(bookingDetail.endDate)}
+              </div>
             </div>
           </div>
 
@@ -81,9 +85,6 @@ const BookingDetailInfo = ({ bookingDetail }) => {
           {/* <div className="text-right font-normal text-sm text-gray-500"> */}
           {/*   12 giờ trước */}
           {/* </div> */}
-          <button className="flex items-center bg-[#eee] text-[#202225] rounded-lg hover:bg-[#b3b3b3] justify-center py-2">
-            Khách đã thanh toán
-          </button>
         </div>
       </div>
       <BookingDetailBill bookingDetail={bookingDetail} />
