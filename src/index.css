@@ -136,7 +136,7 @@ code {
 
 .custom-scrollbar {
   width: 100%; /* Ensure the container takes the full width */
-  overflow-x: hidden; /* Hide horizontal overflow */
+  /* overflow-x: hidden; Hide horizontal overflow */
 }
 
 .custom-scrollbar::-webkit-scrollbar {

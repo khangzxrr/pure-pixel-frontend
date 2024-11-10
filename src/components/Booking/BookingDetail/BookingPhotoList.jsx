@@ -64,7 +64,7 @@ export default function BookingPhotoList() {
     }
   };
   return (
-    <div className="flex overflow-x-auto custom-scrollbar w-full">
+    <div className="flex overflow-x-scroll custom-scrollbar w-full">
       {photoArray.toReversed().map((photo, index) => (
         <div key={index} className="relative p-2 flex-shrink-0">
           <img

@@ -5,7 +5,6 @@ import {
 } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
 import { message, Upload, Tooltip, Switch } from "antd";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import PhotoService from "../../../services/PhotoService";
@@ -224,57 +223,55 @@ export default function UploadBookingPhoto({ bookingDetail }) {
   // };
 
   return (
-    <div className="overflow-hidden">
-      <div className="w-full h-full grid grid-cols-6">
-        <div className="col-span-1 flex items-center justify-center bg-[#696c73] hover:opacity-90">
-          <Dragger
-            name="avatar"
-            listType="picture-card"
-            className="avatar-uploader"
-            multiple={true}
-            beforeUpload={beforeUpload}
-            onChange={handleChange}
-            customRequest={customRequest}
-            itemRender={itemRender}
-            fileList={photoArray}
-            showUploadList={false}
-            accept=".jpg,.jpeg,.png"
-            style={{
-              width: "100%",
-              padding: "none",
-              margin: "none",
-              border: "0px",
-              backgroundColor: "#696c73",
-            }}
-          >
-            <div className="flex flex-col items-center justify-center h-full w-full">
-              {photoArray.length > 0 ? (
-                <div className="w-full h-full m-6 hover:text-white text-gray-200">
-                  <div className=" text-6xl">
-                    <UploadOutlined />
-                  </div>
-                  <p className="mt-1 font-normal">Tải thêm ảnh</p>
+    <div className="w-full h-full grid grid-cols-6">
+      <div className="col-span-1 flex items-center justify-center bg-[#696c73] hover:opacity-90">
+        <Dragger
+          name="avatar"
+          listType="picture-card"
+          className="avatar-uploader"
+          multiple={true}
+          beforeUpload={beforeUpload}
+          onChange={handleChange}
+          customRequest={customRequest}
+          itemRender={itemRender}
+          fileList={photoArray}
+          showUploadList={false}
+          accept=".jpg,.jpeg,.png"
+          style={{
+            width: "100%",
+            padding: "none",
+            margin: "none",
+            border: "0px",
+            backgroundColor: "#696c73",
+          }}
+        >
+          <div className="flex flex-col items-center justify-center h-full w-full">
+            {photoArray.length > 0 ? (
+              <div className="w-full h-full m-6 hover:text-white text-gray-200">
+                <div className=" text-6xl">
+                  <UploadOutlined />
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full w-full">
-                  <p className="text-2xl text-white font-semibold">
-                    Nhấp hoặc kéo tệp vào khu vực này để tải lên
-                  </p>
-                  <p className="text-white font-extralight">
-                    Hỗ trợ tải lên một hoặc nhiều tệp. Nghiêm cấm tải lên dữ
-                    liệu công ty hoặc các tệp bị cấm khác.
-                  </p>
-                </div>
-              )}
-            </div>
-          </Dragger>
-        </div>
-        {photoArray.length > 0 && (
-          <div className="col-span-5 w-full bg-[#36393f]">
-            <BookingPhotoList />
+                <p className="mt-1 font-normal">Tải thêm ảnh</p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full w-full">
+                <p className="text-2xl text-white font-semibold">
+                  Nhấp hoặc kéo tệp vào khu vực này để tải lên
+                </p>
+                <p className="text-white font-extralight">
+                  Hỗ trợ tải lên một hoặc nhiều tệp. Nghiêm cấm tải lên dữ liệu
+                  công ty hoặc các tệp bị cấm khác.
+                </p>
+              </div>
+            )}
           </div>
-        )}
+        </Dragger>
       </div>
+      {photoArray.length > 0 && (
+        <div className="col-span-5 w-full bg-[#36393f]">
+          <BookingPhotoList />
+        </div>
+      )}
     </div>
   );
 }

@@ -11,28 +11,51 @@ const getBillItems = async (bookingId) => {
   return response.data;
 };
 
-// Create a new bill item
-const createBillItem = async (bookingId, body) => {
+const addBillItem = async (bookingId, { title, description, price, type }) => {
   const response = await http.post(
     `/photographer/booking/${bookingId}/bill-item`,
-    body
+    {
+      title,
+      description,
+      price,
+      type,
+    }
   );
-  return response.data;
+
+  return response;
 };
 
 // Update an existing bill item
-const updateBillItem = async (bookingId, billItemId, body) => {
+const updateBillItem = async (
+  bookingId,
+  billItemId,
+  { title, description, price, type }
+) => {
   const response = await http.patch(
     `/photographer/booking/${bookingId}/bill-item/${billItemId}`,
-    body
+    {
+      title,
+      description,
+      price,
+      type,
+    }
+  );
+
+  return response;
+};
+// New API handler for deleting a specific bill item
+const deleteBillItem = async (bookingId, billItemId) => {
+  const response = await http.delete(
+    `/photographer/booking/${bookingId}/bill-item/${billItemId}`
   );
   return response.data;
 };
 
 const BillItemApi = {
   getBillItems, // Added function for fetching bill items
-  createBillItem, // Added function for creating a new bill item
+  addBillItem, // Added function for creating a new bill item
   updateBillItem, // Added function for updating an existing bill item
+  deleteBillItem, // Added function for deleting a specific bill item
 };
 
 export default BillItemApi;
