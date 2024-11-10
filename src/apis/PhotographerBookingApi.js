@@ -2,7 +2,7 @@ import http from "../configs/Http";
 
 const findAllBooking = async (status) => {
   const response = await http.get(
-    `/photographer/booking/me?limit=999&page=0&status=${status}`,
+    `/photographer/booking/me?limit=999&page=0&status=${status}`
   );
 
   return response.data;
@@ -26,12 +26,19 @@ const acceptBooking = async (id) => {
   return response.data;
 };
 
-const paidBooking = async (id) => {
-  const response = await http.post(`/photographer/booking/${id}/paid`);
+const paidBooking = async (bookingId) => {
+  const response = await http.patch(`/photographer/booking/${bookingId}/paid`);
 
   return response.data;
 };
 
+const deleteBookingPhoto = async (bookingId, photoId) => {
+  const response = await http.delete(
+    `/photographer/booking/${bookingId}/photo/${photoId}`
+  );
+
+  return response.data;
+};
 const upload = async (id, file) => {
   const formData = new FormData();
   formData.append("file", file);
@@ -43,7 +50,7 @@ const upload = async (id, file) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    },
+    }
   );
 
   return response.data;
@@ -67,4 +74,5 @@ export const PhotographerBookingApi = {
   paidBooking,
   upload,
   findById,
+  deleteBookingPhoto,
 };
