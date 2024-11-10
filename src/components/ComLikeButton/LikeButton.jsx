@@ -21,7 +21,6 @@ const LikeButton = ({ photoId, size = "size-7", reloadData }) => {
       return;
     }
   }, [photoId]);
-  console.log(111111111, photoId);
 
   const onLike = () => {
     if (!isLiked) {
