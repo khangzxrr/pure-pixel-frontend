@@ -1,0 +1,88 @@
+import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useId } from "react";
+import { useParams } from "react-router-dom";
+import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
+import BookingDetailInfo from "./BookingDetailInfo";
+import BookingDetailUpload from "./BookingDetailUpload";
+import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
+import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+
+const BookingDetail = () => {
+  const { bookingId } = useParams();
+  const {
+    setSelectedPhotoByUid,
+    photoArray,
+    addPhotoWithId,
+    selectedPhoto,
+    getPhotoByUid,
+    clearState,
+    setPreviousSelectedPhoto,
+    setNextSelectedPhoto,
+  } = useBookingPhotoStore();
+  const { isPending, data: bookingDetail } = useQuery({
+    queryKey: [`findBookingById_${bookingId}`],
+    queryFn: () => PhotographerBookingApi.findById(bookingId),
+  });
+
+  useEffect(() => {
+    console.log("data", bookingDetail);
+
+    if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
+      bookingDetail.photos.forEach((photo) => {
+        console.log("photo", photo);
+
+        addPhotoWithId(photo.id, {
+          id: photo.id,
+          uid: photo.id,
+          reviewUrl: photo.signedUrl.url,
+          visibility: photo.visibility,
+          status: "done",
+        });
+        setSelectedPhotoByUid(photo.id);
+      });
+    }
+  }, [bookingDetail]);
+
+  if (isPending) {
+    return <div>Đang tải thông tin lịch hẹn...</div>;
+  }
+  const selectedPhotoData = getPhotoByUid(selectedPhoto);
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-8 overflow-hidden">
+      <div className="md:col-span-2 flex h-[95vh] overflow-y-scroll custom-scrollbar">
+        <BookingDetailInfo bookingDetail={bookingDetail} />
+      </div>
+      <div className="md:col-span-6 flex flex-col h-[95vh]">
+        <div className="  bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden">
+          {photoArray.length > 1 && (
+            <>
+              <div
+                className="absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10"
+                onClick={() => setPreviousSelectedPhoto()}
+              >
+                <ArrowLeftOutlined />
+              </div>
+              <div
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10"
+                onClick={() => setNextSelectedPhoto()}
+              >
+                <ArrowRightOutlined />
+              </div>
+            </>
+          )}
+          <img
+            src={selectedPhotoData?.reviewUrl}
+            className="h-[444px] shadow-gray-600 shadow-xl drop-shadow-none z-0"
+            alt="Selected Photo"
+          />
+        </div>
+        <div className="">
+          <BookingDetailUpload bookingDetail={bookingDetail} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BookingDetail;

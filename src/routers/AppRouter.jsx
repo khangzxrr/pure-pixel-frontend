@@ -1,10 +1,8 @@
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import DashboardLayout from "../layouts/DashboardLayout";
 import ForYou from "../components/Dashboard/ForYou/ForYou";
 import Following from "../components/Dashboard/Following/Following";
 // import Explore from "../components/Dashboard/Explore/Explore";
-import HomePage from "./../pages/HomePage/HomePage";
 // import Award from "../pages/HomePage/Award";
 import Discover from "../pages/HomePage/Discover";
 import Licensing from "../pages/HomePage/Licensing";
@@ -14,18 +12,8 @@ import Album from "../pages/Customer/Album";
 import Photo from "../pages/Customer/Photo";
 import Booking from "../pages/Customer/Booking";
 import Transaction from "../pages/Customer/Transaction";
-import PhotoDetailLayout from "../pages/PhotoDetailLayout";
 import UploadPhoto from "../pages/Photographer/UploadPhoto";
 import MembershipPage from "../pages/HomePage/MembershipPage";
-import MyPhoto from "../layouts/MyPhoto";
-import MyPhotoContent from "../components/MyPhoto/MyPhotoComponent/MyPhotoContent";
-import MyPhotoLicensing from "../components/MyPhoto/MyPhotoLicensing/MyPhotoLicensing";
-import MyPhotoStories from "../components/MyPhoto/MyPhotoStories/MyPhotoStories";
-import MyPhotoGalleries from "../components/MyPhoto/MyPhotoGalleries/MyPhotoGalleries";
-import MyPhotoLikes from "../components/MyPhoto/MyPhotoLikes/MyPhotoLikes";
-import MyPhotoStatistics from "../components/MyPhoto/MyPhotoStatistics/MyPhotoStatistics";
-import MyPhotoAll from "../components/MyPhoto/MyPhotoAll/MyPhotoAll";
-import MyPhotoPrivate from "../components/MyPhoto/MyPhotoPrivate/MyPhotoPrivate";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import Photos from "../components/UserProfile/Photos";
 import Galleries from "../components/UserProfile/Galleries";
@@ -39,21 +27,17 @@ import HotPhoto from "../components/Hot/HotPhoto";
 import DashboardLayoutF from "../layouts/DashboardLayoutF";
 import Explore from "./../components/Explore/Explore";
 import Upload from "../components/Upload/Upload";
-import PublicUpload from "../components/Upload/PublicUpload";
 import PrivateUpload from "../components/Upload/PrivateUpload";
 import User from "../components/UserProfile/User";
 import ErrorPage from "../pages/ErrorPage";
 import ListPhotographers from "../pages/Photographer/ListPhotographers";
-import ScrollingBar from "../components/Photographer/UploadPhoto/ScrollingBar";
 import ProfilePage from "../pages/DetailUser/DetailUser";
 import BlogList from "../pages/Blog/BlogList";
 import DetailedBlog from "./../pages/Blog/DetailedBlog";
-import ProfileSettings from "../pages/ProfileSettings/ProfileSettings";
 import Wallet from "../pages/UserProfile/Wallet";
 import Blog from "./../components/Blog/Blog";
 import DetailedPhotoView from "../pages/DetailPhoto/DetailPhoto";
 import MyPhotosPage from "../pages/MyPhoto/MyPhotosP";
-import TableTransactilonList from "../components/Wallet/TableTransactilonList";
 import AdminLayout from "../layouts/AdminLayout";
 import PhotoSellingPage from "../pages/PhotoSelling/PhotoSellingPage";
 import Report from "../pages/Manager/Report/Report";
@@ -69,10 +53,6 @@ import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
 import SellUpload from "../components/Upload/SellUpload";
 import PhotoshootPackageManagement from "../pages/UserProfile/PhotoshootPackageManagement";
 import PhotoshootRegistrationTable from "../pages/UserProfile/PhotoshootRegistrationTable";
-import BookingPage from "../pages/BookingPage/BookingPage";
-import BookingDetail from "../pages/BookingPage/BookingDetail";
-import { useKeycloak } from "@react-keycloak/web";
-import UserService from "../services/Keycloak";
 import NewfeedPage from "../pages/NewFeed/NewfeedPage";
 import BookingRequestDetail from "../pages/UserProfile/BookingRequestDetail";
 import UserProfileV2 from "../pages/UserProfile/UserProfileV2";
@@ -82,6 +62,16 @@ import PackagesUser from "../components/UserOther/PackagesUser";
 import SellingUser from "../components/UserOther/SellingUser";
 import PhotosBought from "../components/PhotoBought/PhotosBought";
 import PhotoBoughtDetail from "../components/PhotoBought/PhotoBoughtDetail";
+
+import CreateBookingPackage from "../components/ComCreateBooking/CreateBookingPackage";
+import PhotoshootPackageList from "../components/Booking/PhotoshootPackageList";
+import PhotoshootPackageDetail from "../components/Booking/PhotoshootPackageDetail";
+import BookingRequestList from "../components/Booking/BookingRequestList";
+import BookingRequestPending from "../components/Booking/BookingRequestState/BookingRequestPending";
+import BookingRequestInProgress from "../components/Booking/BookingRequestState/BookingRequestInProgress";
+import BookingRequestCompleted from "../components/Booking/BookingRequestState/BookingRequestCompleted";
+import BookingRequestCancelled from "../components/Booking/BookingRequestState/BookingRequestCancelled";
+import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -132,11 +122,11 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "booking-package",
-                element: <BookingPage />,
+                element: <PhotoshootPackageList />,
               },
               {
-                path: "booking-package/:packageId",
-                element: <BookingDetail />,
+                path: "booking-package/:photoshootPackageId",
+                element: <PhotoshootPackageDetail />,
               },
               {
                 path: "product-photo/:id",
@@ -248,16 +238,42 @@ export const AppRouter = createBrowserRouter([
                 element: <Wallet />,
               },
               {
-                path: "booking",
+                path: "photoshoot-package",
                 element: <PhotoshootPackageManagement />,
               },
               {
                 path: "booking-request",
-                element: <PhotoshootRegistrationTable />,
+                element: <BookingRequestList />,
+                children: [
+                  {
+                    path: "",
+                    element: <Navigate to="pending" replace={true} />,
+                  },
+                  {
+                    path: "pending",
+                    element: <BookingRequestPending />,
+                  },
+                  {
+                    path: "in-progress",
+                    element: <BookingRequestInProgress />,
+                  },
+                  {
+                    path: "completed",
+                    element: <BookingRequestCompleted />,
+                  },
+                  {
+                    path: "cancelled",
+                    element: <BookingRequestCancelled />,
+                  },
+                ],
               },
+              // {
+              //   path: "booking-request/:bookingId",
+              //   element: <BookingRequestDetail />,
+              // },
               {
-                path: "booking-request/:bookingId",
-                element: <BookingRequestDetail />,
+                path: "booking/:bookingId",
+                element: <BookingDetail />,
               },
               {
                 path: "photo-selling",
@@ -274,6 +290,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "product-photo/:id",
                 element: <ProductPhotoDetail />,
+              },
+              {
+                path: "create-booking-package",
+                element: <CreateBookingPackage />,
               },
             ],
           },

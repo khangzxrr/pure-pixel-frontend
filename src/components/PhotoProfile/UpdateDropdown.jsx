@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dropdown, message } from "antd";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { IoPencilOutline } from "react-icons/io5";
@@ -6,9 +6,12 @@ import { CgRemove } from "react-icons/cg";
 import PhotoApi from "../../apis/PhotoApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "../../Notification/Notification";
+import useModalStore from "../../states/UseModalStore";
 
-const UpdateDropdown = ({ photoId }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
+const UpdateDropdown = ({ photo }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const { setIsUpdatePhotoModal, setSelectedPhoto, isUpdatePhotoModal } =
+    useModalStore();
   const queryClient = useQueryClient();
   const { notificationApi } = useNotification();
 
@@ -18,7 +21,7 @@ const UpdateDropdown = ({ photoId }) => {
 
   const handleDeletePhoto = async () => {
     try {
-      await deletePhoto.mutateAsync(photoId, {
+      await deletePhoto.mutateAsync(photo.id, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["my-photo"] });
           notificationApi("success", "Xóa ảnh thành công", "Ảnh đã được xóa.");
@@ -46,6 +49,8 @@ const UpdateDropdown = ({ photoId }) => {
       label: <p className="text-blue-500">Chỉnh sửa</p>,
       onClick: () => {
         // Add edit functionality here
+        setIsUpdatePhotoModal(true);
+        setSelectedPhoto({ ...photo, isChangeGPS: false });
       },
     },
     {

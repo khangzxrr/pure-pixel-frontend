@@ -103,15 +103,27 @@ const useBookingPhotoStore = create(
         console.log(response);
 
         const index = state.uidHashmap[uid];
+
+        if (index === undefined) {
+          console.warn(`Photo with uid ${uid} not found.`);
+          return state; // Exit if uid is not found
+        }
+
+        // Update photoIdHashmap with the new response id
         state.photoIdHashmap[response.id] = index;
 
-        state.photoArray[index].response = response;
+        // Merge response as new fields into the existing photo object
+        state.photoArray[index] = {
+          ...state.photoArray[index],
+          ...response, // Spread the response object, adding new fields or updating existing ones
+        };
 
         return {
           photoIdHashmap: state.photoIdHashmap,
           photoArray: state.photoArray,
         };
       }),
+
     addPhoto: (uid, payload) =>
       set((state) => {
         const index = state.photoArray.length;
@@ -123,6 +135,32 @@ const useBookingPhotoStore = create(
         return {
           photoArray: state.photoArray,
           uidHashmap: state.uidHashmap,
+        };
+      }),
+    addPhotoWithId: (uid, payload) =>
+      set((state) => {
+        // Check if the uid already exists in uidHashmap or photoIdHashmap
+        if (
+          state.uidHashmap[uid] !== undefined ||
+          state.photoIdHashmap[uid] !== undefined
+        ) {
+          console.warn(`Photo with uid ${uid} already exists.`);
+          return state; // Return the current state without making any changes
+        }
+
+        const index = state.photoArray.length;
+
+        // Add entries to uidHashmap and photoIdHashmap
+        state.uidHashmap[uid] = index;
+        state.photoIdHashmap[uid] = index;
+
+        // Add the photo to photoArray
+        state.photoArray.push(payload);
+
+        return {
+          photoArray: state.photoArray,
+          uidHashmap: state.uidHashmap,
+          photoIdHashmap: state.photoIdHashmap,
         };
       }),
 
@@ -141,8 +179,8 @@ const useBookingPhotoStore = create(
         const newPhotoIdHashmap = {};
 
         updatedPhotoArray.forEach((photo, idx) => {
-          newUidHashmap[photo.file.uid] = idx;
-          newPhotoIdHashmap[photo.signedUpload.photoId] = idx;
+          newUidHashmap[photo.uid] = idx;
+          newPhotoIdHashmap[photo.photoId] = idx;
         });
 
         // Set selectedPhoto as the first element in the newUidHashmap
@@ -164,7 +202,7 @@ const useBookingPhotoStore = create(
 
         if (index === -1) return state; // Exit if photoId not found
 
-        const uid = state.photoArray[index].file.uid;
+        const uid = state.photoArray[index].uid;
 
         // Remove photo from photoArray
         const updatedPhotoArray = state.photoArray.filter(
@@ -176,8 +214,8 @@ const useBookingPhotoStore = create(
         const newPhotoIdHashmap = {};
 
         updatedPhotoArray.forEach((photo, idx) => {
-          newUidHashmap[photo.file.uid] = idx;
-          newPhotoIdHashmap[photo.response.id] = idx;
+          newUidHashmap[photo.uid] = idx;
+          newPhotoIdHashmap[photo.id] = idx;
         });
 
         // Set selectedPhoto as the first element in the newUidHashmap

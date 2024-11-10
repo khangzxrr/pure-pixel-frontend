@@ -44,7 +44,7 @@ export default function CreatePhotoshootPackage({ onClose, tableRef }) {
       notificationApi(
         "error",
         "Hình ảnh không hợp lệ",
-        "Vui lòng chọn hình ảnh."
+        "Vui lòng chọn hình ảnh.",
       );
       return;
     }
@@ -55,7 +55,7 @@ export default function CreatePhotoshootPackage({ onClose, tableRef }) {
     for (const key in data) {
       formData.append(key, data[key]);
     }
-    postData("/photoshoot-package", formData)
+    postData("photographer/photoshoot-package", formData)
       .then((response) => {
         notificationApi("success", "Thành công", "Đã tạo thành công");
         setDisabled(false);

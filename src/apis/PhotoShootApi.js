@@ -37,8 +37,7 @@ const uploadBookingPhoto = async (bookingId, file, onUploadProgress) => {
   //
   const formData = new FormData();
   formData.append("file", file);
-
-  const response = await http.post(
+  const response = await http.put(
     `/photographer/booking/${bookingId}/upload`,
     formData,
     {

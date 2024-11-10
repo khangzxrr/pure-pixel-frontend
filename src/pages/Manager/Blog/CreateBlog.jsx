@@ -56,6 +56,8 @@ export default function CreateBlog({ onClose, tableRef }) {
       formData.append(key, data[key]);
     }
     formData.append("status", "ENABLED");
+    console.log(111111111111, formData);
+    
     postData("/blog", formData)
       .then((response) => {
         notificationApi("success", "Thành công", "Đã tạo thành công");

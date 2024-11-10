@@ -51,3 +51,15 @@
   color: #ff4d4f; /* Replace with your desired text color */
 }
 /* Customize the border and background color */
+
+.ant-select-item-option {
+  color: #000 !important; /* Đặt màu chữ là đen */
+}
+.custom-input {
+  background-color: #292b2f !important; /* Màu nền của input */
+  color: #d7d7d8 !important; /* Màu chữ */
+  border: 1px solid #4c4e52;
+}
+.ant-select-selection-item {
+  background-color: rgb(71, 71, 71) !important; /* Đặt màu chữ là đen */
+}

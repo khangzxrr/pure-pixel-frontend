@@ -22,7 +22,7 @@ const PhotosUser = () => {
   const limit = 20;
   const [selectedImage, setSelectedImage] = useState(null);
   const popupShare = useModalState();
-  const [selectedPhotoId, setSelectedPhotoId] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
@@ -53,6 +53,7 @@ const PhotosUser = () => {
         return currentPage < lastPage.totalPage ? currentPage : undefined;
       },
     });
+  console.log(userId);
 
   const photoList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
@@ -64,9 +65,9 @@ const PhotosUser = () => {
     700: 2,
     500: 1,
   };
-  const handleOnClick = (photoId) => {
+  const handleOnClick = (photo) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    setSelectedImage(photoId);
+    setSelectedImage(photo);
   };
   return (
     <>
@@ -77,7 +78,8 @@ const PhotosUser = () => {
         // className={"bg-black"}
       >
         <ComSharePhoto
-          idImg={selectedPhotoId}
+          photoId={selectedPhoto?.id}
+          userId={selectedPhoto?.photographer?.id}
           onClose={popupShare.handleClose}
         />
       </ComModal>
@@ -128,7 +130,7 @@ const PhotosUser = () => {
                     alt={`Photo ${photo.id}`}
                     className="w-full h-auto object-cover"
                     onClick={() => {
-                      handleOnClick(photo.id);
+                      handleOnClick(photo.id, photo.photographer.id);
                       console.log("PtUser", photo.id);
                     }}
                   />
@@ -152,7 +154,7 @@ const PhotosUser = () => {
                             className="size-7"
                             onClick={() => {
                               popupShare.handleOpen();
-                              setSelectedPhotoId(photo.id);
+                              setSelectedPhoto(photo);
                             }}
                           />
                         </div>

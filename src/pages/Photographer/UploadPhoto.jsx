@@ -23,9 +23,7 @@ export default function UploadPhoto() {
         <div className="flex flex-col w-full h-full">
           <div
             className={`flex ${
-              photoArray.some((photo) => photo.status === "done")
-                ? "h-1/4 lg:h-1/3"
-                : "h-1/2"
+              photoArray.some((photo) => photo.status === "done") ? "" : "h-1/2"
             }`}
           >
             <CustomUpload />
@@ -62,7 +60,7 @@ export default function UploadPhoto() {
             </div>
           )}
 
-          <OverviewModal />
+          {/* <OverviewModal /> */}
           <MapBoxModal />
         </div>
       </div>
