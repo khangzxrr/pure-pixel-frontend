@@ -33,25 +33,25 @@ const InspirationPhoto = () => {
   const limit = 20; // Tổng số ảnh
   const { selectedLocate, setSelectedLocate } = useMapboxState(); // Use Zustand store
   const [selectedImage, setSelectedImage] = useState(
-    selectedLocate ? selectedLocate.id : null,
+    selectedLocate ? selectedLocate.id : null
   );
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
   const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory,
+    (state) => state.selectedPhotoCategory
   );
   const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate,
+    (state) => state.filterByPhotoDate
   );
   const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
   const searchResult = UseCategoryStore((state) => state.searchResult);
   const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle,
+    (state) => state.searchByPhotoTitle
   );
   const setNamePhotographer = UsePhotographerFilterStore(
-    (state) => state.setNamePhotographer,
+    (state) => state.setNamePhotographer
   );
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const popupShare = useModalState();
@@ -75,7 +75,7 @@ const InspirationPhoto = () => {
       watermark,
       selling,
       photographerName,
-      title,
+      title
     );
     return response;
   };
@@ -197,7 +197,7 @@ const InspirationPhoto = () => {
                                 className="hover:underline cursor-pointer underline-offset-2"
                                 onClick={() => {
                                   navigate(
-                                    `/user/${photo.photographer.id}/photos`,
+                                    `/user/${photo.photographer.id}/photos`
                                   );
                                   setNamePhotographer(photo.photographer.name);
                                   setActiveTitle(null);
@@ -212,8 +212,6 @@ const InspirationPhoto = () => {
                                   className="size-7"
                                   onClick={() => {
                                     popupShare.handleOpen();
-
-                                    console.log("hi");
                                     setSelectedPhoto(photo);
                                   }}
                                 />

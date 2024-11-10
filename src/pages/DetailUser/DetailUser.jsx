@@ -5,8 +5,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 export default function DetailUser({ id, data }) {
+  const navigate = useNavigate();
   const scrollContainerRef = useRef(null);
   const [selectedButton, setSelectedButton] = useState(1);
   const [dataUser, setDataUser] = useState({});
@@ -78,15 +80,14 @@ export default function DetailUser({ id, data }) {
     };
     loadInitialData();
   }, [id]);
-  console.log(photos);
-  
+
   const getPhotos = async (page) => {
     try {
       const response = await getData(
         `/photo/public?limit=9999&page=${page}&photographerId=${id}`
       );
       setNumberPhoto(response?.data.totalRecord);
-        
+
       return response?.data?.objects;
     } catch (error) {
       return [];
@@ -94,7 +95,7 @@ export default function DetailUser({ id, data }) {
   };
   const fetchMorePhotos = async () => {
     console.log(123);
-    
+
     const newProducts = await getPhotos(page + 1);
     if (newProducts.length === 0) {
       setHasMore(false); // No more data to load
@@ -128,7 +129,12 @@ export default function DetailUser({ id, data }) {
 
       {/* Profile Info */}
       <div className="relative px-4 pt-16 pb-6">
-        <h1 className="text-2xl font-bold text-center">{dataUser?.name}</h1>
+        <h1
+          onClick={() => navigate(`/user/${dataUser?.id}/photos`)}
+          className="text-2xl font-bold text-center hover:underline hover:cursor-pointer underline-offset-2"
+        >
+          {dataUser?.name}
+        </h1>
         <p className="text-gray-400 text-center">{dataUser?.quote}</p>
         <div className="flex justify-center items-center mt-2 space-x-4">
           <div className="flex bg-[#4d4d4d] border-[#4c4c4c] px-4 py-1 justify-center border  items-center rounded-lg space-x-4">

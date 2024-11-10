@@ -22,7 +22,7 @@ const PhotosUser = () => {
   const limit = 20;
   const [selectedImage, setSelectedImage] = useState(null);
   const popupShare = useModalState();
-
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
@@ -39,7 +39,7 @@ const PhotosUser = () => {
       null,
       null,
       photographerId,
-      null,
+      null
     );
     return response;
   };
@@ -53,6 +53,7 @@ const PhotosUser = () => {
         return currentPage < lastPage.totalPage ? currentPage : undefined;
       },
     });
+  console.log(userId);
 
   const photoList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
@@ -77,8 +78,8 @@ const PhotosUser = () => {
         // className={"bg-black"}
       >
         <ComSharePhoto
-          photoId={selectedImage.id}
-          userId={selectedImage.photographer.id}
+          photoId={selectedPhoto?.id}
+          userId={selectedPhoto?.photographer?.id}
           onClose={popupShare.handleClose}
         />
       </ComModal>
@@ -153,6 +154,7 @@ const PhotosUser = () => {
                             className="size-7"
                             onClick={() => {
                               popupShare.handleOpen();
+                              setSelectedPhoto(photo);
                             }}
                           />
                         </div>

@@ -66,8 +66,7 @@ export default function CommentPhoto({ id, reload, top }) {
   useEffect(() => {
     callApiComment();
   }, [id]);
-  console.log(dataComment);
-  console.log(valueComment);
+
   const handComment = () => {
     postData(`comment/photo/${id}`, {
       content: valueComment,

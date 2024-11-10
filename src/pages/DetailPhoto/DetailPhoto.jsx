@@ -142,8 +142,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
 
   // // Lấy 3 thông số đầu tiên để hiển thị
   const mainDetails = allDetails?.slice(0, 3);
-  console.log(categoryName);
-  console.log(categoryName);
+
   const extraDetails = allDetails.slice(3);
 
   return (
