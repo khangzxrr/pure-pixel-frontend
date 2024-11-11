@@ -1,6 +1,6 @@
 import { useKeycloak } from "@react-keycloak/web";
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import PhotoApi from "../../apis/PhotoApi";
 import UserService from "../../services/Keycloak";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
@@ -14,7 +14,7 @@ import { getData } from "../../apis/api";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
-import { Blurhash } from "react-blurhash";
+import { Blurhash, BlurhashCanvas } from "react-blurhash";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -59,6 +59,9 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const popupShare = useModalState();
   const navigate = useNavigate();
 
+  const [blurhashWidth, setBlurhashWidth] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [currentPhoto, setCurrentPhoto] = useState(photo);
@@ -91,8 +94,20 @@ export default function DetailedPhotoView({ onClose, photo }) {
     navigate("/404");
   }
 
+  const imageDisplayDiv = useCallback((node) => {
+    if (node != null) {
+      console.log(node.getBoundingClientRect().height);
+      setViewportHeight(node.getBoundingClientRect().height);
+    }
+  });
+
   useEffect(() => {
     console.log(`current photo changed!`);
+
+    if (currentPhoto?.height) {
+      const ratio = currentPhoto.height / viewportHeight;
+      setBlurhashWidth(currentPhoto.width / ratio);
+    }
 
     setIsThumbnailPhotoLoaded(false);
     setIsOriginalphotoLoaded(false);
@@ -200,29 +215,47 @@ export default function DetailedPhotoView({ onClose, photo }) {
                 <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" />
               </Icon>
             </button>
-            <div className="flex  justify-center items-center  h-screen">
+            <div
+              className="flex  justify-center items-center  h-screen"
+              ref={imageDisplayDiv}
+            >
+              <Blurhash
+                style={{
+                  display:
+                    isThumbnailPhotoLoaded || isOriginalPhotoLoaded
+                      ? "none"
+                      : null,
+                }}
+                hash="LEHV6nWB2yk8pyo0adR*.7kCMdnj"
+                width={blurhashWidth}
+                height={"100%"}
+                punch={1}
+              />
               <img
                 src={currentPhoto.signedUrl.thumbnail}
                 alt="Traunfall waterfall"
                 className="w-auto h-full max-h-screen"
                 style={{
-                  display: isOriginalPhotoLoaded ? "none" : null,
+                  display:
+                    isOriginalPhotoLoaded || !isThumbnailPhotoLoaded
+                      ? "none"
+                      : null,
                 }}
                 onLoad={() => setIsThumbnailPhotoLoaded(true)}
               />
 
-              <img
-                src={currentPhoto.signedUrl.url}
-                alt="Traunfall waterfall"
-                className="w-auto h-full max-h-screen"
-                style={{
-                  display: isOriginalPhotoLoaded ? null : "none",
-                }}
-                onLoad={() => {
-                  setIsThumbnailPhotoLoaded(true);
-                  setIsOriginalphotoLoaded(true);
-                }}
-              />
+              {/* <img */}
+              {/*   src={currentPhoto.signedUrl.url} */}
+              {/*   alt="Traunfall waterfall" */}
+              {/*   className="w-auto h-full max-h-screen" */}
+              {/*   style={{ */}
+              {/*     display: isOriginalPhotoLoaded ? null : "none", */}
+              {/*   }} */}
+              {/*   onLoad={() => { */}
+              {/*     setIsThumbnailPhotoLoaded(true); */}
+              {/*     setIsOriginalphotoLoaded(true); */}
+              {/*   }} */}
+              {/* /> */}
             </div>
 
             <button
