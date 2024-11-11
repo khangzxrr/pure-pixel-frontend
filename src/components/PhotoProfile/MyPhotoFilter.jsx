@@ -68,41 +68,9 @@ const MyPhotoFilter = () => {
       <span className="flex justify-center w-full font-normal bg-[#202225] rounded-t-lg p-2 ">
         Bộ lọc ảnh
       </span>
-      <div className="flex flex-col md:flex-row  items-center gap-2 px-2 rounded-r-md p-4">
-        <div className="flex flex-col  gap-2 ">
-          <div className="flex items-center p-[5px] rounded-md">
-            <label class="inline-flex items-center cursor-pointer">
-              <input
-                id="watermarkCheckbox"
-                type="checkbox"
-                value=""
-                class="sr-only peer"
-                checked={isWatermarkChecked}
-                onChange={handleWatermarkChange}
-              />
-              <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
-              <span class="ms-3  font-normal text-[#eee] ">
-                Ảnh có watermark
-              </span>
-            </label>
-          </div>
-          <div className="flex items-center p-[5px] rounded-md">
-            <label class="inline-flex items-center cursor-pointer">
-              <input
-                id="forSaleCheckbox"
-                type="checkbox"
-                value=""
-                class="sr-only peer"
-                checked={isForSaleChecked}
-                onChange={handleForSaleChange}
-              />
-              <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
-              <span class="ms-3 text-[#eee] font-normal ">Ảnh đang bán</span>
-            </label>
-          </div>
-        </div>
+      <div className="flex flex-col  items-center gap-2 px-2 rounded-r-md p-4">
         <div className="flex flex-col  gap-2">
-          <div>
+          {/* <div>
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] ">
@@ -140,7 +108,7 @@ const MyPhotoFilter = () => {
                 </div>
               </MenuItems>
             </Menu>
-          </div>
+          </div> */}
           <div>
             <Menu as="div" className="relative inline-block text-left">
               <div>
@@ -180,6 +148,38 @@ const MyPhotoFilter = () => {
               </MenuItems>
             </Menu>
           </div>
+        </div>
+        <div className="flex flex-col  gap-2 ">
+          <div className="flex items-center p-[5px] rounded-md">
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                id="watermarkCheckbox"
+                type="checkbox"
+                value=""
+                class="sr-only peer"
+                checked={isWatermarkChecked}
+                onChange={handleWatermarkChange}
+              />
+              <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
+              <span class="ms-3  font-normal text-[#eee] ">
+                Ảnh có watermark
+              </span>
+            </label>
+          </div>
+          {/* <div className="flex items-center p-[5px] rounded-md">
+            <label class="inline-flex items-center cursor-pointer">
+              <input
+                id="forSaleCheckbox"
+                type="checkbox"
+                value=""
+                class="sr-only peer"
+                checked={isForSaleChecked}
+                onChange={handleForSaleChange}
+              />
+              <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
+              <span class="ms-3 text-[#eee] font-normal ">Ảnh đang bán</span>
+            </label>
+          </div> */}
         </div>
       </div>
     </div>

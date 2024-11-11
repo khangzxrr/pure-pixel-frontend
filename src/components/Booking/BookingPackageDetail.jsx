@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import formatPrice from "../../utils/FormatPriceUtils";
 import BookingModal from "./../../pages/BookingPage/component/BookingModal";
 
-const PhotoshootPackageInfo = ({ photoshootPackage }) => {
+const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -59,13 +59,21 @@ const PhotoshootPackageInfo = ({ photoshootPackage }) => {
           <div className="flex flex-col gap-1 p-2 border border-gray-600 rounded-lg">
             {photoshootPackage.description}
           </div>
-
-          <button
-            onClick={showModal}
-            className="bg-[#eee] text-center p-2 text-[#202225] rounded-lg hover:bg-[#b3b3b3] transition duration-300"
-          >
-            Đặt lịch
-          </button>
+          {userData ? (
+            <button
+              onClick={showModal}
+              className="bg-[#eee] text-center p-2 text-[#202225] rounded-lg hover:bg-[#b3b3b3] transition duration-300"
+            >
+              Đặt lịch
+            </button>
+          ) : (
+            <button
+              onClick={onLogin}
+              className="bg-[#eee] text-center p-2 text-[#202225] rounded-lg hover:bg-[#b3b3b3] transition duration-300"
+            >
+              Đăng nhập để đặt lịch
+            </button>
+          )}
         </div>
       </div>
     </>
