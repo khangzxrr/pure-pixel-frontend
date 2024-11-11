@@ -18,6 +18,7 @@ import { IoMdImages } from "react-icons/io";
 import BlurhashImage from "../BlurhashImage/BlurhashImage";
 import { FaArrowRightLong } from "react-icons/fa6";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
+import { Pagination } from "antd";
 
 const SellingPhotoList = () => {
   const { keycloak } = useKeycloak();
@@ -68,27 +69,16 @@ const SellingPhotoList = () => {
 
   return (
     <div className="h-screen">
-      <div>
-        {data?.objects.length > 0 ? (
-          <div className="flex justify-center gap-2 mx-5 my-2">
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-              (pageNumber) => (
-                <button
-                  key={pageNumber}
-                  onClick={() => handlePageClick(pageNumber)}
-                  className={`px-3 py-1 rounded ${
-                    page === pageNumber
-                      ? "bg-[#eee] text-gray-600"
-                      : "bg-gray-600 text-white"
-                  }`}
-                >
-                  {pageNumber}
-                </button>
-              )
-            )}
-          </div>
-        ) : (
-          ""
+      <div className="flex flex-col">
+        {totalPages > 0 && (
+          <Pagination
+            current={page}
+            total={totalPages * itemsPerPage}
+            onChange={handlePageClick}
+            pageSize={itemsPerPage}
+            showSizeChanger={false}
+            className="flex justify-end my-2"
+          />
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 pb-4">
           {isFetching && (
