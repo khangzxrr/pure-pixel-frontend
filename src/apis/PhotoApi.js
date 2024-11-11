@@ -43,7 +43,7 @@ const getPublicPhotos = async (
   if (watermark) {
     params.watermark = watermark;
   }
-  if (selling) {
+  if (selling !== undefined && selling !== null) {
     params.selling = selling;
   }
   if (photographerName) {
@@ -58,6 +58,7 @@ const getPublicPhotos = async (
   if (cameraId) {
     params.cameraId = cameraId;
   }
+
   // Tạo chuỗi truy vấn từ đối tượng params
   const queryString = new URLSearchParams(params).toString();
   const url = `/photo/public?${queryString}`;

@@ -65,7 +65,7 @@ const InspirationPhoto = () => {
     const orderByUpVote = filterByUpVote.param;
 
     const watermark = isWatermarkChecked;
-    const selling = isForSaleChecked;
+    const selling = false;
     const photographerName = searchResult;
     const title = searchByPhotoTitle;
     const response = await PhotoApi.getPublicPhotos(
