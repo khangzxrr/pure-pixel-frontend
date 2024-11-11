@@ -15,6 +15,9 @@ export default function PhotoManagementModal({ close, id, data }) {
   const [errors, setErrors] = useState({});
   const [isSpecsExpanded, setIsSpecsExpanded] = useState(false);
 
+  // Thêm state để lưu trữ kích thước được chọn
+  const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
+
   const handleSizeToggle = (index) => {
     const newSizes = sizes.map((size, i) => ({
       ...size,
@@ -62,7 +65,7 @@ export default function PhotoManagementModal({ close, id, data }) {
     );
     if (invalidSizes.length > 0) {
       newErrors.prices =
-        "Vui lòng nhập giá hợp lệ cho tất cả các kích thước được chọn,Giá tiền phải lớn hơn 1.000đ";
+        "Vui lòng nhập giá hợp lệ cho tất cả các kích thước được chọn, Giá tiền phải lớn hơn 1.000đ";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -86,7 +89,7 @@ export default function PhotoManagementModal({ close, id, data }) {
     })
       .then((response) => {
         console.log("Upload thành công:", response);
-        message.error("Đã lưu thông tin thành công!");
+        message.success("Đã lưu thông tin thành công!");
         close();
       })
       .catch((error) => {
@@ -97,15 +100,14 @@ export default function PhotoManagementModal({ close, id, data }) {
         setIsSubmitting(false);
       });
   };
-  console.log("====================================");
-  console.log(data);
-  console.log("====================================");
+
   const allDetails = Object?.entries(data?.exif || {});
   const mainDetails = allDetails?.slice(0, 4);
   const extraDetails = allDetails.slice(4);
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60] ">
-      <div className="bg-[#2b2d31] rounded-lg max-w-4xl w-full  overflow-hidden ">
+      <div className="bg-[#2b2d31] rounded-lg max-w-6xl w-full  overflow-hidden ">
         <div className="">
           <div className="p-4 border-b border-gray-700">
             <h2 className="text-xl text-gray-100">Quản lý Ảnh bán</h2>
@@ -114,11 +116,15 @@ export default function PhotoManagementModal({ close, id, data }) {
           <div className="max-h-[70vh] overflow-y-auto  overflow-x-hidden custom-scrollbar2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 ">
               {/* Left side - Photo preview */}
-              <div className="  overflow-hidden">
+              <div className="overflow-hidden">
                 <img
-                  src={sizes && sizes[0]?.preview}
+                  src={
+                    sizes && sizes[selectedSizeIndex]?.preview
+                      ? sizes[selectedSizeIndex]?.preview
+                      : sizes[0]?.preview
+                  }
                   alt="Preview"
-                  className="w-full h-auto rounded-lg"
+                  className="w-full h-auto rounded-lg "
                 />
               </div>
 
@@ -249,22 +255,34 @@ export default function PhotoManagementModal({ close, id, data }) {
                   )}
                   <div className="space-y-3">
                     {sizes.map((size, index) => (
-                      <div key={index} className="flex items-center gap-4">
+                      <div
+                        key={index}
+                        className={`flex items-center gap-4 cursor-pointer `}
+                      >
                         <input
                           type="checkbox"
                           checked={size.selected}
-                          onChange={() => handleSizeToggle(index)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleSizeToggle(index);
+                          }}
                           className="w-4 h-4 rounded border-gray-700"
                         />
-                        <span className="text-gray-100 w-32">
+                        <span
+                          className={`text-gray-100 w-32 p-2  rounded-sm ${
+                            selectedSizeIndex === index ? "bg-gray-700" : ""
+                          }`}
+                          onClick={() => setSelectedSizeIndex(index)}
+                        >
                           {size.height} X {size.width}
                         </span>
                         <input
                           type="number"
                           value={size.price}
-                          onChange={(e) =>
-                            handlePriceChange(index, e.target.value)
-                          }
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handlePriceChange(index, e.target.value);
+                          }}
                           placeholder="Nhập giá tiền"
                           className={`flex-1 bg-[#1e1f22] border rounded px-3 py-2 text-gray-100 ${
                             size.selected &&
