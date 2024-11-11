@@ -7,6 +7,8 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import UseCategoryStore from "./../../states/UseCategoryStore";
 import InsPhotoFilter from "./../Inspiration/InspirationPhoto/InsPhotoFilter";
 import PhotographerFilter from "../Photographer/PhotographerList/PhotographerFilter";
+import UseUserOtherStore from "../../states/UseUserOtherStore";
+import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
 const Sidebar = ({
   sideItems,
   trendItems,
@@ -22,9 +24,11 @@ const Sidebar = ({
   const location = useLocation();
   const { activeLink, setActiveLink, isSidebarOpen, toggleSidebar } =
     UseSidebarStore();
-
+  const nameUserOther = UseUserOtherStore((state) => state.nameUserOther);
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const isInspirationPage = location.pathname === "/explore/inspiration";
   const isPhotographer = location.pathname === "/explore/photographers";
+
   useEffect(() => {
     const currentItem = sideItems.find(
       (item) => item.link === location.pathname
@@ -39,6 +43,17 @@ const Sidebar = ({
       );
     }
   }, [location.pathname, activeLink, setActiveLink, handleClick, sideItems]);
+
+  useEffect(
+    () => {
+      if (!location.pathname === "/user") {
+        setNameUserOther("");
+      }
+    },
+    [location.pathname],
+    setNameUserOther,
+    nameUserOther
+  );
 
   return (
     <div className="flex flex-col max-h-screen gap-3 w-[256px]">
@@ -78,14 +93,16 @@ const Sidebar = ({
             Máy ảnh
           </div>
         </div>
-      )}{" "}
+      )}
+
       {isOtherProfile && (
         <div className=" flex-grow">
           <div className="flex px-2 h-[48px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
-            Hồ sơ
+            {nameUserOther || "Hồ sơ"}
           </div>
         </div>
       )}
+
       <div className="flex flex-col mx-2 gap-1 justify-center ">
         {sideItems.map((item) => (
           <Link

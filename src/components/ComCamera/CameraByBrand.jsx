@@ -81,7 +81,7 @@ const CameraByBrand = () => {
                   <td className="px-6 py-4">{index + 1}</td>
                   <td className="px-6 py-4 text-blue-500">
                     <Link
-                      to={`/camera/${camera.id}`}
+                      to={`/explore/camera-model/${camera.id}`}
                       onClick={() => handleOnClickCamera(camera.name)}
                     >
                       <span className="hover:underline underline-offset-2">

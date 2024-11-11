@@ -29,12 +29,12 @@ const ServerSideItems = [
     link: "/explore",
     icon: <FaCompass className="text-3xl" />,
   },
-  {
-    id: "camera",
-    name: "Máy ảnh",
-    link: "/camera",
-    icon: <FaCameraRetro className="text-3xl" />,
-  },
+  // {
+  //   id: "camera",
+  //   name: "Máy ảnh",
+  //   link: "/camera",
+  //   icon: <FaCameraRetro className="text-3xl" />,
+  // },
   {
     id: "upload",
     name: "Tải lên",

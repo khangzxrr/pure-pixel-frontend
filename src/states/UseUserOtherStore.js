@@ -24,6 +24,9 @@ const UseUserOtherStore = create((set) => ({
   clearHoveredItem: () => set({ hoveredItem: null }),
   isForSaleChecked: true,
   setIsForSaleChecked: (value) => set({ isForSaleChecked: value }),
+
+  nameUserOther: "",
+  setNameUserOther: (value) => set({ nameUserOther: value }),
 }));
 
 export default UseUserOtherStore;

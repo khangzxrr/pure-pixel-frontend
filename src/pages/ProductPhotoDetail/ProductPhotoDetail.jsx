@@ -306,7 +306,7 @@ const ProductPhotoDetail = () => {
           <div className=" p-4 rounded-lg">
             <img
               src={
-                 selectedPricetag?.preview
+                selectedPricetag?.preview
                   ? selectedPricetag?.preview
                   : purchasedImageUrl
               }

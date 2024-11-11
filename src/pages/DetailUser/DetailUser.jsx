@@ -6,6 +6,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import UseUserOtherStore from "../../states/UseUserOtherStore";
 
 export default function DetailUser({ id, data }) {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function DetailUser({ id, data }) {
   const [photos, setPhotos] = useState([]);
   const [page, setPage] = useState(0);
   const [numberPhoto, setNumberPhoto] = useState(0);
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const handleButtonClick = (buttonIndex) => {
     setSelectedButton(buttonIndex);
   };
@@ -130,7 +132,10 @@ export default function DetailUser({ id, data }) {
       {/* Profile Info */}
       <div className="relative px-4 pt-16 pb-6">
         <h1
-          onClick={() => navigate(`/user/${dataUser?.id}/photos`)}
+          onClick={() => (
+            navigate(`/user/${dataUser?.id}/photos`),
+            setNameUserOther(dataUser?.name)
+          )}
           className="text-2xl font-bold text-center hover:underline hover:cursor-pointer underline-offset-2"
         >
           {dataUser?.name}

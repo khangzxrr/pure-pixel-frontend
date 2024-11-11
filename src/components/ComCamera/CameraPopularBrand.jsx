@@ -19,7 +19,7 @@ const CameraPopularBrand = () => {
         {list5BrandCamera.map((item, index) => (
           <div>
             <Link
-              to={`/camera/brand/${item.maker.id}`}
+              to={`/explore/camera-brand/${item.maker.id}`}
               onClick={() => handleOnClickCamera(item.maker.name)}
             >
               <div className="flex flex-col gap-1 items-center justify-center  group">

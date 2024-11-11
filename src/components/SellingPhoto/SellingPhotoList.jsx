@@ -61,6 +61,9 @@ const SellingPhotoList = () => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     setSelectedImage(id);
   };
+
+  console.log("data", data);
+
   return (
     <div className="h-screen">
       <div>
@@ -121,9 +124,24 @@ const SellingPhotoList = () => {
                   </div>
                   <div className="absolute bottom-0 left-0 w-full rounded-b-lg bg-black bg-opacity-50 text-white text-center py-2 transition-opacity duration-300 backdrop-blur-md">
                     <div className="flex justify-between px-1 ">
-                      <div className="truncate max-w-[200px]">
-                        {photo.title || "Không xác định"}
+                      <div className="flex items-center gap-2">
+                        <div className="size-6 overflow-hidden rounded-full">
+                          <img
+                            src={photo.photographer.avatar}
+                            alt=""
+                            className="size-full object-cover"
+                          />
+                        </div>
+                        <div
+                          onClick={() =>
+                            navigate(`/user/${photo.photographer.id}`)
+                          }
+                          className="truncate max-w-[200px] hover:underline underline-offset-2 hover:cursor-pointer"
+                        >
+                          {photo.photographer.name || "Không xác định"}
+                        </div>
                       </div>
+
                       <div className="">
                         {lowestPrice === highestPrice ? (
                           <span>{formatPrice(highestPrice)}</span>
