@@ -22,6 +22,8 @@ export default function DetailUser({ id, data }) {
   const handleButtonClick = (buttonIndex) => {
     setSelectedButton(buttonIndex);
   };
+
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   useEffect(() => {
     const slider = scrollContainerRef.current;
     if (!slider) return;
@@ -134,7 +136,8 @@ export default function DetailUser({ id, data }) {
         <h1
           onClick={() => (
             navigate(`/user/${dataUser?.id}/photos`),
-            setNameUserOther(dataUser?.name)
+            setNameUserOther(dataUser?.name),
+            setUserOtherId(dataUser?.id)
           )}
           className="text-2xl font-bold text-center hover:underline hover:cursor-pointer underline-offset-2"
         >

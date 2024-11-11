@@ -52,6 +52,8 @@ const InspirationPhoto = () => {
   const setNamePhotographer = UsePhotographerFilterStore(
     (state) => state.setNamePhotographer
   );
+
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const popupShare = useModalState();
@@ -201,6 +203,7 @@ const InspirationPhoto = () => {
                                   navigate(
                                     `/user/${photo.photographer.id}/photos`
                                   );
+                                  setUserOtherId(photo.photographer.id);
                                 }}
                               >
                                 {photo.photographer.name || "Tên tác giả"}

@@ -27,6 +27,9 @@ const UseUserOtherStore = create((set) => ({
 
   nameUserOther: "",
   setNameUserOther: (value) => set({ nameUserOther: value }),
+
+  userOtherId: null,
+  setUserOtherId: (value) => set({ userOtherId: value }),
 }));
 
 export default UseUserOtherStore;

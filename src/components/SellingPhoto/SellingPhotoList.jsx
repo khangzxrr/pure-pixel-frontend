@@ -17,6 +17,7 @@ import { FiShare2 } from "react-icons/fi";
 import { IoMdImages } from "react-icons/io";
 import BlurhashImage from "../BlurhashImage/BlurhashImage";
 import { FaArrowRightLong } from "react-icons/fa6";
+import UseUserOtherStore from "../../states/UseUserOtherStore";
 
 const SellingPhotoList = () => {
   const { keycloak } = useKeycloak();
@@ -25,7 +26,8 @@ const SellingPhotoList = () => {
   const itemsPerPage = 9; // Tổng số ảnh
   const [page, setPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const selling = true;
 
   const { data, isLoading, isError, error, isFetching } = useQuery({
@@ -133,9 +135,11 @@ const SellingPhotoList = () => {
                           />
                         </div>
                         <div
-                          onClick={() =>
-                            navigate(`/user/${photo.photographer.id}`)
-                          }
+                          onClick={() => {
+                            navigate(`/user/${photo.photographer.id}`);
+                            setNameUserOther(photo.photographer.name);
+                            setUserOtherId(photo.photographer.id);
+                          }}
                           className="truncate max-w-[200px] hover:underline underline-offset-2 hover:cursor-pointer"
                         >
                           {photo.photographer.name || "Không xác định"}

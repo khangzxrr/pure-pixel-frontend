@@ -116,7 +116,7 @@ const Sidebar = ({
             className={`flex text-[#a3a3a3] items-center gap-3 hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md transition-colors duration-200
             ${
               activeLink === item.id || activeLink === item.link
-                ? "bg-gray-500 text-[#eee]"
+                ? "bg-gray-500 text-[#eee] "
                 : ""
             }`}
           >

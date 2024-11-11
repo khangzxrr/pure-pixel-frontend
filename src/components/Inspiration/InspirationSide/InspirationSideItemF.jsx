@@ -45,7 +45,7 @@ const InspirationSideItemF = [
   },
   {
     id: 5,
-    title: "Máy ảnh được sử dụng",
+    title: "Máy ảnh phổ biến",
     icon: <FaCameraRetro />,
     link: "/explore/camera",
   },

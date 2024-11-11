@@ -30,19 +30,19 @@ const CameraPopularBrand = () => {
                     className="object-contain w-full h-full"
                   />
                 </div>
-                <div className="text-lg text-center font-bold text-blue-500">
+                <div className="text-lg text-center font-bold text-[#eee]">
                   <span className=" group-hover:underline ">
                     {item.maker?.name || "Unknown brand"}
                   </span>
                 </div>
               </div>
             </Link>
-            <div className="font-normal flex flex-wrap text-sm items-start justify-center h-[40px] text-blue-500">
+            <div className="font-normal flex flex-wrap text-sm items-start justify-center h-[40px] text-[#eee]">
               {item.maker?.cameras?.slice(0, 3).map((camera, idx) => (
                 <div key={camera.id}>
-                  <span className="hover:underline underline-offset-2">
+                  <span className="hover:underline underline-offset-2 hover:text-blue-500">
                     <Link
-                      to={`/camera/${camera.id}`}
+                      to={`/explore/camera-model/${camera.id}`}
                       onClick={() =>
                         handleOnClickCamera(item.maker.name, camera.name)
                       }

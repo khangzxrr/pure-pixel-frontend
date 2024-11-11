@@ -35,7 +35,7 @@ const CameraPopular = () => {
                   className="object-contain w-full h-full"
                 />
               </div>
-              <div className="font-semibold text-blue-500 group-hover:underline underline-offset-2">
+              <div className="font-semibold text-[#eee] group-hover:underline underline-offset-2">
                 {item.name}
               </div>
             </div>
