@@ -14,7 +14,7 @@ import { getData } from "../../apis/api";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
-import { Blurhash, BlurhashCanvas } from "react-blurhash";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -59,9 +59,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const popupShare = useModalState();
   const navigate = useNavigate();
 
-  const [blurhashWidth, setBlurhashWidth] = useState(0);
-  const [viewportHeight, setViewportHeight] = useState(0);
-
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [currentPhoto, setCurrentPhoto] = useState(photo);
@@ -69,8 +66,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
   //this state will be true when original photo (signedUrk.url) fully isOriginalPhotoLoaded
   //then we will replace thumbnail image to original photo
   const [isOriginalPhotoLoaded, setIsOriginalphotoLoaded] = useState(false);
-
-  const [isThumbnailPhotoLoaded, setIsThumbnailPhotoLoaded] = useState(false);
 
   const { data, isError, error } = useQuery({
     queryKey: ["getPhotoDetail", currentPhoto.id],
@@ -94,22 +89,9 @@ export default function DetailedPhotoView({ onClose, photo }) {
     navigate("/404");
   }
 
-  const imageDisplayDiv = useCallback((node) => {
-    if (node != null) {
-      console.log(node.getBoundingClientRect().height);
-      setViewportHeight(node.getBoundingClientRect().height);
-    }
-  });
-
   useEffect(() => {
     console.log(`current photo changed!`);
 
-    if (currentPhoto?.height) {
-      const ratio = currentPhoto.height / viewportHeight;
-      setBlurhashWidth(currentPhoto.width / ratio);
-    }
-
-    setIsThumbnailPhotoLoaded(false);
     setIsOriginalphotoLoaded(false);
 
     if (currentPhoto.id) {
@@ -125,26 +107,39 @@ export default function DetailedPhotoView({ onClose, photo }) {
     };
   }, [currentPhoto]);
 
-  //PRELOAD: this is a workaround to prevent slow loading issue
   useEffect(() => {
-    if (!previousPhotoData?.signedUrl) {
+    if (!currentPhoto?.signedUrl) {
       return;
     }
 
-    const image = new Image();
-    image.src = previousPhotoData.signedUrl.thumbnail;
-  }, [previousPhotoData]);
+    // const originalImage = new Image();
+    // originalImage.src = currentPhoto.signedUrl.url;
+    // originalImage.onload = () => {
+    //   console.log(`loaded original image`);
+    //   setIsOriginalphotoLoaded(true);
+    // };
+  }, [currentPhoto]);
 
-  //PRELOAD: this is a workaround to prevent slow loading issue
-  useEffect(() => {
-    if (!nextPhotoData?.signedUrl) {
-      return;
-    }
-
-    const image = new Image();
-
-    image.src = nextPhotoData.signedUrl.thumbnail;
-  }, [nextPhotoData]);
+  ////PRELOAD: this is a workaround to prevent slow loading issue
+  //useEffect(() => {
+  //  if (!previousPhotoData?.signedUrl) {
+  //    return;
+  //  }
+  //
+  //  const image = new Image();
+  //  image.src = previousPhotoData.signedUrl.thumbnail;
+  //}, [previousPhotoData]);
+  //
+  ////PRELOAD: this is a workaround to prevent slow loading issue
+  //useEffect(() => {
+  //  if (!nextPhotoData?.signedUrl) {
+  //    return;
+  //  }
+  //
+  //  const image = new Image();
+  //
+  //  image.src = nextPhotoData.signedUrl.thumbnail;
+  //}, [nextPhotoData]);
 
   const handleGoBack = () => {
     if (window.history.length > 2) {
@@ -215,47 +210,16 @@ export default function DetailedPhotoView({ onClose, photo }) {
                 <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" />
               </Icon>
             </button>
-            <div
-              className="flex  justify-center items-center  h-screen"
-              ref={imageDisplayDiv}
-            >
-              <Blurhash
-                style={{
-                  display:
-                    isThumbnailPhotoLoaded || isOriginalPhotoLoaded
-                      ? "none"
-                      : null,
-                }}
-                hash="LEHV6nWB2yk8pyo0adR*.7kCMdnj"
-                width={blurhashWidth}
-                height={"100%"}
-                punch={1}
-              />
+            <div className="flex  justify-center items-center  h-screen">
               <img
-                src={currentPhoto.signedUrl.thumbnail}
-                alt="Traunfall waterfall"
-                className="w-auto h-full max-h-screen"
-                style={{
-                  display:
-                    isOriginalPhotoLoaded || !isThumbnailPhotoLoaded
-                      ? "none"
-                      : null,
-                }}
-                onLoad={() => setIsThumbnailPhotoLoaded(true)}
+                src={
+                  isOriginalPhotoLoaded
+                    ? currentPhoto.signedUrl.url
+                    : currentPhoto.signedUrl.placeholder
+                }
+                alt={currentPhoto.title}
+                className="w-auto h-full max-h-screen blur"
               />
-
-              {/* <img */}
-              {/*   src={currentPhoto.signedUrl.url} */}
-              {/*   alt="Traunfall waterfall" */}
-              {/*   className="w-auto h-full max-h-screen" */}
-              {/*   style={{ */}
-              {/*     display: isOriginalPhotoLoaded ? null : "none", */}
-              {/*   }} */}
-              {/*   onLoad={() => { */}
-              {/*     setIsThumbnailPhotoLoaded(true); */}
-              {/*     setIsOriginalphotoLoaded(true); */}
-              {/*   }} */}
-              {/* /> */}
             </div>
 
             <button

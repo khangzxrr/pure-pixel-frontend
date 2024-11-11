@@ -1,27 +1,18 @@
 import React, { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
-import { FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
 import { useKeycloak } from "@react-keycloak/web";
 import UseCategoryStore from "../../../states/UseCategoryStore";
-import InsPhotoFilter from "./InsPhotoFilter";
 import { IoMdImages } from "react-icons/io";
 import useMapboxState from "../../../states/UseMapboxState";
-import BlurhashImage from "../../BlurhashImage/BlurhashImage";
 import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
 import UseUserProfileStore from "../../../states/UseUserProfileStore";
-import VoteApi from "./../../../apis/VoteApi";
-import LikeButton from "./../../ComLikeButton/LikeButton";
 import ComModal from "../../ComModal/ComModal";
 import ComSharePhoto from "../../ComSharePhoto/ComSharePhoto";
 import { useModalState } from "../../../hooks/useModalState";
