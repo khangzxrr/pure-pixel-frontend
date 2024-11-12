@@ -11,11 +11,13 @@ export const photoShootInput = yup.object().shape({
     .test(
       "start-date-check",
       "Ngày bắt đầu phải sau ngày hiện tại ít nhất 24 giờ",
+
       (value) => {
         const currentDate = dayjs();
         const startDate = value && value[0];
         return (
           startDate && dayjs(startDate).isAfter(currentDate.add(1339, "minute"))
+
         );
       }
     )
@@ -29,6 +31,7 @@ export const photoShootInput = yup.object().shape({
           startDate &&
           endDate &&
           dayjs(endDate).isAfter(dayjs(startDate).add(179, "minute"))
+
         );
       }
     ),

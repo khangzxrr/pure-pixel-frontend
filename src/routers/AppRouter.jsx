@@ -75,6 +75,7 @@ import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
 import CustomerBooking from "../pages/UserProfile/CustomerBooking";
 import CustomerBookingDetail from "../pages/UserProfile/CustomerBookingDetail";
 
+
 export const AppRouter = createBrowserRouter([
   {
     path: "/",
