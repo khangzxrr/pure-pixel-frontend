@@ -1,19 +1,33 @@
-import { useKeycloak } from "@react-keycloak/web";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import PhotoApi from "../../apis/PhotoApi";
-import UserService from "../../services/Keycloak";
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+
 import { useNavigate, useParams } from "react-router-dom";
 import DetailUser from "../DetailUser/DetailUser";
 import { useModalState } from "./../../hooks/useModalState";
 import ComModal from "../../components/ComModal/ComModal";
 import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
 import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
-import { getData } from "../../apis/api";
+
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
+
+const Icon = ({ children, className = "" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className={`h-5 w-5 ${className}`}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {children}
+  </svg>
+);
+
 function calculateTimeFromNow(dateString) {
   const startDate = new Date(dateString);
   const now = new Date();
@@ -36,71 +50,59 @@ function calculateTimeFromNow(dateString) {
   }
 }
 
-const userNavigation = [
-  { name: "Báo cáo", href: "#" },
-  { name: "Lưu bài viết", href: "#" },
-];
-
-const Icon = ({ children, className = "" }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className={`h-5 w-5 ${className}`}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    {children}
-  </svg>
-);
-const getNavigation = (idImg, listImg) => {
-  // Tìm vị trí của hình ảnh hiện tại trong mảng
-  const currentIndex = listImg.findIndex((img) => img.id === idImg);
-
-  // Lấy id của hình ảnh trước đó, nếu có
-  const prevId = currentIndex > 0 ? listImg[currentIndex - 1].id : null;
-
-  // Lấy id của hình ảnh kế tiếp, nếu có
-  const nextId =
-    currentIndex < listImg.length - 1 ? listImg[currentIndex + 1].id : null;
-
-  // Trả về đối tượng chứa id của hình ảnh trước đó và kế tiếp
-  return { prevId, nextId };
-};
-export default function DetailedPhotoView({ idImg, onClose, listImg }) {
-  const [selectedImage, setSelectedImage] = useState(idImg);
-  const [getPhotoById, setGetPhotoById] = useState({});
-  const { id } = useParams();
+export default function DetailedPhotoView({ onClose, photo }) {
   const popup = useModalState();
   const popupReport = useModalState();
   const popupShare = useModalState();
   const navigate = useNavigate();
-  const { prevId, nextId } = getNavigation(selectedImage, listImg);
+
+  const queryClient = useQueryClient();
+
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const getImage = () => {
-    getData(`photo/${id ? id : selectedImage}`)
-      .then((e) => {
-        setGetPhotoById(e);
-      })
-      .catch((error) => {
-        console.log(error);
-        navigate("/404");
-      });
-  };
-  console.log("selectedImage", selectedImage);
+  const [currentPhoto, setCurrentPhoto] = useState(photo);
+
+  const [isPlaceholderLoaded, setIsPlaceHolderLoaded] = useState(false);
+  const [isOriginalPhotoLoaded, setIsOriginalPhotoLoaded] = useState(false);
+
+  const { data, isPending, error } = useQuery({
+    queryKey: ["getPhotoDetail", currentPhoto.id],
+    queryFn: () => PhotoApi.getPhotoById(currentPhoto.id),
+    enabled: !!currentPhoto?.id,
+  });
+
+  const { data: previousPhotoData } = useQuery({
+    queryKey: ["getPreviousPhoto", currentPhoto.id],
+    queryFn: () => PhotoApi.getPreviousPublicById(currentPhoto.id),
+    enabled: !!currentPhoto?.id,
+  });
+
+  const { data: nextPhotoData } = useQuery({
+    queryKey: ["getNextPhoto", currentPhoto.id],
+    queryFn: () => PhotoApi.getNextPublicById(currentPhoto.id),
+    enabled: !!currentPhoto?.id,
+  });
+
+  // if (isError) {
+  //   console.log(error);
+  //   navigate("/404");
+  // }
 
   useEffect(() => {
-    getImage();
-  }, [selectedImage]);
+    if (!isPending && data !== currentPhoto) {
+      console.log(data);
+      setIsPlaceHolderLoaded(false);
+      setIsOriginalPhotoLoaded(false);
+      setCurrentPhoto(data);
+
+      const image = new Image();
+      image.src = data.signedUrl.url;
+      image.onload = () => setIsOriginalPhotoLoaded(true);
+    }
+  }, [data, isPending]);
+
   useEffect(() => {
-    setSelectedImage(idImg || id);
-  }, [idImg, id]);
-  const userData = UserService.getTokenParsed();
-  useEffect(() => {
-    if (idImg) {
+    if (currentPhoto.id) {
       // Khi modal mở, thêm lớp `overflow-hidden` vào body
       document.body.style.overflow = "hidden";
     } else {
@@ -111,7 +113,34 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [idImg]);
+  }, [currentPhoto]);
+
+  ////PRELOAD: this is a workaround to prevent slow loading issue
+  useEffect(() => {
+    if (!previousPhotoData?.signedUrl) {
+      return;
+    }
+
+    const image = new Image();
+    image.src = previousPhotoData.signedUrl.thumnail;
+  }, [previousPhotoData]);
+
+  //PRELOAD: this is a workaround to prevent slow loading issue
+  useEffect(() => {
+    if (!nextPhotoData?.signedUrl) {
+      return;
+    }
+
+    const image = new Image();
+
+    image.src = nextPhotoData.signedUrl.thumnail;
+  }, [nextPhotoData]);
+
+  const refreshPhoto = () => {
+    console.log(`trigger refresh`);
+
+    queryClient.invalidateQueries(["getPhotoDetail", currentPhoto.id]);
+  };
 
   const handleGoBack = () => {
     if (window.history.length > 2) {
@@ -121,24 +150,20 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
     }
   };
 
-  const photographerId = getPhotoById.data?.photographer?.id;
-  const titleT = getPhotoById.data?.title;
-  const description = getPhotoById.data?.description;
-  const dateTime = new Date(getPhotoById.data?.captureTime);
-  const photographerName = getPhotoById.data?.photographer?.name;
-  const photographerAvatar = getPhotoById.data?.photographer?.avatar;
-  const photoTag = getPhotoById.data?.photoTags;
-  const categoryName = getPhotoById.data?.category?.name;
-  const location = getPhotoById.data?.location;
-  const exifPhoto = getPhotoById.data?.exif;
-  const quoteUser = getPhotoById.data?.photographer?.quote;
-  const votePhoto = getPhotoById.data?._count?.votes;
-  const commentPhoto = getPhotoById.data?._count?.comments;
-  const viewCount = getPhotoById.data?.viewCount;
-  console.log(getPhotoById.data);
+  const handleNextButtonOnClick = () => {
+    if (nextPhotoData?.objects.length > 0 && isPlaceholderLoaded) {
+      setCurrentPhoto(nextPhotoData.objects[0]);
+    }
+  };
+
+  const handlePreviousButtonOnClick = () => {
+    if (previousPhotoData?.objects.length > 0 && isPlaceholderLoaded) {
+      setCurrentPhoto(previousPhotoData.objects[0]);
+    }
+  };
 
   // Chuyển đổi đối tượng details thành mảng cặp khóa-giá trị
-  const allDetails = Object?.entries(getPhotoById?.data?.exif || {});
+  const allDetails = Object?.entries(currentPhoto.exif || {});
 
   // // Lấy 3 thông số đầu tiên để hiển thị
   const mainDetails = allDetails?.slice(0, 3);
@@ -151,12 +176,10 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
         <ComModal
           isOpen={popupShare.isModalOpen}
           onClose={popupShare.handleClose}
-          // width={800}
-          // className={"bg-black"}
         >
           <ComSharePhoto
-            photoId={selectedImage}
-            userId={getPhotoById.data?.photographer.id}
+            photoId={currentPhoto?.id}
+            userId={currentPhoto?.photographer.id}
             onClose={popupShare.handleClose}
           />
         </ComModal>
@@ -190,31 +213,40 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             </button>
             <div className="flex  justify-center items-center  h-screen">
               <img
-                src={getPhotoById?.data?.signedUrl?.url}
-                alt="Traunfall waterfall"
-                className="w-auto h-auto max-h-screen"
+                src={
+                  !isOriginalPhotoLoaded
+                    ? currentPhoto?.signedUrl.placeholder
+                    : currentPhoto?.signedUrl.url
+                }
+                alt={currentPhoto.title}
+                className="w-auto h-full max-h-screen"
+                onLoad={() => setIsPlaceHolderLoaded(true)}
               />
             </div>
-            {prevId && (
-              <button
-                onClick={() => setSelectedImage(prevId)}
-                className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
-              >
-                <Icon>
-                  <path d="M15 18l-6-6 6-6" />
-                </Icon>
-              </button>
-            )}
-            {nextId && (
-              <button
-                onClick={() => setSelectedImage(nextId)}
-                className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
-              >
-                <Icon>
-                  <path d="M9 18l6-6-6-6" />
-                </Icon>
-              </button>
-            )}
+
+            <button
+              style={{
+                display:
+                  previousPhotoData?.objects.length === 0 ? "none" : null,
+              }}
+              onClick={() => handlePreviousButtonOnClick()}
+              className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
+            >
+              <Icon>
+                <path d="M15 18l-6-6 6-6" />
+              </Icon>
+            </button>
+            <button
+              style={{
+                display: nextPhotoData?.objects.length === 0 ? "none" : null,
+              }}
+              onClick={() => handleNextButtonOnClick()}
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
+            >
+              <Icon>
+                <path d="M9 18l6-6-6-6" />
+              </Icon>
+            </button>
           </div>
 
           {/* Right side - Details */}
@@ -222,7 +254,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center space-x-3">
                 <img
-                  src={photographerAvatar}
+                  src={currentPhoto.photographer.avatar}
                   alt="GueM"
                   onClick={popup.handleOpen}
                   className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
@@ -232,10 +264,10 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
                     className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
                     onClick={popup.handleOpen}
                   >
-                    {photographerName}
+                    {currentPhoto.photographer.name}
                   </h2>
                   <p className="text-sm text-gray-400">
-                    {calculateTimeFromNow(getPhotoById?.data?.createdAt)}
+                    {calculateTimeFromNow(currentPhoto?.createdAt)}
                   </p>
                 </div>
               </div>
@@ -263,33 +295,35 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
               </div>
             </div>
 
-            <div className="my-2">{titleT}</div>
-            <div className="my-2">{description}</div>
-            <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div>
+            <div className="my-2">{currentPhoto.title}</div>
+            <div className="my-2">{currentPhoto.description}</div>
+
+            {/* <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div> */}
 
             <div className="flex items-center space-x-6 mb-6">
               <div className="flex items-center gap-2">
                 <LikeButton
                   size="size-5"
-                  reloadData={getImage}
-                  photoId={selectedImage}
-                  key={selectedImage}
+                  reloadData={() => refreshPhoto()}
+                  photoId={currentPhoto.id}
+                  key={currentPhoto.id}
                 />
-                <span>{votePhoto}</span>
+                <span>{currentPhoto._count.votes}</span>
               </div>
 
               <button className="flex items-center hover:text-blue-500">
                 <Icon className="mr-2">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                 </Icon>
-                <span>{commentPhoto}</span>
+
+                <span>{currentPhoto._count.comments}</span>
               </button>
               <div className="flex items-center">
                 <Icon className="mr-2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                   <circle cx="12" cy="12" r="3" />
                 </Icon>
-                <span>{viewCount}</span>
+                <span>{currentPhoto.viewCount}</span>
               </div>
               <button
                 className="hover:text-green-500"
@@ -398,10 +432,9 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
             </div>
 
             <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-2">
-                {commentPhoto} Bình luận
-              </h2>
-              <CommentPhoto id={selectedImage} reload={getImage} />
+              <h2 className="text-lg font-semibold mb-2">{0} Bình luận</h2>
+
+              <CommentPhoto id={currentPhoto.id} reload={refreshPhoto} />
             </div>
           </div>
         </div>
@@ -414,8 +447,8 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
           ></div>
           <div className="w-[700px]">
             <DetailUser
-              id={photographerId}
-              data={getPhotoById?.data?.photographer}
+              id={currentPhoto.photographer.id}
+              data={currentPhoto.photographer}
             />
           </div>
         </div>
@@ -425,7 +458,7 @@ export default function DetailedPhotoView({ idImg, onClose, listImg }) {
         <ComReport
           onclose={popupReport.handleClose}
           tile="Báo cáo bài viết"
-          id={getPhotoById.data?.id}
+          id={currentPhoto?.id}
           // reportType =USER, PHOTO, BOOKING, COMMENT;
           reportType={"PHOTO"}
         />

@@ -117,6 +117,22 @@ const getPhotoById = async (id) => {
   return response.data;
 };
 
+const getNextPublicById = async (id) => {
+  const response = await http.get(
+    `photo/public/next?cursor=${id}&forward=true`,
+  );
+
+  return response.data;
+};
+
+const getPreviousPublicById = async (id) => {
+  const response = await http.get(
+    `photo/public/next?cursor=${id}&forward=false`,
+  );
+
+  return response.data;
+};
+
 const getPhotoComments = async (id) => {
   const response = await http.get(`photo/${id}/comment`);
   return response.data;
@@ -166,6 +182,8 @@ const PhotoApi = {
   getAvailableResolutionsByPhotoId,
   sharePhotoById,
   getPhotoTags,
+  getNextPublicById,
+  getPreviousPublicById,
 };
 
 export default PhotoApi;
