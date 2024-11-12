@@ -10,7 +10,6 @@ import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
 import { useKeycloak } from "@react-keycloak/web";
 import UseCategoryStore from "../../../states/UseCategoryStore";
 import { IoMdImages } from "react-icons/io";
-import useMapboxState from "../../../states/UseMapboxState";
 import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
 import UseUserProfileStore from "../../../states/UseUserProfileStore";
 import ComModal from "../../ComModal/ComModal";
@@ -23,11 +22,8 @@ const InspirationPhoto = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
-  
-  const { selectedLocate, setSelectedLocate } = useMapboxState(); // Use Zustand store
-  const [selectedImage, setSelectedImage] = useState(
-    selectedLocate ? selectedLocate.id : null,
-  );
+
+  const [selectedImage, setSelectedImage] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
