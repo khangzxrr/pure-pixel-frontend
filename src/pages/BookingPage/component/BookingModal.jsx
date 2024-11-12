@@ -9,6 +9,8 @@ import * as yup from "yup";
 import "../BookingPage.css"; // Import custom CSS
 import PhotoShootApi from "../../../apis/PhotoShootApi";
 import { useMutation } from "@tanstack/react-query";
+import { photoShootInput } from "../../../yup/PhotoShootInput";
+import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
 
 // Set dayjs to use the Vietnamese locale
 dayjs.locale("vi");
@@ -16,39 +18,6 @@ dayjs.locale("vi");
 const { RangePicker } = DatePicker; // Destructure RangePicker from DatePicker
 
 // Create yup schema for validation
-const validationSchema = yup.object().shape({
-  dateRange: yup
-    .array()
-    .nullable()
-    .required("Vui lòng chọn khoảng thời gian")
-    .test(
-      "start-date-check",
-      "Ngày bắt đầu phải sau ngày hiện tại ít nhất 1 ngày",
-      (value) => {
-        const currentDate = dayjs();
-        const startDate = value && value[0];
-        return (
-          startDate &&
-          dayjs(startDate).isAfter(currentDate.add(1, "day"), "day")
-        );
-      },
-    )
-    .test(
-      "end-date-check",
-      "Ngày kết thúc phải sau ngày bắt đầu ít nhất 3 giờ",
-      (value) => {
-        const startDate = value && value[0];
-        const endDate = value && value[1];
-        return (
-          startDate &&
-          endDate &&
-          dayjs(endDate).isAfter(dayjs(startDate).add(3, "hour"))
-        );
-      },
-    ),
-  expect: yup.string(), // Validation for "expect"
-  locate: yup.string(), // Validation for "locate"
-});
 
 export default function BookingModal({ photoPackage, onClose }) {
   const {
@@ -56,13 +25,13 @@ export default function BookingModal({ photoPackage, onClose }) {
     control,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(photoShootInput),
   }); // Initialize React Hook Form with yup validation
 
   const requestBookingByCustomer = useMutation({
     mutateKey: "request-booking-by-customer",
     mutationFn: async ({ packageId, body }) =>
-      await PhotoShootApi.requestBookingByCustomer(packageId, body),
+      await CustomerBookingApi.requestBooking(packageId, body),
   });
 
   const handleOk = (data) => {
@@ -126,7 +95,7 @@ export default function BookingModal({ photoPackage, onClose }) {
                       "Chọn giờ & ngày bắt đầu",
                       "Chọn giờ & ngày kết thúc",
                     ]}
-                    className={`w-full ${
+                    className={`w-full font-light ${
                       errors.dateRange ? "border-red-500" : ""
                     }`}
                     onChange={(value) => field.onChange(value)}

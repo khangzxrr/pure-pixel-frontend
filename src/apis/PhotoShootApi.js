@@ -4,15 +4,6 @@ const getPhotoShootPackageById = async (id) => {
   const response = await http.get(`/photoshoot-package/${id}`);
   return response.data;
 };
-const requestBookingByCustomer = async (packageId, body) => {
-  console.log("packageId", packageId, body);
-
-  const response = await http.post(
-    `/customer/booking/photoshoot-package/${packageId}/request`,
-    body
-  );
-  return response.data;
-};
 
 const getBookingByCustomer = async (limit, page) => {
   const response = await http.get(`/customer/booking/me?limit=10&page=0`);
@@ -28,6 +19,10 @@ const handleRequestByPhotographer = async (bookingId, type) => {
 };
 const getBookingDetail = async (bookingId) => {
   const response = await http.get(`/photographer/booking/${bookingId}`);
+  return response.data;
+};
+const updateBooking = async (bookingId, data) => {
+  const response = await http.patch(`/photographer/booking/${bookingId}`, data);
   return response.data;
 };
 const uploadBookingPhoto = async (bookingId, file, onUploadProgress) => {
@@ -53,9 +48,9 @@ const uploadBookingPhoto = async (bookingId, file, onUploadProgress) => {
 const PhotoShootApi = {
   getPhotoShootPackageById,
   getBookingByCustomer,
-  requestBookingByCustomer,
   handleRequestByPhotographer,
   getBookingDetail,
   uploadBookingPhoto,
+  updateBooking,
 };
 export default PhotoShootApi;

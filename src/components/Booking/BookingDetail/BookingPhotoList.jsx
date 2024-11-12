@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { notificationApi } from "../../../Notification/Notification";
 
-export default function BookingPhotoList() {
+export default function BookingPhotoList({ enableUpdate }) {
   const { bookingId } = useParams();
 
   const {
@@ -24,14 +24,14 @@ export default function BookingPhotoList() {
   const handleSelect = (photo) => {
     setSelectedPhotoByUid(photo.uid);
   };
-  const handleRemove = (photo) => {
+  const handleRemove = async (photo) => {
     if (photo.id) {
       console.log("deletephoto", photo);
 
       try {
         console.log("deletephoto", photo.id);
 
-        deletePhoto.mutateAsync(
+        await deletePhoto.mutateAsync(
           { photoId: photo.id, bookingId: bookingId },
           {
             onSuccess: () => {
@@ -94,17 +94,19 @@ export default function BookingPhotoList() {
           )}
 
           {/* Uncomment if you want to add the delete icon */}
-          <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
-            <Tooltip title="Delete Photo">
-              <DeleteOutlined
-                className="text-white text-xl cursor-pointer hover:text-red-500"
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering the parent onClick
-                  handleRemove(photo);
-                }}
-              />
-            </Tooltip>
-          </div>
+          {enableUpdate && (
+            <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+              <Tooltip title="Delete Photo">
+                <DeleteOutlined
+                  className="text-white text-xl cursor-pointer hover:text-red-500"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the parent onClick
+                    handleRemove(photo);
+                  }}
+                />
+              </Tooltip>
+            </div>
+          )}
         </div>
       ))}
     </div>

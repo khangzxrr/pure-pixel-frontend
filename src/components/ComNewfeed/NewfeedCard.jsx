@@ -12,7 +12,6 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteOutline, MdOutlineReport } from "react-icons/md";
 import UserApi from "../../apis/UserApi";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import useMapboxState from "../../states/UseMapboxState";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
 import { useNavigate } from "react-router-dom";
 
@@ -34,10 +33,7 @@ const NewfeedCard = ({
   const longCmt =
     "long cmt long cmtlong cmtlong cmtlong cmtlong cmtlong cmtlong cmtlong cmtlong cmtlong cmtlong cmtlong";
 
-  const { selectedLocate, setSelectedLocate } = useMapboxState();
-  const [selectedImage, setSelectedImage] = useState(
-    selectedLocate ? selectedLocate.id : null
-  );
+  const [selectedImage, setSelectedImage] = useState(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const formatTimeDifference = (createdAt) => {
@@ -90,7 +86,6 @@ const NewfeedCard = ({
           onClose={() => {
             navigate(`/home/newfeed`);
             setSelectedImage(null);
-            setSelectedLocate(null);
           }}
           listImg={ListPhotos}
         />
