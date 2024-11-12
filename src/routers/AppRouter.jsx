@@ -73,6 +73,7 @@ import BookingRequestCompleted from "../components/Booking/BookingRequestState/B
 import BookingRequestCancelled from "../components/Booking/BookingRequestState/BookingRequestCancelled";
 import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
 import CustomerBooking from "../pages/UserProfile/CustomerBooking";
+import CustomerBookingDetail from "../pages/UserProfile/CustomerBookingDetail";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -287,6 +288,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "customer-booking",
                 element: <CustomerBooking />,
+              },
+              {
+                path: "customer-booking/:bookingId",
+                element: <CustomerBookingDetail />,
               },
               // {
               //   path: "booking-request/:bookingId",

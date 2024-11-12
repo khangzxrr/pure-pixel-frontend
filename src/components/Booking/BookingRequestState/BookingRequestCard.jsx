@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import formatPrice from "../../../utils/FormatPriceUtils";
 import { useMutation } from "@tanstack/react-query";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
-import useNotification from "antd/es/notification/useNotification";
 import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 import { Tooltip } from "antd";
+import { useNotification } from "../../../Notification/Notification";
 
 const BookingRequestCard = ({ booking }) => {
   const { notificationApi } = useNotification();
@@ -97,11 +97,9 @@ const BookingRequestCard = ({ booking }) => {
           </div>
           <div className="flex flex-col gap-1 mt-2">
             <div>Ghi chú:</div>
-            <ul className="list-disc list-inside font-normal ">
-              <li className="truncate text-sm max-w-[300px]">
-                {booking.description}
-              </li>
-            </ul>
+            <p className="list-inside font-normal truncate text-sm max-w-[300px]">
+              {booking.description ? booking.description : "Không có"}
+            </p>
           </div>
           <div className="flex flex-col gap-2 mt-2">
             <div>Thời gian hẹn:</div>

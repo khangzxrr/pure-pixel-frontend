@@ -11,6 +11,7 @@ import PhotoShootApi from "../../../apis/PhotoShootApi";
 import { useMutation } from "@tanstack/react-query";
 import { photoShootInput } from "../../../yup/PhotoShootInput";
 import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
+import { useNotification } from "../../../Notification/Notification";
 
 // Set dayjs to use the Vietnamese locale
 dayjs.locale("vi");
@@ -27,18 +28,44 @@ export default function BookingModal({ photoPackage, onClose }) {
   } = useForm({
     resolver: yupResolver(photoShootInput),
   }); // Initialize React Hook Form with yup validation
+  const { notificationApi } = useNotification();
 
   const requestBookingByCustomer = useMutation({
     mutateKey: "request-booking-by-customer",
     mutationFn: async ({ packageId, body }) =>
       await CustomerBookingApi.requestBooking(packageId, body),
+    onSuccess: () => {
+      notificationApi("success", "Thành công", "Đã gửi yêu cầu đặt lịch");
+    },
+    onError: (error) => {
+      let errorMessage = "Đã có lỗi xảy ra";
+
+      // Use a switch statement to handle specific error messages
+      switch (error.response?.data?.message) {
+        case "CannotBookOwnedPhotoshootPackageException":
+          errorMessage =
+            "Bạn không thể đặt lịch cho gói chụp ảnh do mình đã đặt.";
+          break;
+        case "ExistBookingWithSelectedDateException":
+          errorMessage = "Đã có lịch hẹn khác vào thời gian bạn chọn.";
+          break;
+        // Add other cases as needed
+        default:
+          errorMessage = error.response?.data?.message || errorMessage;
+          break;
+      }
+
+      notificationApi("error", "Lỗi", errorMessage);
+    },
   });
 
   const handleOk = (data) => {
     if (data.dateRange && data.dateRange.length === 2) {
+      console.log("Data:", data);
+
       const formattedDates = {
-        startDate: data.dateRange[0].format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-        endDate: data.dateRange[1].format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        startDate: dayjs(data.dateRange[0]).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        endDate: dayjs(data.dateRange[1]).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
       };
 
       requestBookingByCustomer.mutate({
