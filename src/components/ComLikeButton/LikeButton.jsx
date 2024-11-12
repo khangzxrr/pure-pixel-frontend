@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
-import VoteApi from "../../apis/VoteApi";
-import { useQuery } from "@tanstack/react-query";
 import { deleteData, getData, postData } from "../../apis/api";
 
 const LikeButton = ({ photoId, size = "size-7", reloadData }) => {
@@ -11,8 +9,6 @@ const LikeButton = ({ photoId, size = "size-7", reloadData }) => {
     if (photoId) {
       getData(`/photo/${photoId}/vote`)
         .then((data) => {
-          console.log(data);
-
           setIsLiked(data?.data ? true : false);
         })
         .catch((error) => {

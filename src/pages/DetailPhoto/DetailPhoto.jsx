@@ -1,20 +1,17 @@
-import { useKeycloak } from "@react-keycloak/web";
-import { useQuery } from "@tanstack/react-query";
-import React, { useCallback, useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import PhotoApi from "../../apis/PhotoApi";
-import UserService from "../../services/Keycloak";
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+
 import { useNavigate, useParams } from "react-router-dom";
 import DetailUser from "../DetailUser/DetailUser";
 import { useModalState } from "./../../hooks/useModalState";
 import ComModal from "../../components/ComModal/ComModal";
 import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
 import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
-import { getData } from "../../apis/api";
+
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -59,39 +56,52 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const popupShare = useModalState();
   const navigate = useNavigate();
 
+  const queryClient = useQueryClient();
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [currentPhoto, setCurrentPhoto] = useState(photo);
 
-  //this state will be true when original photo (signedUrk.url) fully isOriginalPhotoLoaded
-  //then we will replace thumbnail image to original photo
-  const [isOriginalPhotoLoaded, setIsOriginalphotoLoaded] = useState(false);
+  const [isPlaceholderLoaded, setIsPlaceHolderLoaded] = useState(false);
+  const [isOriginalPhotoLoaded, setIsOriginalPhotoLoaded] = useState(false);
 
-  const { data, isError, error } = useQuery({
+  const { data, isPending, error } = useQuery({
     queryKey: ["getPhotoDetail", currentPhoto.id],
-    queryFn: () => PhotoApi.getPhotoById(photo.id),
+    queryFn: () => PhotoApi.getPhotoById(currentPhoto.id),
+    enabled: !!currentPhoto?.id,
   });
 
   const { data: previousPhotoData } = useQuery({
     queryKey: ["getPreviousPhoto", currentPhoto.id],
     queryFn: () => PhotoApi.getPreviousPublicById(currentPhoto.id),
-    enabled: !!currentPhoto.id,
+    enabled: !!currentPhoto?.id,
   });
 
   const { data: nextPhotoData } = useQuery({
     queryKey: ["getNextPhoto", currentPhoto.id],
     queryFn: () => PhotoApi.getNextPublicById(currentPhoto.id),
-    enabled: !!currentPhoto.id,
+    enabled: !!currentPhoto?.id,
   });
 
-  if (isError) {
-    console.log(error);
-    navigate("/404");
-  }
+  // if (isError) {
+  //   console.log(error);
+  //   navigate("/404");
+  // }
 
   useEffect(() => {
-    setIsOriginalphotoLoaded(false);
+    if (!isPending && data !== currentPhoto) {
+      console.log(data);
+      setIsPlaceHolderLoaded(false);
+      setIsOriginalPhotoLoaded(false);
+      setCurrentPhoto(data);
 
+      const image = new Image();
+      image.src = data.signedUrl.url;
+      image.onload = () => setIsOriginalPhotoLoaded(true);
+    }
+  }, [data, isPending]);
+
+  useEffect(() => {
     if (currentPhoto.id) {
       // Khi modal mở, thêm lớp `overflow-hidden` vào body
       document.body.style.overflow = "hidden";
@@ -105,18 +115,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
     };
   }, [currentPhoto]);
 
-  useEffect(() => {
-    if (!currentPhoto?.signedUrl) {
-      return;
-    }
-
-    const originalImage = new Image();
-    originalImage.src = currentPhoto.signedUrl.url;
-    originalImage.onload = () => {
-      setIsOriginalphotoLoaded(true);
-    };
-  }, [currentPhoto]);
-
   ////PRELOAD: this is a workaround to prevent slow loading issue
   useEffect(() => {
     if (!previousPhotoData?.signedUrl) {
@@ -124,7 +122,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
     }
 
     const image = new Image();
-    image.src = previousPhotoData.signedUrl.thumbnail;
+    image.src = previousPhotoData.signedUrl.thumnail;
   }, [previousPhotoData]);
 
   //PRELOAD: this is a workaround to prevent slow loading issue
@@ -135,8 +133,14 @@ export default function DetailedPhotoView({ onClose, photo }) {
 
     const image = new Image();
 
-    image.src = nextPhotoData.signedUrl.thumbnail;
+    image.src = nextPhotoData.signedUrl.thumnail;
   }, [nextPhotoData]);
+
+  const refreshPhoto = () => {
+    console.log(`trigger refresh`);
+
+    queryClient.invalidateQueries(["getPhotoDetail", currentPhoto.id]);
+  };
 
   const handleGoBack = () => {
     if (window.history.length > 2) {
@@ -147,13 +151,13 @@ export default function DetailedPhotoView({ onClose, photo }) {
   };
 
   const handleNextButtonOnClick = () => {
-    if (nextPhotoData?.objects.length > 0) {
+    if (nextPhotoData?.objects.length > 0 && isPlaceholderLoaded) {
       setCurrentPhoto(nextPhotoData.objects[0]);
     }
   };
 
   const handlePreviousButtonOnClick = () => {
-    if (previousPhotoData?.objects.length > 0) {
+    if (previousPhotoData?.objects.length > 0 && isPlaceholderLoaded) {
       setCurrentPhoto(previousPhotoData.objects[0]);
     }
   };
@@ -174,8 +178,8 @@ export default function DetailedPhotoView({ onClose, photo }) {
           onClose={popupShare.handleClose}
         >
           <ComSharePhoto
-            photoId={data?.id}
-            userId={data?.photographer.id}
+            photoId={currentPhoto?.id}
+            userId={currentPhoto?.photographer.id}
             onClose={popupShare.handleClose}
           />
         </ComModal>
@@ -210,16 +214,13 @@ export default function DetailedPhotoView({ onClose, photo }) {
             <div className="flex  justify-center items-center  h-screen">
               <img
                 src={
-                  isOriginalPhotoLoaded
-                    ? currentPhoto.signedUrl.url
-                    : currentPhoto.signedUrl.placeholder
+                  !isOriginalPhotoLoaded
+                    ? currentPhoto?.signedUrl.placeholder
+                    : currentPhoto?.signedUrl.url
                 }
                 alt={currentPhoto.title}
-                className={
-                  isOriginalPhotoLoaded
-                    ? "w-auto h-full max-h-screen"
-                    : "w-auto h-full max-h-screen blur"
-                }
+                className="w-auto h-full max-h-screen"
+                onLoad={() => setIsPlaceHolderLoaded(true)}
               />
             </div>
 
@@ -266,7 +267,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     {currentPhoto.photographer.name}
                   </h2>
                   <p className="text-sm text-gray-400">
-                    {calculateTimeFromNow(data?.createdAt)}
+                    {calculateTimeFromNow(currentPhoto?.createdAt)}
                   </p>
                 </div>
               </div>
@@ -298,17 +299,15 @@ export default function DetailedPhotoView({ onClose, photo }) {
             <div className="my-2">{currentPhoto.description}</div>
 
             {/* <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div> */}
-            {/* TODO: add category */}
 
             <div className="flex items-center space-x-6 mb-6">
               <div className="flex items-center gap-2">
-                {/* TODO: refresh Image */}
-                {/* <LikeButton */}
-                {/*   size="size-5" */}
-                {/*   reloadData={getImage} */}
-                {/*   photoId={selectedImage} */}
-                {/*   key={selectedImage} */}
-                {/* /> */}
+                <LikeButton
+                  size="size-5"
+                  reloadData={() => refreshPhoto()}
+                  photoId={currentPhoto.id}
+                  key={currentPhoto.id}
+                />
                 <span>{currentPhoto._count.votes}</span>
               </div>
 
@@ -317,8 +316,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                 </Icon>
 
-                {/* TODO: add comment count */}
-                <span>{0}</span>
+                <span>{currentPhoto._count.comments}</span>
               </button>
               <div className="flex items-center">
                 <Icon className="mr-2">
@@ -436,8 +434,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
             <div className="mb-6">
               <h2 className="text-lg font-semibold mb-2">{0} Bình luận</h2>
 
-              {/* TODO: refesh image */}
-              {/* <CommentPhoto id={selectedImage} reload={getImage} /> */}
+              <CommentPhoto id={currentPhoto.id} reload={refreshPhoto} />
             </div>
           </div>
         </div>
@@ -461,7 +458,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
         <ComReport
           onclose={popupReport.handleClose}
           tile="Báo cáo bài viết"
-          id={data?.id}
+          id={currentPhoto?.id}
           // reportType =USER, PHOTO, BOOKING, COMMENT;
           reportType={"PHOTO"}
         />
