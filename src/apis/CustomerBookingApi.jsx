@@ -2,7 +2,9 @@ import http from "../configs/Http";
 
 const findAllBooking = async (limit, page, status) => {
   const response = await http.get(
-    `/customer/booking/me?limit=${limit}&page=${page}&status=${status}`
+    `/customer/booking/me?limit=${limit}&page=${page}${
+      status ? `&status=${status}` : ""
+    }`
   );
 
   return response.data;
@@ -13,8 +15,11 @@ const findById = async (bookingId) => {
 
   return response.data;
 };
+
 const getBillItems = async (bookingId) => {
-  const response = await http.get(`/customer/booking/${bookingId}/bill-items`);
+  const response = await http.get(
+    `/customer/booking/${bookingId}/bill-item?limit=10&page=0`
+  );
 
   return response.data;
 };
