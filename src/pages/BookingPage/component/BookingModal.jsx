@@ -9,6 +9,11 @@ import * as yup from "yup";
 import "../BookingPage.css"; // Import custom CSS
 import PhotoShootApi from "../../../apis/PhotoShootApi";
 import { useMutation } from "@tanstack/react-query";
+import { photoShootInput } from "../../../yup/PhotoShootInput";
+import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
+
+import { useNotification } from "../../../Notification/Notification";
+
 
 // Set dayjs to use the Vietnamese locale
 dayjs.locale("vi");
@@ -16,39 +21,6 @@ dayjs.locale("vi");
 const { RangePicker } = DatePicker; // Destructure RangePicker from DatePicker
 
 // Create yup schema for validation
-const validationSchema = yup.object().shape({
-  dateRange: yup
-    .array()
-    .nullable()
-    .required("Vui lòng chọn khoảng thời gian")
-    .test(
-      "start-date-check",
-      "Ngày bắt đầu phải sau ngày hiện tại ít nhất 1 ngày",
-      (value) => {
-        const currentDate = dayjs();
-        const startDate = value && value[0];
-        return (
-          startDate &&
-          dayjs(startDate).isAfter(currentDate.add(1, "day"), "day")
-        );
-      },
-    )
-    .test(
-      "end-date-check",
-      "Ngày kết thúc phải sau ngày bắt đầu ít nhất 3 giờ",
-      (value) => {
-        const startDate = value && value[0];
-        const endDate = value && value[1];
-        return (
-          startDate &&
-          endDate &&
-          dayjs(endDate).isAfter(dayjs(startDate).add(3, "hour"))
-        );
-      },
-    ),
-  expect: yup.string(), // Validation for "expect"
-  locate: yup.string(), // Validation for "locate"
-});
 
 export default function BookingModal({ photoPackage, onClose }) {
   const {
@@ -56,20 +28,46 @@ export default function BookingModal({ photoPackage, onClose }) {
     control,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(photoShootInput),
   }); // Initialize React Hook Form with yup validation
+  const { notificationApi } = useNotification();
 
   const requestBookingByCustomer = useMutation({
     mutateKey: "request-booking-by-customer",
     mutationFn: async ({ packageId, body }) =>
-      await PhotoShootApi.requestBookingByCustomer(packageId, body),
+      await CustomerBookingApi.requestBooking(packageId, body),
+    onSuccess: () => {
+      notificationApi("success", "Thành công", "Đã gửi yêu cầu đặt lịch");
+    },
+    onError: (error) => {
+      let errorMessage = "Đã có lỗi xảy ra";
+
+      // Use a switch statement to handle specific error messages
+      switch (error.response?.data?.message) {
+        case "CannotBookOwnedPhotoshootPackageException":
+          errorMessage =
+            "Bạn không thể đặt lịch cho gói chụp ảnh do mình đã đặt.";
+          break;
+        case "ExistBookingWithSelectedDateException":
+          errorMessage = "Đã có lịch hẹn khác vào thời gian bạn chọn.";
+          break;
+        // Add other cases as needed
+        default:
+          errorMessage = error.response?.data?.message || errorMessage;
+          break;
+      }
+
+      notificationApi("error", "Lỗi", errorMessage);
+    },
   });
 
   const handleOk = (data) => {
     if (data.dateRange && data.dateRange.length === 2) {
+      console.log("Data:", data);
+
       const formattedDates = {
-        startDate: data.dateRange[0].format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-        endDate: data.dateRange[1].format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        startDate: dayjs(data.dateRange[0]).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        endDate: dayjs(data.dateRange[1]).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
       };
 
       requestBookingByCustomer.mutate({
@@ -126,7 +124,7 @@ export default function BookingModal({ photoPackage, onClose }) {
                       "Chọn giờ & ngày bắt đầu",
                       "Chọn giờ & ngày kết thúc",
                     ]}
-                    className={`w-full ${
+                    className={`w-full font-light ${
                       errors.dateRange ? "border-red-500" : ""
                     }`}
                     onChange={(value) => field.onChange(value)}

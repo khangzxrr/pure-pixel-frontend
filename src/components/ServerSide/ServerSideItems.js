@@ -1,8 +1,6 @@
-import { MdHomeFilled } from "react-icons/md";
 import { FaCompass, FaBell } from "react-icons/fa6";
 import { FiUpload } from "react-icons/fi";
-import { IoMailSharp } from "react-icons/io5";
-import { FaCameraRetro } from "react-icons/fa";
+import { BiSolidMessageDetail } from "react-icons/bi";
 
 const ServerSideItems = [
   {
@@ -29,12 +27,12 @@ const ServerSideItems = [
     link: "/explore",
     icon: <FaCompass className="text-3xl" />,
   },
-  {
-    id: "camera",
-    name: "Máy ảnh",
-    link: "/camera",
-    icon: <FaCameraRetro className="text-3xl" />,
-  },
+  // {
+  //   id: "camera",
+  //   name: "Máy ảnh",
+  //   link: "/camera",
+  //   icon: <FaCameraRetro className="text-3xl" />,
+  // },
   {
     id: "upload",
     name: "Tải lên",
@@ -54,7 +52,7 @@ const ServerSideItems = [
     name: "Tin nhắn",
     link: "/message",
     authen: true,
-    icon: <IoMailSharp className="text-3xl" />,
+    icon: <BiSolidMessageDetail className="text-3xl" />,
   },
 ];
 export default ServerSideItems;

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import useNotification from "antd/es/notification/useNotification";
 import React from "react";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
+import { useNotification } from "../../../Notification/Notification";
 
 const BookingRejectWarningModel = ({ booking, onClose }) => {
   const { notificationApi } = useNotification();

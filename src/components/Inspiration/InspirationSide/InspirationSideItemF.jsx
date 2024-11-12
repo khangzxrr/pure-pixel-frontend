@@ -1,8 +1,6 @@
 import React from "react";
-import { FaMoneyBill1 } from "react-icons/fa6";
+import { FaCameraRetro, FaMoneyBill1 } from "react-icons/fa6";
 import { GiPolarStar } from "react-icons/gi";
-import { PiClockCountdownBold } from "react-icons/pi";
-import { RiVipCrownFill } from "react-icons/ri";
 import { BsPersonBoundingBox } from "react-icons/bs";
 import { TbMap2 } from "react-icons/tb";
 import { MdAddAPhoto } from "react-icons/md";
@@ -40,17 +38,17 @@ const InspirationSideItemF = [
 
   {
     id: 6,
-    title: "Ảnh đang bán",
+    title: "Cửa hàng ảnh",
     icon: <FaMoneyBill1 />,
     link: "/explore/selling",
     quote: "Những bức ảnh đang được đăng bán",
   },
-  // {
-  //   id: 5,
-  //   title: "Xếp hạng",
-  //   icon: <RiVipCrownFill />,
-  //   link: "/explore/leaderboard",
-  // },
+  {
+    id: 5,
+    title: "Máy ảnh phổ biến",
+    icon: <FaCameraRetro />,
+    link: "/explore/camera",
+  },
   {
     id: 7,
     title: "Bản đồ ảnh",

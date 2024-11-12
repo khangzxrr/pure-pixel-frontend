@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import formatPrice from "../../../utils/FormatPriceUtils";
 import { useMutation } from "@tanstack/react-query";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
-import useNotification from "antd/es/notification/useNotification";
 import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
+import { Tooltip } from "antd";
+import { useNotification } from "../../../Notification/Notification";
 
-const BookingRequestCard = ({ booking }) => {
+
+const BookingRequestCard = ({ booking, textStateColor, textStateName }) => {
   const { notificationApi } = useNotification();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -66,8 +68,9 @@ const BookingRequestCard = ({ booking }) => {
             <div className="text-xl font-semibold">
               {booking.photoshootPackageHistory.title}
             </div>
-            <div className={`text-[12px] font-normal`}>
-              {booking.photoshootPackageHistory.subtitle}
+            <div className={`text-[12px] font-normal ${textStateColor}`}>
+              {/* {booking.photoshootPackageHistory.subtitle} */}
+              {textStateName}
             </div>
           </div>
 
@@ -84,15 +87,21 @@ const BookingRequestCard = ({ booking }) => {
               />
             </div>
             <div className="text-sm ">{booking.user.name}</div>
-            <MessageCircleMore className="w-5 h-5 ml-2" />
+            <Tooltip title="Nhắn tin" color="blue">
+              <MessageCircleMore
+                className="w-5 h-5 ml-2 hover:text-blue-500 z-20"
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigate(`/message?to=${booking.user.id}`);
+                }}
+              />
+            </Tooltip>
           </div>
           <div className="flex flex-col gap-1 mt-2">
             <div>Ghi chú:</div>
-            <ul className="list-disc list-inside font-normal ">
-              <li className="truncate text-sm max-w-[300px]">
-                {booking.description}
-              </li>
-            </ul>
+            <p className="list-inside font-normal truncate text-sm max-w-[300px]">
+              {booking.description ? booking.description : "Không có"}
+            </p>
           </div>
           <div className="flex flex-col gap-2 mt-2">
             <div>Thời gian hẹn:</div>

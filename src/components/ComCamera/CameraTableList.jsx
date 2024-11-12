@@ -69,8 +69,8 @@ const CameraTableList = () => {
                 className="border-b dark:bg-[#2f3136] dark:border-[#434743]"
               >
                 <td className="px-4 py-4 md:px-6">{index + 1}</td>
-                <td className="px-4 py-4 md:px-6 flex items-center gap-2 text-blue-500">
-                  <div className="w-6 h-6 md:w-8 md:h-8">
+                <td className="px-4 py-4 md:px-6 flex items-center gap-2 text-[#eee]">
+                  <div className="w-6 h-6 md:w-8 md:h-8 bg-[#eee] overflow-hidden">
                     <img
                       src={item.maker.thumbnail}
                       alt={item.maker.name}
@@ -78,7 +78,7 @@ const CameraTableList = () => {
                     />
                   </div>
                   <Link
-                    to={`/camera/brand/${item.maker.id}`}
+                    to={`/explore/camera-brand/${item.maker.id}`}
                     onClick={() => handleOnClickCamera(item.maker.name)}
                   >
                     <span className="hover:underline underline-offset-2">
@@ -86,15 +86,15 @@ const CameraTableList = () => {
                     </span>
                   </Link>
                 </td>
-                <td className="px-4 py-4 md:px-6 text-blue-500 hidden md:table-cell">
+                <td className="px-4 py-4 md:px-6 text-[#eee] hidden md:table-cell">
                   {item.maker.cameras.slice(0, 2).map((camera, idx) => (
                     <React.Fragment key={camera.id}>
                       <Link
-                        to={`/camera/${camera.id}`}
+                        to={`/explore/camera-model/${camera.id}`}
                         onClick={() =>
                           handleOnClickCamera(item.maker.name, camera.name)
                         }
-                        className="font-normal hover:underline underline-offset-2"
+                        className="font-normal hover:underline hover:text-blue-500 underline-offset-2"
                       >
                         {camera.name}
                       </Link>

@@ -13,6 +13,8 @@ import SellingPhotoNav from "../SellingPhoto/SellingPhotoNav";
 import UserApi from "../../apis/UserApi";
 import { useQuery } from "@tanstack/react-query";
 import { IoIosArrowUp } from "react-icons/io";
+import CameraNav from "../ComCamera/CameraNav";
+import PhotoshootPackageNav from "../Booking/PhotoshootPackageNav";
 const Explore = () => {
   const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote, activeItem } =
@@ -29,6 +31,8 @@ const Explore = () => {
   const isInspirationActive = activeItem === 1;
   const isPhotographerListActive = activeItem === 4;
   const isSellingListActive = activeItem === 6;
+  const isCameraActive = activeItem === 5;
+  const isPhotoshootPackActive = activeItem === 8;
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["me"],
@@ -169,6 +173,15 @@ const Explore = () => {
                   activeTitle={activeTitle}
                   activeIcon={activeIcon}
                   activeQuote={activeQuote}
+                />
+              )}
+              {isCameraActive && (
+                <CameraNav activeTitle={activeTitle} activeIcon={activeIcon} />
+              )}
+              {isPhotoshootPackActive && (
+                <PhotoshootPackageNav
+                  activeTitle={activeTitle}
+                  activeIcon={activeIcon}
                 />
               )}
             </div>

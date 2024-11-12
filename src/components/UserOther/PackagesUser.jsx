@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { FaArrowRight } from "react-icons/fa6";
@@ -8,7 +8,7 @@ import { FiCameraOff } from "react-icons/fi";
 const PackagesUser = () => {
   const { userId } = useParams();
   const limit = 10;
-
+  const navigate = useNavigate();
   const fetchPackages = ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
@@ -34,13 +34,17 @@ const PackagesUser = () => {
   const packagesList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
     : [];
+  console.log("packagesList", packagesList);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
       {packagesList.length > 0 ? (
         packagesList.map((item) => (
           <div className="w-full">
-            <div className="group hover:cursor-pointer relative w-full h-[200px] overflow-hidden rounded-lg">
+            <div
+              onClick={() => navigate(`/user/booking-package/${item?.id}`)}
+              className="group hover:cursor-pointer relative w-full h-[200px] overflow-hidden rounded-lg"
+            >
               <img
                 src={item?.thumbnail}
                 alt=""
@@ -54,7 +58,12 @@ const PackagesUser = () => {
                       {item?.description}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-blue-400 hover:underline underline-offset-2 hover:cursor-pointer">
+                  <div
+                    onClick={() =>
+                      navigate(`/user/booking-package/${item?.id}`)
+                    }
+                    className="flex items-center gap-2 text-blue-400 hover:underline underline-offset-2 hover:cursor-pointer"
+                  >
                     <span className="hidden xl:block">Xem chi tiết</span>{" "}
                     <FaArrowRight />
                   </div>

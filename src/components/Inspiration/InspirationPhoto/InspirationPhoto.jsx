@@ -16,12 +16,14 @@ import UseUserProfileStore from "../../../states/UseUserProfileStore";
 import ComModal from "../../ComModal/ComModal";
 import ComSharePhoto from "../../ComSharePhoto/ComSharePhoto";
 import { useModalState } from "../../../hooks/useModalState";
+import UseUserOtherStore from "./../../../states/UseUserOtherStore";
 
 const InspirationPhoto = () => {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
+  
   const { selectedLocate, setSelectedLocate } = useMapboxState(); // Use Zustand store
   const [selectedImage, setSelectedImage] = useState(
     selectedLocate ? selectedLocate.id : null,
@@ -44,6 +46,9 @@ const InspirationPhoto = () => {
   const setNamePhotographer = UsePhotographerFilterStore(
     (state) => state.setNamePhotographer,
   );
+
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const popupShare = useModalState();
   const fetchPhotos = async ({ pageParam = 0 }) => {
@@ -54,7 +59,7 @@ const InspirationPhoto = () => {
     const orderByUpVote = filterByUpVote.param;
 
     const watermark = isWatermarkChecked;
-    const selling = isForSaleChecked;
+    const selling = false;
     const photographerName = searchResult;
     const title = searchByPhotoTitle;
     const response = await PhotoApi.getPublicPhotos(
@@ -107,7 +112,6 @@ const InspirationPhoto = () => {
   const handleOnClick = (photo) => {
     console.log(`selected photo `);
     setSelectedImage(photo);
-    // navigate(`/photo/${id}`, { state: { listImg: photoList } });
   };
 
   return (
@@ -131,7 +135,6 @@ const InspirationPhoto = () => {
           onClose={() => {
             navigate(`/explore/inspiration`);
             setSelectedImage(null);
-            setSelectedLocate(null);
           }}
           listImg={photoList}
         />
@@ -188,11 +191,13 @@ const InspirationPhoto = () => {
                               <div
                                 className="hover:underline cursor-pointer underline-offset-2"
                                 onClick={() => {
+                                  setNamePhotographer(photo.photographer.name);
+                                  setNameUserOther(photo.photographer.name);
+                                  setActiveTitle(null);
                                   navigate(
                                     `/user/${photo.photographer.id}/photos`,
                                   );
-                                  setNamePhotographer(photo.photographer.name);
-                                  setActiveTitle(null);
+                                  setUserOtherId(photo.photographer.id);
                                 }}
                               >
                                 {photo.photographer.name || "Tên tác giả"}

@@ -8,6 +8,7 @@ import {
   FaMoneyBillTransfer,
 } from "react-icons/fa";
 import { BiMoneyWithdraw } from "react-icons/bi";
+import { MdOutlinePhotoFilter } from "react-icons/md";
 
 const UserProfileSideItems = [
   {
@@ -31,7 +32,7 @@ const UserProfileSideItems = [
   {
     id: "photo",
     link: "photo-selling",
-    title: "Ảnh bán",
+    title: "Cửa hàng của tôi",
     icon: <FaImages className="text-3xl" />, // Icon ảnh bán
   },
   {
@@ -49,8 +50,14 @@ const UserProfileSideItems = [
   {
     id: "booking-request",
     link: "booking-request",
-    title: "Quản lý yêu cầu chụp",
+    title: "Yêu cầu chụp của khách",
     icon: <FaClipboardList className="text-3xl" />, // Icon quản lý yêu cầu
+  },
+  {
+    id: "customer-booking",
+    link: "customer-booking",
+    title: "Yêu cầu chụp của tôi",
+    icon: <MdOutlinePhotoFilter className="text-3xl" />, // Icon quản lý yêu cầu
   },
 ];
 

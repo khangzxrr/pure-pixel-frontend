@@ -3,10 +3,15 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import Map, { Marker, Popup } from "react-map-gl";
 import { IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import useMapboxState from "../../states/UseMapboxState";
 import MapBoxApi from "../../apis/MapBoxApi";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useModalState } from "../../hooks/useModalState";
+import ComModal from "../../components/ComModal/ComModal";
+import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
+import DetailedPhotoView from "../DetailPhoto/DetailPhoto";
+import { set } from "react-hook-form";
+import { Tooltip } from "antd";
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN; // Set your mapbox token here
 const getMultiplier = (zoom) => {
@@ -21,7 +26,8 @@ const getMultiplier = (zoom) => {
   }
 };
 export default function PhotoMap() {
-  const { selectedLocate, setSelectedLocate } = useMapboxState(); // Use Zustand store
+  const [selectedLocate, setSelectedLocate] = useState(null); // Use Zustand store
+  const [currentLocate, setCurrentLocate] = useState(null); // Use Zustand store
   const [limit, setLimit] = useState(10); // Set limit to 10
   const [page, setPage] = useState(0); // Set page to 0
   const [viewState, setViewState] = useState({
@@ -31,6 +37,7 @@ export default function PhotoMap() {
   });
   const navigate = useNavigate(); // Initialize useNavigate
   const queryClient = useQueryClient(); // Initialize the QueryClient
+  const popupDetail = useModalState();
 
   const {
     data: photos,
@@ -89,8 +96,10 @@ export default function PhotoMap() {
 
     setSelectedLocate({
       id: photo.id,
+      photo_id: photo.id,
+      photographer_id: photo.photographer.id,
       title: photo.title,
-      photo_url: photo.signedUrl.url,
+      photo_url: photo.signedUrl.thumbnail,
       latitude: photo.exif.latitude,
       longitude: photo.exif.longitude,
     });
@@ -112,20 +121,7 @@ export default function PhotoMap() {
 
     console.log("map move end", event); // Log the current zoom level
   };
-  useEffect(() => {
-    if (selectedLocate) {
-      console.log("Selected Location:", photos?.exif, photos);
-
-      setViewState((prev) => ({
-        ...prev,
-        latitude: selectedLocate.latitude,
-        longitude: selectedLocate.longitude,
-        zoom: 8,
-      }));
-    }
-  }, [selectedLocate]);
-  // Get user's current location
-  useEffect(() => {
+  function setToCurrentLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -134,8 +130,9 @@ export default function PhotoMap() {
             ...prev,
             latitude,
             longitude,
-            zoom: 9,
+            zoom: 11,
           }));
+          queryClient.invalidateQueries(["photo-by-coordinates"]);
         },
         (error) => {
           console.error("Error getting current location:", error);
@@ -144,9 +141,43 @@ export default function PhotoMap() {
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
+  }
+  useEffect(() => {
+    if (selectedLocate) {
+      console.log("Selected Location:", photos?.exif, photos);
+
+      setViewState((prev) => ({
+        ...prev,
+        latitude: selectedLocate.latitude,
+        longitude: selectedLocate.longitude,
+        zoom: 12,
+      }));
+    }
+  }, [selectedLocate]);
+  // Get user's current location
+  useEffect(() => {
+    setToCurrentLocation();
   }, []);
   return (
     <div className="relative w-full h-screen">
+      {/* <ComModal
+        isOpen={popupDetail.isModalOpen}
+        // width={800}
+        // className={"bg-black"}
+      >
+        <ComSharePhoto
+          photoId={selectedLocate?.id}
+          userId={selectedLocate?.photographer_id}
+          onClose={popupDetail.handleClose}
+        />
+      </ComModal> */}
+      {popupDetail.isModalOpen && selectedLocate && (
+        <DetailedPhotoView
+          idImg={selectedLocate?.id}
+          onClose={() => popupDetail.handleClose()}
+          listImg={photos?.objects.length > 0 ? photos.objects : []}
+        />
+      )}
       <Map
         {...viewState} // Spread the current viewState for controlling the map
         mapStyle="mapbox://styles/mapbox/streets-v9"
@@ -199,7 +230,7 @@ export default function PhotoMap() {
               >
                 <img
                   className="h-full w-full rounded-sm"
-                  src={photo.signedUrl.url}
+                  src={photo.signedUrl.thumbnail}
                   alt={photo.title}
                 />
               </div>
@@ -208,18 +239,18 @@ export default function PhotoMap() {
       </div>
 
       {selectedLocate ? (
-        <div className="absolute w-1/6 h-fit top-1/4 right-3 bg-white flex items-center justify-center p-2 shadow-lg bg-opacity-80">
+        <div className="absolute w-1/6 h-fit top-1/4 right-3 bg-white flex items-center justify-center p-2 shadow-lg bg-opacity-80 ">
           <div className="flex flex-row items-center">
             <div
               className="flex flex-col h-full m-2 cursor-pointer text-gray-600"
               onClick={() => {
-                navigate(`/explore/inspiration`);
-              }} // Navigate to another route
+                popupDetail.handleOpen();
+              }}
             >
               <p className="font-normal text-base">
-                {selectedLocate.title.length > 20
+                {selectedLocate?.title?.length > 20
                   ? `${selectedLocate.title.substring(0, 17)}...`
-                  : selectedLocate.title}
+                  : selectedLocate?.title}
               </p>
               <p className="font-normal text-sm">{selectedLocate.address}</p>
               <div className="h-full w-full flex">
@@ -233,6 +264,17 @@ export default function PhotoMap() {
           </div>
         </div>
       ) : null}
+      <Tooltip title="Nhấn để về vị trí hiện tại" color="red" placement="left">
+        <div
+          className="absolute top-4 right-3 bg-white flex items-center justify-center p-2 shadow-md rounded-lg cursor-pointer"
+          onClick={() => setToCurrentLocation()}
+        >
+          <div className="flex flex-row h-full text-gray-600">
+            <IoLocationSharp fontSize={22} color="red" />
+            <a className="font-normal text-base">Vị trí hiện tại</a>
+          </div>
+        </div>
+      </Tooltip>
     </div>
   );
 }

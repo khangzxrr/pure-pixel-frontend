@@ -6,6 +6,8 @@ import PhotoApi from "../../apis/PhotoApi";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { IoMdImages } from "react-icons/io";
 import { FaArrowRightLong } from "react-icons/fa6";
+import UseUserOtherStore from "../../states/UseUserOtherStore";
+import { Pagination } from "antd";
 
 const SellingPhotoList = () => {
   const { keycloak } = useKeycloak();
@@ -14,11 +16,13 @@ const SellingPhotoList = () => {
   const itemsPerPage = 9; // Tổng số ảnh
   const [page, setPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const selling = true;
-
+  const { searchResult } = UseSellingPhotoStore();
+  const photographerName = searchResult;
   const { data, isLoading, isError, error, isFetching } = useQuery({
-    queryKey: ["public-photos-selling", page],
+    queryKey: ["public-photos-selling", page, searchResult],
     queryFn: () =>
       PhotoApi.getPublicPhotos(
         itemsPerPage,
@@ -28,7 +32,7 @@ const SellingPhotoList = () => {
         null,
         null,
         selling,
-        null,
+        photographerName,
         null,
         null,
         null,
@@ -50,29 +54,22 @@ const SellingPhotoList = () => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     setSelectedImage(id);
   };
+
+  console.log("data", data);
+
   return (
     <div className="h-screen">
-      <div>
-        {data?.objects.length > 0 ? (
-          <div className="flex justify-center gap-2 mx-5 my-2">
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-              (pageNumber) => (
-                <button
-                  key={pageNumber}
-                  onClick={() => handlePageClick(pageNumber)}
-                  className={`px-3 py-1 rounded ${
-                    page === pageNumber
-                      ? "bg-[#eee] text-gray-600"
-                      : "bg-gray-600 text-white"
-                  }`}
-                >
-                  {pageNumber}
-                </button>
-              ),
-            )}
-          </div>
-        ) : (
-          ""
+
+      <div className="flex flex-col">
+        {totalPages > 0 && (
+          <Pagination
+            current={page}
+            total={totalPages * itemsPerPage}
+            onChange={handlePageClick}
+            pageSize={itemsPerPage}
+            showSizeChanger={false}
+            className="flex justify-end my-2"
+          />
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 pb-4">
           {isFetching && (
@@ -110,9 +107,26 @@ const SellingPhotoList = () => {
                   </div>
                   <div className="absolute bottom-0 left-0 w-full rounded-b-lg bg-black bg-opacity-50 text-white text-center py-2 transition-opacity duration-300 backdrop-blur-md">
                     <div className="flex justify-between px-1 ">
-                      <div className="truncate max-w-[200px]">
-                        {photo.title || "Không xác định"}
+                      <div className="flex items-center gap-2">
+                        <div className="size-6 overflow-hidden rounded-full">
+                          <img
+                            src={photo.photographer.avatar}
+                            alt=""
+                            className="size-full object-cover"
+                          />
+                        </div>
+                        <div
+                          onClick={() => {
+                            navigate(`/user/${photo.photographer.id}`);
+                            setNameUserOther(photo.photographer.name);
+                            setUserOtherId(photo.photographer.id);
+                          }}
+                          className="truncate max-w-[200px] hover:underline underline-offset-2 hover:cursor-pointer"
+                        >
+                          {photo.photographer.name || "Không xác định"}
+                        </div>
                       </div>
+
                       <div className="">
                         {lowestPrice === highestPrice ? (
                           <span>{formatPrice(highestPrice)}</span>

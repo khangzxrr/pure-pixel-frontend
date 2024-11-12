@@ -300,18 +300,18 @@ const ProductPhotoDetail = () => {
   console.log(111111111, data);
   console.log("====================================");
   return (
-    <div className="min-h-screen text-white p-8 ">
-      <div className=" mx-auto flex flex-col lg:flex-row gap-8">
-        <div className="lg:w-2/3 flex items-center bg-[#505050] justify-center  ">
-          <div className=" p-4 rounded-lg">
+    <div className="min-h-screen text-white p-2 ">
+      <div className=" mx-auto flex flex-col xl:flex-row items-stretch gap-8 xl:max-h-[700px] ">
+        <div className="xl:w-2/3 flex-shrink-0 flex  bg-[#505050] justify-center items-center">
+          <div className=" p-4 rounded-lg flex justify-center items-center ">
             <img
               src={
-                 selectedPricetag?.preview
+                selectedPricetag?.preview
                   ? selectedPricetag?.preview
                   : purchasedImageUrl
               }
               alt={data.title}
-              className="w-full h-auto border-4 border-black "
+              className=" w-auto h-full transform  scale-[0.95] max-h-[650px] border-4 border-black "
             />
           </div>
         </div>
@@ -326,7 +326,7 @@ const ProductPhotoDetail = () => {
             </div>
           </div>
         )}
-        <div className="lg:w-1/3">
+        <div className="xl:w-1/3 overflow-y-auto  overflow-x-hidden custom-scrollbar2">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-1">
               <img
@@ -383,17 +383,18 @@ const ProductPhotoDetail = () => {
                     </button>
                   </MenuItem>
                 </MenuItems>
+                {popupReport.isModalOpen && (
+                  <ComReport
+                    onclose={popupReport.handleClose}
+                    tile="Báo cáo ảnh bán"
+                    id={data?.id}
+                    reportType={"PHOTO"}
+                  />
+                )}
               </Menu>
             </div>
           </div>
-          {popupReport.isModalOpen && (
-            <ComReport
-              onclose={popupReport.handleClose}
-              tile="Báo cáo ảnh bán"
-              id={data?.id}
-              reportType={"PHOTO"}
-            />
-          )}
+
           <div>
             <h1
               className="text-2xl font-medium mb-2"
@@ -409,7 +410,59 @@ const ProductPhotoDetail = () => {
               {photoSelling?.description}
             </h1>
           </div>
+          <div className="bg-[#2f3136] text-gray-200 rounded-lg p-4 border">
+            <h1 className="text-xl mb-2 mt-4">Thông số:</h1>
+            <div className="space-y-2 mb-6 grid  grid-cols-1 sm:grid-cols-1 gap-3 ">
+              {/* Hiển thị 3 thông số đầu tiên */}
+              {mainDetails.map(([key, value], index) => (
+                <div
+                  className="flex justify-between items-start border-b border-[#ffffff3d]"
+                  key={index}
+                >
+                  <span className="font-semibold mr-2">{key}:</span>
 
+                  <span
+                    className="font-light"
+                    style={{
+                      wordBreak: "break-all",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {value}
+                  </span>
+                </div>
+              ))}
+
+              {/* Hiển thị thông số còn lại khi mở rộng */}
+              {isExpanded &&
+                extraDetails.map(([key, value], index) => (
+                  <div
+                    className="flex justify-between items-start border-b border-[#ffffff3d]"
+                    key={index}
+                  >
+                    <span className="font-semibold mr-2">{key}:</span>
+                    <span
+                      className="font-light"
+                      style={{
+                        wordBreak: "break-all",
+                        overflowWrap: "break-word",
+                      }}
+                    >
+                      {value}
+                    </span>
+                  </div>
+                ))}
+            </div>
+            {/* Nút Xem thêm/Ẩn bớt */}
+            <div className="flex justify-center">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className=" text-white rounded-md"
+              >
+                {isExpanded ? "Ẩn bớt" : "Xem thêm"}
+              </button>
+            </div>
+          </div>
           <p className="text-3xl font-semibold mb-2">
             {selectedPricetag ? selectedPricetag.price.toLocaleString() : 0}Đ
           </p>
@@ -423,20 +476,20 @@ const ProductPhotoDetail = () => {
                   <button
                     key={pricetag.id}
                     className={`px-4 py-2 text-sm rounded-full w-[80px] h-[80px] flex flex-col items-center justify-center 
-                   
-                     ${
-                       selectedPricetagId === pricetag.id
-                         ? "bg-[#292b2f] text-white border-2 border-white"
-                         : "bg-[#292b2f] text-white border-2 border-[#292b2f]"
-                     }     `}
+                     
+                       ${
+                         selectedPricetagId === pricetag.id
+                           ? "bg-[#292b2f] text-white border-2 border-white"
+                           : "bg-[#292b2f] text-white border-2 border-[#292b2f]"
+                       }     `}
                     onClick={() => handlePricetagChange(pricetag.id)}
                   >
                     <p>{pricetag.width}</p>
                     <p>x</p>
                     <p>{pricetag.height}</p>
                     {/* {isPurchased && (
-                      <span className="text-xs text-green-500">Đã mua</span>
-                    )} */}
+                        <span className="text-xs text-green-500">Đã mua</span>
+                      )} */}
                   </button>
                 );
               })}
@@ -605,52 +658,7 @@ const ProductPhotoDetail = () => {
           )}
         </div>
       </div>
-      <h1 className="text-xl mb-2 mt-4">Thông số:</h1>
-      <div className="space-y-2 mb-6 grid  grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* Hiển thị độ phân giải */}
-        <div className="flex items-start">
-          <span className="font-semibold mr-2">Độ phân giải:</span>
-          <span className="font-light">
-            {data.height} x {data.width}
-          </span>
-        </div>
-        {/* Hiển thị 3 thông số đầu tiên */}
-        {mainDetails.map(([key, value], index) => (
-          <div className="flex items-start" key={index}>
-            <span className="font-semibold mr-2">{key}:</span>
 
-            <span
-              className="font-light"
-              style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
-            >
-              {value}
-            </span>
-          </div>
-        ))}
-
-        {/* Hiển thị thông số còn lại khi mở rộng */}
-        {isExpanded &&
-          extraDetails.map(([key, value], index) => (
-            <div className="flex items-start" key={index}>
-              <span className="font-semibold mr-2">{key}:</span>
-              <span
-                className="font-light"
-                style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
-              >
-                {value}
-              </span>
-            </div>
-          ))}
-      </div>
-      {/* Nút Xem thêm/Ẩn bớt */}
-      <div className="flex justify-center">
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className=" text-white rounded-md"
-        >
-          {isExpanded ? "Ẩn bớt" : "Xem thêm"}
-        </button>
-      </div>
       <div className="mb-6 mt-8">
         <h2 className="text-2xl font-semibold mb-2">
           {data?._count?.comments} Bình luận

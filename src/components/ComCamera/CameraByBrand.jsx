@@ -35,11 +35,11 @@ const CameraByBrand = () => {
     setNameCamera(brandCamera, name);
   };
   return (
-    <div className="flex flex-col p-4 gap-5">
+    <div className="flex flex-col p-4 gap-5 min-h-screen">
       <div>
         <CameraPopular />
       </div>
-      <div className="relative overflow-x-auto">
+      <div className="relative ">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs uppercase dark:bg-[#1f2123] dark:text-[#eee]">
             <tr>
@@ -79,12 +79,12 @@ const CameraByBrand = () => {
                   className="border-b dark:bg-[#2f3136] dark:border-[#434743]"
                 >
                   <td className="px-6 py-4">{index + 1}</td>
-                  <td className="px-6 py-4 text-blue-500">
+                  <td className="px-6 py-4 text-[#eee]">
                     <Link
-                      to={`/camera/${camera.id}`}
+                      to={`/explore/camera-model/${camera.id}`}
                       onClick={() => handleOnClickCamera(camera.name)}
                     >
-                      <span className="hover:underline underline-offset-2">
+                      <span className="hover:underline hover:text-blue-500 underline-offset-2">
                         {camera.name}
                       </span>
                     </Link>

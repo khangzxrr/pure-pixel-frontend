@@ -72,6 +72,9 @@ import BookingRequestInProgress from "../components/Booking/BookingRequestState/
 import BookingRequestCompleted from "../components/Booking/BookingRequestState/BookingRequestCompleted";
 import BookingRequestCancelled from "../components/Booking/BookingRequestState/BookingRequestCancelled";
 import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
+import CustomerBooking from "../pages/UserProfile/CustomerBooking";
+import CustomerBookingDetail from "../pages/UserProfile/CustomerBookingDetail";
+
 
 export const AppRouter = createBrowserRouter([
   {
@@ -132,6 +135,18 @@ export const AppRouter = createBrowserRouter([
                 path: "product-photo/:id",
                 element: <ProductPhotoDetail />,
               },
+              {
+                path: "camera",
+                element: <CameraList />,
+              },
+              {
+                path: "camera-brand/:cameraId",
+                element: <CameraByBrand />,
+              },
+              {
+                path: "camera-model/:cameraId",
+                element: <CameraDetail />,
+              },
             ],
           },
           {
@@ -189,13 +204,13 @@ export const AppRouter = createBrowserRouter([
             element: <UserOther />,
             children: [
               {
-                path: "",
-                element: <Navigate to="photos" replace={true} />,
-              },
-              {
                 path: ":userId",
                 element: <UserProfileV2 />,
                 children: [
+                  {
+                    path: "",
+                    element: <Navigate to="photos" replace={true} />,
+                  },
                   {
                     path: "photos",
                     element: <PhotosUser />,
@@ -213,6 +228,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "product-photo/:id",
                 element: <ProductPhotoDetail />,
+              },
+              {
+                path: "booking-package/:photoshootPackageId",
+                element: <PhotoshootPackageDetail />,
               },
             ],
           },
@@ -267,6 +286,14 @@ export const AppRouter = createBrowserRouter([
                   },
                 ],
               },
+              {
+                path: "customer-booking",
+                element: <CustomerBooking />,
+              },
+              {
+                path: "customer-booking/:bookingId",
+                element: <CustomerBookingDetail />,
+              },
               // {
               //   path: "booking-request/:bookingId",
               //   element: <BookingRequestDetail />,
@@ -297,7 +324,6 @@ export const AppRouter = createBrowserRouter([
               },
             ],
           },
-          {},
           {
             path: "home",
             // element: <BlogList />,

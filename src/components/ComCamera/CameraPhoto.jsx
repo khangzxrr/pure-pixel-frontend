@@ -99,7 +99,7 @@ const CameraPhoto = ({ nameCamera }) => {
             dataLength={photoList.length}
             next={fetchNextPage}
             hasMore={hasNextPage}
-            scrollableTarget="main"
+            scrollableTarget="inspiration"
             loader={
               <div className="flex justify-center mt-4">
                 <LoadingSpinner />

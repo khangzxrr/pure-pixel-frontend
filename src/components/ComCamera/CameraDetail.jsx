@@ -8,10 +8,9 @@ import UseCameraStore from "../../states/UseCameraStore";
 const CameraDetail = () => {
   const nameCamera = UseCameraStore((state) => state.nameCamera);
   const brandCamera = UseCameraStore((state) => state.brandCamera);
-  console.log(nameCamera, brandCamera);
 
   return (
-    <div className="flex flex-col m-2">
+    <div className="flex flex-col m-2 min-h-screen">
       <div className="flex flex-col items-center lg:flex-row bg-[#2f3136]  h-auto gap-4 m-[5px]">
         <div className="w-full md:w-[400px] h-[400px] bg-[#eee] flex items-center justify-center">
           <img
