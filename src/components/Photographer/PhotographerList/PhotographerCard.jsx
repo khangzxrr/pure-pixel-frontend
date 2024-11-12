@@ -2,11 +2,12 @@ import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { SlOptions } from "react-icons/sl";
 import PhotoApi from "../../../apis/PhotoApi";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FaRegMessage } from "react-icons/fa6";
 import { MdBlock } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import UseUserOtherStore from "../../../states/UseUserOtherStore";
+import FollowApi from "../../../apis/FollowApi";
 
 // Hàm để cắt ngắn câu quote nếu quá dài
 const truncateQuote = (quote, maxLength) => {
@@ -20,27 +21,6 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
   const navigate = useNavigate();
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
-
-  const items = [
-    {
-      label: (
-        <div className="flex items-center gap-2 text-lg">
-          <FaRegMessage />
-          Nhắn tin
-        </div>
-      ),
-      key: "0",
-    },
-    {
-      label: (
-        <div className="flex items-center gap-2 text-lg">
-          <MdBlock className="text-xl" />
-          Chặn
-        </div>
-      ),
-      key: "1",
-    },
-  ];
 
   const {
     data: photoData = {},
@@ -64,6 +44,19 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
     staleTime: 300000,
   });
 
+  const followMutation = useMutation({
+    mutationFn: (followingId) => FollowApi.followPhotographer(followingId),
+  });
+  const handleFollow = () => {
+    followMutation.mutate(id, {
+      onSuccess: () => {
+        alert("Theo dõi thành công!");
+      },
+      onError: (error) => {
+        alert("Có lỗi xảy ra: " + error.message);
+      },
+    });
+  };
   const photos = photoData.objects || [];
 
   // Kiểm tra kiểu dữ liệu trước khi xử lý
@@ -118,7 +111,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
             <div>“{truncateQuote(quote, maxQuoteLength)}”</div>
           </div>
           <div className="bg-[#6b7280] px-5 py-2 rounded-sm mt-5 transition-color duration-200 hover:bg-[#4d525c] hover:cursor-pointer">
-            <button>Theo dõi</button>
+            <button onClick={handleFollow}>Theo dõi</button>
           </div>
         </div>
         <div className="flex justify-end">
