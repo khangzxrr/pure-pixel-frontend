@@ -5,8 +5,8 @@ import { message } from "antd";
 
 export default function PhotoManagementModal({ close, id, data }) {
   const [photoInfo, setPhotoInfo] = useState({
-    title: "",
-    description: "",
+    title: data.title || " ",
+    description: data.description || " ",
   });
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -48,12 +48,12 @@ export default function PhotoManagementModal({ close, id, data }) {
 
   const handleSubmit = () => {
     const newErrors = {};
-    if (!photoInfo.title.trim()) {
-      newErrors.title = "Vui lòng nhập tựa đề.";
-    }
-    if (!photoInfo.description.trim()) {
-      newErrors.description = "Vui lòng nhập mô tả.";
-    }
+    // if (!photoInfo.title.trim()) {
+    //   newErrors.title = "Vui lòng nhập tựa đề.";
+    // }
+    // if (!photoInfo.description.trim()) {
+    //   newErrors.description = "Vui lòng nhập mô tả.";
+    // }
 
     const selectedSizes = sizes.filter((size) => size.selected);
     if (selectedSizes.length === 0) {
@@ -104,7 +104,9 @@ export default function PhotoManagementModal({ close, id, data }) {
   const allDetails = Object?.entries(data?.exif || {});
   const mainDetails = allDetails?.slice(0, 4);
   const extraDetails = allDetails.slice(4);
-
+  console.log("====================================");
+  console.log(data);
+  console.log("====================================");
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60] ">
       <div className="bg-[#2b2d31] rounded-lg max-w-6xl w-full  overflow-hidden ">
@@ -141,9 +143,9 @@ export default function PhotoManagementModal({ close, id, data }) {
                       <input
                         type="text"
                         value={photoInfo.title}
-                        onChange={(e) =>
-                          setPhotoInfo({ ...photoInfo, title: e.target.value })
-                        }
+                        // onChange={(e) =>
+                        //   setPhotoInfo({ ...photoInfo, title: e.target.value })
+                        // }
                         className={`w-full bg-[#1e1f22] border rounded px-3 py-2 text-gray-100 ${
                           errors.title ? "border-red-500" : "border-gray-700"
                         }`}
@@ -162,12 +164,12 @@ export default function PhotoManagementModal({ close, id, data }) {
                       <input
                         type="text"
                         value={photoInfo.description}
-                        onChange={(e) =>
-                          setPhotoInfo({
-                            ...photoInfo,
-                            description: e.target.value,
-                          })
-                        }
+                        // onChange={(e) =>
+                        //   setPhotoInfo({
+                        //     ...photoInfo,
+                        //     description: e.target.value,
+                        //   })
+                        // }
                         className={`w-full bg-[#1e1f22] border rounded px-3 py-2 text-gray-100 ${
                           errors.description
                             ? "border-red-500"
