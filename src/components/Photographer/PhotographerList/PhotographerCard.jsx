@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FaRegMessage } from "react-icons/fa6";
 import { MdBlock } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import UseUserOtherStore from "../../../states/UseUserOtherStore";
 
 // Hàm để cắt ngắn câu quote nếu quá dài
 const truncateQuote = (quote, maxLength) => {
@@ -17,6 +18,9 @@ const truncateQuote = (quote, maxLength) => {
 
 const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
   const navigate = useNavigate();
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
+
   const items = [
     {
       label: (
@@ -100,7 +104,11 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
         <div className="flex flex-col justify-center items-center gap-2">
           <div className="text-xl font-bold mt-8 text-center">
             <div
-              onClick={() => navigate(`/user/${id}/photos`)}
+              onClick={() => {
+                navigate(`/user/${id}/photos`);
+                setNameUserOther(name);
+                setUserOtherId(id);
+              }}
               className="hover:underline underline-offset-2"
             >
               {name || "Không xác định"}

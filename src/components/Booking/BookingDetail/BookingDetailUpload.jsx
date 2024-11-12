@@ -29,6 +29,8 @@ export default function UploadBookingPhoto({ bookingDetail }) {
 
   const navigate = useNavigate();
   const { notificationApi } = useNotification();
+  const enableUpdate = bookingDetail.status === "ACCEPTED";
+  console.log("enableUpdate", enableUpdate);
 
   //use keycloak to trigger refresh component when new token comes
 
@@ -224,7 +226,13 @@ export default function UploadBookingPhoto({ bookingDetail }) {
 
   return (
     <div className="w-full h-full grid grid-cols-6">
-      <div className="col-span-1 flex items-center justify-center bg-[#696c73] hover:opacity-90">
+      <div
+        className={`${
+          photoArray.length > 0 ? "col-span-1" : "col-span-6 h-full"
+        } ${
+          !enableUpdate && "hidden"
+        } flex items-center justify-center bg-red-400 hover:opacity-90`}
+      >
         <Dragger
           name="avatar"
           listType="picture-card"
@@ -268,8 +276,12 @@ export default function UploadBookingPhoto({ bookingDetail }) {
         </Dragger>
       </div>
       {photoArray.length > 0 && (
-        <div className="col-span-5 w-full bg-[#36393f]">
-          <BookingPhotoList />
+        <div
+          className={`${
+            enableUpdate ? "col-span-5" : "col-span-6"
+          } w-full bg-[#36393f]`}
+        >
+          <BookingPhotoList enableUpdate={enableUpdate} />
         </div>
       )}
     </div>

@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import useNotification from "antd/es/notification/useNotification";
 import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
+import { Tooltip } from "antd";
 
 const BookingRequestCard = ({ booking }) => {
   const { notificationApi } = useNotification();
@@ -84,7 +85,15 @@ const BookingRequestCard = ({ booking }) => {
               />
             </div>
             <div className="text-sm ">{booking.user.name}</div>
-            <MessageCircleMore className="w-5 h-5 ml-2" />
+            <Tooltip title="Nhắn tin" color="blue">
+              <MessageCircleMore
+                className="w-5 h-5 ml-2 hover:text-blue-500 z-20"
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigate(`/message?to=${booking.user.id}`);
+                }}
+              />
+            </Tooltip>
           </div>
           <div className="flex flex-col gap-1 mt-2">
             <div>Ghi chú:</div>

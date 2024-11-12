@@ -22,7 +22,7 @@ const getPublicPhotos = async (
   photographerName,
   title,
   photographerId,
-  cameraId,
+  cameraId
 ) => {
   // Tạo một đối tượng chứa các tham số
   const params = {

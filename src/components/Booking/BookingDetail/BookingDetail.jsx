@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useId } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useId, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import BookingDetailInfo from "./BookingDetailInfo";
@@ -9,6 +9,8 @@ import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 
 const BookingDetail = () => {
   const { bookingId } = useParams();
+  const queryClient = useQueryClient();
+
   const {
     setSelectedPhotoByUid,
     photoArray,
@@ -20,13 +22,13 @@ const BookingDetail = () => {
     setNextSelectedPhoto,
   } = useBookingPhotoStore();
   const { isPending, data: bookingDetail } = useQuery({
-    queryKey: [`findBookingById_${bookingId}`],
+    queryKey: ["booking-detail", bookingId],
     queryFn: () => PhotographerBookingApi.findById(bookingId),
   });
 
   useEffect(() => {
     console.log("data", bookingDetail);
-
+    clearState();
     if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
       bookingDetail.photos.forEach((photo) => {
         console.log("photo", photo);
@@ -41,7 +43,7 @@ const BookingDetail = () => {
         setSelectedPhotoByUid(photo.id);
       });
     }
-  }, [bookingDetail]);
+  }, [bookingDetail, bookingId]);
 
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
@@ -50,11 +52,15 @@ const BookingDetail = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-8 overflow-hidden">
-      <div className="md:col-span-2 flex h-[95vh] overflow-y-scroll custom-scrollbar">
+      <div className="md:col-span-3 flex h-[95vh] overflow-y-scroll custom-scrollbar">
         <BookingDetailInfo bookingDetail={bookingDetail} />
       </div>
-      <div className="md:col-span-6 flex flex-col h-[95vh]">
-        <div className="  bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden">
+      <div className="md:col-span-5 flex flex-col h-[95vh]">
+        <div
+          className={`${
+            photoArray.length === 0 && "hidden"
+          }  bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden`}
+        >
           {photoArray.length > 1 && (
             <>
               <div
@@ -77,7 +83,7 @@ const BookingDetail = () => {
             alt="Selected Photo"
           />
         </div>
-        <div className="">
+        <div className={`${photoArray.length === 0 && "h-full"}`}>
           <BookingDetailUpload bookingDetail={bookingDetail} />
         </div>
       </div>

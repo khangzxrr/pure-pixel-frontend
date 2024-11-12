@@ -30,7 +30,7 @@ const MyPhotoP = () => {
     (state) => state.filterByPhotoDate
   );
   const searchResult = UseMyPhotoFilter((state) => state.searchResult);
-  const orderByCreatedAt = filterByPhotoDate.param;
+  const orderByCreatedAt = "desc";
   const setFilterByPhotoDate = UseMyPhotoFilter(
     (state) => state.setFilterByPhotoDate
   );
