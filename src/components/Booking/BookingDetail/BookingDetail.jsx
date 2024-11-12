@@ -32,7 +32,6 @@ const BookingDetail = () => {
     if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
       bookingDetail.photos.forEach((photo) => {
         console.log("photo", photo);
-
         addPhotoWithId(photo.id, {
           id: photo.id,
           uid: photo.id,
