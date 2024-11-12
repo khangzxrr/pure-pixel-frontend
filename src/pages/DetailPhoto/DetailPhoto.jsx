@@ -90,8 +90,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
   }
 
   useEffect(() => {
-    console.log(`current photo changed!`);
-
     setIsOriginalphotoLoaded(false);
 
     if (currentPhoto.id) {
@@ -112,34 +110,33 @@ export default function DetailedPhotoView({ onClose, photo }) {
       return;
     }
 
-    // const originalImage = new Image();
-    // originalImage.src = currentPhoto.signedUrl.url;
-    // originalImage.onload = () => {
-    //   console.log(`loaded original image`);
-    //   setIsOriginalphotoLoaded(true);
-    // };
+    const originalImage = new Image();
+    originalImage.src = currentPhoto.signedUrl.url;
+    originalImage.onload = () => {
+      setIsOriginalphotoLoaded(true);
+    };
   }, [currentPhoto]);
 
   ////PRELOAD: this is a workaround to prevent slow loading issue
-  //useEffect(() => {
-  //  if (!previousPhotoData?.signedUrl) {
-  //    return;
-  //  }
-  //
-  //  const image = new Image();
-  //  image.src = previousPhotoData.signedUrl.thumbnail;
-  //}, [previousPhotoData]);
-  //
-  ////PRELOAD: this is a workaround to prevent slow loading issue
-  //useEffect(() => {
-  //  if (!nextPhotoData?.signedUrl) {
-  //    return;
-  //  }
-  //
-  //  const image = new Image();
-  //
-  //  image.src = nextPhotoData.signedUrl.thumbnail;
-  //}, [nextPhotoData]);
+  useEffect(() => {
+    if (!previousPhotoData?.signedUrl) {
+      return;
+    }
+
+    const image = new Image();
+    image.src = previousPhotoData.signedUrl.thumbnail;
+  }, [previousPhotoData]);
+
+  //PRELOAD: this is a workaround to prevent slow loading issue
+  useEffect(() => {
+    if (!nextPhotoData?.signedUrl) {
+      return;
+    }
+
+    const image = new Image();
+
+    image.src = nextPhotoData.signedUrl.thumbnail;
+  }, [nextPhotoData]);
 
   const handleGoBack = () => {
     if (window.history.length > 2) {
@@ -218,7 +215,11 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     : currentPhoto.signedUrl.placeholder
                 }
                 alt={currentPhoto.title}
-                className="w-auto h-full max-h-screen blur"
+                className={
+                  isOriginalPhotoLoaded
+                    ? "w-auto h-full max-h-screen"
+                    : "w-auto h-full max-h-screen blur"
+                }
               />
             </div>
 
