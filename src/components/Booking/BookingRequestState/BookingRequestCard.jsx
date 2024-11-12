@@ -8,7 +8,7 @@ import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import useNotification from "antd/es/notification/useNotification";
 import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 
-const BookingRequestCard = ({ booking }) => {
+const BookingRequestCard = ({ booking, textStateColor, textStateName }) => {
   const { notificationApi } = useNotification();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -66,8 +66,9 @@ const BookingRequestCard = ({ booking }) => {
             <div className="text-xl font-semibold">
               {booking.photoshootPackageHistory.title}
             </div>
-            <div className={`text-[12px] font-normal`}>
-              {booking.photoshootPackageHistory.subtitle}
+            <div className={`text-[12px] font-normal ${textStateColor}`}>
+              {/* {booking.photoshootPackageHistory.subtitle} */}
+              {textStateName}
             </div>
           </div>
 

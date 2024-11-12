@@ -31,7 +31,7 @@ const UserProfileSideItems = [
   {
     id: "photo",
     link: "photo-selling",
-    title: "Ảnh bán",
+    title: "Cửa hàng của tôi",
     icon: <FaImages className="text-3xl" />, // Icon ảnh bán
   },
   {

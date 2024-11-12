@@ -72,7 +72,7 @@ const SellerProfile = () => {
           <div className="flex items-center justify-between text-white">
             <div className="flex items-center space-x-4 ml-6">
               <ShoppingBag className="w-6 h-6" />
-              <h1 className="text-2xl font-bold">Shop</h1>
+              <h1 className="text-2xl font-bold">Cửa hàng</h1>
             </div>
           </div>
           <div className=" flex items-end justify-between shadow-md p-4">

@@ -30,9 +30,10 @@ const SellingPhotoList = () => {
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const selling = true;
-
+  const { searchResult } = UseSellingPhotoStore();
+  const photographerName = searchResult;
   const { data, isLoading, isError, error, isFetching } = useQuery({
-    queryKey: ["public-photos-selling", page],
+    queryKey: ["public-photos-selling", page, searchResult],
     queryFn: () =>
       PhotoApi.getPublicPhotos(
         itemsPerPage,
@@ -42,7 +43,7 @@ const SellingPhotoList = () => {
         null,
         null,
         selling,
-        null,
+        photographerName,
         null,
         null,
         null

@@ -106,7 +106,7 @@ const PhotosUser = () => {
           dataLength={photoList.length}
           next={fetchNextPage}
           hasMore={hasNextPage}
-          scrollableTarget="inspiration"
+          scrollableTarget="main"
           loader={
             <div className="flex justify-center mt-4">
               <LoadingSpinner />
