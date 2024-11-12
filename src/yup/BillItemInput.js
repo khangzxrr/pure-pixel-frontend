@@ -1,16 +1,28 @@
-// billItemValidation.js
 import * as yup from "yup";
 
-const billItemSchema = yup.object({
+const billItemSchema = yup.object().shape({
   type: yup
     .string()
-    .required("Type is required")
-    .oneOf(["INCREASE", "DECREASE"], "Invalid type"),
-  title: yup.string().required("Title is required").trim(),
-  price: yup
+    .required("Loại là bắt buộc")
+    .oneOf(["INCREASE", "DECREASE"], "Loại không hợp lệ"),
+  title: yup
     .string()
-    .required("Price is required")
-    .matches(/^\d+(\.\d{3})*$/, "Price must be a valid number format"), // Regex to allow formatted numbers like 1.000, 10.000
+    .required("Tiêu đề là bắt buộc")
+    .max(50, "Tiêu đề quá dài"), // Maximum length validation for title
+  price: yup
+    .number()
+    .transform((value, originalValue) => {
+      if (typeof originalValue === "string") {
+        // Convert the value to a number
+        const parsedValue = parseInt(originalValue.replace(/\./g, ""), 10);
+        return isNaN(parsedValue) ? undefined : parsedValue;
+      }
+      return value;
+    })
+    .typeError("Giá phải là số")
+    .required("Giá là bắt buộc")
+    .min(10000, "Giá ít nhất là 10.000đ") // Minimum price validation
+    .max(10000000000, "Giá phải ít hơn 10 tỷ đồng"), // Maximum price validation
 });
 
 export default billItemSchema;

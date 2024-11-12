@@ -168,7 +168,6 @@ export default function Wallet() {
             </div>
           </div>
 
-          <TransactionList />
           <div className="mt-4">
             <TableTransactilonList />
           </div>
