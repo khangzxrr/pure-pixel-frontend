@@ -20,7 +20,7 @@ const PhotoshootPackageNav = ({
   </div> */}
         </div>
       </div>
-      <div className="flex items-center gap-2 transition-all duration-300">
+      {/* <div className="flex items-center gap-2 transition-all duration-300">
         <div className="bg-[#202225] rounded-lg flex items-center">
           <input
             type="text"
@@ -33,7 +33,7 @@ const PhotoshootPackageNav = ({
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

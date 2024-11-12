@@ -46,7 +46,7 @@ const MyPhotoP = () => {
     setIsWatermarkChecked,
   } = UseMyPhotoFilter();
   const watermark = isWatermarkChecked;
-  const selling = isForSaleChecked;
+  const selling = false;
 
   const { data, isFetching, isError, error } = useQuery({
     queryKey: [
