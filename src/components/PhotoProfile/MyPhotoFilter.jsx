@@ -64,7 +64,7 @@ const MyPhotoFilter = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 justify-between items-center w-[300px] md:w-[450px] ">
+    <div className="flex flex-col gap-2 justify-between items-center w-[300px] md:w-[350px] ">
       <span className="flex justify-center w-full font-normal bg-[#202225] rounded-t-lg p-2 ">
         Bộ lọc ảnh
       </span>

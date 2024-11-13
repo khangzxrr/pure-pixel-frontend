@@ -70,7 +70,7 @@ const CameraTableList = () => {
               >
                 <td className="px-4 py-4 md:px-6">{index + 1}</td>
                 <td className="px-4 py-4 md:px-6 flex items-center gap-2 text-[#eee]">
-                  <div className="w-6 h-6 md:w-8 md:h-8">
+                  <div className="w-6 h-6 md:w-8 md:h-8 bg-[#eee] overflow-hidden">
                     <img
                       src={item.maker.thumbnail}
                       alt={item.maker.name}
@@ -78,7 +78,7 @@ const CameraTableList = () => {
                     />
                   </div>
                   <Link
-                    to={`/camera/brand/${item.maker.id}`}
+                    to={`/explore/camera-brand/${item.maker.id}`}
                     onClick={() => handleOnClickCamera(item.maker.name)}
                   >
                     <span className="hover:underline underline-offset-2">

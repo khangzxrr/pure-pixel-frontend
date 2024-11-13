@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTableState } from "../../hooks/useTableState";
-import { Typography, message } from "antd";
+import { ConfigProvider, Typography, message } from "antd";
 import useColumnFilters from "../../components/ComTable/utils";
 import ComTable from "./../../components/ComTable/ComTable";
 import ComDateConverter from "../../components/ComDateConverter/ComDateConverter";
@@ -120,7 +120,7 @@ export default function PhotoshootPackageManagement() {
                 `Bạn có chắc chắn muốn xóa?`,
                 reloadData,
                 notificationSuccess,
-                notificationError,
+                notificationError
               );
             }}
             excludeDefaultItems={["details"]}
@@ -155,40 +155,54 @@ export default function PhotoshootPackageManagement() {
 
   return (
     <div className="p-4 h-screen">
-      <div className="flex justify-end pb-2">
-        <div>
-          <ComButton onClick={modal.handleOpen}>Tạo gói chụp</ComButton>
+      <ConfigProvider
+        theme={{
+          components: {
+            Modal: {
+              contentBg: "#43474E",
+              headerBg: "#43474E",
+              titleColor: "white",
+            },
+          },
+        }}
+      >
+        <div className="flex justify-end pb-2">
+          <div>
+            <ComButton onClick={modal.handleOpen}>Tạo gói chụp</ComButton>
+          </div>
         </div>
-      </div>
-      <ComModal
-        width={800}
-        isOpen={modal?.isModalOpen}
-        onClose={modal?.handleClose}
-      >
-        <CreatePhotoshootPackage
+        <ComModal
+          title="Tạo gói chụp ảnh"
+          width={1000}
+          isOpen={modal?.isModalOpen}
           onClose={modal?.handleClose}
-          tableRef={reloadData}
-        />
-      </ComModal>
-      <ComModal
-        isOpen={modalEdit?.isModalOpen}
-        onClose={modalEdit?.handleClose}
-        width={800}
-      >
-        <EditPhotoshootPackage
-          selectedPackage={selectedData}
-          tableRef={reloadData}
+          top={20}
+        >
+          <CreatePhotoshootPackage
+            onClose={modal?.handleClose}
+            tableRef={reloadData}
+          />
+        </ComModal>
+        <ComModal
+          isOpen={modalEdit?.isModalOpen}
           onClose={modalEdit?.handleClose}
+          width={800}
+        >
+          <EditPhotoshootPackage
+            selectedPackage={selectedData}
+            tableRef={reloadData}
+            onClose={modalEdit?.handleClose}
+          />
+        </ComModal>
+        <ComTable
+          y={"70vh"}
+          x={1500}
+          columns={columns}
+          dataSource={data}
+          loading={table.loading}
+          scroll={{ x: 1500, y: 500 }}
         />
-      </ComModal>
-      <ComTable
-        y={"70vh"}
-        x={1500}
-        columns={columns}
-        dataSource={data}
-        loading={table.loading}
-        scroll={{ x: 1500, y: 500 }}
-      />
+      </ConfigProvider>
     </div>
   );
 }

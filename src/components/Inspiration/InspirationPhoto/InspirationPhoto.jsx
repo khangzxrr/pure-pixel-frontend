@@ -1,26 +1,17 @@
 import React, { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
-import { FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
 import { useKeycloak } from "@react-keycloak/web";
 import UseCategoryStore from "../../../states/UseCategoryStore";
-import InsPhotoFilter from "./InsPhotoFilter";
 import { IoMdImages } from "react-icons/io";
-import BlurhashImage from "../../BlurhashImage/BlurhashImage";
 import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
 import UseUserProfileStore from "../../../states/UseUserProfileStore";
-import VoteApi from "./../../../apis/VoteApi";
-import LikeButton from "./../../ComLikeButton/LikeButton";
 import ComModal from "../../ComModal/ComModal";
 import ComSharePhoto from "../../ComSharePhoto/ComSharePhoto";
 import { useModalState } from "../../../hooks/useModalState";
@@ -31,24 +22,25 @@ const InspirationPhoto = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
   const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory
+    (state) => state.selectedPhotoCategory,
   );
   const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate
+    (state) => state.filterByPhotoDate,
   );
   const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
   const searchResult = UseCategoryStore((state) => state.searchResult);
   const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle
+    (state) => state.searchByPhotoTitle,
   );
   const setNamePhotographer = UsePhotographerFilterStore(
-    (state) => state.setNamePhotographer
+    (state) => state.setNamePhotographer,
   );
 
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
@@ -63,7 +55,7 @@ const InspirationPhoto = () => {
     const orderByUpVote = filterByUpVote.param;
 
     const watermark = isWatermarkChecked;
-    const selling = isForSaleChecked;
+    const selling = false;
     const photographerName = searchResult;
     const title = searchByPhotoTitle;
     const response = await PhotoApi.getPublicPhotos(
@@ -75,7 +67,7 @@ const InspirationPhoto = () => {
       watermark,
       selling,
       photographerName,
-      title
+      title,
     );
     return response;
   };
@@ -114,7 +106,7 @@ const InspirationPhoto = () => {
   };
 
   const handleOnClick = (photo) => {
-    queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
+    console.log(`selected photo `);
     setSelectedImage(photo);
   };
 
@@ -134,6 +126,7 @@ const InspirationPhoto = () => {
       </ComModal>
       {selectedImage && (
         <DetailedPhotoView
+          photo={selectedImage}
           idImg={selectedImage.id}
           onClose={() => {
             navigate(`/explore/inspiration`);
@@ -198,7 +191,7 @@ const InspirationPhoto = () => {
                                   setNameUserOther(photo.photographer.name);
                                   setActiveTitle(null);
                                   navigate(
-                                    `/user/${photo.photographer.id}/photos`
+                                    `/user/${photo.photographer.id}/photos`,
                                   );
                                   setUserOtherId(photo.photographer.id);
                                 }}

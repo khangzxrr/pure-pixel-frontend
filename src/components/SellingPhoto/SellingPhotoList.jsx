@@ -1,21 +1,10 @@
 import { useKeycloak } from "@react-keycloak/web";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UseSellingPhotoStore from "../../states/UseSellingPhotoStore";
 import PhotoApi from "../../apis/PhotoApi";
-import Masonry from "react-masonry-css";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import InfiniteScroll from "react-infinite-scroll-component";
-import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
-import { FaRegHeart } from "react-icons/fa";
-import { FiShare2 } from "react-icons/fi";
 import { IoMdImages } from "react-icons/io";
-import BlurhashImage from "../BlurhashImage/BlurhashImage";
 import { FaArrowRightLong } from "react-icons/fa6";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import { Pagination } from "antd";
@@ -45,7 +34,7 @@ const SellingPhotoList = () => {
         null,
         null,
         null,
-        null
+        null,
       ),
     keepPreviousData: true,
   });
@@ -91,7 +80,7 @@ const SellingPhotoList = () => {
               const prices =
                 photo.photoSellings?.flatMap(
                   (selling) =>
-                    selling.pricetags?.map((pricetag) => pricetag.price) || []
+                    selling.pricetags?.map((pricetag) => pricetag.price) || [],
                 ) || [];
 
               const highestPrice = prices.length > 0 ? Math.max(...prices) : 0;

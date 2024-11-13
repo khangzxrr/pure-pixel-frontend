@@ -167,9 +167,7 @@ const SidebarLayout = ({
                 <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
                   <div className="text-2xl">{activeIcon}</div>
 
-                  <div className="hidden 2xl:block">
-                    {brandCamera || activeTitle}
-                  </div>
+                  <div className="hidden 2xl:block">{activeTitle}</div>
                 </div>
               </div>
             </div>
