@@ -71,11 +71,24 @@ const createPhotoshootPackage = async (data) => {
   // Return the response data from the server
   return response.data;
 };
+
+const getAllPhotoshootPackages = async (limit, page) => {
+  const params = {
+    limit,
+    page,
+  };
+  const queryString = new URLSearchParams(params).toString();
+  const url = `photographer/photoshoot-package?${queryString}`;
+  const response = await http.get(url);
+
+  return response.data;
+};
 const PhotoshootPackageApi = {
   getPackagesByPhotographerId,
   findAll,
   findById,
   createPhotoshootPackage,
+  getAllPhotoshootPackages,
 };
 
 export default PhotoshootPackageApi;

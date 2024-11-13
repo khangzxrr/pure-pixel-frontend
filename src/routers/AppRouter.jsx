@@ -74,7 +74,7 @@ import BookingRequestCancelled from "../components/Booking/BookingRequestState/B
 import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
 import CustomerBooking from "../pages/UserProfile/CustomerBooking";
 import CustomerBookingDetail from "../pages/UserProfile/CustomerBookingDetail";
-
+import PhotoshootPackageManagementV2 from "../pages/UserProfile/PhotoshootPackageManagementV2";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -258,7 +258,7 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "photoshoot-package",
-                element: <PhotoshootPackageManagement />,
+                element: <PhotoshootPackageManagementV2 />,
               },
               {
                 path: "booking-request",
