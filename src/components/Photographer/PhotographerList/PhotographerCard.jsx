@@ -8,6 +8,7 @@ import { MdBlock } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import UseUserOtherStore from "../../../states/UseUserOtherStore";
 import FollowApi from "../../../apis/FollowApi";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 // Hàm để cắt ngắn câu quote nếu quá dài
 const truncateQuote = (quote, maxLength) => {
@@ -51,13 +52,14 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
   const handleFollow = () => {
     followMutation.mutate(id, {
       onSuccess: () => {
-        alert("Theo dõi thành công!");
+        queryClient.invalidateQueries({ queryKey: ["followings-me"] });
+        queryClient.invalidateQueries({ queryKey: ["photographers"] });
+        // alert("Theo dõi thành công!");
       },
       onError: (error) => {
         alert("Có lỗi xảy ra: " + error.message);
       },
     });
-    queryClient.invalidateQueries({ queryKey: ["followings-me"] });
   };
   const photos = photoData.objects || [];
 
@@ -112,9 +114,15 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
           <div className="text-center text-sm font-normal">
             <div>“{truncateQuote(quote, maxQuoteLength)}”</div>
           </div>
-          <div className="bg-[#6b7280] px-5 py-2 rounded-sm mt-5 transition-color duration-200 hover:bg-[#4d525c] hover:cursor-pointer">
-            <button onClick={handleFollow}>Theo dõi</button>
-          </div>
+          {followMutation.isSuccess || followMutation.isPending ? (
+            <div className="bg-[#6b7280] px-5 py-2 rounded-sm mt-5 transition-color duration-200 hover:bg-[#4d525c] hover:cursor-pointer">
+              <button>Đang theo dõi...</button>
+            </div>
+          ) : (
+            <div className="bg-[#6b7280] px-5 py-2 rounded-sm mt-5 transition-color duration-200 hover:bg-[#4d525c] hover:cursor-pointer">
+              <button onClick={handleFollow}>Theo dõi</button>
+            </div>
+          )}
         </div>
         <div className="flex justify-end">
           <Menu as="div" className="relative inline-block text-left">
