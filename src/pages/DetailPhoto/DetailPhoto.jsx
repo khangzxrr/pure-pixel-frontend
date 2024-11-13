@@ -63,8 +63,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  console.log(photo);
-
   const [currentPhoto, setCurrentPhoto] = useState(
     photo
       ? photo
@@ -172,14 +170,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
       setCurrentPhoto(previousPhotoData.objects[0]);
     }
   };
-
-  // Chuyển đổi đối tượng details thành mảng cặp khóa-giá trị
-  const allDetails = Object?.entries(currentPhoto.exif || {});
-
-  // // Lấy 3 thông số đầu tiên để hiển thị
-  const mainDetails = allDetails?.slice(0, 3);
-
-  const extraDetails = allDetails.slice(3);
 
   return (
     <>
@@ -386,9 +376,12 @@ export default function DetailedPhotoView({ onClose, photo }) {
             </div>
 
             <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
-            <div className="space-y-2 mb-6">
-              <ExifList exifData={currentPhoto?.exif} />
-            </div>
+
+            {currentPhoto?.exif && (
+              <div className="space-y-2 mb-6">
+                <ExifList exifData={currentPhoto?.exif} />
+              </div>
+            )}
 
             {/* Nút Xem thêm/Ẩn bớt */}
             <div className="flex justify-center">
