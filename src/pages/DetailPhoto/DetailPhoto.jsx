@@ -12,6 +12,7 @@ import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
+import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -56,11 +57,21 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const popupShare = useModalState();
   const navigate = useNavigate();
 
+  const { id } = useParams();
+
   const queryClient = useQueryClient();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const [currentPhoto, setCurrentPhoto] = useState(photo);
+  const [currentPhoto, setCurrentPhoto] = useState(
+    photo
+      ? photo
+      : {
+          id,
+        },
+  );
+
+  window.history.pushState({}, null, `/photo/${currentPhoto.id}`);
 
   const [isPlaceholderLoaded, setIsPlaceHolderLoaded] = useState(false);
   const [isOriginalPhotoLoaded, setIsOriginalPhotoLoaded] = useState(false);
@@ -143,10 +154,8 @@ export default function DetailedPhotoView({ onClose, photo }) {
   };
 
   const handleGoBack = () => {
-    if (window.history.length > 2) {
-      navigate(-1); // Quay lại trang trước đó
-    } else {
-      navigate("/"); // Nếu không có trang trước, về trang chủ
+    if (!navigate(-1)) {
+      navigate("/");
     }
   };
 
@@ -162,14 +171,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
     }
   };
 
-  // Chuyển đổi đối tượng details thành mảng cặp khóa-giá trị
-  const allDetails = Object?.entries(currentPhoto.exif || {});
-
-  // // Lấy 3 thông số đầu tiên để hiển thị
-  const mainDetails = allDetails?.slice(0, 3);
-
-  const extraDetails = allDetails.slice(3);
-
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
@@ -179,7 +180,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
         >
           <ComSharePhoto
             photoId={currentPhoto?.id}
-            userId={currentPhoto?.photographer.id}
+            userId={currentPhoto?.photographer?.id}
             onClose={popupShare.handleClose}
           />
         </ComModal>
@@ -215,8 +216,8 @@ export default function DetailedPhotoView({ onClose, photo }) {
               <img
                 src={
                   !isOriginalPhotoLoaded
-                    ? currentPhoto?.signedUrl.placeholder
-                    : currentPhoto?.signedUrl.url
+                    ? currentPhoto?.signedUrl?.placeholder
+                    : currentPhoto?.signedUrl?.url
                 }
                 alt={currentPhoto.title}
                 className="w-auto h-full max-h-screen"
@@ -254,7 +255,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center space-x-3">
                 <img
-                  src={currentPhoto.photographer.avatar}
+                  src={currentPhoto?.photographer?.avatar}
                   alt="GueM"
                   onClick={popup.handleOpen}
                   className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
@@ -264,7 +265,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
                     onClick={popup.handleOpen}
                   >
-                    {currentPhoto.photographer.name}
+                    {currentPhoto?.photographer?.name}
                   </h2>
                   <p className="text-sm text-gray-400">
                     {calculateTimeFromNow(currentPhoto?.createdAt)}
@@ -308,7 +309,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                   photoId={currentPhoto.id}
                   key={currentPhoto.id}
                 />
-                <span>{currentPhoto._count.votes}</span>
+                <span>{currentPhoto?._count?.votes}</span>
               </div>
 
               <button className="flex items-center hover:text-blue-500">
@@ -316,14 +317,14 @@ export default function DetailedPhotoView({ onClose, photo }) {
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                 </Icon>
 
-                <span>{currentPhoto._count.comments}</span>
+                <span>{currentPhoto?._count?.comments}</span>
               </button>
               <div className="flex items-center">
                 <Icon className="mr-2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                   <circle cx="12" cy="12" r="3" />
                 </Icon>
-                <span>{currentPhoto.viewCount}</span>
+                <span>{currentPhoto?.viewCount}</span>
               </div>
               <button
                 className="hover:text-green-500"
@@ -374,52 +375,13 @@ export default function DetailedPhotoView({ onClose, photo }) {
               </Menu>
             </div>
 
-            {/* <div className="space-y-4 mb-6">
-              {["COMPOSITION", "CONTENT", "CREATIVITY", "TECHNIQUE"].map(
-                (category, index) => (
-                  <div key={category}>
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-sm font-medium">{category}</span>
-                      <span className="text-sm font-medium">{37 - index}</span>
-                    </div>
-                    <div className="h-2 bg-gray-700 rounded-full">
-                      <div
-                        className={`h-full rounded-full ${
-                          index === 0
-                            ? "bg-blue-500"
-                            : index === 1
-                            ? "bg-pink-500"
-                            : index === 2
-                            ? "bg-purple-500"
-                            : "bg-green-500"
-                        }`}
-                        style={{ width: `${37 - index}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                )
-              )}
-            </div> */}
-
             <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
-            <div className="space-y-2 mb-6">
-              {/* Hiển thị 3 thông số đầu tiên */}
-              {mainDetails.map(([key, value], index) => (
-                <div className="flex items-start" key={index}>
-                  <span className="font-semibold mr-2">{key}:</span>
-                  <span>{value}</span>
-                </div>
-              ))}
 
-              {/* Hiển thị thông số còn lại khi mở rộng */}
-              {isExpanded &&
-                extraDetails.map(([key, value], index) => (
-                  <div className="flex items-start" key={index}>
-                    <span className="font-semibold mr-2">{key}:</span>
-                    <span>{value}</span>
-                  </div>
-                ))}
-            </div>
+            {currentPhoto?.exif && (
+              <div className="space-y-2 mb-6">
+                <ExifList exifData={currentPhoto?.exif} />
+              </div>
+            )}
 
             {/* Nút Xem thêm/Ẩn bớt */}
             <div className="flex justify-center">
@@ -432,8 +394,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
             </div>
 
             <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-2">{0} Bình luận</h2>
-
               <CommentPhoto id={currentPhoto.id} reload={refreshPhoto} />
             </div>
           </div>

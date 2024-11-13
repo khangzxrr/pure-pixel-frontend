@@ -21,7 +21,7 @@ const Explore = () => {
     UseInspirationStore();
   const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
   const [isVisible, setIsVisible] = useState(false);
-  const userData = UserService.getTokenParsed();
+
   const { keycloak } = useKeycloak();
 
   const handleLogin = () => keycloak.login();
@@ -71,7 +71,7 @@ const Explore = () => {
             <InspirationSideComp />
           </div>
           <div className="sticky bottom-0 bg-[#2a2d31] p-[12.5px]">
-            {userData ? (
+            {data ? (
               <div className="flex items-center justify-between gap-2 ">
                 <div
                   onClick={() => navigate("/profile")}
@@ -84,7 +84,7 @@ const Explore = () => {
                       className="w-full h-full object-cover bg-[#eee]"
                     />
                   </div>
-                  <div className="text-[13px]">{userData.name}</div>
+                  <div className="text-[13px]">{data?.name}</div>
                 </div>
                 <div className="hover:cursor-pointer  px-[5px] rounded-md">
                   <Menu as="div" className="relative inline-block text-left">

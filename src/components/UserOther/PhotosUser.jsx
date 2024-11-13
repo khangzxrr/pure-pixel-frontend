@@ -20,9 +20,10 @@ const PhotosUser = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const limit = 20;
-  const [selectedImage, setSelectedImage] = useState(null);
   const popupShare = useModalState();
+
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
@@ -39,7 +40,7 @@ const PhotosUser = () => {
       null,
       null,
       photographerId,
-      null
+      null,
     );
     return response;
   };
@@ -67,7 +68,7 @@ const PhotosUser = () => {
   };
   const handleOnClick = (photo) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    setSelectedImage(photo);
+    setSelectedPhoto(photo);
   };
   return (
     <>
@@ -83,14 +84,13 @@ const PhotosUser = () => {
           onClose={popupShare.handleClose}
         />
       </ComModal>
-      {selectedImage && (
+      {selectedPhoto && (
         <DetailedPhotoView
-          idImg={selectedImage}
+          photo={selectedPhoto}
           onClose={() => {
             navigate(`/user/${userId}/photos`);
-            setSelectedImage(null);
+            setSelectedPhoto(null);
           }}
-          listImg={photoList}
         />
       )}
       {isLoading && (
@@ -130,17 +130,10 @@ const PhotosUser = () => {
                     alt={`Photo ${photo.id}`}
                     className="w-full h-auto object-cover"
                     onClick={() => {
-                      handleOnClick(photo.id, photo.photographer.id);
+                      handleOnClick(photo);
                       console.log("PtUser", photo.id);
                     }}
                   />
-                  {/* <BlurhashImage
-                      src={photo.signedUrl.thumbnail}
-                      height={photo.height}
-                      width={photo.width}
-                      className="w-full h-auto object-cover"
-                      onClick={() => handleOnClick(photo.id)}
-                    /> */}
                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
                     <div className="flex justify-between w-full px-3">
                       <div className="flex items-center gap-2">
