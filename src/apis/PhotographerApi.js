@@ -16,7 +16,8 @@ const getAllPhotographers = async (
   page,
   search,
   orderByPhotoCount,
-  orderByVoteCount
+  orderByVoteCount,
+  isFollowed
 ) => {
   const params = {
     limit,
@@ -30,6 +31,9 @@ const getAllPhotographers = async (
   }
   if (orderByVoteCount) {
     params.orderByVoteCount = orderByVoteCount;
+  }
+  if (isFollowed !== undefined && isFollowed !== null) {
+    params.isFollowed = isFollowed;
   }
   const queryString = new URLSearchParams(params).toString();
   const url = `/photographer?${queryString}`;

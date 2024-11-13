@@ -22,16 +22,18 @@ const ListPhotographers = () => {
   );
   const orderByVoteCount = filterByVote.param;
   const photographerName = searchResult;
+  const isFollowed = false;
   const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
     useInfiniteQuery({
-      queryKey: ["photographers", searchResult, filterByVote],
+      queryKey: ["photographers", searchResult, filterByVote, isFollowed],
       queryFn: ({ pageParam = 0 }) =>
         PhotographerApi.getAllPhotographers(
           10,
           pageParam,
           photographerName,
           null,
-          orderByVoteCount
+          orderByVoteCount,
+          isFollowed
         ),
       getNextPageParam: (lastPage, allPages) => {
         const totalRecords = lastPage.totalRecord;
