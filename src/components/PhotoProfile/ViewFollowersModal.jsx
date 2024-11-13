@@ -79,9 +79,6 @@ const ViewFollowersModal = ({ onClose }) => {
                     {user?.follower?.name}
                   </div>
                 </div>
-                <button className="text-center font-normal text-sm md:text-md transition duration-200 hover:bg-red-300 bg-red-500 md:px-3 px-1 py-1 rounded-sm ">
-                  Hủy theo dõi
-                </button>
               </div>
             ))}
           </div>

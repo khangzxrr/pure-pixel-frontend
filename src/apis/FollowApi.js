@@ -11,9 +11,23 @@ const getAllFolllowerMe = async (limit, page) => {
   );
   return response.data;
 };
+
+const getAllFollowingMe = async (limit, page) => {
+  const response = await http.get(
+    `/follow/me/following?limit=${limit}&page=${page}`
+  );
+  return response.data;
+};
+
+const unFollow = async (followingId) => {
+  const response = await http.delete(`/follow/me/following/${followingId}`);
+  return response.data;
+};
 const FollowApi = {
   followPhotographer,
   getAllFolllowerMe,
+  getAllFollowingMe,
+  unFollow,
 };
 
 export default FollowApi;

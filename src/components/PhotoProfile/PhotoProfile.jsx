@@ -10,8 +10,8 @@ import ViewFollowingsModal from "./ViewFollowingsModal";
 import ViewFollowersModal from "./ViewFollowersModal";
 
 const PhotoProfile = ({ userData }) => {
-  const [showModal, setShowModal] = React.useState(false);
-
+  const [showFollowersModal, setFollowersShowModal] = React.useState(false);
+  const [showFollowingsModal, setFollowingsShowModal] = React.useState(false);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["me"],
     queryFn: () => UserApi.getApplicationProfile(),
@@ -21,20 +21,34 @@ const PhotoProfile = ({ userData }) => {
 
   const PhotoTotal = data?._count?.photos;
   const FollowingsCount = data?._count?.followings;
+  const FollowersCount = data?._count?.followers;
   const UserAvarta = data?.avatar;
   const quotaTotal = data?.maxPhotoQuota;
   const quotaUsed = data?.photoQuotaUsage;
 
   const handleOpenFollowersModal = () => {
-    setShowModal(true);
+    setFollowersShowModal(true);
   };
 
   const handleCloseFollowersModal = () => {
-    setShowModal(false);
+    setFollowersShowModal(false);
+  };
+
+  const handleOpenFollowingsModal = () => {
+    setFollowingsShowModal(true);
+  };
+
+  const handleCloseFollowingsModal = () => {
+    setFollowingsShowModal(false);
   };
   return (
     <>
-      {showModal && <ViewFollowersModal onClose={handleCloseFollowersModal} />}
+      {showFollowersModal && (
+        <ViewFollowersModal onClose={handleCloseFollowersModal} />
+      )}
+      {showFollowingsModal && (
+        <ViewFollowingsModal onClose={handleCloseFollowingsModal} />
+      )}
       <div className="flex flex-col md:flex-row  justify-center md:justify-between ">
         <div className="flex flex-col md:flex-row items-center gap-5">
           <div className="w-[120px] h-[120px] overflow-hidden rounded-full">
@@ -57,6 +71,12 @@ const PhotoProfile = ({ userData }) => {
                 className="px-[12px] py-[4px] bg-[#fff3] rounded-full hover:cursor-pointer hover:bg-[#ffffff67] transition duration-200"
               >
                 {FollowingsCount} người theo dõi
+              </div>
+              <div
+                onClick={handleOpenFollowingsModal}
+                className="px-[12px] py-[4px] bg-[#fff3] rounded-full hover:cursor-pointer hover:bg-[#ffffff67] transition duration-200"
+              >
+                {FollowersCount} đang theo dõi
               </div>
               <div className="flex items-center gap-1 px-[12px] py-[4px] bg-[#fff3] rounded-full">
                 {PhotoTotal} <FaImages />

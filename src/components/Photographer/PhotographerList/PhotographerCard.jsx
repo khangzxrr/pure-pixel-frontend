@@ -2,7 +2,7 @@ import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { SlOptions } from "react-icons/sl";
 import PhotoApi from "../../../apis/PhotoApi";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FaRegMessage } from "react-icons/fa6";
 import { MdBlock } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
@@ -19,9 +19,10 @@ const truncateQuote = (quote, maxLength) => {
 
 const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
   const navigate = useNavigate();
+
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
-
+  const queryClient = useQueryClient();
   const {
     data: photoData = {},
     isLoading,
@@ -56,6 +57,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
         alert("Có lỗi xảy ra: " + error.message);
       },
     });
+    queryClient.invalidateQueries({ queryKey: ["followings-me"] });
   };
   const photos = photoData.objects || [];
 
