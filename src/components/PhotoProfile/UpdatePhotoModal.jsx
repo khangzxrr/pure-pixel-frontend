@@ -24,6 +24,7 @@ import MapBoxApi from "../../apis/MapBoxApi";
 import Map, { Marker, Popup } from "react-map-gl";
 import { useNotification } from "../../Notification/Notification";
 import { LoadingOutlined } from "@ant-design/icons";
+import ExifList from "../Photographer/UploadPhoto/ExifList";
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN; // Set your mapbox token here
 
@@ -439,6 +440,9 @@ export default function UpdatePhotoModal() {
                     )}
                   </Map>
                 </div>
+              </div>
+              <div className="m-1">
+                <ExifList exifData={selectedUpdatePhoto?.exif} />
               </div>
 
               {/* Submit Button */}
