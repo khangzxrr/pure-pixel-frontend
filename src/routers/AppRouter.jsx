@@ -261,6 +261,10 @@ export const AppRouter = createBrowserRouter([
                 element: <PhotoshootPackageManagementV2 />,
               },
               {
+                path: "photoshoot-package/:photoshootPackageId",
+                element: <PhotoshootPackageDetail />,
+              },
+              {
                 path: "booking-request",
                 element: <BookingRequestList />,
                 children: [
