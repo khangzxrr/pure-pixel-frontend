@@ -10,8 +10,6 @@ import React, { useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import PhotographerApi from "../../apis/PhotographerApi";
 import { useQuery } from "@tanstack/react-query";
-import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
-import { FaImages } from "react-icons/fa6";
 
 const UserProfileV2 = () => {
   const navigate = useNavigate();

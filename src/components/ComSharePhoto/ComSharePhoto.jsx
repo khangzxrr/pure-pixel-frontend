@@ -7,7 +7,7 @@ import OtherUserSharePhotoComponent from "./OtherUserSharePhotoComponent";
 export default function ComSharePhoto({ photoId, userId, onClose }) {
   const { keycloak } = useKeycloak();
 
-  if (keycloak.tokenParsed.sub === userId) {
+  if (keycloak?.tokenParsed?.sub === userId) {
     return <OwnerSharePhotoComponent photoId={photoId} onClose={onClose} />;
   }
 

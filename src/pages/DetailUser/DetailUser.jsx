@@ -88,7 +88,7 @@ export default function DetailUser({ id, data }) {
   const getPhotos = async (page) => {
     try {
       const response = await getData(
-        `/photo/public?limit=9999&page=${page}&photographerId=${id}`
+        `/photo/public?limit=9999&page=${page}&photographerId=${id}`,
       );
       setNumberPhoto(response?.data.totalRecord);
 
@@ -107,6 +107,11 @@ export default function DetailUser({ id, data }) {
       setPhotos([...photos, ...newProducts]);
       setPage(page + 1);
     }
+  };
+
+  const handlePhotoOnClick = (photo) => {
+    console.log(photo);
+    navigate(`/photo/${photo.id}`);
   };
   return (
     <div className="bg-[#373737] text-white h-screen overflow-y-auto w-[690px]">
@@ -305,7 +310,7 @@ export default function DetailUser({ id, data }) {
                       src={photo.signedUrl.thumbnail}
                       alt={`Photo ${photo.id}`}
                       className="w-full h-auto object-cover"
-                      // onClick={() => handleOnClick(photo.id)}
+                      onClick={() => handlePhotoOnClick(photo)}
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
                       <div className="flex justify-between w-full px-3">
