@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTableState } from "../../hooks/useTableState";
-import { ConfigProvider, Typography, message } from "antd";
+import { ConfigProvider, Modal, Typography, message } from "antd";
 import useColumnFilters from "../../components/ComTable/utils";
 import ComTable from "./../../components/ComTable/ComTable";
 import ComDateConverter from "../../components/ComDateConverter/ComDateConverter";
@@ -159,8 +159,8 @@ export default function PhotoshootPackageManagement() {
         theme={{
           components: {
             Modal: {
-              contentBg: "#43474E",
-              headerBg: "#43474E",
+              contentBg: "#292b2f",
+              headerBg: "#292b2f",
               titleColor: "white",
             },
           },
@@ -171,18 +171,19 @@ export default function PhotoshootPackageManagement() {
             <ComButton onClick={modal.handleOpen}>Tạo gói chụp</ComButton>
           </div>
         </div>
-        <ComModal
-          title="Tạo gói chụp ảnh"
-          width={1000}
-          isOpen={modal?.isModalOpen}
-          onClose={modal?.handleClose}
-          top={20}
+        <Modal
+          title="Sửa thông tin ảnh"
+          visible={modal?.isModalOpen} // Use state from Zustand store
+          onCancel={modal?.handleClose} // Close the modal on cancel
+          footer={null}
+          width={1000} // Set the width of the modal
+          style={{ top: 22 }} // Set the top position of the modal
         >
           <CreatePhotoshootPackage
             onClose={modal?.handleClose}
             tableRef={reloadData}
           />
-        </ComModal>
+        </Modal>
         <ComModal
           isOpen={modalEdit?.isModalOpen}
           onClose={modalEdit?.handleClose}
