@@ -7,8 +7,14 @@ const getPackagesByPhotographerId = async (photographerId, limit, page) => {
   return response.data;
 };
 
-const findAll = async () => {
-  const response = await http.get("/photoshoot-package?limit=9999&page=0");
+const findAll = async (limit, page) => {
+  const params = {
+    limit,
+    page,
+  };
+  const queryString = new URLSearchParams(params).toString();
+  const url = `/photoshoot-package?${queryString}`;
+  const response = await http.get(url);
 
   return response.data;
 };

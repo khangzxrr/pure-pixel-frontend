@@ -27,15 +27,15 @@ const MyPhotoP = () => {
   const itemsPerPage = 10;
   const { inputValue, setInputValue, setSearchResult } = UseMyPhotoFilter();
   const filterByPhotoDate = UseMyPhotoFilter(
-    (state) => state.filterByPhotoDate
+    (state) => state.filterByPhotoDate,
   );
   const searchResult = UseMyPhotoFilter((state) => state.searchResult);
   const orderByCreatedAt = "desc";
   const setFilterByPhotoDate = UseMyPhotoFilter(
-    (state) => state.setFilterByPhotoDate
+    (state) => state.setFilterByPhotoDate,
   );
   const setFilterByUpVote = UseMyPhotoFilter(
-    (state) => state.setFilterByUpVote
+    (state) => state.setFilterByUpVote,
   );
   const filterByUpVote = UseMyPhotoFilter((state) => state.filterByUpVote);
   const orderByUpVote = filterByUpVote.param;
@@ -46,7 +46,7 @@ const MyPhotoP = () => {
     setIsWatermarkChecked,
   } = UseMyPhotoFilter();
   const watermark = isWatermarkChecked;
-  const selling = isForSaleChecked;
+  const selling = false;
 
   const { data, isFetching, isError, error } = useQuery({
     queryKey: [
@@ -66,13 +66,13 @@ const MyPhotoP = () => {
         orderByUpVote,
         watermark,
         selling,
-        searchResult
+        searchResult,
       ),
     keepPreviousData: true,
   });
 
-  const handleOnClick = (id) => {
-    setSelectedImage(id);
+  const handleOnClick = (photo) => {
+    setSelectedImage(photo);
   };
 
   const totalPages = data?.totalPage || 1;
@@ -138,7 +138,8 @@ const MyPhotoP = () => {
         > */}
       {selectedImage && (
         <DetailedPhotoView
-          idImg={selectedImage}
+          photo={selectedImage}
+          idImg={selectedImage?.id}
           onClose={() => {
             navigate(`/profile/my-photos`);
             setSelectedImage(null);
@@ -262,7 +263,7 @@ const MyPhotoP = () => {
                     className="w-full h-full object-cover"
                     src={photo.signedUrl.thumbnail}
                     alt={photo.title || "Ảnh"}
-                    onClick={() => handleOnClick(photo.id)}
+                    onClick={() => handleOnClick(photo)}
                   />
                 </div>
                 <UpdateDropdown

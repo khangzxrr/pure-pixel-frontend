@@ -10,7 +10,6 @@ import { FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { IoMdImages } from "react-icons/io";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
-import BlurhashImage from "../BlurhashImage/BlurhashImage";
 
 const CameraPhoto = ({ nameCamera }) => {
   const { keycloak } = useKeycloak();
@@ -35,7 +34,7 @@ const CameraPhoto = ({ nameCamera }) => {
       null,
       null,
       null,
-      cameraId
+      cameraId,
     );
     return response;
   };
@@ -100,7 +99,7 @@ const CameraPhoto = ({ nameCamera }) => {
             dataLength={photoList.length}
             next={fetchNextPage}
             hasMore={hasNextPage}
-            scrollableTarget="main"
+            scrollableTarget="inspiration"
             loader={
               <div className="flex justify-center mt-4">
                 <LoadingSpinner />

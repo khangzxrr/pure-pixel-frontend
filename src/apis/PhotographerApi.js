@@ -63,7 +63,7 @@ const getMyPhotos = async (
   if (watermark) {
     params.watermark = watermark;
   }
-  if (selling) {
+  if (selling !== undefined && selling !== null) {
     params.selling = selling;
   }
   if (title) {
