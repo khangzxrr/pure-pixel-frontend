@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Upload, Tooltip, Input, Button } from "antd";
 import { MessageCircleMore, Share2 } from "lucide-react";
 import ComButton from "../../components/ComButton/ComButton";
@@ -35,7 +35,7 @@ export default function CreatePhotoshootPackage({
   const [subtitle, setSubtitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-
+  const queryClient = useQueryClient();
   const {
     handleSubmit,
     control,
@@ -71,6 +71,7 @@ export default function CreatePhotoshootPackage({
       setShowcasesUrl([]);
       reset();
       onClose();
+      queryClient.invalidateQueries("findAllPhotoshootPackages");
     },
     onError: (error) => {
       console.log(error);
@@ -246,7 +247,7 @@ export default function CreatePhotoshootPackage({
                   {...field}
                   onChange={(e) => {
                     field.onChange(e);
-                    setPrice(formatPrice(e.target.value));
+                    setPrice(e.target.value);
                   }}
                   className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] p-2 m-2 mb-4 border-[1px] lg:text-base text-xs focus:outline-none hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] placeholder:text-sm ${
                     errors.price
