@@ -12,6 +12,7 @@ import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
+import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -386,22 +387,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
 
             <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
             <div className="space-y-2 mb-6">
-              {/* Hiển thị 3 thông số đầu tiên */}
-              {mainDetails.map(([key, value], index) => (
-                <div className="flex items-start" key={index}>
-                  <span className="font-semibold mr-2">{key}:</span>
-                  <span>{value}</span>
-                </div>
-              ))}
-
-              {/* Hiển thị thông số còn lại khi mở rộng */}
-              {isExpanded &&
-                extraDetails.map(([key, value], index) => (
-                  <div className="flex items-start" key={index}>
-                    <span className="font-semibold mr-2">{key}:</span>
-                    <span>{value}</span>
-                  </div>
-                ))}
+              <ExifList exifData={currentPhoto?.exif} />
             </div>
 
             {/* Nút Xem thêm/Ẩn bớt */}
