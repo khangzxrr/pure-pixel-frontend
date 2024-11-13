@@ -3,8 +3,14 @@ import PhotoshootPackageCard from "../../components/Booking/BookingPackageCard";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { ConfigProvider, Modal } from "antd";
+import CreatePhotoshootPackage from "./CreatePhotoshootPackage";
+import { useModalState } from "../../hooks/useModalState";
+import ComButton from "../../components/ComButton/ComButton";
 
 const PhotoshootPackageManagementV2 = () => {
+  const modal = useModalState();
+
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
@@ -19,19 +25,46 @@ const PhotoshootPackageManagementV2 = () => {
   console.log(listPhotoshootPackages);
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {listPhotoshootPackages.map((photoshootPackage) => (
-          <div
-            onClick={() =>
-              navigate(`/profile/photoshoot-package/${photoshootPackage.id}`)
-            }
-          >
-            <PhotoshootPackageCard photoshootPackage={photoshootPackage} />
+    <ConfigProvider
+      theme={{
+        components: {
+          Modal: {
+            contentBg: "#292b2f",
+            headerBg: "#292b2f",
+            titleColor: "white",
+          },
+        },
+      }}
+    >
+      <div className="min-h-screen p-4">
+        <div className="flex justify-end pb-2">
+          <div>
+            <ComButton onClick={modal.handleOpen}>Tạo gói chụp</ComButton>
           </div>
-        ))}
+        </div>
+        <Modal
+          title="Sửa thông tin ảnh"
+          visible={modal?.isModalOpen} // Use state from Zustand store
+          onCancel={modal?.handleClose} // Close the modal on cancel
+          footer={null}
+          width={1000} // Set the width of the modal
+          style={{ top: 22 }} // Set the top position of the modal
+        >
+          <CreatePhotoshootPackage onClose={modal?.handleClose} />
+        </Modal>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {listPhotoshootPackages.map((photoshootPackage) => (
+            <div
+              onClick={() =>
+                navigate(`/explore/booking-package/${photoshootPackage.id}`)
+              }
+            >
+              <PhotoshootPackageCard photoshootPackage={photoshootPackage} />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </ConfigProvider>
   );
 };
 

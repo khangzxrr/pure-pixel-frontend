@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutation } from "@tanstack/react-query";
-import { Upload, Tooltip, Input } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Upload, Tooltip, Input, Button } from "antd";
 import { MessageCircleMore, Share2 } from "lucide-react";
 import ComButton from "../../components/ComButton/ComButton";
 import { PhotoshootPackageYup } from "../../yup/PhotoshootPackageYup";
@@ -10,6 +10,11 @@ import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import PhotoService from "../../services/PhotoService";
 import { useNotification } from "../../Notification/Notification";
 import formatPrice from "../../utils/FormatPriceUtils";
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 
 const { Dragger } = Upload;
 
@@ -19,47 +24,68 @@ export default function CreatePhotoshootPackage({
 }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
-  const [thumbnail, setThumbnail] = useState(null);
-  const [thumbnailUrl, setThumbnailUrl] = useState();
+  const [thumbnail, setThumbnail] = useState();
+  const [thumbnailUrl, setThumbnailUrl] = useState(
+    "https://img.freepik.com/premium-vector/hand-drawn-black-white-photo-camera-cartoon-device-photographing-decorative-element_575215-362.jpg"
+  );
   const [showcases, setShowcases] = useState([]);
   const [showcasesUrl, setShowcasesUrl] = useState([]);
 
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const queryClient = useQueryClient();
   const {
     handleSubmit,
-    register,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(PhotoshootPackageYup),
     defaultValues: {
       title: "",
       subtitle: "",
-      price: 0,
+      price: "",
       description: "",
     },
   });
 
   const createPhotoShootPackage = useMutation({
-    mutationFn: (data) => PhotoshootPackageApi.createPhotoshootPackage(data),
+    mutationFn: async (data) => {
+      // Await inside mutation function
+      return await PhotoshootPackageApi.createPhotoshootPackage(data);
+    },
     onSuccess: () => {
       notificationApi(
         "success",
-        "Cập nhật hồ sơ",
-        "Hồ sơ của bạn đã được cập nhật thành công."
+        "Tạo gói chụp thành công",
+        "Gói chụp ảnh của bạn đã được tạo thành công."
       );
+      setDisabled(false);
+      setThumbnail(null);
+      setShowcases([]);
+      setThumbnailUrl(
+        "https://img.freepik.com/premium-vector/hand-drawn-black-white-photo-camera-cartoon-device-photographing-decorative-element_575215-362.jpg"
+      );
+      setShowcasesUrl([]);
+      reset();
       onClose();
+      queryClient.invalidateQueries("findAllPhotoshootPackages");
     },
     onError: (error) => {
       console.log(error);
       notificationApi(
         "error",
-        "Cập nhật thất bại",
-        "Không thể cập nhật hồ sơ của bạn. Vui lòng thử lại."
+        "Tạo gói chụp thất bại",
+        "Không thể tạo gói của bạn. Vui lòng thử lại."
       );
+      setDisabled(false);
     },
   });
 
   const onThumbnailChange = async (info) => {
+    console.log(info, info.file.originFileObj);
     try {
       const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(
         info.file.originFileObj
@@ -85,14 +111,14 @@ export default function CreatePhotoshootPackage({
     }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setDisabled(true);
 
     if (!thumbnail) {
       notificationApi(
         "error",
         "Hình ảnh không hợp lệ",
-        "Vui lòng chọn hình ảnh."
+        "Vui lòng chọn ảnh bìa."
       );
       setDisabled(false);
       return;
@@ -102,14 +128,14 @@ export default function CreatePhotoshootPackage({
       notificationApi(
         "error",
         "Hình ảnh không hợp lệ",
-        "Vui lòng chọn showcase."
+        "Vui lòng chọn ảnh cho bộ sưu tập."
       );
       setDisabled(false);
       return;
     }
 
     try {
-      createPhotoShootPackage.mutate({ thumbnail, showcases, ...data });
+      await createPhotoShootPackage.mutate({ thumbnail, showcases, ...data });
     } catch (error) {
       console.log(error);
     }
@@ -118,151 +144,211 @@ export default function CreatePhotoshootPackage({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-lg mt-4 grid grid-cols-1 md:grid-cols-2 gap-5 text-[#d7d7d8]"
+      className=" text-[#d7d7d8] grid grid-rows-9 h-[86vh]"
     >
-      {/* Left Column */}
-      <div>
-        <div className="overflow-hidden h-[400px] rounded-none md:rounded-l-lg">
-          {thumbnailUrl ? (
+      <div className="rounded-lg grid grid-cols-1 md:grid-cols-4 gap-5 row-span-7 h-[68vh]">
+        <div className="grid grid-cols-1 md:grid-cols-2 col-span-3 bg-[#43474E] rounded-lg">
+          <div className="overflow-hidden  rounded-none md:rounded-l-lg flex items-center justify-center">
             <img
               src={thumbnailUrl}
+              className="w-11/12 object-cover"
               alt="Thumbnail"
-              className="w-full h-full object-cover"
             />
-          ) : (
-            <div>
-              <div className="flex justify-center items-center my-auto h-full">
-                <p className="text-[#d7d7d8]">Chọn ảnh thumbnail</p>
+          </div>
+
+          <div className="flex flex-col gap-3 py-4 px-6 h-full">
+            <div className="flex-grow">
+              <div className="flex justify-between items-center border-b pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 overflow-hidden rounded-full">
+                    <img
+                      src="https://www.nissantanphu.com.vn/upload_images/images/2022/02/13/dai-ly-nissan-tan-phu-1.jpeg"
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className=" overflow-scroll custom-scrollbar h-[44vh]">
+                <div className="text-xl font-semibold m-1">
+                  {title ? title : "Tựa đề"}
+                </div>
+                <div className="font-normal m-2">
+                  {price ? formatPrice(price) : "Giá gói"}
+                </div>
+                <div className="font-normal text-sm text-gray-400 m-2">
+                  {subtitle ? subtitle : "Phụ đề"}
+                </div>
+
+                <div className="flex flex-col gap-1 p-2 border border-gray-600 rounded-lg m-2">
+                  {description ? description : "Phần mô tả sẽ hiển thị ở đây"}
+                </div>
               </div>
             </div>
-          )}
-        </div>
-        <Dragger
-          name="thumbnail"
-          listType="picture-card"
-          showUploadList={false}
-          onChange={onThumbnailChange}
-          accept=".jpg,.jpeg,.png,.gif,.webp"
-        >
-          <button type="button">Upload</button>
-        </Dragger>
-      </div>
-
-      {/* Right Column */}
-      <div className="flex flex-col gap-3 py-4 px-6">
-        <div className="flex justify-between items-center border-b pb-3">
-          <div className="flex items-center gap-2">
-            <div className="size-10 overflow-hidden rounded-full">
-              <img
-                src="https://www.nissantanphu.com.vn/upload_images/images/2022/02/13/dai-ly-nissan-tan-phu-1.jpeg"
-                alt=""
-                className="w-full h-full object-cover"
-              />
+            <div>
+              <button
+                disabled={disabled}
+                type="submit"
+                className="w-full py-2 px-5 bg-[#eee] text-center text-[#57585a] font-semibold rounded-lg hover:bg-[#b3b3b3] hover:text-black transition duration-300"
+              >
+                {disabled ? "Đang tạo gói chụp..." : "Tạo gói chụp"}
+              </button>
             </div>
-            <div>photographer</div>
           </div>
         </div>
 
-        <p>Tên gói</p>
-        <Controller
-          name="title"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-11/12 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
-                errors.title ? "border-red-500" : "border-[#4c4e52]"
-              }`}
-              placeholder="Tựa đề của ảnh"
-            />
-          )}
-        />
-        {errors.title && (
-          <p className="text-red-500 text-sm p-1">{errors.title.message}</p>
-        )}
-        <p>Phụ đề</p>
+        <div className="col-span-1 ">
+          <div>
+            <Dragger
+              name="thumbnail"
+              listType="picture-card"
+              showUploadList={false}
+              onChange={onThumbnailChange}
+              accept=".jpg,.jpeg,.png,.gif,.webp"
+              style={{
+                backgroundColor: "#d7d7d8",
+                // border: "none",
+              }}
+            >
+              <button type="button">Đổi ảnh bìa</button>
+            </Dragger>
+          </div>
 
-        <Controller
-          name="subtitle"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-11/12 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
-                errors.subtitle ? "border-red-500" : "border-[#4c4e52]"
-              }`}
-              placeholder="Tựa đề của ảnh"
+          <div className="flex flex-col py-4 px-1 ">
+            <p>Tên gói</p>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setTitle(e.target.value);
+                  }}
+                  className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] p-2 m-2 mb-4 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] placeholder:text-sm ${
+                    errors.title ? "border-red-500" : "border-[#4c4e52]"
+                  }`}
+                  placeholder="Tựa đề của ảnh"
+                />
+              )}
             />
-          )}
-        />
-        {errors.subtitle && (
-          <p className="text-red-500 text-sm p-1">{errors.subtitle.message}</p>
-        )}
-
-        <p>Mô tả chi tiết gói</p>
-
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-11/12 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
-                errors.description ? "border-red-500" : "border-[#4c4e52]"
-              }`}
-              placeholder="Tựa đề của ảnh"
+            {errors.title && (
+              <p className="text-red-500 text-xs -mt-2 mb-1">
+                {errors.title.message}
+              </p>
+            )}
+            <p>Giá gợi ý cho gói</p>
+            <Controller
+              name="price"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setPrice(e.target.value);
+                  }}
+                  className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] p-2 m-2 mb-4 border-[1px] lg:text-base text-xs focus:outline-none hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] placeholder:text-sm ${
+                    errors.price
+                      ? "border-red-500  focus:border-red-500"
+                      : "border-[#4c4e52]  focus:border-[#e0e0e0]"
+                  }`}
+                  placeholder="Giá gói"
+                />
+              )}
             />
-          )}
-        />
-        {errors.description && (
-          <p className="text-red-500 text-sm p-1">
-            {errors.description.message}
-          </p>
-        )}
-        <p>Giá gợi ý cho gói</p>
-
-        <Controller
-          name="price"
-          control={control}
-          render={({ field }) => (
-            <Input
-              {...field}
-              className={`w-11/12 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
-                errors.price ? "border-red-500" : "border-[#4c4e52]"
-              }`}
-              placeholder="Tựa đề của ảnh"
+            {errors.price && (
+              <p className="text-red-500 text-xs -mt-2 mb-1">
+                {errors.price.message}
+              </p>
+            )}
+            <p>Phụ đề</p>
+            <Controller
+              name="subtitle"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setSubtitle(e.target.value);
+                  }}
+                  className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] p-2 m-2 mb-4 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] placeholder:text-sm ${
+                    errors.subtitle
+                      ? "border-red-500  focus:border-red-500"
+                      : "border-[#4c4e52]  focus:border-[#e0e0e0]"
+                  }`}
+                  placeholder="Phụ đề"
+                />
+              )}
             />
-          )}
-        />
-        {errors.price && (
-          <p className="text-red-500 text-sm p-1">{errors.price.message}</p>
-        )}
-        <Upload
-          name="showcases"
-          listType="picture-card"
-          showUploadList={false}
-          onChange={onShowcasesChange}
-          accept=".jpg,.jpeg,.png,.gif,.webp"
-        >
-          <button type="button">Upload showcase</button>
-        </Upload>
+            {errors.subtitle && (
+              <p className="text-red-500 text-xs -mt-2 mb-1">
+                {errors.subtitle.message}
+              </p>
+            )}
+            <p>Mô tả chi tiết gói</p>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Input.TextArea
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setDescription(e.target.value);
+                  }}
+                  className={`w-full custom-scrollbar text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] p-2 m-2 mb-4 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] placeholder:text-sm ${
+                    errors.description
+                      ? "border-red-500  focus:border-red-500"
+                      : "border-[#4c4e52]  focus:border-[#e0e0e0]"
+                  }`}
+                  placeholder="Mô tả chi tiết"
+                />
+              )}
+            />
+            {errors.description && (
+              <p className="text-red-500 text-xs -mt-2 mb-1">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="row-span-2 grid grid-cols-10 gap-2 mt-4 overflow-y-scroll custom-scrollbar">
+        <div className="col-span-1 flex  mx-auto pt-1">
+          <Tooltip title="Chọn ảnh cho bộ sưu tập">
+            <Upload
+              multiple={true}
+              accept=".jpg,.jpeg,.png,.gif,.webp"
+              name="showcases"
+              showUploadList={false}
+              onChange={onShowcasesChange}
+              style={{
+                backgroundColor: "#d7d7d8",
+              }}
+            >
+              <div className="w-[5.5rem] h-[5.5rem] flex flex-col text-xs bg-[#d7d7d8] items-center justify-center cursor-pointer hover:bg-[#c0c0c0] rounded-md">
+                <UploadOutlined style={{ fontSize: "32px" }} />
+                <p>Chọn ảnh cho</p>
+                <p>bộ sưu tập</p>
+              </div>
+            </Upload>
+          </Tooltip>
+        </div>
         {showcasesUrl &&
           showcasesUrl.map((url, index) => (
-            <img
-              key={index}
-              src={url}
-              alt="Showcase"
-              style={{
-                width: "100px",
-                height: "100px",
-                objectFit: "cover",
-              }}
-            />
+            <div className="col-span-1">
+              <img
+                key={index}
+                src={url}
+                alt="Showcase"
+                className="w-24 h-24 object-cover"
+              />
+            </div>
           ))}
-
-        <ComButton disabled={disabled} htmlType="submit">
-          {disabled ? "Đang tạo..." : "Đặt lịch"}
-        </ComButton>
       </div>
     </form>
   );
