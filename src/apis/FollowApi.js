@@ -1,17 +1,29 @@
-import http from "./../configs/Http";
+import http from "../configs/Http";
 
-const isFollowing = async (userId) => {
-  const response = await http.get(`/follow/me/following/${userId}`);
+const followPhotographer = async (followingId) => {
+  const response = await http.post(`/follow/me/following/${followingId}`);
   return response.data;
 };
-const getMyFollower = async () => {
-  const response = await http.get("/follow/me/follower");
+
+const getAllFolllowerMe = async (limit, page) => {
+  const response = await http.get(
+    `/follow/me/follower?limit=${limit}&page=${page}`
+  );
   return response.data;
 };
-const getMyFollowing = async () => {
-  const response = await http.get("/follow/me/following");
+
+const getAllFollowingMe = async (limit, page) => {
+  const response = await http.get(
+    `/follow/me/following?limit=${limit}&page=${page}`
+  );
   return response.data;
 };
+
+const unFollow = async (followingId) => {
+  const response = await http.delete(`/follow/me/following/${followingId}`);
+  return response.data;
+};
+
 const getUserFollower = async (userId) => {
   const response = await http.get(`/follow/me/follower/${userId}`);
   return response.data;
@@ -24,19 +36,14 @@ const followUser = async (userId) => {
   const response = await http.post(`/follow/me/following/${userId}`);
   return response.data;
 };
-const unFollowUser = async (userId) => {
-  const response = await http.delete(`/follow/me/following/${userId}`);
-  return response.data;
-};
-
 const FollowApi = {
-  isFollowing,
-  getMyFollower,
-  getMyFollowing,
+  followPhotographer,
+  getAllFolllowerMe,
+  getAllFollowingMe,
+  unFollow,
   getUserFollower,
   getUserFollowing,
   followUser,
-  unFollowUser,
 };
 
 export default FollowApi;
