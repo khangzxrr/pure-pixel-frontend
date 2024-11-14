@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { IoIosArrowUp } from "react-icons/io";
 import CameraNav from "../ComCamera/CameraNav";
 import PhotoshootPackageNav from "../Booking/PhotoshootPackageNav";
+import { RiLogoutBoxLine } from "react-icons/ri";
 const Explore = () => {
   const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote, activeItem } =
@@ -59,11 +60,11 @@ const Explore = () => {
     };
   }, []);
   return (
-    <div className="flex flex-grow max-h-screen ">
+    <div className="flex flex-grow h-screen ">
       <div className="flex w-full">
         <div
-          className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-64 ${
-            isSidebarOpen ? "w-64" : "w-0 overflow-hidden"
+          className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-[310px] ${
+            isSidebarOpen ? "w-[310px]" : "w-0 overflow-hidden"
           } lg:overflow-visible`}
         >
           {/* <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"> */}
@@ -86,35 +87,12 @@ const Explore = () => {
                   </div>
                   <div className="text-[13px]">{data?.name}</div>
                 </div>
-                <div className="hover:cursor-pointer  px-[5px] rounded-md">
-                  <Menu as="div" className="relative inline-block text-left">
-                    <div>
-                      <MenuButton className="flex w-full items-center justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-gray-900 ">
-                        <IoSettingsSharp
-                          aria-hidden="true"
-                          className="-mr-1 h-7 w-7 text-[#eee]"
-                        />
-                      </MenuButton>
-                    </div>
-                    <MenuItems
-                      transition
-                      className="absolute right-0 z-10 mt-2 w-28 -top-14 origin-bottom-right divide-y divide-gray-100 
-                      rounded-md bg-[#202225] shadow-lg ring-1 ring-black ring-opacity-5 transition 
-                      focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 
-                      data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                    >
-                      <div className="py-1">
-                        <MenuItem>
-                          <div
-                            onClick={handleLogout}
-                            className="flex px-4 py-2 text-sm text-[#eee] data-[focus]:bg-[#36393f] "
-                          >
-                            Đăng xuất
-                          </div>
-                        </MenuItem>
-                      </div>
-                    </MenuItems>
-                  </Menu>
+                <div
+                  onClick={handleLogout}
+                  title="Đăng xuất"
+                  className="hover:cursor-pointer hover:bg-red-500 transition duration-200  p-[5px] rounded-md"
+                >
+                  <RiLogoutBoxLine className="size-7" />
                 </div>
               </div>
             ) : (

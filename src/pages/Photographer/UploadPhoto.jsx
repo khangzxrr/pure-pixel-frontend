@@ -18,7 +18,7 @@ export default function UploadPhoto() {
   const photoData = getPhotoByUid(selectedPhoto);
 
   return (
-    <div className="h-screen">
+    <div className="">
       <div className="flex flex-col h-[95vh]">
         <div className="flex flex-col w-full h-full">
           <div

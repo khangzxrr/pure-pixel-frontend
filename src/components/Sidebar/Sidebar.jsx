@@ -56,7 +56,7 @@ const Sidebar = ({
   );
 
   return (
-    <div className="flex flex-col max-h-screen gap-3 w-[256px]">
+    <div className="flex flex-col max-h-screen gap-3 w-full">
       {isUser && (
         <div className=" flex-grow">
           <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
@@ -65,7 +65,7 @@ const Sidebar = ({
         </div>
       )}
       {isImg && (
-        <div className="w-[290px] h-[150px] overflow-hidden">
+        <div className=" h-[150px] overflow-hidden">
           <img
             className="w-full h-full object-cover"
             src="https://picsum.photos/1920/1080?random=1"
@@ -74,7 +74,7 @@ const Sidebar = ({
         </div>
       )}
       {isUpload && (
-        <div className=" flex-grow">
+        <div className=" ">
           <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-2 outline-[#1d1f22] shadow-xl text-[#eee] items-center gap-3">
             Tải lên
           </div>
