@@ -45,6 +45,7 @@ export default function QRModal() {
         "Bây giờ bạn có thể trải nghiệm gói mới của mình"
       );
       queryClient.invalidateQueries("upgrade-package-list");
+      queryClient.invalidateQueries("getTransactionById");
     }
   }, [
     transactionDetail,
