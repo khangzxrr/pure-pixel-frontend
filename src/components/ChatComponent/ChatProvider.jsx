@@ -24,11 +24,12 @@ const ChatProvider = ({ children }) => {
     );
   }
 
-  if (keycloak.authenticated) {
+  if (keycloak.authenticated && keycloak.tokenParsed) {
     const user = {
       id: keycloak.tokenParsed.sub,
       name: keycloak.tokenParsed.name,
     };
+    console.log("ChatProvider", keycloak.tokenParsed.name);
 
     return <ChatClientProvider user={user}>{children}</ChatClientProvider>;
   }

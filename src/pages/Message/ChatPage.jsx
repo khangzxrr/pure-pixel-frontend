@@ -39,6 +39,10 @@ export default function ChatPage() {
     members: { $in: [keycloak.tokenParsed.sub] },
   };
 
+  //because you pass null client from ChatClientProvider.jsx when client is not initialized
+  //we have to catch null client before render Chat component
+  if (!client) return <div>loading chat...</div>;
+
   return (
     <>
       <ChannelList filters={filters} />

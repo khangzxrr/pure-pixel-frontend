@@ -90,6 +90,11 @@ export default function UpdateProfileModal({ userData }) {
   const onSubmit = (values) => {
     const data = {
       ...values,
+      name: values.name,
+      quote: values.quote,
+      mail: values.mail,
+      phonenumber: values.phonenumber,
+      location: values.location,
       cover: coverFile,
       avatar: avatarFile,
     };
@@ -119,7 +124,7 @@ export default function UpdateProfileModal({ userData }) {
         onCancel={() => setIsUpdateProfileModalVisible(false)}
         footer={null}
         width={800}
-        style={{ top: 20 }}
+        centered={true}
       >
         <div
           onSubmit={handleSubmit(onSubmit)}

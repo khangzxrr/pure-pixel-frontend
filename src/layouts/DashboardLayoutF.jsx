@@ -12,14 +12,14 @@ const DashboardLayoutF = () => {
   const { isSidebarOpen, toggleSidebar, setIsSidebarOpen } = UseSidebarStore(); // Lấy setIsSidebarOpen
   const { isNotificationOpen, closeNotificationModal } = UseNotificationStore();
   const userData = UserService.getTokenParsed();
-  const role = userData?.resource_access.purepixel.roles;
+  // const role = userData?.resource_access.purepixel.roles;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (role?.includes("purepixel-admin")) {
-      navigate("/admin");
-    }
-  }, [role]);
+  // useEffect(() => {
+  //   if (role?.includes("purepixel-admin")) {
+  //     navigate("/admin");
+  //   }
+  // }, [role]);
 
   useEffect(() => {
     const handleResize = () => {

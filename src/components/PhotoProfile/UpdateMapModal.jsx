@@ -165,7 +165,7 @@ export default function UpdateMapModal() {
       onOk={handleOk}
       onCancel={handleCancel}
       width={1000}
-      style={{ top: 20 }}
+      centered={true}
       bodyStyle={{ padding: 0 }}
     >
       <div className="flex w-full h-full">

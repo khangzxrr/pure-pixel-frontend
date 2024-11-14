@@ -75,6 +75,8 @@ import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
 import CustomerBooking from "../pages/UserProfile/CustomerBooking";
 import CustomerBookingDetail from "../pages/UserProfile/CustomerBookingDetail";
 import PhotoshootPackageManagementV2 from "../pages/UserProfile/PhotoshootPackageManagementV2";
+import UserService from "../services/Keycloak";
+import ProtectRoute from "./ProtectRoute";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -175,12 +177,12 @@ export const AppRouter = createBrowserRouter([
 
           {
             path: "upload",
-            element: <Upload />,
+            element: (
+              <ProtectRoute checkRole={["photographer"]}>
+                <Upload />
+              </ProtectRoute>
+            ),
             children: [
-              // {
-              //   path: "public",
-              //   element: <PublicUpload />,
-              // },
               {
                 path: "",
                 element: <Navigate to="public" replace={true} />,
@@ -199,9 +201,14 @@ export const AppRouter = createBrowserRouter([
               },
             ],
           },
+
           {
             path: "user",
-            element: <UserOther />,
+            element: (
+              <ProtectRoute checkRole={["photographer", "customer"]}>
+                <UserProfile />
+              </ProtectRoute>
+            ),
             children: [
               {
                 path: ":userId",
@@ -237,7 +244,11 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "profile",
-            element: <User />,
+            element: (
+              <ProtectRoute checkRole={["customer", "photographer"]}>
+                <User />
+              </ProtectRoute>
+            ),
             children: [
               {
                 path: "",
@@ -345,7 +356,11 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "message",
-            element: <ChatPage />,
+            element: (
+              <ProtectRoute checkRole={["customer", "photographer"]}>
+                <ChatPage />
+              </ProtectRoute>
+            ),
           },
         ],
       },
@@ -488,10 +503,7 @@ export const AppRouter = createBrowserRouter([
       //   path: "/quest",
       //   element: <Quest />,
       // },
-      {
-        path: "/upload-photo",
-        element: <UploadPhoto />,
-      },
+
       // {
       //   path: "/my-photo/",
       //   element: <MyPhoto />,

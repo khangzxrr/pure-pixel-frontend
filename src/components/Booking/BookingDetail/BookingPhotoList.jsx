@@ -96,7 +96,7 @@ export default function BookingPhotoList({ enableUpdate }) {
           {/* Uncomment if you want to add the delete icon */}
           {enableUpdate && (
             <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
-              <Tooltip title="Delete Photo">
+              <Tooltip title="Xóa ảnh này" color="red">
                 <DeleteOutlined
                   className="text-white text-xl cursor-pointer hover:text-red-500"
                   onClick={(e) => {

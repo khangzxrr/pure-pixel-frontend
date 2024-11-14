@@ -1,23 +1,55 @@
-import { Chat, useCreateChatClient } from "stream-chat-react";
+import React, { useEffect, useState } from "react";
+import { Chat } from "stream-chat-react";
 import ChatApi from "../../apis/ChatApi";
 import "stream-chat-react/dist/css/v2/index.css";
 import "./ChannelInbox.css";
 import { PacmanLoader } from "react-spinners";
+import { useMutation } from "@tanstack/react-query";
+import { StreamChat } from "stream-chat";
 
 export default function ChatClientProvider({ user, children }) {
-  const client = useCreateChatClient({
-    apiKey: process.env.REACT_APP_STREAM_API_KEY,
-    tokenOrProvider: ChatApi.auth,
-    userData: user,
+  const [token, setToken] = useState(null);
+  const [client, setClient] = useState(null);
+  const [isClientReady, setIsClientReady] = useState(false);
+
+  // Mutation to fetch authentication token
+  const { mutate: fetchToken, isLoading: isFetchingToken } = useMutation({
+    mutationFn: async () => await ChatApi.auth(),
+    onSuccess: (retrievedToken) => {
+      setToken(retrievedToken);
+    },
+    onError: (error) => {
+      console.error("Authentication failed:", error);
+    },
   });
 
-  if (!client) {
+  // // Trigger token fetch on component mount
+  useEffect(() => {
+    fetchToken();
+  }, [fetchToken]);
+
+  // Initialize the chat client only when the token is available
+  useEffect(() => {
+    if (token) {
+      const chatClient = StreamChat.getInstance(
+        process.env.REACT_APP_STREAM_API_KEY
+      );
+      chatClient
+        .connectUser({ id: user.id, name: user.name }, token)
+        .then(() => {
+          setClient(chatClient);
+          setIsClientReady(true);
+        });
+    }
+  }, [token, user.id, user.name]);
+
+  // Show loading spinner if token is being fetched or client isn't ready
+  if (isFetchingToken) {
     return (
       <div
         style={{
           display: "flex",
           justifyContent: "center",
-          justifyItems: "center",
           alignItems: "center",
           textAlign: "center",
           minHeight: "100vh",
@@ -26,11 +58,14 @@ export default function ChatClientProvider({ user, children }) {
         <PacmanLoader />
       </div>
     );
+  } else if (client) {
+    console.log("client", client);
+    return (
+      <Chat client={client} theme="str-chat__theme-dark">
+        {children}
+      </Chat>
+    );
+  } else {
+    return <div>{children}</div>;
   }
-
-  return (
-    <Chat client={client} theme="str-chat__theme-dark">
-      {children}
-    </Chat>
-  );
 }

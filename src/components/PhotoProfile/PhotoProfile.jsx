@@ -25,6 +25,7 @@ const PhotoProfile = ({ userData }) => {
   const UserAvarta = data?.avatar;
   const quotaTotal = data?.maxPhotoQuota;
   const quotaUsed = data?.photoQuotaUsage;
+  console.log(quotaUsed, quotaTotal);
 
   const handleOpenFollowersModal = () => {
     setFollowersShowModal(true);
@@ -41,6 +42,7 @@ const PhotoProfile = ({ userData }) => {
   const handleCloseFollowingsModal = () => {
     setFollowingsShowModal(false);
   };
+  console.log(userData?.resource_access?.purepixel?.roles);
   return (
     <>
       {showFollowersModal && (

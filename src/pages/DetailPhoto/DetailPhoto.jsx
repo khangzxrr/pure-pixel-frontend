@@ -68,7 +68,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
       ? photo
       : {
           id,
-        },
+        }
   );
 
   window.history.pushState({}, null, `/photo/${currentPhoto.id}`);
@@ -160,13 +160,13 @@ export default function DetailedPhotoView({ onClose, photo }) {
   };
 
   const handleNextButtonOnClick = () => {
-    if (nextPhotoData?.objects.length > 0 && isPlaceholderLoaded) {
+    if (nextPhotoData?.objects.length > 0 && isOriginalPhotoLoaded) {
       setCurrentPhoto(nextPhotoData.objects[0]);
     }
   };
 
   const handlePreviousButtonOnClick = () => {
-    if (previousPhotoData?.objects.length > 0 && isPlaceholderLoaded) {
+    if (previousPhotoData?.objects.length > 0 && isOriginalPhotoLoaded) {
       setCurrentPhoto(previousPhotoData.objects[0]);
     }
   };

@@ -53,11 +53,10 @@ const ViewFollowingsModal = ({ onClose }) => {
         queryClient.invalidateQueries({
           queryKey: ["followings-me"],
         });
-        alert("Huy theo dõi thành công");
       },
 
       onError: (error) => {
-        alert("Có lỗi xảy ra: " + error.message);
+        console.log(error);
       },
     });
   };

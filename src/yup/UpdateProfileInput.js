@@ -10,6 +10,11 @@ export const updateProfileInputSchema = yup.object().shape({
     .string()
     .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, "Số điện thoại chưa hợp lệ"),
   // .required("Số điện thoại là bắt buộc"),
+  // .test(
+  //   "is-valid-phonenumber",
+  //   "Số điện thoại chưa hợp lệ",
+  //   (value) => !value || /(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value)
+  // ),
   location: yup.string(),
   // Add other fields as needed
 });
