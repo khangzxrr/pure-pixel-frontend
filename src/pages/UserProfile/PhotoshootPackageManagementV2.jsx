@@ -56,7 +56,7 @@ const PhotoshootPackageManagementV2 = () => {
           {listPhotoshootPackages.map((photoshootPackage) => (
             <div
               onClick={() =>
-                navigate(`/explore/booking-package/${photoshootPackage.id}`)
+                navigate(`/profile/photoshoot-package/${photoshootPackage.id}`)
               }
             >
               <PhotoshootPackageCard photoshootPackage={photoshootPackage} />

@@ -77,6 +77,7 @@ import CustomerBookingDetail from "../pages/UserProfile/CustomerBookingDetail";
 import PhotoshootPackageManagementV2 from "../pages/UserProfile/PhotoshootPackageManagementV2";
 import UserService from "../services/Keycloak";
 import ProtectRoute from "./ProtectRoute";
+import UpgradeToPtgPage from "../pages/UpgradeToPtg/UpgradeToPtgPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -91,6 +92,14 @@ export const AppRouter = createBrowserRouter([
           {
             path: "",
             element: <Navigate to="explore" replace={true} />,
+          },
+          {
+            path: "upgrade",
+            element: <UpgradeToPtgPage />,
+          },
+          {
+            path: "following",
+            element: <Following />,
           },
           {
             path: "explore",
@@ -270,6 +279,10 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "photoshoot-package",
                 element: <PhotoshootPackageManagementV2 />,
+              },
+              {
+                path: "photoshoot-package/:photoshootPackageId",
+                element: <PhotoshootPackageDetail />,
               },
               {
                 path: "booking-request",
