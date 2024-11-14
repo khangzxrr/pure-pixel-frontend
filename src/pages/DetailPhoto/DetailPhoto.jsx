@@ -201,7 +201,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
             {onClose ? (
               <button
                 onClick={onClose}
-                className="z-1 absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
+                className="z-10 absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
               >
                 <Icon>
                   <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -210,7 +210,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
             ) : (
               <button
                 onClick={handleGoBack}
-                className="z-99 absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
+                className="z-10 absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
               >
                 <Icon>
                   <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -224,7 +224,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
             </button>
             <div
               ref={ref}
-              className="flex  justify-center items-center h-screen relative"
+              className="z-0 flex justify-center items-center h-screen relative"
             >
               {currentPhoto?.blurHash && (
                 <Blurhash
