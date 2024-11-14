@@ -77,9 +77,10 @@ export default function DetailedPhotoView({ onClose, photo }) {
         },
   );
 
-  window.history.pushState({}, null, `/photo/${currentPhoto.id}`);
+  // window.history.replaceState({}, null, `/photo/${currentPhoto.id}`);
 
   const [isOriginalPhotoLoaded, setIsOriginalPhotoLoaded] = useState(false);
+  const [isThumbnailPhotoLoaded, setIsThumbnailPhotoLoaded] = useState(false);
 
   const { data, isPending, error } = useQuery({
     queryKey: ["getPhotoDetail", currentPhoto.id],
@@ -107,6 +108,14 @@ export default function DetailedPhotoView({ onClose, photo }) {
   useEffect(() => {
     if (!isPending && data !== currentPhoto) {
       setCurrentPhoto(data);
+
+      const image = new Image();
+      image.src = data?.signedUrl?.url;
+      image.onload = () => onLoadedPhoto();
+
+      const thumbnailImage = new Image();
+      thumbnailImage.src = data?.signedUrl?.thumbnail;
+      thumbnailImage.onload = () => onThumbnailPhotoLoaded();
     }
   }, [data, isPending]);
 
@@ -139,13 +148,18 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const handleNextButtonOnClick = () => {
     if (nextPhotoData?.objects.length > 0) {
       setIsOriginalPhotoLoaded(false);
-      setCurrentPhoto(nextPhotoData.objects[0]);
+      setIsThumbnailPhotoLoaded(false);
+
+      const nextPhoto = nextPhotoData.objects[0];
+
+      setCurrentPhoto(nextPhoto);
     }
   };
 
   const handlePreviousButtonOnClick = () => {
     if (previousPhotoData?.objects.length > 0) {
       setIsOriginalPhotoLoaded(false);
+      setIsThumbnailPhotoLoaded(false);
       setCurrentPhoto(previousPhotoData.objects[0]);
     }
   };
@@ -157,8 +171,14 @@ export default function DetailedPhotoView({ onClose, photo }) {
     blurhashWidth = width;
   }
 
+  const onThumbnailPhotoLoaded = () => {
+    setIsThumbnailPhotoLoaded(true);
+  };
+
   const onLoadedPhoto = () => {
     setIsOriginalPhotoLoaded(true);
+
+    console.log(`loaded`);
   };
 
   return (
@@ -216,13 +236,16 @@ export default function DetailedPhotoView({ onClose, photo }) {
               )}
 
               <motion.img
-                src={currentPhoto?.signedUrl?.thumbnail}
+                src={
+                  isOriginalPhotoLoaded
+                    ? currentPhoto?.signedUrl?.url
+                    : currentPhoto?.signedUrl?.thumbnail
+                }
                 initial={{ opacity: 0 }}
-                animate={{ opacity: isOriginalPhotoLoaded ? 1 : 0 }}
+                animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
                 transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
-                className="h-full max-h-screen absolute"
+                className="h-full max-h-screen absolute w-auto"
                 lazy="lazy"
-                onLoad={() => onLoadedPhoto()}
               />
             </div>
 
