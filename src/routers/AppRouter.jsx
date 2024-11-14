@@ -75,6 +75,7 @@ import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
 import CustomerBooking from "../pages/UserProfile/CustomerBooking";
 import CustomerBookingDetail from "../pages/UserProfile/CustomerBookingDetail";
 import PhotoshootPackageManagementV2 from "../pages/UserProfile/PhotoshootPackageManagementV2";
+import UpgradeToPtgPage from "../pages/UpgradeToPtg/UpgradeToPtgPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -89,6 +90,14 @@ export const AppRouter = createBrowserRouter([
           {
             path: "",
             element: <Navigate to="explore" replace={true} />,
+          },
+          {
+            path: "upgrade",
+            element: <UpgradeToPtgPage />,
+          },
+          {
+            path: "following",
+            element: <Following />,
           },
           {
             path: "explore",
