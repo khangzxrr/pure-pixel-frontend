@@ -78,6 +78,7 @@ import PhotoshootPackageManagementV2 from "../pages/UserProfile/PhotoshootPackag
 import UserService from "../services/Keycloak";
 import ProtectRoute from "./ProtectRoute";
 import UpgradeToPtgPage from "../pages/UpgradeToPtg/UpgradeToPtgPage";
+import BookmarkLayout from "../layouts/BookmarkLayout";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -213,11 +214,7 @@ export const AppRouter = createBrowserRouter([
 
           {
             path: "user",
-            element: (
-              <ProtectRoute checkRole={["photographer", "customer"]}>
-                <UserProfile />
-              </ProtectRoute>
-            ),
+            element: <UserOther />,
             children: [
               {
                 path: ":userId",
@@ -267,26 +264,45 @@ export const AppRouter = createBrowserRouter([
                 path: "userprofile",
                 element: <UserProfile />,
               },
-
+              {
+                path: "bookmark",
+                element: <BookmarkLayout />,
+              },
               {
                 path: "my-photos",
                 element: <MyPhotosPage />,
               },
               {
                 path: "wallet",
-                element: <Wallet />,
+                element: (
+                  <ProtectRoute checkRole={["photographer"]}>
+                    <Wallet />
+                  </ProtectRoute>
+                ),
               },
               {
                 path: "photoshoot-package",
-                element: <PhotoshootPackageManagementV2 />,
+                element: (
+                  <ProtectRoute checkRole={["photographer"]}>
+                    <PhotoshootPackageManagementV2 />
+                  </ProtectRoute>
+                ),
               },
               {
                 path: "photoshoot-package/:photoshootPackageId",
-                element: <PhotoshootPackageDetail />,
+                element: (
+                  <ProtectRoute checkRole={["photographer"]}>
+                    <PhotoshootPackageDetail />
+                  </ProtectRoute>
+                ),
               },
               {
                 path: "booking-request",
-                element: <BookingRequestList />,
+                element: (
+                  <ProtectRoute checkRole={["photographer"]}>
+                    <BookingRequestList />
+                  </ProtectRoute>
+                ),
                 children: [
                   {
                     path: "",
@@ -324,11 +340,19 @@ export const AppRouter = createBrowserRouter([
               // },
               {
                 path: "booking/:bookingId",
-                element: <BookingDetail />,
+                element: (
+                  <ProtectRoute checkRole={["photographer"]}>
+                    <BookingDetail />
+                  </ProtectRoute>
+                ),
               },
               {
                 path: "photo-selling",
-                element: <SellerProfile />,
+                element: (
+                  <ProtectRoute checkRole={["photographer"]}>
+                    <SellerProfile />
+                  </ProtectRoute>
+                ),
               },
               {
                 path: "photos-bought",

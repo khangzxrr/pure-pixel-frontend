@@ -17,8 +17,8 @@ const User = () => {
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
+
   const handleLogout = () => {
-    navigate("/");
     keycloak.logout();
   };
 
