@@ -161,7 +161,7 @@ export default function PhotoManagementModal({ close, id, data }) {
                       <label className="block text-sm text-gray-400 mb-1">
                         Mô tả
                       </label>
-                      <input
+                      <textarea
                         type="text"
                         value={photoInfo.description}
                         // onChange={(e) =>

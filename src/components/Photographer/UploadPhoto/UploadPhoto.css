@@ -60,6 +60,3 @@
   color: #d7d7d8 !important; /* Màu chữ */
   border: 1px solid #4c4e52;
 }
-.ant-select-selection-item {
-  background-color: rgb(71, 71, 71) !important; /* Đặt màu chữ là đen */
-}

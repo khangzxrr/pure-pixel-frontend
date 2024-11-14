@@ -2,6 +2,7 @@ import * as yup from "yup";
 
 export const Upgrade = yup.object({
     name: yup.string().trim().required("Vui lòng nhập tên gói"),
+    summary: yup.string().trim().required("Vui lòng nhập bản tóm tắt"),
     minOrderMonth: yup
         .number()
         .typeError("Vui lòng chọn thời hạn")
