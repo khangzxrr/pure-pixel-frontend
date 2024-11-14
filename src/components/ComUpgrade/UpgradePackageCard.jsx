@@ -48,7 +48,7 @@ const UpgradePackageCard = ({ packageItem }) => {
 
       console.error("Error message:", message);
 
-      notificationApi("error", "Đăng tải ảnh thất bại", message);
+      notificationApi("error", "Nâng cấp gói thất bại", message);
     },
   });
 

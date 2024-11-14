@@ -5,7 +5,8 @@ const useModalStore = create(
   devtools((set) => ({
     isUpdatePhotoModal: false,
     isUpdateOpenMapModal: false,
-    isUpgradePackageQRModal: true,
+    isUpgradePackageQRModal: false,
+
     selectedUpdatePhoto: {},
     selectedUpgradePackage: {},
     isUpdateProfileModalVisible: false, // Initial state of the modal
