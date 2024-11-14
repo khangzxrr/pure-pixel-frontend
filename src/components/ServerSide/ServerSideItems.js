@@ -32,7 +32,6 @@ const ServerSideItems = [
     id: "upgrade",
     name: "Nâng cấp",
     link: "/upgrade",
-    authen: true,
     icon: <TbCameraUp className="text-3xl text-yellow-500 " />,
   },
   // {
