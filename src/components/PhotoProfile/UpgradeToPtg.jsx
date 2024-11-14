@@ -6,7 +6,7 @@ const UpgradeToPtg = () => {
   const navigate = useNavigate();
 
   const handleUpgrade = () => {
-    navigate("/membership");
+    navigate("/upgrade");
   };
   return (
     <div

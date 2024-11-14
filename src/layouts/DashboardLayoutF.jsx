@@ -54,7 +54,7 @@ const DashboardLayoutF = () => {
       </div>
 
       {/* Main content */}
-      <div className="  w-full  overflow-y-auto custom-scrollbar">
+      <div className="  w-full overflow-y-auto custom-scrollbar">
         <Outlet />
       </div>
     </div>

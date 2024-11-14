@@ -27,15 +27,15 @@ const MyPhotoP = () => {
   const itemsPerPage = 10;
   const { inputValue, setInputValue, setSearchResult } = UseMyPhotoFilter();
   const filterByPhotoDate = UseMyPhotoFilter(
-    (state) => state.filterByPhotoDate,
+    (state) => state.filterByPhotoDate
   );
   const searchResult = UseMyPhotoFilter((state) => state.searchResult);
   const orderByCreatedAt = "desc";
   const setFilterByPhotoDate = UseMyPhotoFilter(
-    (state) => state.setFilterByPhotoDate,
+    (state) => state.setFilterByPhotoDate
   );
   const setFilterByUpVote = UseMyPhotoFilter(
-    (state) => state.setFilterByUpVote,
+    (state) => state.setFilterByUpVote
   );
   const filterByUpVote = UseMyPhotoFilter((state) => state.filterByUpVote);
   const orderByUpVote = filterByUpVote.param;
@@ -66,7 +66,7 @@ const MyPhotoP = () => {
         orderByUpVote,
         watermark,
         selling,
-        searchResult,
+        searchResult
       ),
     keepPreviousData: true,
   });
@@ -305,14 +305,14 @@ const MyPhotoP = () => {
         </div>
 
         {/* Pagination Bottom */}
-        {data?.objects.length > 0 && (
+        {totalPages > 0 && (
           <Pagination
             current={page}
             total={totalPages * itemsPerPage}
             onChange={handlePageClick}
             pageSize={itemsPerPage}
             showSizeChanger={false}
-            className="flex justify-center my-4"
+            className="flex justify-end my-2"
           />
         )}
       </div>

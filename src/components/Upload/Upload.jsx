@@ -20,7 +20,6 @@ const Upload = () => {
   const handleRegister = () => keycloak.register();
 
   const handleLogout = () => {
-    navigate("/");
     keycloak.logout();
   };
 

@@ -42,7 +42,7 @@ const PhotoProfile = ({ userData }) => {
   const handleCloseFollowingsModal = () => {
     setFollowingsShowModal(false);
   };
-  console.log(userData?.resource_access?.purepixel?.roles);
+
   return (
     <>
       {showFollowersModal && (
@@ -62,7 +62,7 @@ const PhotoProfile = ({ userData }) => {
           </div>
           <div className="flex flex-col  gap-2 p-1">
             <div className="font-bold text-4xl">
-              {userData?.name || "Không xác định"}
+              {data?.name || "Không xác định"}
             </div>
             <div className="pl-1 font-normal">
               {userData?.email || "Không xác định"}

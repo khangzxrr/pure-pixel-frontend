@@ -1,9 +1,5 @@
 import React from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import UserService from "../../services/Keycloak";
-
-const userData = UserService.getTokenParsed();
-
 const UserProfileSideBar = ({
   sideItems,
   trendItems,
