@@ -3,7 +3,9 @@ import React from "react";
 const StorageBar = ({ used, total }) => {
   const usedGB = used / 1024 ** 3;
   const totalGB = total / 1024 ** 3;
-  const percentage = (usedGB / totalGB) * 100;
+  const percentage = totalGB > 0 ? (usedGB / totalGB) * 100 : 0;
+
+  // console.log(usedGB, totalGB, percentage);
 
   return (
     <div className=" md:w-[18.3vw] w-[60vw] p-4 font-normal rounded-lg ">

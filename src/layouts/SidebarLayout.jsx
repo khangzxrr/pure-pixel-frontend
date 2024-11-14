@@ -166,7 +166,7 @@ const SidebarLayout = ({
               <div className="flex gap-2 items-center lg:items-end">
                 <div className="flex items-center gap-2 pr-4 border-r-[1px] border-[#777777]">
                   <div className="text-2xl">{activeIcon}</div>
-
+                  {/* fix sidebar layout */}
                   <div className="hidden 2xl:block">{activeTitle}</div>
                 </div>
               </div>

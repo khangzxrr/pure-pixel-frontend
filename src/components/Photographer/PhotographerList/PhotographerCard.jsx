@@ -57,7 +57,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
         // alert("Theo dõi thành công!");
       },
       onError: (error) => {
-        alert("Có lỗi xảy ra: " + error.message);
+        console.log(error);
       },
     });
   };

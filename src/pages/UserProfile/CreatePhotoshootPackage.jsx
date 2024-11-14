@@ -26,7 +26,7 @@ export default function CreatePhotoshootPackage({
   const { notificationApi } = useNotification();
   const [thumbnail, setThumbnail] = useState();
   const [thumbnailUrl, setThumbnailUrl] = useState(
-    "https://img.freepik.com/premium-vector/hand-drawn-black-white-photo-camera-cartoon-device-photographing-decorative-element_575215-362.jpg"
+    "https://t3.ftcdn.net/jpg/04/92/94/70/360_F_492947093_LOGkIRfXScJs3PS2tgjJ4lGR74B0hs7Z.jpg"
   );
   const [showcases, setShowcases] = useState([]);
   const [showcasesUrl, setShowcasesUrl] = useState([]);
@@ -66,7 +66,7 @@ export default function CreatePhotoshootPackage({
       setThumbnail(null);
       setShowcases([]);
       setThumbnailUrl(
-        "https://img.freepik.com/premium-vector/hand-drawn-black-white-photo-camera-cartoon-device-photographing-decorative-element_575215-362.jpg"
+        "https://t3.ftcdn.net/jpg/04/92/94/70/360_F_492947093_LOGkIRfXScJs3PS2tgjJ4lGR74B0hs7Z.jpg"
       );
       setShowcasesUrl([]);
       reset();
@@ -161,11 +161,7 @@ export default function CreatePhotoshootPackage({
               <div className="flex justify-between items-center border-b pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 overflow-hidden rounded-full">
-                    <img
-                      src="https://www.nissantanphu.com.vn/upload_images/images/2022/02/13/dai-ly-nissan-tan-phu-1.jpeg"
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
+                    {/* // Avatar */}
                   </div>
                 </div>
               </div>

@@ -48,7 +48,7 @@ const PhotoshootPackageManagementV2 = () => {
           onCancel={modal?.handleClose} // Close the modal on cancel
           footer={null}
           width={1000} // Set the width of the modal
-          style={{ top: 22 }} // Set the top position of the modal
+          centered={true}
         >
           <CreatePhotoshootPackage onClose={modal?.handleClose} />
         </Modal>

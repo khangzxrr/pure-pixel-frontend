@@ -40,8 +40,8 @@ const NotificationModal = ({ isOpen, onClose }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
-    staleTime: 60000,
-    cacheTime: 300000,
+    staleTime: 6000,
+    cacheTime: 12000,
   });
 
   const notificationList = data?.objects;
@@ -69,7 +69,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
               <LoadingSpinner />
             </div>
           )}
-          {isError && <div>Something went wrong</div>}
+          {isError && <div>Có gì đó đã sai, vui lòng thử lại</div>}
           {notificationList.map((notification) => (
             <div
               className="border-b border-gray-500 px-1 py-2"

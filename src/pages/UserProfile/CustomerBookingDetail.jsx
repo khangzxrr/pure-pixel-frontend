@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
 import { Tooltip } from "antd";
 import formatPrice from "../../utils/FormatPriceUtils";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 import { ArrowRight, Calendar, MessageCircleMore } from "lucide-react";
 
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
   const navigate = useNavigate();
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const queryClient = useQueryClient();
 
   const { isPending, data: bookingDetail } = useQuery({
     queryKey: ["customer-booking-detail", bookingId],
@@ -23,12 +26,35 @@ const CustomerBookingDetail = () => {
     queryKey: ["customer-booking-bill-items", bookingId],
     queryFn: () => CustomerBookingApi.getBillItems(bookingId),
   });
+
   useEffect(() => {
     if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
       setSelectedPhoto(bookingDetail.photos[0]);
     }
   }, [bookingDetail]);
+  // const handleDownloadPhoto = async (photo) => {
+  //   try {
+  //     // Tạo link tải về từ dữ liệu nhận được
+  //     const href = URL.createObjectURL(photo.signedUrl.url);
 
+  //     // Tạo tên file động (dùng `selectedSize` hoặc thông tin từ `data`)
+  //     const fileName = `${photo.title}.jpg`; // Hoặc có thể thay đổi thành định dạng khác nếu cần
+
+  //     // Tạo phần tử <a> và tự động click để tải
+  //     const link = document.createElement("a");
+  //     link.href = href;
+  //     link.setAttribute("download", fileName); // Sử dụng tên file động
+  //     document.body.appendChild(link);
+  //     link.click();
+
+  //     // Dọn dẹp bộ nhớ và phần tử <a>
+  //     document.body.removeChild(link);
+  //     URL.revokeObjectURL(href);
+  //   } catch (error) {
+  //     console.error("Error downloading file:", error);
+  //     message.error("Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.");
+  //   }
+  // };
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
   }
@@ -59,11 +85,18 @@ const CustomerBookingDetail = () => {
                       : "text-yellow-500"
                   } font-normal text-sm`}
                 >
-                  {bookingDetail.status === "ACCEPTED"
-                    ? "Đang thực hiện"
-                    : bookingDetail.status === "SUCCESSED"
-                    ? "Đã hoàn thành"
-                    : "Chờ xác nhận"}
+                  {bookingDetail.status === "ACCEPTED" ? (
+                    "Đang thực hiện"
+                  ) : bookingDetail.status === "SUCCESSED" ? (
+                    <p
+                      // onClick={handleDownloadAllPhoto}
+                      className="flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Đã hoàn thành</span>
+                    </p>
+                  ) : (
+                    "Chờ xác nhận"
+                  )}
                 </div>
               </div>
               <div className="underline underline-offset-2">
@@ -169,20 +202,34 @@ const CustomerBookingDetail = () => {
         </div>
         <div className="flex overflow-x-scroll custom-scrollbar w-full bg-[#36393f]">
           {bookingDetail.photos &&
-            bookingDetail.photos.toReversed().map((photo, index) => (
-              <div key={index} className="relative p-2 flex-shrink-0">
-                <img
-                  src={photo?.signedUrl.url}
-                  className={`w-[150px] h-[150px] object-cover rounded-md cursor-pointer ${
-                    photo?.id === selectedPhoto?.id
-                      ? "border-4 border-white transition duration-300"
-                      : ""
-                  }`}
-                  alt="Ban Thao"
-                  onClick={() => setSelectedPhoto(photo)}
-                />
-              </div>
-            ))}
+            bookingDetail.photos
+              .slice()
+              .reverse()
+              .map((photo, index) => (
+                <div key={index} className="relative p-2 flex-shrink-0">
+                  <img
+                    src={photo?.signedUrl.url}
+                    className={`w-[150px] h-[150px] object-cover rounded-md cursor-pointer ${
+                      photo?.id === selectedPhoto?.id
+                        ? "border-4 border-white transition duration-300"
+                        : ""
+                    }`}
+                    alt="Ban Thao"
+                    onClick={() => setSelectedPhoto(photo)}
+                  />
+                </div>
+              ))}
+          <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+            <Tooltip title="Tải ảnh này về" color="blue">
+              <DownloadOutlined
+                className="text-white text-xl cursor-pointer hover:text-red-500"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent triggering the parent onClick
+                  // handleDownloadPhoto(photo);
+                }}
+              />
+            </Tooltip>
+          </div>
         </div>
       </div>
     </div>
