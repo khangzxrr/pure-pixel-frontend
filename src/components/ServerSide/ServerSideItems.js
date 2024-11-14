@@ -1,6 +1,7 @@
 import { FaCompass, FaBell } from "react-icons/fa6";
 import { FiUpload } from "react-icons/fi";
 import { BiSolidMessageDetail } from "react-icons/bi";
+import { TbCameraUp } from "react-icons/tb";
 
 const ServerSideItems = [
   {
@@ -26,6 +27,13 @@ const ServerSideItems = [
     name: "Khám phá",
     link: "/explore",
     icon: <FaCompass className="text-3xl" />,
+  },
+  {
+    id: "upgrade",
+    name: "Nâng cấp",
+    link: "/upgrade",
+    authen: true,
+    icon: <TbCameraUp className="text-3xl text-yellow-500 " />,
   },
   // {
   //   id: "camera",
