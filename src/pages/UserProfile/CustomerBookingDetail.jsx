@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
-import { Tooltip } from "antd";
+import { message, Tooltip } from "antd";
 import formatPrice from "../../utils/FormatPriceUtils";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
 import {
@@ -32,29 +32,42 @@ const CustomerBookingDetail = () => {
       setSelectedPhoto(bookingDetail.photos[0]);
     }
   }, [bookingDetail]);
-  // const handleDownloadPhoto = async (photo) => {
-  //   try {
-  //     // Tạo link tải về từ dữ liệu nhận được
-  //     const href = URL.createObjectURL(photo.signedUrl.url);
+  const handleDownload = async (photo) => {
+    if (photo && photo.signedUrl?.url) {
+      try {
+        console.log("photo", photo, photo.signedUrl.url);
 
-  //     // Tạo tên file động (dùng `selectedSize` hoặc thông tin từ `data`)
-  //     const fileName = `${photo.title}.jpg`; // Hoặc có thể thay đổi thành định dạng khác nếu cần
+        // Fetch the image data as a Blob
+        const response = await fetch(photo.signedUrl.url);
+        if (!response.ok) throw new Error("Failed to fetch the image");
 
-  //     // Tạo phần tử <a> và tự động click để tải
-  //     const link = document.createElement("a");
-  //     link.href = href;
-  //     link.setAttribute("download", fileName); // Sử dụng tên file động
-  //     document.body.appendChild(link);
-  //     link.click();
+        const blob = await response.blob();
 
-  //     // Dọn dẹp bộ nhớ và phần tử <a>
-  //     document.body.removeChild(link);
-  //     URL.revokeObjectURL(href);
-  //   } catch (error) {
-  //     console.error("Error downloading file:", error);
-  //     message.error("Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.");
-  //   }
-  // };
+        // Create a download link from the Blob
+        const href = URL.createObjectURL(blob);
+
+        // Create a dynamic filename or use a default
+        const fileName = `${photo.title || "download"}.jpg`;
+
+        // Create a temporary <a> element and trigger download
+        const link = document.createElement("a");
+        link.href = href;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+        message.error("Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.");
+      }
+    } else {
+      message.error("Vui lòng chọn một ảnh hợp lệ trước khi tải xuống.");
+    }
+  };
+
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
   }
@@ -217,19 +230,19 @@ const CustomerBookingDetail = () => {
                     alt="Ban Thao"
                     onClick={() => setSelectedPhoto(photo)}
                   />
+                  <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+                    <Tooltip title="Tải ảnh này về" color="blue">
+                      <DownloadOutlined
+                        className="text-white text-xl cursor-pointer hover:text-red-500"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering the parent onClick
+                          handleDownload(photo);
+                        }}
+                      />
+                    </Tooltip>
+                  </div>
                 </div>
               ))}
-          <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
-            <Tooltip title="Tải ảnh này về" color="blue">
-              <DownloadOutlined
-                className="text-white text-xl cursor-pointer hover:text-red-500"
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering the parent onClick
-                  // handleDownloadPhoto(photo);
-                }}
-              />
-            </Tooltip>
-          </div>
         </div>
       </div>
     </div>
