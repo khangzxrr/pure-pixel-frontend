@@ -173,7 +173,7 @@ export default function PhotoMap() {
       </ComModal> */}
       {popupDetail.isModalOpen && selectedLocate && (
         <DetailedPhotoView
-          idImg={selectedLocate?.id}
+          photo={selectedLocate}
           onClose={() => popupDetail.handleClose()}
           listImg={photos?.objects.length > 0 ? photos.objects : []}
         />
@@ -244,6 +244,7 @@ export default function PhotoMap() {
             <div
               className="flex flex-col h-full m-2 cursor-pointer text-gray-600"
               onClick={() => {
+                console.log("Selected Location:", selectedLocate.id);
                 popupDetail.handleOpen();
               }}
             >
