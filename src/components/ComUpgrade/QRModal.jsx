@@ -28,36 +28,36 @@ export default function QRModal() {
   });
 
   // Polling logic: refetch the query every 3 seconds when the modal is open
-  // useEffect(() => {
-  //   let interval;
-  //   if (isUpgradePackageQRModal) {
-  //     interval = setInterval(() => {
-  //       refetch();
-  //     }, 3000);
-  //   }
+  useEffect(() => {
+    let interval;
+    if (isUpgradePackageQRModal) {
+      interval = setInterval(() => {
+        refetch();
+      }, 3000);
+    }
 
-  //   // Cleanup function to clear the interval when component unmounts or modal closes
-  //   return () => clearInterval(interval);
-  // }, [isUpgradePackageQRModal, refetch]);
+    // Cleanup function to clear the interval when component unmounts or modal closes
+    return () => clearInterval(interval);
+  }, [isUpgradePackageQRModal, refetch]);
 
   // Stop polling and close modal when transaction is successful
-  // useEffect(() => {
-  //   if (transactionDetail?.status === "SUCCESS") {
-  //     startFireworks();
-  //     // setTimeout(() => {
-  //     //   stopFireworks();
-  //     //   setIsUpgradePackageQRModal(false);
-  //     //   queryClient.invalidateQueries("upgrade-package-list");
-  //     //   queryClient.invalidateQueries("getTransactionById");
-  //     //   setIsUpgraded(true);
-  //     // }, 3000);
-  //   }
-  // }, [
-  //   transactionDetail,
-  //   setIsUpgradePackageQRModal,
-  //   notificationApi,
-  //   queryClient,
-  // ]);
+  useEffect(() => {
+    if (transactionDetail?.status === "SUCCESS") {
+      startFireworks();
+      setTimeout(() => {
+        stopFireworks();
+        setIsUpgradePackageQRModal(false);
+        queryClient.invalidateQueries("upgrade-package-list");
+        queryClient.invalidateQueries("getTransactionById");
+        setIsUpgraded(true);
+      }, 3000);
+    }
+  }, [
+    transactionDetail,
+    setIsUpgradePackageQRModal,
+    notificationApi,
+    queryClient,
+  ]);
 
   const handleCancel = () => {
     setIsUpgradePackageQRModal(false);

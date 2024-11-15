@@ -17,9 +17,9 @@ export default function UploadPhoto() {
     getPhotoByUid,
   } = useUploadPhotoStore();
   const { setIsUpgraded } = useUpgradePackageStore();
-  // useEffect(() => {
-  //   setIsUpgraded(false);
-  // }, []);
+  useEffect(() => {
+    setIsUpgraded(false);
+  }, []);
 
   const photoData = getPhotoByUid(selectedPhoto);
   return (
