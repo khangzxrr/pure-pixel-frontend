@@ -1,5 +1,5 @@
 import { useKeycloak } from "@react-keycloak/web";
-import { useEffect, useState } from "react";
+
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Channel,
@@ -7,14 +7,13 @@ import {
   ChannelList,
   MessageInput,
   MessageList,
-  Thread,
   useChatContext,
   Window,
 } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
 
 export default function ChatPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const { keycloak } = useKeycloak();
 
@@ -24,11 +23,7 @@ export default function ChatPage() {
 
   const conversationToUserId = searchParams.get("to");
 
-  useEffect(() => {
-    if (!conversationToUserId) return;
-
-    if (!client) return;
-
+  if (conversationToUserId && client) {
     if (conversationToUserId === keycloak.tokenParsed.sub) {
       navigate(-1);
     }
@@ -37,11 +32,10 @@ export default function ChatPage() {
       members: [keycloak.tokenParsed.sub, conversationToUserId],
     });
 
-    console.log(conversationToUserId);
     console.log(channel);
 
     setActiveChannel(channel);
-  }, [client, conversationToUserId]);
+  }
 
   const filters = {
     type: "messaging",
