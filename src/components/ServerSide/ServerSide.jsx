@@ -11,6 +11,7 @@ const ServerSide = () => {
   const userData = UserService.getTokenParsed();
   const { toggleNotificationModal } = UseNotificationStore(); // Lấy hàm toggle từ store
   const userRoles = userData?.resource_access?.purepixel?.roles || [];
+  console.log("userRoles", userRoles);
 
   return (
     <div className="flex flex-col items-center gap-5 pt-5">

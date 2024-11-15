@@ -55,8 +55,6 @@ function calculateTimeFromNow(dateString) {
 }
 
 export default function DetailedPhotoView({ onClose, photo }) {
-  console.log(photo);
-
   const popup = useModalState();
   const popupReport = useModalState();
   const popupShare = useModalState();
@@ -179,8 +177,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
 
   const onLoadedPhoto = () => {
     setIsOriginalPhotoLoaded(true);
-
-    console.log(`loaded`);
   };
 
   return (

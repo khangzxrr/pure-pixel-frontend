@@ -8,23 +8,23 @@ const ProtectRoute = ({ children, checkRole }) => {
 
   const roles = userDataKeyCloak?.resource_access?.purepixel?.roles[0];
 
-  // if (checkRole?.includes(roles)) {
-  //   console.log("Role is included:", checkRole);
-  // } else {
-  //   console.log("Role is not included:", checkRole);
-  // }
-  // console.log(
-  //   "Protect Route",
-  //   checkRole?.includes(roles),
-  //   checkRole,
-  //   roles,
-  //   userDataKeyCloak
-  // );
+  if (checkRole?.includes(roles)) {
+    console.log("Role is included:", checkRole);
+  } else {
+    console.log("Role is not included:", checkRole);
+  }
+  console.log(
+    "Protect Route",
+    checkRole?.includes(roles),
+    checkRole,
+    roles,
+    userDataKeyCloak
+  );
   useEffect(() => {
     if (!checkRole?.includes(roles)) {
       navigate("/", { replace: true });
     }
-  }, [roles, navigate, checkRole]);
+  }, [roles, checkRole]);
 
   if (checkRole?.includes(roles)) {
     return <>{children}</>;

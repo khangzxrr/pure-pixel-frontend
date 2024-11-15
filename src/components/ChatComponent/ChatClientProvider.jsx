@@ -11,6 +11,7 @@ export default function ChatClientProvider({ user, children }) {
   const [token, setToken] = useState(null);
   const [client, setClient] = useState(null);
   const [isClientReady, setIsClientReady] = useState(false);
+  console.log("user", user);
 
   // Mutation to fetch authentication token
   const { mutate: fetchToken, isLoading: isFetchingToken } = useMutation({
@@ -53,8 +54,11 @@ export default function ChatClientProvider({ user, children }) {
           alignItems: "center",
           textAlign: "center",
           minHeight: "100vh",
+          color: "white",
         }}
       >
+        {/* <VaraText text="hello" /> */}
+
         <PacmanLoader />
       </div>
     );
