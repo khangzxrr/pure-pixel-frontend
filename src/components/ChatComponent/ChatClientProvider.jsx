@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 
 export default function ChatClientProvider({ user, children }) {
   // Mutation to fetch authentication token
-  const { mutate: fetchToken, isLoading: isFetchingToken } = useMutation({
+  const { mutate: fetchToken } = useMutation({
     mutationFn: async () => await ChatApi.auth(),
     onError: (error) => {
       console.error("Authentication failed:", error);
