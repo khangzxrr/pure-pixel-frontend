@@ -24,14 +24,14 @@ const SidebarLayout = ({
   const navigate = useNavigate();
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
-
+  const [isPhotographer, setIsPhotographer] = useState(false);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["me"],
     queryFn: () => UserApi.getApplicationProfile(),
     staleTime: 60000,
     cacheTime: 300000,
   });
-
+  const role = data?.roles;
   const isUploadRoute = location.pathname === "/upload/public" ? true : false;
 
   const brandCamera = UseCameraStore((state) => state.brandCamera);
@@ -48,7 +48,9 @@ const SidebarLayout = ({
       setNameCamera("", "");
     }
   }, [location.pathname, setNameCamera]);
-
+  useEffect(() => {
+    if (role?.includes("photographer")) setIsPhotographer(true);
+  }, [data]);
   // Xử lý hiển thị nút cuộn lên đầu
   const handleScroll = () => {
     const scrollTop = document.getElementById("main").scrollTop;
@@ -87,7 +89,7 @@ const SidebarLayout = ({
                   onClick={() => (
                     navigate("/profile/userprofile"), setNameCamera("", "")
                   )}
-                  className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md transition-colors duration-300"
+                  className="relative flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md transition-colors duration-300"
                 >
                   <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
                     <img
@@ -96,7 +98,14 @@ const SidebarLayout = ({
                       className="w-full h-full object-cover bg-[#eee]"
                     />
                   </div>
-                  <div className="text-[13px]">{data?.name}</div>
+                  <div className="text-[13px] truncate max-w-[150px] ">
+                    {data?.name}
+                  </div>
+                  {isPhotographer && (
+                    <div className="absolute -bottom-1 left-5 text-[10px] px-1   bg-yellow-500 rounded-lg  text-[#202225]">
+                      PRO
+                    </div>
+                  )}
                 </div>
                 <div
                   onClick={onLogout}

@@ -274,11 +274,7 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "wallet",
-                element: (
-                  <ProtectRoute checkRole={["photographer"]}>
-                    <Wallet />
-                  </ProtectRoute>
-                ),
+                element: <Wallet />,
               },
               {
                 path: "photoshoot-package",
