@@ -179,6 +179,10 @@ export default function DetailedPhotoView({ onClose, photo }) {
     setIsOriginalPhotoLoaded(true);
   };
 
+  const handleChatOnClick = () => {
+    navigate(`/message?to=${currentPhoto?.photographer.id}`);
+  };
+
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
@@ -297,7 +301,10 @@ export default function DetailedPhotoView({ onClose, photo }) {
               <div className="flex">
                 {/* icon tin nhắn */}
 
-                <button className="p-2 rounded-full hover:bg-gray-800">
+                <button
+                  className="p-2 rounded-full hover:bg-gray-800"
+                  onClick={() => handleChatOnClick()}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     x="0px"
