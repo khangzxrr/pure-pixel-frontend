@@ -1,10 +1,12 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useEffect } from "react";
 import CustomUpload from "../../components/Photographer/UploadPhoto/CustomUpload";
 import UploadPhotoInfoBar from "../../components/Photographer/UploadPhoto/UploadPhotoInfoBar";
 import OverviewModal from "../../components/Photographer/UploadPhoto/OverviewModal";
 import useUploadPhotoStore from "../../states/UploadPhotoState";
 import MapBoxModal from "../../components/Photographer/UploadPhoto/MapBoxModal";
+import useUpgradePackageStore from "../../states/UseUpgradePackageStore";
+import CustomHandwriten from "../../components/Animation/CustomHandwriten";
 
 export default function UploadPhoto() {
   const {
@@ -14,9 +16,12 @@ export default function UploadPhoto() {
     setNextSelectedPhoto,
     getPhotoByUid,
   } = useUploadPhotoStore();
+  const { setIsUpgraded } = useUpgradePackageStore();
+  useEffect(() => {
+    setIsUpgraded(false);
+  }, []);
 
   const photoData = getPhotoByUid(selectedPhoto);
-
   return (
     <div className="">
       <div className="flex flex-col h-[95vh]">
@@ -59,6 +64,7 @@ export default function UploadPhoto() {
               </div>
             </div>
           )}
+          {/* <CustomHandwriten /> */}
 
           {/* <OverviewModal /> */}
           <MapBoxModal />

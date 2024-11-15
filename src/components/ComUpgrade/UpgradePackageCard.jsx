@@ -21,8 +21,10 @@ const UpgradePackageCard = ({ packageItem }) => {
   });
 
   const isCurrentPackage =
-    currentPackage && packageItem && currentPackage.id === packageItem.id;
-  console.log(isCurrentPackage, currentPackage, packageItem);
+    currentPackage &&
+    packageItem &&
+    currentPackage.upgradePackageHistory.originalUpgradePackageId ===
+      packageItem.id;
 
   const upgradePackage = useMutation({
     mutationKey: "upgrade-package",
@@ -38,7 +40,7 @@ const UpgradePackageCard = ({ packageItem }) => {
 
       switch (error.response.data.message) {
         case "UserHasActivatedUpgradePackage":
-          message = "Người dùng đã kích hoạt gói nâng cấp.";
+          message = "Hiện tại bạn đã có gói nâng cấp đang hoạt động.";
           break;
 
         default:
@@ -100,16 +102,20 @@ const UpgradePackageCard = ({ packageItem }) => {
           >
             Đăng nhập để sử dụng gói
           </button>
-        ) : !isCurrentPackage ? (
+        ) : isCurrentPackage ? (
+          <button className=" text-green-500 text-sm px-5 py-1">
+            Gói hiện tại của bạn
+          </button>
+        ) : currentPackage ? (
+          <button className=" text-yellow-500 text-sm px-5 py-1">
+            Vui lòng hủy gói hiện tại để sử dụng gói mới
+          </button>
+        ) : (
           <button
             onClick={handleUpgrade}
             className="bg-yellow-500 text-[#202225] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
           >
             Nâng cấp
-          </button>
-        ) : (
-          <button className="bg-yellow-500 text-[#202225] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200">
-            Gói hiện tại của bạn
           </button>
         )}
       </div>

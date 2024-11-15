@@ -22,7 +22,8 @@ const getPublicPhotos = async (
   photographerName,
   title,
   photographerId,
-  cameraId
+  cameraId,
+  bookmarked
 ) => {
   // Tạo một đối tượng chứa các tham số
   const params = {
@@ -57,6 +58,9 @@ const getPublicPhotos = async (
   }
   if (cameraId) {
     params.cameraId = cameraId;
+  }
+  if (bookmarked !== undefined && bookmarked !== null) {
+    params.bookmarked = bookmarked;
   }
 
   // Tạo chuỗi truy vấn từ đối tượng params
@@ -119,7 +123,7 @@ const getPhotoById = async (id) => {
 
 const getNextPublicById = async (id) => {
   const response = await http.get(
-    `photo/public/next?cursor=${id}&forward=true`,
+    `photo/public/next?cursor=${id}&forward=true`
   );
 
   return response.data;
@@ -127,7 +131,7 @@ const getNextPublicById = async (id) => {
 
 const getPreviousPublicById = async (id) => {
   const response = await http.get(
-    `photo/public/next?cursor=${id}&forward=false`,
+    `photo/public/next?cursor=${id}&forward=false`
   );
 
   return response.data;
