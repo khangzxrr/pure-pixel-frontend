@@ -10,7 +10,7 @@ import { StreamChat } from "stream-chat";
 export default function ChatClientProvider({ user, children }) {
   const [token, setToken] = useState(null);
   const [client, setClient] = useState(null);
-  const [isClientReady, setIsClientReady] = useState(false);
+  const [, setIsClientReady] = useState(false);
 
   // Mutation to fetch authentication token
   const { mutate: fetchToken, isLoading: isFetchingToken } = useMutation({
@@ -26,13 +26,13 @@ export default function ChatClientProvider({ user, children }) {
   // // Trigger token fetch on component mount
   useEffect(() => {
     fetchToken();
-  }, [fetchToken]);
+  }, []);
 
   // Initialize the chat client only when the token is available
   useEffect(() => {
     if (token) {
       const chatClient = StreamChat.getInstance(
-        process.env.REACT_APP_STREAM_API_KEY
+        process.env.REACT_APP_STREAM_API_KEY,
       );
       chatClient
         .connectUser({ id: user.id, name: user.name }, token)
@@ -44,28 +44,14 @@ export default function ChatClientProvider({ user, children }) {
   }, [token, user.id, user.name]);
 
   // Show loading spinner if token is being fetched or client isn't ready
-  if (isFetchingToken) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <PacmanLoader />
-      </div>
-    );
-  } else if (client) {
-    console.log("client", client);
+
+  if (client) {
     return (
       <Chat client={client} theme="str-chat__theme-dark">
         {children}
       </Chat>
     );
-  } else {
-    return <div>{children}</div>;
   }
+
+  return <div>{children}</div>;
 }

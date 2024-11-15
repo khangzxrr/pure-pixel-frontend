@@ -29,7 +29,6 @@ const ChatProvider = ({ children }) => {
       id: keycloak.tokenParsed.sub,
       name: keycloak.tokenParsed.name,
     };
-    console.log("ChatProvider", keycloak.tokenParsed.name);
 
     return <ChatClientProvider user={user}>{children}</ChatClientProvider>;
   }
