@@ -21,7 +21,9 @@ const UpgradePackageCard = ({ packageItem }) => {
   });
 
   const isCurrentPackage =
-    currentPackage && packageItem && currentPackage.id === packageItem.id;
+    currentPackage &&
+    packageItem &&
+    currentPackage.originalUpgradePackageId === packageItem.id;
   console.log(isCurrentPackage, currentPackage, packageItem);
 
   const upgradePackage = useMutation({
@@ -38,7 +40,7 @@ const UpgradePackageCard = ({ packageItem }) => {
 
       switch (error.response.data.message) {
         case "UserHasActivatedUpgradePackage":
-          message = "Người dùng đã kích hoạt gói nâng cấp.";
+          message = "Hiện tại bạn đã có gói nâng cấp đang hoạt động.";
           break;
 
         default:
