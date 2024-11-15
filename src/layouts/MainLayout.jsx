@@ -7,7 +7,7 @@ const MainLayout = () => {
   const userDataKeyCloak = UserService.getTokenParsed();
 
   const role = userDataKeyCloak?.resource_access?.purepixel?.roles;
-  console.log("AppRouter", role, userDataKeyCloak);
+  console.log("MainLayout", role, userDataKeyCloak);
   return (
     <>
       <div className="bg-[#f7f8fa]">

@@ -1,0 +1,15 @@
+/* Animation.css */
+@keyframes drawPath {
+  0% {
+    stroke-dashoffset: 3000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.custom-handwriten path {
+  animation: drawPath 3s ease forwards;
+  stroke-dasharray: 3000;
+  stroke-dashoffset: 3000;
+}

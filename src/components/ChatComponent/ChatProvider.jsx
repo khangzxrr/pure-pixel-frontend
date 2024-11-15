@@ -6,6 +6,7 @@ import { ClipLoader, PacmanLoader } from "react-spinners";
 
 const ChatProvider = ({ children }) => {
   const { keycloak, initialized } = useKeycloak();
+  console.log("ChatProvider", keycloak.authenticated, keycloak.tokenParsed);
 
   if (!initialized) {
     return (
@@ -13,12 +14,13 @@ const ChatProvider = ({ children }) => {
         style={{
           display: "flex",
           justifyContent: "center",
-          justifyItems: "center",
           alignItems: "center",
           textAlign: "center",
           minHeight: "100vh",
+          backgroundColor: "#1f1f1f",
         }}
       >
+        {/* <VaraText text="hello" /> */}
         <PacmanLoader />
       </div>
     );
