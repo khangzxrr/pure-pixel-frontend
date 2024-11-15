@@ -7,7 +7,6 @@ export default function OtherUserSharePhotoComponent({ photoId, onClose }) {
   const shareURL = `${baseURL}/photo/${photoId}`;
 
   const copyToClipboard = () => {
-    // const url = linkShare || `${baseURL}/photo/${idImg}`;
     navigator.clipboard
       .writeText(shareURL)
       .then(() => {
