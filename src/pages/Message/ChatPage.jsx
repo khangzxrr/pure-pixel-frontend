@@ -62,7 +62,6 @@ export default function ChatPage() {
           <MessageList />
           <MessageInput />
         </Window>
-        <Thread />
       </Channel>
     </div>
   );
