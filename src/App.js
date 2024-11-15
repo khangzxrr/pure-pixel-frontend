@@ -32,11 +32,14 @@ function App() {
       enable: true,
     },
     allowLocalhostAsSecureOrigin: true,
-  }).catch((e) => {
-    console.log(e);
-  });
+  })
+    .then(() => {})
+    .catch((e) => {
+      console.log(e);
+    });
 
   dayjs.locale("vi");
+
   return (
     <QueryClientProvider client={queryClient}>
       <ReactKeycloakProvider

@@ -16,15 +16,18 @@ export default function OwnerSharePhotoComponent({ photoId, onClose }) {
       PhotoApi.sharePhotoById(photoId, selectedResolution),
   });
 
-  const handleResolutionSelectChange = async (width) => {
-    console.log(`selected ${width}`);
-    const data = await generateShareUrlMutation.mutateAsync(width);
+  const handleResolutionSelectChange = async (resString) => {
+    const res = JSON.parse(resString);
+
+    const data = await generateShareUrlMutation.mutateAsync({
+      width: res.width,
+      height: res.height,
+    });
 
     copyToClipboard(data.shareUrl);
   };
 
   const copyToClipboard = (url) => {
-    // const url = linkShare || `${baseURL}/photo/${idImg}`;
     navigator.clipboard
       .writeText(url)
       .then(() => {
@@ -42,7 +45,7 @@ export default function OwnerSharePhotoComponent({ photoId, onClose }) {
   const availableResSelectMap = data.map((d) => {
     return {
       label: `${d.width}x${d.height}`,
-      value: d.width,
+      value: JSON.stringify(d),
     };
   });
 

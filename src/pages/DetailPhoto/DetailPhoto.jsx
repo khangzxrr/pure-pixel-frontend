@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PhotoApi from "../../apis/PhotoApi";
 
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,6 +13,9 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
 import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
+import { Blurhash } from "react-blurhash";
+import { motion } from "framer-motion";
+import { useParentSize } from "@cutting/use-get-parent-size";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -52,14 +55,15 @@ function calculateTimeFromNow(dateString) {
 }
 
 export default function DetailedPhotoView({ onClose, photo }) {
-  console.log(photo);
-
   const popup = useModalState();
   const popupReport = useModalState();
   const popupShare = useModalState();
   const navigate = useNavigate();
 
   const { id } = useParams();
+
+  const ref = useRef(null);
+  const { width, height } = useParentSize(ref);
 
   const queryClient = useQueryClient();
 
@@ -70,13 +74,13 @@ export default function DetailedPhotoView({ onClose, photo }) {
       ? photo
       : {
           id,
-        }
+        },
   );
 
-  window.history.pushState({}, null, `/photo/${currentPhoto.id}`);
+  // window.history.replaceState({}, null, `/photo/${currentPhoto.id}`);
 
-  const [isPlaceholderLoaded, setIsPlaceHolderLoaded] = useState(false);
   const [isOriginalPhotoLoaded, setIsOriginalPhotoLoaded] = useState(false);
+  const [isThumbnailPhotoLoaded, setIsThumbnailPhotoLoaded] = useState(false);
 
   const { data, isPending, error } = useQuery({
     queryKey: ["getPhotoDetail", currentPhoto.id],
@@ -103,14 +107,15 @@ export default function DetailedPhotoView({ onClose, photo }) {
 
   useEffect(() => {
     if (!isPending && data !== currentPhoto) {
-      console.log(data);
-      setIsPlaceHolderLoaded(false);
-      setIsOriginalPhotoLoaded(false);
       setCurrentPhoto(data);
 
       const image = new Image();
-      image.src = data.signedUrl.url;
-      image.onload = () => setIsOriginalPhotoLoaded(true);
+      image.src = data?.signedUrl?.url;
+      image.onload = () => onLoadedPhoto();
+
+      const thumbnailImage = new Image();
+      thumbnailImage.src = data?.signedUrl?.thumbnail;
+      thumbnailImage.onload = () => onThumbnailPhotoLoaded();
     }
   }, [data, isPending]);
 
@@ -128,27 +133,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
     };
   }, [currentPhoto]);
 
-  ////PRELOAD: this is a workaround to prevent slow loading issue
-  useEffect(() => {
-    if (!previousPhotoData?.signedUrl) {
-      return;
-    }
-
-    const image = new Image();
-    image.src = previousPhotoData.signedUrl.thumnail;
-  }, [previousPhotoData]);
-
-  //PRELOAD: this is a workaround to prevent slow loading issue
-  useEffect(() => {
-    if (!nextPhotoData?.signedUrl) {
-      return;
-    }
-
-    const image = new Image();
-
-    image.src = nextPhotoData.signedUrl.thumnail;
-  }, [nextPhotoData]);
-
   const refreshPhoto = () => {
     console.log(`trigger refresh`);
 
@@ -162,15 +146,37 @@ export default function DetailedPhotoView({ onClose, photo }) {
   };
 
   const handleNextButtonOnClick = () => {
-    if (nextPhotoData?.objects.length > 0 && isOriginalPhotoLoaded) {
-      setCurrentPhoto(nextPhotoData.objects[0]);
+    if (nextPhotoData?.objects.length > 0) {
+      setIsOriginalPhotoLoaded(false);
+      setIsThumbnailPhotoLoaded(false);
+
+      const nextPhoto = nextPhotoData.objects[0];
+
+      setCurrentPhoto(nextPhoto);
     }
   };
 
   const handlePreviousButtonOnClick = () => {
-    if (previousPhotoData?.objects.length > 0 && isOriginalPhotoLoaded) {
+    if (previousPhotoData?.objects.length > 0) {
+      setIsOriginalPhotoLoaded(false);
+      setIsThumbnailPhotoLoaded(false);
       setCurrentPhoto(previousPhotoData.objects[0]);
     }
+  };
+
+  const heightRatio = currentPhoto.height / height;
+
+  let blurhashWidth = currentPhoto.width / heightRatio;
+  if (blurhashWidth > width) {
+    blurhashWidth = width;
+  }
+
+  const onThumbnailPhotoLoaded = () => {
+    setIsThumbnailPhotoLoaded(true);
+  };
+
+  const onLoadedPhoto = () => {
+    setIsOriginalPhotoLoaded(true);
   };
 
   return (
@@ -193,7 +199,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
             {onClose ? (
               <button
                 onClick={onClose}
-                className="absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
+                className="z-10 absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
               >
                 <Icon>
                   <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -202,7 +208,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
             ) : (
               <button
                 onClick={handleGoBack}
-                className="absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
+                className="z-10 absolute top-4 left-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
               >
                 <Icon>
                   <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -214,16 +220,30 @@ export default function DetailedPhotoView({ onClose, photo }) {
                 <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" />
               </Icon>
             </button>
-            <div className="flex  justify-center items-center  h-screen">
-              <img
+            <div
+              ref={ref}
+              className="z-0 flex justify-center items-center h-screen relative"
+            >
+              {currentPhoto?.blurHash && (
+                <Blurhash
+                  className="absolute"
+                  hash={currentPhoto.blurHash}
+                  height={height}
+                  width={blurhashWidth}
+                />
+              )}
+
+              <motion.img
                 src={
-                  !isOriginalPhotoLoaded
-                    ? currentPhoto?.signedUrl?.thumbnail
-                    : currentPhoto?.signedUrl?.url
+                  isOriginalPhotoLoaded
+                    ? currentPhoto?.signedUrl?.url
+                    : currentPhoto?.signedUrl?.thumbnail
                 }
-                alt={currentPhoto.title}
-                className="w-auto h-full max-h-screen"
-                onLoad={() => setIsPlaceHolderLoaded(true)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
+                transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
+                className="h-full max-h-screen absolute w-auto"
+                lazy="lazy"
               />
             </div>
 
