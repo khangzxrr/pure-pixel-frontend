@@ -5,7 +5,7 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 import { IoMdImages } from "react-icons/io";
-import { FaRegHeart } from "react-icons/fa6";
+
 import { FiShare2 } from "react-icons/fi";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
@@ -54,7 +54,6 @@ const PhotosUser = () => {
         return currentPage < lastPage.totalPage ? currentPage : undefined;
       },
     });
-  console.log(userId);
 
   const photoList = data?.pages
     ? data.pages.flatMap((page) => page.objects)

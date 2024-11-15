@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { IoMenu, IoSettingsSharp } from "react-icons/io5";
+import { IoMenu } from "react-icons/io5";
 import { IoIosArrowUp } from "react-icons/io";
-import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import UserApi from "../apis/UserApi";
 import UseCameraStore from "../states/UseCameraStore";
-import UsePhotographerFilterStore from "../states/UsePhotographerFilterStore";
 import { RiLogoutBoxLine } from "react-icons/ri";
 
 const SidebarLayout = ({
@@ -15,7 +13,6 @@ const SidebarLayout = ({
   userData,
   activeIcon,
   activeTitle,
-  activeQuote,
   sidebarContent,
   onLogout,
   onLogin,
@@ -25,23 +22,14 @@ const SidebarLayout = ({
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["me"],
     queryFn: () => UserApi.getApplicationProfile(),
     staleTime: 60000,
     cacheTime: 300000,
   });
 
-  const isUploadRoute = location.pathname === "/upload/public" ? true : false;
-
-  const brandCamera = UseCameraStore((state) => state.brandCamera);
   const setNameCamera = UseCameraStore((state) => state.setNameCamera);
-  const namePhotographer = UsePhotographerFilterStore(
-    (state) => state.namePhotographer
-  );
-  const setNamePhotographer = UsePhotographerFilterStore(
-    (state) => state.setNamePhotographer
-  );
 
   useEffect(() => {
     if (location.pathname.includes("/camera/all")) {

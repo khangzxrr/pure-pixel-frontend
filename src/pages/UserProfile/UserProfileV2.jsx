@@ -29,6 +29,7 @@ const UserProfileV2 = () => {
   const handleMessageOnClick = () => {
     navigate(`/message?to=${userId}`);
   };
+
   return (
     <div className="min-h-screen">
       {/* Seller Profile Header */}
