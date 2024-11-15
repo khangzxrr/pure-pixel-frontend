@@ -4,6 +4,8 @@ import useModalStore from "../../states/UseModalStore";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { TransactionApi } from "../../apis/TransactionApi";
 import { useNotification } from "../../Notification/Notification";
+import { useKeycloak } from "@react-keycloak/web";
+import { number } from "yup";
 
 export default function QRModal() {
   const {
@@ -13,6 +15,8 @@ export default function QRModal() {
   } = useModalStore();
   const { notificationApi } = useNotification();
   const queryClient = useQueryClient();
+
+  const { keycloak } = useKeycloak();
 
   // Fetch transaction details based on selected transaction ID
   const { data: transactionDetail, refetch } = useQuery({
@@ -46,6 +50,9 @@ export default function QRModal() {
       );
       queryClient.invalidateQueries("upgrade-package-list");
       queryClient.invalidateQueries("getTransactionById");
+      //call keycloak update token method, with -1 minValidity it will update immediately
+      keycloak.updateToken(-1).then(() => {
+      })
     }
   }, [
     transactionDetail,

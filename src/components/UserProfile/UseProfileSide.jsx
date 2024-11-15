@@ -92,8 +92,6 @@ const UseProfileSide = () => {
   // const isPhotographer = roles?.includes("photographer");
   // Lọc các item theo vai trò của người dùng
   useEffect(() => {
-    //TODO: Lọc các item theo vai trò của người dùng
-    // keycloak.refreshToken();
     if (roles?.includes("photographer")) {
       setIsPhotographer(true);
     }
