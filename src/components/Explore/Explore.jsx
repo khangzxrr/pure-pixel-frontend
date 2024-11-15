@@ -22,7 +22,7 @@ const Explore = () => {
     UseInspirationStore();
   const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
   const [isVisible, setIsVisible] = useState(false);
-
+  const [isPhotographer, setIsPhotographer] = useState(false);
   const { keycloak } = useKeycloak();
 
   const handleLogin = () => keycloak.login();
@@ -41,6 +41,9 @@ const Explore = () => {
     staleTime: 60000,
     cacheTime: 300000,
   });
+
+  const role = data?.roles;
+
   const handleScroll = () => {
     const scrollTop = document.getElementById("inspiration").scrollTop;
     setIsVisible(scrollTop > 300);
@@ -59,6 +62,10 @@ const Explore = () => {
       mainDiv.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    if (role?.includes("photographer")) setIsPhotographer(true);
+  }, [data]);
   return (
     <div className="flex flex-grow h-screen ">
       <div className="flex w-full">
@@ -76,16 +83,23 @@ const Explore = () => {
               <div className="flex items-center justify-between gap-2 ">
                 <div
                   onClick={() => navigate("/profile")}
-                  className="flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md"
+                  className="relative flex items-center gap-2 hover:cursor-pointer hover:bg-[#36393f] py-[5px] px-[5px] rounded-md"
                 >
-                  <div className="w-[34px] h-[34px] overflow-hidden rounded-full">
+                  <div className=" w-[34px] h-[34px] overflow-hidden rounded-full ">
                     <img
                       src={`${data?.avatar}`}
                       alt="avatar"
                       className="w-full h-full object-cover bg-[#eee]"
                     />
                   </div>
-                  <div className="text-[13px]">{data?.name}</div>
+                  <div className="text-[13px] truncate max-w-[150px] ">
+                    {data?.name}
+                  </div>
+                  {isPhotographer && (
+                    <div className="absolute -bottom-1 left-5 text-[10px] px-1   bg-yellow-500 rounded-lg  text-[#202225]">
+                      PRO
+                    </div>
+                  )}
                 </div>
                 <div
                   onClick={handleLogout}

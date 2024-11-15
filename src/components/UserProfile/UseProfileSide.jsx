@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import UseUserProfileStore from "../../states/UseUserProfileStore";
 import { useKeycloak } from "@react-keycloak/web";
 import UserService from "../../services/Keycloak";
@@ -44,28 +44,27 @@ const UserProfileSideItems = [
   },
   {
     id: "photo",
-    link: "photo-selling",
+    link: "/profile/photo-selling",
     title: "Cửa hàng của tôi",
     author: true,
     icon: <FaImages className="text-3xl" />, // Icon ảnh bán
   },
   {
     id: "transaction",
-    link: "wallet",
+    link: "/profile/wallet",
     title: "Ví",
-    author: true,
     icon: <FaWallet className="text-3xl" />, // Icon ví
   },
   {
     id: "booking",
-    link: "photoshoot-package",
+    link: "/profile/photoshoot-package",
     title: "Quản lý gói chụp",
     author: true,
     icon: <FaCameraRetro className="text-3xl" />, // Icon máy ảnh
   },
   {
     id: "booking-request",
-    link: "booking-request",
+    link: "/profile/booking-request",
     title: "Yêu cầu chụp của khách",
     author: true,
 
@@ -73,7 +72,7 @@ const UserProfileSideItems = [
   },
   {
     id: "customer-booking",
-    link: "customer-booking",
+    link: "/profile/customer-booking",
     title: "Yêu cầu chụp của tôi",
     icon: <MdOutlinePhotoFilter className="text-3xl" />, // Icon quản lý yêu cầu
   },
@@ -84,15 +83,20 @@ const UseProfileSide = () => {
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
   const roles = userData?.resource_access?.purepixel?.roles;
+  const [isPhotographer, setIsPhotographer] = useState(false);
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
   const handleLogout = () => keycloak.logout();
-
   // Kiểm tra nếu người dùng có vai trò "photographer"
-  const isPhotographer = roles?.includes("photographer");
-
+  // const isPhotographer = roles?.includes("photographer");
   // Lọc các item theo vai trò của người dùng
+  useEffect(() => {
+    if (roles?.includes("photographer")) {
+      setIsPhotographer(true);
+    }
+  }, [roles]);
+
   const filteredSideItems = UserProfileSideItems.filter(
     (item) => isPhotographer || !item.author
   );

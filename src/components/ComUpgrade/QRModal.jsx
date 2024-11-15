@@ -4,9 +4,14 @@ import useModalStore from "../../states/UseModalStore";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { TransactionApi } from "../../apis/TransactionApi";
 import { useNotification } from "../../Notification/Notification";
+
+import { useKeycloak } from "@react-keycloak/web";
+import { number } from "yup";
+
 import { CheckCircleOutlined } from "@ant-design/icons";
 import useFireworkStore from "../../states/UseFireworkStore";
 import useUpgradePackageStore from "../../states/UseUpgradePackageStore";
+
 
 export default function QRModal() {
   const {
@@ -18,6 +23,8 @@ export default function QRModal() {
   const { startFireworks, stopFireworks } = useFireworkStore();
   const queryClient = useQueryClient();
   const { notificationApi } = useNotification();
+
+  const { keycloak } = useKeycloak();
 
   // Fetch transaction details based on selected transaction ID
   const { data: transactionDetail, refetch } = useQuery({
@@ -43,6 +50,19 @@ export default function QRModal() {
   // Stop polling and close modal when transaction is successful
   useEffect(() => {
     if (transactionDetail?.status === "SUCCESS") {
+
+      setIsUpgradePackageQRModal(false);
+      notificationApi(
+        "success",
+        "Nâng cấp gói thành công",
+        "Bây giờ bạn có thể trải nghiệm gói mới của mình"
+      );
+      queryClient.invalidateQueries("upgrade-package-list");
+      queryClient.invalidateQueries("getTransactionById");
+      //call keycloak update token method, with -1 minValidity it will update immediately
+      keycloak.updateToken(-1).then(() => {
+      })
+
       startFireworks();
       setTimeout(() => {
         stopFireworks();
@@ -51,6 +71,7 @@ export default function QRModal() {
         queryClient.invalidateQueries("getTransactionById");
         setIsUpgraded(true);
       }, 3000);
+
     }
   }, [
     transactionDetail,

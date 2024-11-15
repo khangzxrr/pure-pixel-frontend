@@ -74,7 +74,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
       ? photo
       : {
           id,
-        },
+        }
   );
 
   // window.history.replaceState({}, null, `/photo/${currentPhoto.id}`);
@@ -406,14 +406,14 @@ export default function DetailedPhotoView({ onClose, photo }) {
             )}
 
             {/* Nút Xem thêm/Ẩn bớt */}
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className=" text-white rounded-md"
               >
                 {isExpanded ? "Ẩn bớt" : "Xem thêm"}
               </button>
-            </div>
+            </div> */}
 
             <div className="mb-6">
               <CommentPhoto id={currentPhoto.id} reload={refreshPhoto} />
