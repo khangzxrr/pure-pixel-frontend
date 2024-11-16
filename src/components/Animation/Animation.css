@@ -1,15 +1,26 @@
-/* Animation.css */
-@keyframes drawPath {
-  0% {
-    stroke-dashoffset: 3000;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
+#test {
+  position: absolute;
+  left: 0;
+  top: 40%;
+  right: 0;
+  height: 100px;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
 }
 
-.custom-handwriten path {
-  animation: drawPath 3s ease forwards;
-  stroke-dasharray: 3000;
-  stroke-dashoffset: 3000;
+.fancy_title canvas {
+  margin: 0 auto;
+  text-align: center;
+}
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

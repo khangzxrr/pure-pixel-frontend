@@ -1,0 +1,9 @@
+/* Target only the button with the custom class */
+.custom-skeleton-button.ant-skeleton.ant-skeleton-element.ant-skeleton-active
+  .ant-skeleton-button {
+  background-color: rgb(238 238 238) !important;
+}
+.custom-skeleton-input.ant-skeleton.ant-skeleton-element.ant-skeleton-active
+  .ant-skeleton-input {
+  background-color: rgb(238 238 238) !important;
+}

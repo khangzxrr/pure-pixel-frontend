@@ -16,6 +16,8 @@ import { IoIosArrowUp } from "react-icons/io";
 import CameraNav from "../ComCamera/CameraNav";
 import PhotoshootPackageNav from "../Booking/PhotoshootPackageNav";
 import { RiLogoutBoxLine } from "react-icons/ri";
+import { Skeleton } from "antd";
+import "./Explore.css";
 const Explore = () => {
   const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote, activeItem } =
@@ -24,6 +26,8 @@ const Explore = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
   const { keycloak } = useKeycloak();
+  const user = UserService.getTokenParsed();
+  console.log(user);
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
@@ -35,7 +39,7 @@ const Explore = () => {
   const isCameraActive = activeItem === 5;
   const isPhotoshootPackActive = activeItem === 8;
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["me"],
     queryFn: () => UserApi.getApplicationProfile(),
     staleTime: 60000,
@@ -79,7 +83,20 @@ const Explore = () => {
             <InspirationSideComp />
           </div>
           <div className="sticky bottom-0 bg-[#2a2d31] p-[12.5px]">
-            {data ? (
+            {isLoading && user ? (
+              <div className="flex flex-row gap-2">
+                <Skeleton.Button
+                  active={true}
+                  shape={"circle"}
+                  className="custom-skeleton-button"
+                />
+                <Skeleton.Input
+                  active={true}
+                  size={"small"}
+                  className="custom-skeleton-input"
+                />
+              </div>
+            ) : data ? (
               <div className="flex items-center justify-between gap-2 ">
                 <div
                   onClick={() => navigate("/profile")}

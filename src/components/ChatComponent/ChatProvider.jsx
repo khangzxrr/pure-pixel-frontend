@@ -3,6 +3,7 @@ import "./ChannelInbox.css";
 import { useKeycloak } from "@react-keycloak/web";
 import ChatClientProvider from "./ChatClientProvider";
 import { ClipLoader, PacmanLoader } from "react-spinners";
+import PurePixelLoading from "../Animation/PurePixelLoading";
 
 const ChatProvider = ({ children }) => {
   const { keycloak, initialized } = useKeycloak();
@@ -17,11 +18,10 @@ const ChatProvider = ({ children }) => {
           alignItems: "center",
           textAlign: "center",
           minHeight: "100vh",
-          backgroundColor: "#1f1f1f",
+          backgroundColor: "#2f3136",
         }}
       >
-        {/* <VaraText text="hello" /> */}
-        <PacmanLoader />
+        <PurePixelLoading />
       </div>
     );
   }

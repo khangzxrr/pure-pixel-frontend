@@ -11,7 +11,7 @@ import { number } from "yup";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import useFireworkStore from "../../states/UseFireworkStore";
 import useUpgradePackageStore from "../../states/UseUpgradePackageStore";
-
+import { useNavigate } from "react-router-dom";
 
 export default function QRModal() {
   const {
@@ -22,6 +22,7 @@ export default function QRModal() {
   const { setIsUpgraded } = useUpgradePackageStore();
   const { startFireworks, stopFireworks } = useFireworkStore();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { notificationApi } = useNotification();
 
   const { keycloak } = useKeycloak();
@@ -49,29 +50,25 @@ export default function QRModal() {
 
   // Stop polling and close modal when transaction is successful
   useEffect(() => {
-    if (transactionDetail?.status === "SUCCESS") {
-
+    if (isUpgradePackageQRModal && transactionDetail?.status === "SUCCESS") {
       setIsUpgradePackageQRModal(false);
       notificationApi(
         "success",
         "Nâng cấp gói thành công",
         "Bây giờ bạn có thể trải nghiệm gói mới của mình"
       );
-      queryClient.invalidateQueries("upgrade-package-list");
-      queryClient.invalidateQueries("getTransactionById");
       //call keycloak update token method, with -1 minValidity it will update immediately
-      keycloak.updateToken(-1).then(() => {
-      })
+      keycloak.updateToken(-1).then(() => {});
 
       startFireworks();
       setTimeout(() => {
         stopFireworks();
         setIsUpgradePackageQRModal(false);
+        setIsUpgraded(true);
         queryClient.invalidateQueries("upgrade-package-list");
         queryClient.invalidateQueries("getTransactionById");
-        setIsUpgraded(true);
+        navigate("/upload/public");
       }, 3000);
-
     }
   }, [
     transactionDetail,

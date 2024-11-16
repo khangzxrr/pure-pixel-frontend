@@ -6,6 +6,7 @@ import "./ChannelInbox.css";
 import { PacmanLoader } from "react-spinners";
 import { useMutation } from "@tanstack/react-query";
 import { StreamChat } from "stream-chat";
+import PurePixelLoading from "../Animation/PurePixelLoading";
 
 export default function ChatClientProvider({ user, children }) {
   const [token, setToken] = useState(null);
@@ -54,12 +55,10 @@ export default function ChatClientProvider({ user, children }) {
           alignItems: "center",
           textAlign: "center",
           minHeight: "100vh",
-          color: "white",
+          backgroundColor: "#2f3136",
         }}
       >
-        {/* <VaraText text="hello" /> */}
-
-        <PacmanLoader />
+        <PurePixelLoading />
       </div>
     );
   } else if (client) {
