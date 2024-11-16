@@ -5,6 +5,7 @@ import UseCategoryStore from "../../states/UseCategoryStore"; // Import store đ
 import InspirationTrendItem from "../Inspiration/InspirationSide/InspirationTrendItem"; // Import danh sách item cố định
 import { CategoryApi } from "../../apis/CategoryApi"; // Import API lấy danh mục
 import { useQuery } from "@tanstack/react-query"; // Import useQuery từ react-query
+import { Skeleton } from "antd";
 
 const Categories = () => {
   // Lấy hàm setSelectedPhotoCategory từ store
@@ -45,9 +46,18 @@ const Categories = () => {
   };
 
   // Nếu đang loading, hiển thị thông báo
-  if (isLoading) return <div>Loading categories...</div>;
+  if (isLoading)
+    return (
+      <Skeleton.Input
+        style={{ opacity: 30 }}
+        active={true}
+        size="small"
+        className="custom-skeleton-input"
+      />
+    );
   // Nếu có lỗi, hiển thị thông báo lỗi
-  if (isError) return <div>Error loading categories: {error.message}</div>;
+  if (isError)
+    return <div className="text-red-400 font-normal text-sm">Lỗi mạng</div>;
 
   return (
     <>

@@ -11,7 +11,8 @@ import { number } from "yup";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import useFireworkStore from "../../states/UseFireworkStore";
 import useUpgradePackageStore from "../../states/UseUpgradePackageStore";
-
+import { useNavigate } from "react-router-dom";
+import CountdownTimer from "./CountdownTimer"; // Ensure the import matches the file name exactly
 
 export default function QRModal() {
   const {
@@ -22,6 +23,7 @@ export default function QRModal() {
   const { setIsUpgraded } = useUpgradePackageStore();
   const { startFireworks, stopFireworks } = useFireworkStore();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { notificationApi } = useNotification();
 
   const { keycloak } = useKeycloak();
@@ -49,29 +51,31 @@ export default function QRModal() {
 
   // Stop polling and close modal when transaction is successful
   useEffect(() => {
-    if (transactionDetail?.status === "SUCCESS") {
-
-      setIsUpgradePackageQRModal(false);
+    if (isUpgradePackageQRModal && transactionDetail?.status === "SUCCESS") {
       notificationApi(
         "success",
         "Nâng cấp gói thành công",
         "Bây giờ bạn có thể trải nghiệm gói mới của mình"
       );
-      queryClient.invalidateQueries("upgrade-package-list");
-      queryClient.invalidateQueries("getTransactionById");
       //call keycloak update token method, with -1 minValidity it will update immediately
-      keycloak.updateToken(-1).then(() => {
-      })
-
+      keycloak.updateToken(-1).then(() => {});
       startFireworks();
       setTimeout(() => {
         stopFireworks();
         setIsUpgradePackageQRModal(false);
+        setIsUpgraded(true);
         queryClient.invalidateQueries("upgrade-package-list");
         queryClient.invalidateQueries("getTransactionById");
-        setIsUpgraded(true);
+        navigate("/upload/public");
       }, 3000);
-
+    }
+    if (transactionDetail?.status === "EXPIRED") {
+      setIsUpgradePackageQRModal(false);
+      notificationApi(
+        "error",
+        "Mã QR hết hiệu lực",
+        "Mã QR hết hiệu lực, bạn vui lòng thử lại sau"
+      );
     }
   }, [
     transactionDetail,
@@ -79,7 +83,6 @@ export default function QRModal() {
     notificationApi,
     queryClient,
   ]);
-
   const handleCancel = () => {
     setIsUpgradePackageQRModal(false);
   };
@@ -103,12 +106,13 @@ export default function QRModal() {
           <p>Bạn đã thanh toán thành công, hãy thử đăng ảnh trước nhé!</p>
         </div>
       ) : (
-        <div className="flex h-4/5">
+        <div className="flex flex-col h-4/5">
           <img
             className="h-[500px]"
             src={selectedUpgradePackage?.mockQrCode}
             alt="QR Code"
           />
+          <CountdownTimer />
         </div>
       )}
     </Modal>

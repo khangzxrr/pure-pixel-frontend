@@ -6,7 +6,6 @@ import OverviewModal from "../../components/Photographer/UploadPhoto/OverviewMod
 import useUploadPhotoStore from "../../states/UploadPhotoState";
 import MapBoxModal from "../../components/Photographer/UploadPhoto/MapBoxModal";
 import useUpgradePackageStore from "../../states/UseUpgradePackageStore";
-import CustomHandwriten from "../../components/Animation/CustomHandwriten";
 
 export default function UploadPhoto() {
   const {
@@ -64,7 +63,6 @@ export default function UploadPhoto() {
               </div>
             </div>
           )}
-          {/* <CustomHandwriten /> */}
 
           {/* <OverviewModal /> */}
           <MapBoxModal />

@@ -3,8 +3,14 @@ import UpgradeNav from "../components/ComUpgrade/UpgradeNav";
 import UpgradeIntroduce from "../components/ComUpgrade/UpgradeIntroduce";
 import UpgradePacketList from "../components/ComUpgrade/UpgradePacketList";
 import QRModal from "../components/ComUpgrade/QRModal";
+import { useQuery } from "@tanstack/react-query";
+import upgradePackageApi from "../apis/upgradePackageApi";
 
 const UpgradeToPtgLayout = () => {
+  const { data: currentPackage } = useQuery({
+    queryKey: "current-upgrade-package",
+    queryFn: async () => await upgradePackageApi.getCurrentPackage(),
+  });
   return (
     <div className="flex flex-col">
       <QRModal />
@@ -13,9 +19,9 @@ const UpgradeToPtgLayout = () => {
       </div>
 
       <div className="flex flex-col gap-5 p-4">
-        <UpgradeIntroduce />
+        <UpgradeIntroduce currentPackage={currentPackage} />
         <div className="mx-20">
-          <UpgradePacketList />
+          <UpgradePacketList currentPackage={currentPackage} />
         </div>
       </div>
     </div>
