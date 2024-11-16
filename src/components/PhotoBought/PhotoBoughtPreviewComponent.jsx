@@ -40,7 +40,9 @@ const PhotoBoughtPreviewComponent = ({ photo, sizeList, photoBoughtId }) => {
 
         // Tạo tên file động (dùng `selectedSize` hoặc thông tin từ `data`)
         const fileName = `${photo.title}-${
-          selectedSize.photoSellHistory.size + `px`
+          selectedSize.photoSellHistory.width +
+          `x` +
+          selectedSize.photoSellHistory.height
         }.jpg`; // Hoặc có thể thay đổi thành định dạng khác nếu cần
 
         // Tạo phần tử <a> và tự động click để tải
@@ -91,7 +93,7 @@ const PhotoBoughtPreviewComponent = ({ photo, sizeList, photoBoughtId }) => {
 
   return (
     <div className="min-h-screen text-white p-2 ">
-      <div className=" mx-auto flex flex-col xl:flex-row items-stretch gap-8 xl:max-h-[700px] ">
+      <div className=" mx-auto flex flex-col xl:flex-row items-stretch gap-8 xl:max-h-screen ">
         <div className="xl:w-2/3 flex-shrink-0 flex  bg-[#505050] justify-center items-center">
           <div className=" p-4 rounded-lg flex justify-center items-center ">
             <img

@@ -8,6 +8,7 @@ import { IoMdImages } from "react-icons/io";
 import { FaArrowRightLong } from "react-icons/fa6";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import { Pagination } from "antd";
+import UseSellingPhotoStore from "../../states/UseSellingPhotoStore";
 
 const SellingPhotoList = () => {
   const { keycloak } = useKeycloak();
@@ -19,22 +20,23 @@ const SellingPhotoList = () => {
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const selling = true;
+  const searchResult = UseSellingPhotoStore((state) => state.searchResult);
 
   const { data, isLoading, isError, error, isFetching } = useQuery({
-    queryKey: ["public-photos-selling", page],
+    queryKey: ["public-photos-selling", page, searchResult],
     queryFn: () =>
       PhotoApi.getPublicPhotos(
         itemsPerPage,
         page - 1,
         null,
-        null,
+        "desc",
         null,
         null,
         selling,
+        searchResult,
         null,
         null,
-        null,
-        null,
+        null
       ),
     keepPreviousData: true,
   });
@@ -80,7 +82,7 @@ const SellingPhotoList = () => {
               const prices =
                 photo.photoSellings?.flatMap(
                   (selling) =>
-                    selling.pricetags?.map((pricetag) => pricetag.price) || [],
+                    selling.pricetags?.map((pricetag) => pricetag.price) || []
                 ) || [];
 
               const highestPrice = prices.length > 0 ? Math.max(...prices) : 0;

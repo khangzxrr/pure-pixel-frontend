@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { getData, postData } from "../../apis/api";
 import { message } from "antd";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function PhotoManagementModal({ close, id, data }) {
+  const queryClient = useQueryClient();
   const [photoInfo, setPhotoInfo] = useState({
     title: data.title || " ",
     description: data.description || " ",
@@ -90,6 +92,7 @@ export default function PhotoManagementModal({ close, id, data }) {
       .then((response) => {
         console.log("Upload thành công:", response);
         message.success("Đã lưu thông tin thành công!");
+        queryClient.invalidateQueries({ queryKey: ["my-photo"] });
         close();
       })
       .catch((error) => {

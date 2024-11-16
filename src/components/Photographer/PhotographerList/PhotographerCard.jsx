@@ -54,6 +54,7 @@ const PhotographerCard = ({ id, name, avatar, quote, maxQuoteLength = 30 }) => {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["followings-me"] });
         queryClient.invalidateQueries({ queryKey: ["photographers"] });
+        queryClient.invalidateQueries({ queryKey: ["me"] });
         // alert("Theo dõi thành công!");
       },
       onError: (error) => {

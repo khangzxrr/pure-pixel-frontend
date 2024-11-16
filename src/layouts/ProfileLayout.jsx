@@ -11,7 +11,7 @@ export default function ProfileLayout() {
     error,
   } = useQuery({
     queryKey: ["user-profile", userId],
-    queryFn: () => UserProfileApi.getUserProfileById(userId),
+    queryFn: () => UserProfileApi.getMyProfile(userId),
   });
   console.log(userData);
 

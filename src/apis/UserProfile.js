@@ -1,6 +1,6 @@
 import http from "../configs/Http";
 
-const getUserProfileById = async () => {
+const getMyProfile = async () => {
   const response = await http.get(`/me`);
 
   return response.data;
@@ -71,7 +71,7 @@ const updateUserProfile = async (data) => {
 };
 
 const UserProfileApi = {
-  getUserProfileById,
+  getMyProfile,
   updateUserProfile,
 };
 
