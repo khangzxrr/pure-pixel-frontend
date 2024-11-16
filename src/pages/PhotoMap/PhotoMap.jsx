@@ -14,17 +14,25 @@ import { set } from "react-hook-form";
 import { Tooltip } from "antd";
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN; // Set your mapbox token here
-const getMultiplier = (zoom) => {
-  if (zoom <= 4) {
-    return 600;
-  } else if (zoom <= 8) {
-    return 300;
-  } else if (zoom <= 14) {
-    return 100;
-  } else {
-    return 1000;
+function getZoomValue(zoom) {
+  switch (true) {
+    case zoom >= 14:
+      return 50; // Smallest value for highest zoom
+    case zoom > 12:
+      return 100;
+    case zoom > 8:
+      return 200;
+    case zoom > 6:
+      return 300;
+    case zoom > 4:
+      return 500;
+    case zoom > 2:
+      return 600;
+    default:
+      return 1000; // Largest value for the smallest zoom
   }
-};
+}
+
 export default function PhotoMap() {
   const [selectedLocate, setSelectedLocate] = useState(null); // Use Zustand store
   const [currentLocate, setCurrentLocate] = useState(null); // Use Zustand store
@@ -33,11 +41,12 @@ export default function PhotoMap() {
   const [viewState, setViewState] = useState({
     latitude: 16.406507897299164,
     longitude: 107.44773411517099,
-    zoom: 6,
+    zoom: 10,
   });
   const navigate = useNavigate(); // Initialize useNavigate
   const queryClient = useQueryClient(); // Initialize the QueryClient
   const popupDetail = useModalState();
+  console.log("zoom value", getZoomValue(viewState.zoom));
 
   const {
     data: photos,
@@ -52,7 +61,7 @@ export default function PhotoMap() {
         limit,
         viewState.longitude,
         viewState.latitude,
-        viewState.zoom * getMultiplier(viewState.zoom)
+        getZoomValue(viewState.zoom)
       ),
     keepPreviousData: true, // Add this option to keep previous data while fetching
   });
@@ -80,7 +89,7 @@ export default function PhotoMap() {
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat; // Extract longitude and latitude
     console.log("Longitude:", lng, "Latitude:", lat); // Log the coordinates
-    setViewState({ longitude: lng, latitude: lat, zoom: 9 });
+    setViewState({ longitude: lng, latitude: lat, zoom: 13 });
     // setSelectedLocate({
     //   // Set the selectedLocate to the new coordinates
     //   id: 0,
@@ -130,7 +139,7 @@ export default function PhotoMap() {
             ...prev,
             latitude,
             longitude,
-            zoom: 11,
+            zoom: 13,
           }));
           queryClient.invalidateQueries(["photo-by-coordinates"]);
         },
@@ -150,7 +159,7 @@ export default function PhotoMap() {
         ...prev,
         latitude: selectedLocate.latitude,
         longitude: selectedLocate.longitude,
-        zoom: 12,
+        zoom: 13,
       }));
     }
   }, [selectedLocate]);

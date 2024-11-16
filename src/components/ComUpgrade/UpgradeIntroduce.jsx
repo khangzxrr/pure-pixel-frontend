@@ -1,6 +1,33 @@
 import React from "react";
 
-const UpgradeIntroduce = () => {
+const UpgradeIntroduce = ({ currentPackage }) => {
+  function calculateProgressPercent(startDate, endDate, currentDate) {
+    // Convert dates to timestamps for calculation
+    const start = new Date(startDate).getTime();
+    const end = new Date(endDate).getTime();
+    const current = new Date(currentDate).getTime();
+
+    // Ensure the current date is within the range of start and end dates
+    if (current < start) {
+      return 0; // Before start date
+    } else if (current > end) {
+      return 100; // After end date
+    }
+
+    // Calculate the progress percentage
+    const progress = ((current - start) / (end - start)) * 100;
+
+    return Math.round(progress * 100) / 100; // Return rounded to two decimal places
+  }
+
+  // Example Usage
+  const startDate = "2024-11-01";
+  const endDate = "2024-11-30";
+  const currentDate = "2024-11-16";
+
+  const percent = calculateProgressPercent(startDate, endDate, currentDate);
+  console.log(`Progress: ${percent}%`);
+
   return (
     <div className="flex flex-col bg-[#292b2f] min-h-[150px] rounded-lg items-center justify-center">
       <div className="flex flex-col gap-2 p-2 items-center justify-center">

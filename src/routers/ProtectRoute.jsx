@@ -2,31 +2,29 @@ import { Outlet, useNavigate } from "react-router-dom";
 import React, { useEffect } from "react";
 import UserService from "../services/Keycloak";
 import ErrorPage from "../pages/ErrorPage";
+import { useKeycloak } from "@react-keycloak/web";
 const ProtectRoute = ({ children, checkRole }) => {
   const navigate = useNavigate();
+  const { keycloak } = useKeycloak();
   const userDataKeyCloak = UserService.getTokenParsed();
-
   const roles = userDataKeyCloak?.resource_access?.purepixel?.roles[0];
+  const clientRoles =
+    keycloak?.tokenParsed?.resource_access?.[keycloak.clientId]?.roles || [];
 
-  if (checkRole?.includes(roles)) {
-    console.log("Role is included:", checkRole);
+  const hasRole = clientRoles.includes(checkRole);
+
+  if (hasRole) {
+    console.log(`${checkRole} is present in clientRoles`);
   } else {
-    console.log("Role is not included:", checkRole);
+    console.log(`${checkRole} is not present in clientRoles`);
   }
-  console.log(
-    "Protect Route",
-    checkRole?.includes(roles),
-    checkRole,
-    roles,
-    userDataKeyCloak
-  );
   useEffect(() => {
-    if (!checkRole?.includes(roles)) {
+    if (!hasRole) {
       navigate("/", { replace: true });
     }
   }, [roles, checkRole]);
 
-  if (checkRole?.includes(roles)) {
+  if (hasRole) {
     return <>{children}</>;
   }
 };

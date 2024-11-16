@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
 import { Checkbox, Progress, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -6,9 +6,11 @@ import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import { useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { notificationApi } from "../../../Notification/Notification";
+import debounce from "lodash.debounce";
 
 export default function BookingPhotoList({ enableUpdate }) {
   const { bookingId } = useParams();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     photoArray,
@@ -17,25 +19,28 @@ export default function BookingPhotoList({ enableUpdate }) {
     removePhotoById,
     removePhotoByUid,
   } = useBookingPhotoStore();
+
   const deletePhoto = useMutation({
     mutationFn: ({ bookingId, photoId }) =>
       PhotographerBookingApi.deleteBookingPhoto(bookingId, photoId),
   });
+
   const handleSelect = (photo) => {
     setSelectedPhotoByUid(photo.uid);
   };
-  const handleRemove = async (photo) => {
+
+  const handleRemove = debounce(async (photo) => {
+    if (isDeleting) return;
+    setIsDeleting(true);
+
     if (photo.id) {
-      console.log("deletephoto", photo);
-
       try {
-        console.log("deletephoto", photo.id);
-
+        const photoId = photo.id;
         await deletePhoto.mutateAsync(
-          { photoId: photo.id, bookingId: bookingId },
+          { photoId: photoId, bookingId: bookingId },
           {
             onSuccess: () => {
-              removePhotoById(photo.id);
+              removePhotoById(photoId);
             },
             onError: (error) => {
               notificationApi(
@@ -58,11 +63,15 @@ export default function BookingPhotoList({ enableUpdate }) {
           0,
           "delele-booking-photo-error"
         );
+      } finally {
+        setIsDeleting(false);
       }
     } else {
       removePhotoByUid(photo.uid);
+      setIsDeleting(false);
     }
-  };
+  }, 300); // Adjust the debounce delay as needed
+
   return (
     <div className="flex overflow-x-scroll custom-scrollbar w-full">
       {photoArray.toReversed().map((photo, index) => (
@@ -93,7 +102,6 @@ export default function BookingPhotoList({ enableUpdate }) {
             </div>
           )}
 
-          {/* Uncomment if you want to add the delete icon */}
           {enableUpdate && (
             <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
               <Tooltip title="Xóa ảnh này" color="red">
