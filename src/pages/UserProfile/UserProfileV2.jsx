@@ -12,10 +12,11 @@ import PhotographerApi from "../../apis/PhotographerApi";
 import { useQuery } from "@tanstack/react-query";
 
 const UserProfileV2 = () => {
-  const navigate = useNavigate();
   const { userId } = useParams();
 
-  const { data, error, isLoading } = useQuery({
+  const navigate = useNavigate();
+
+  const { data } = useQuery({
     queryKey: ["user", userId],
     queryFn: () => PhotographerApi.getPhotographerById(userId),
   });
@@ -24,6 +25,11 @@ const UserProfileV2 = () => {
 
   const handleMouseEnter = (icon) => setHoveredIcon(icon);
   const handleMouseLeave = () => setHoveredIcon(null);
+
+  const handleMessageOnClick = () => {
+    navigate(`/message?to=${userId}`);
+  };
+
   return (
     <div className="min-h-screen">
       {/* Seller Profile Header */}
@@ -120,6 +126,7 @@ const UserProfileV2 = () => {
               <div
                 onMouseEnter={() => handleMouseEnter("message")}
                 onMouseLeave={handleMouseLeave}
+                onClick={() => handleMessageOnClick()}
                 className="relative"
               >
                 <MessageCircle className="w-6 h-6" />
