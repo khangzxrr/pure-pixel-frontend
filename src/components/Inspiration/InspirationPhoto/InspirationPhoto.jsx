@@ -16,16 +16,14 @@ import ComModal from "../../ComModal/ComModal";
 import ComSharePhoto from "../../ComSharePhoto/ComSharePhoto";
 import { useModalState } from "../../../hooks/useModalState";
 import UseUserOtherStore from "./../../../states/UseUserOtherStore";
+import LazyPhoto from "../../ComLazyPhoto/LazyPhoto";
 
 const InspirationPhoto = () => {
-  const { keycloak } = useKeycloak();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [isLiked, setIsLiked] = useState(false);
 
   const selectedPhotoCategory = UseCategoryStore(
     (state) => state.selectedPhotoCategory,
@@ -168,7 +166,7 @@ const InspirationPhoto = () => {
                         key={photo.id}
                         className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
                       >
-                        <img
+                        <LazyThumbnail
                           src={photo.signedUrl.thumbnail}
                           alt={`Photo ${photo.id}`}
                           className="w-full h-auto object-cover"
