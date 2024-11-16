@@ -17,6 +17,7 @@ import ComSharePhoto from "../../ComSharePhoto/ComSharePhoto";
 import { useModalState } from "../../../hooks/useModalState";
 import UseUserOtherStore from "./../../../states/UseUserOtherStore";
 import LazyPhoto from "../../ComLazyPhoto/LazyPhoto";
+import LazyThumbnail from "../../ComLazyPhoto/LazyThumbnail";
 
 const InspirationPhoto = () => {
   const navigate = useNavigate();
@@ -168,8 +169,8 @@ const InspirationPhoto = () => {
                       >
                         <LazyThumbnail
                           src={photo.signedUrl.thumbnail}
-                          alt={`Photo ${photo.id}`}
-                          className="w-full h-auto object-cover"
+                          blurHash={photo.blurHash}
+                          className="w-full h-auto object-cover relative"
                           onClick={() => handleOnClick(photo)}
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
