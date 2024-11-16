@@ -25,7 +25,7 @@ const UserProfile = () => {
 
   const { data: userData, isLoading } = useQuery({
     queryKey: ["user-profile", userId],
-    queryFn: () => UserProfileApi.getUserProfileById(userId),
+    queryFn: () => UserProfileApi.getMyProfile(userId),
   });
 
   const openModal = () => {
