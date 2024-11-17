@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
 import { FiShare2 } from "react-icons/fi";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
-import { useKeycloak } from "@react-keycloak/web";
+
 import UseCategoryStore from "../../../states/UseCategoryStore";
 import { IoMdImages } from "react-icons/io";
 import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
@@ -16,7 +16,7 @@ import ComModal from "../../ComModal/ComModal";
 import ComSharePhoto from "../../ComSharePhoto/ComSharePhoto";
 import { useModalState } from "../../../hooks/useModalState";
 import UseUserOtherStore from "./../../../states/UseUserOtherStore";
-import LazyPhoto from "../../ComLazyPhoto/LazyPhoto";
+
 import LazyThumbnail from "../../ComLazyPhoto/LazyThumbnail";
 
 const InspirationPhoto = () => {
@@ -168,9 +168,10 @@ const InspirationPhoto = () => {
                         className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
                       >
                         <LazyThumbnail
+                          key={photo.id}
                           src={photo.signedUrl.thumbnail}
-                          blurHash={photo.blurHash}
-                          className="w-full h-auto object-cover relative"
+                          photo={photo}
+                          className="w-full h-auto object-cover "
                           onClick={() => handleOnClick(photo)}
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
