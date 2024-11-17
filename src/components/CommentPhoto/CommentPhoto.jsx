@@ -127,7 +127,13 @@ export default function CommentPhoto({ id, reload, top }) {
             />
             <div className=" flex-1">
               <div className="flex items-center flex-wrap">
-                <span className="font-medium mr-2">{value?.user?.name}</span>
+                <a
+                  href={`/user/${value.user.id}`}
+                  target="_blank"
+                  className="font-medium mr-2"
+                >
+                  {value?.user?.name}
+                </a>
               </div>
               <p className="text-sm" style={{ whiteSpace: "pre-line" }}>
                 {value?.content}
@@ -181,7 +187,13 @@ export default function CommentPhoto({ id, reload, top }) {
               />
               <div>
                 <div className="flex items-center">
-                  <span className="font-medium">{e?.user?.name}</span>
+                  <a
+                    href={`/user/${e.user.id}`}
+                    target="_blank"
+                    className="font-medium"
+                  >
+                    {e?.user?.name}
+                  </a>
                 </div>
                 <p className="text-sm" style={{ whiteSpace: "pre-line" }}>
                   {e?.content}

@@ -75,6 +75,8 @@ import PhotoshootPackageManagementV2 from "../pages/UserProfile/PhotoshootPackag
 import ProtectRoute from "./ProtectRoute";
 import UpgradeToPtgPage from "../pages/UpgradeToPtg/UpgradeToPtgPage";
 import BookmarkLayout from "../layouts/BookmarkLayout";
+import PhotoManager from "../pages/Manager/PhotoManager/PhotoManager";
+import TransactionManager from "../pages/Manager/TransactionManager/TransactionManager";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -409,10 +411,10 @@ export const AppRouter = createBrowserRouter([
       //       path: "/membership",
       //       element: <MembershipPage />,
       //     },
-          {
-            path: "/blog",
-            element: <BlogList />,
-          },
+      {
+        path: "/blog",
+        element: <BlogList />,
+      },
       //     {
       //       path: "/ProfileSettings",
       //       element: <ProfileSettings />,
@@ -446,6 +448,14 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/admin/upgrade",
             element: <Upgrade />,
+          },
+          {
+            path: "/admin/photo",
+            element: <PhotoManager />,
+          },
+          {
+            path: "/admin/transaction",
+            element: <TransactionManager />,
           },
           {
             path: "/admin/report",

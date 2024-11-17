@@ -31,8 +31,9 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Affix } from "antd";
+import { useKeycloak } from "@react-keycloak/web";
 
 const navigation = [
   {
@@ -77,17 +78,14 @@ const navigation = [
     current: false,
   },
   {
-    name: "Transaction",
+    name: "Giao dịch",
     href: "/admin/transaction",
     icon: ChartPieIcon,
     current: false,
   },
 ];
 
-const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
-];
+const userNavigation = [{ name: "Đăng xuất", href: "/" }];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -96,9 +94,11 @@ function classNames(...classes) {
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
   const [activeCategory, setActiveCategory] = useState(null);
-
+  const { keycloak } = useKeycloak();
+  const handleLogout = () => keycloak.logout();
   useEffect(() => {
     setActiveCategory(currentPath);
     window.scrollTo(0, 0);
@@ -352,22 +352,11 @@ export default function AdminLayout({ children }) {
               />
 
               <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                <form action="#" method="GET" className="relative flex flex-1">
-                  {/* <label htmlFor="search-field" className="sr-only">
-                    Search
-                  </label>
-                  <MagnifyingGlassIcon
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-                  />
-                  <input
-                    id="search-field"
-                    name="search"
-                    type="search"
-                    placeholder="Search..."
-                    className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                  /> */}
-                </form>
+                <form
+                  action="#"
+                  method="GET"
+                  className="relative flex flex-1"
+                ></form>
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
                   <button
                     type="button"
@@ -411,12 +400,16 @@ export default function AdminLayout({ children }) {
                     >
                       {userNavigation.map((item) => (
                         <MenuItem key={item.name}>
-                          <a
+                          <button
                             href={item.href}
-                            className="block px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                            onClick={() => {
+                              navigate(`/`);
+                              handleLogout();
+                            }}
+                            className="block w-full px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
                           >
                             {item.name}
-                          </a>
+                          </button>
                         </MenuItem>
                       ))}
                     </MenuItems>

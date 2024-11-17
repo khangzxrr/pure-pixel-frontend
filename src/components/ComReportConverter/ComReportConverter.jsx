@@ -7,14 +7,15 @@ function ComReportConverter({ children }) {
       case "PHOTO":
         return (
           <>
-            <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
+            <div className=" flex items-center justify-center overflow-hidden">
               <Image
-                wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
+                wrapperClassName=" w-20 h-20object-cover object-center flex items-center justify-center "
                 src={data?.referencedPhoto?.signedUrl?.thumbnail}
                 alt={data?.referencedPhoto?.signedUrl?.thumbnail}
                 preview={{ mask: "Xem ảnh" }}
               />
             </div>
+              <p>ID:{data?.referencedPhoto?.id}</p>
           </>
         );
       case "USER":
@@ -31,6 +32,7 @@ function ComReportConverter({ children }) {
               </div>
             )}
             <p>{data?.referencedUser?.name}</p>
+            <p>ID:{data?.referencedUser?.id}</p>
           </div>
         );
       case "BOOKING":
