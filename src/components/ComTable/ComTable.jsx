@@ -21,19 +21,12 @@ export default function ComTable({
         // bordered
         pagination={{
           hideOnSinglePage: true,
+          
           showSizeChanger: dataSource.length >= 10,
           pageSizeOptions: ["10", "20", "50", "100"],
         }}
         loading={loading}
-        // components={{
-        //   header: {
-        //     cell: (props) => (
-        //       <th {...props} className="custom-table-header">
-        //         {props.children}
-        //       </th>
-        //     ),
-        //   },
-        // }}
+
         {...props}
       />
     </>

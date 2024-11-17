@@ -9,7 +9,7 @@ import { useModalState } from "../../../hooks/useModalState";
 import ComTable from "../../../components/ComTable/ComTable";
 import useColumnFilters from "../../../components/ComTable/utils";
 import { Image, Modal, Tooltip } from "antd";
-import { getData, patchData, putData } from "../../../apis/api";
+import { deleteData, getData, patchData, putData } from "../../../apis/api";
 import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButonTable";
 import { useNotification } from "../../../Notification/Notification";
 import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
@@ -20,6 +20,7 @@ import ComReportTypeConverter from "../../../components/ComReportTypeConverter/C
 import ComReportStatusConverter from "../../../components/ComReportStatusConverter/ComReportStatusConverter";
 import ComReportConverter from "../../../components/ComReportConverter/ComReportConverter";
 import ComDateConverter from "./../../../components/ComDateConverter/ComDateConverter";
+import { Link } from "react-router-dom";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -29,7 +30,7 @@ function formatCurrency(number) {
     });
   }
 }
-export const TableReport = forwardRef((props, ref) => {
+export const TablePhoto = forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState({});
   const table = useTableState();
@@ -47,31 +48,66 @@ export const TableReport = forwardRef((props, ref) => {
   } = useColumnFilters();
   const columns = [
     {
-      title: "Người báo cáo",
+      title: "Người đăng",
       width: 120,
       // fixed: "left",
-      dataIndex: "user.name",
-      key: "user.name",
+      dataIndex: "photographer.name",
+      key: "photographer.name",
       sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
-      ...getColumnSearchProps("user.name", "Người báo cáo"),
+      ...getColumnSearchProps("photographer.name", "Người báo cáo"),
       render: (_, record) => (
         <div className=" gap-2 items-center ">
-          {record?.user?.avatar && (
+          {record?.photographer?.avatar && (
             <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
               <Image
                 wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
-                src={record?.user?.avatar}
-                alt={record?.user?.avatar}
+                src={record?.photographer?.avatar}
+                alt={record?.photographer?.avatar}
                 preview={{ mask: "Xem ảnh" }}
               />
             </div>
           )}
-          <p>{record?.user?.name}</p>
+          <p>{record?.photographer?.name}</p>
         </div>
       ),
     },
     {
-      title: "Ngày báo cáo",
+      title: "ID bài  ",
+      width: 150,
+      dataIndex: "id",
+      key: "id",
+      sorter: (a, b) => a?.id?.localeCompare(b?.id),
+      ...getColumnSearchProps("id", "ID bài "),
+    },
+    {
+      title: "Hình ảnh",
+      width: 120,
+      dataIndex: "maxPackageCount",
+      key: "maxPackageCount",
+      render: (_, record) => (
+        <div>
+          {record?.signedUrl?.url && (
+            <div className=" flex items-center justify-center overflow-hidden gap-3">
+              <Image
+                wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
+                src={record?.signedUrl?.url}
+                alt={record?.signedUrl?.url}
+                preview={{ mask: "Xem ảnh" }}
+              />
+              <a
+                href={`/photo/${record.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Bài viết
+              </a>
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: "Ngày đăng",
       width: 120,
       dataIndex: "createdAt",
       key: "createdAt",
@@ -84,66 +120,61 @@ export const TableReport = forwardRef((props, ref) => {
         </div>
       ),
     },
+    // {
+    //   title: "Thể loại báo cáo",
+    //   width: 100,
+    //   dataIndex: "reportType",
+    //   key: "reportType",
+    //   filters: [
+    //     { text: "Hình ảnh", value: "PHOTO" },
+    //     { text: "Người dùng", value: "USER" },
+    //     { text: "Dịch vụ", value: "BOOKING" },
+    //     { text: "Bình luận", value: "COMMENT" },
+    //   ],
+    //   onFilter: (value, record) => record.reportType === value,
+    //   sorter: (a, b) => a?.reportType?.localeCompare(b?.reportType),
+    //   render: (_, record) => (
+    //     <div>
+    //       <ComReportTypeConverter>{record?.reportType}</ComReportTypeConverter>
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   title: "Trạng thái",
+    //   width: 120,
+    //   dataIndex: "reportStatus",
+    //   key: "reportStatus",
+    //   filters: [
+    //     { text: "Chưa phản hồi", value: "OPEN" },
+    //     // { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
+    //     // { text: "Đã trả lời", value: "RESPONSED" },
+    //     { text: "Đóng ", value: "CLOSED" },
+    //   ],
+    //   onFilter: (value, record) => record.reportStatus === value,
+    //   sorter: (a, b) => a?.reportStatus?.localeCompare(b?.reportStatus),
+    //   render: (_, record) => (
+    //     <div>
+    //       <ComReportStatusConverter>
+    //         {record?.reportStatus}
+    //       </ComReportStatusConverter>
+    //     </div>
+    //   ),
+    // },
     {
-      title: "Thể loại báo cáo",
-      width: 100,
-      dataIndex: "reportType",
-      key: "reportType",
-      filters: [
-        { text: "Hình ảnh", value: "PHOTO" },
-        { text: "Người dùng", value: "USER" },
-        { text: "Dịch vụ", value: "BOOKING" },
-        { text: "Bình luận", value: "COMMENT" },
-      ],
-      onFilter: (value, record) => record.reportType === value,
-      sorter: (a, b) => a?.reportType?.localeCompare(b?.reportType),
-      render: (_, record) => (
-        <div>
-          <ComReportTypeConverter>{record?.reportType}</ComReportTypeConverter>
-        </div>
-      ),
+      title: "Tên bài ",
+      width: 150,
+      dataIndex: "title",
+      key: "title",
+      sorter: (a, b) => a?.title?.localeCompare(b?.title),
+      ...getColumnSearchProps("title", "Tên bài"),
     },
-    {
-      title: "Trạng thái",
-      width: 120,
-      dataIndex: "reportStatus",
-      key: "reportStatus",
-      filters: [
-        { text: "Chưa phản hồi", value: "OPEN" },
-        // { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
-        // { text: "Đã trả lời", value: "RESPONSED" },
-        { text: "Đóng ", value: "CLOSED" },
-      ],
-      onFilter: (value, record) => record.reportStatus === value,
-      sorter: (a, b) => a?.reportStatus?.localeCompare(b?.reportStatus),
-      render: (_, record) => (
-        <div>
-          <ComReportStatusConverter>
-            {record?.reportStatus}
-          </ComReportStatusConverter>
-        </div>
-      ),
-    },
-
     {
       title: "Nội dung",
       width: 150,
-      dataIndex: "content",
-      key: "content",
-      sorter: (a, b) => a?.content?.localeCompare(b?.content),
-      ...getColumnSearchProps("content", "Nội dung"),
-    },
-
-    {
-      title: "Bài báo cáo",
-      width: 180,
-      dataIndex: "maxPackageCount",
-      key: "maxPackageCount",
-      render: (_, record) => (
-        <div>
-          <ComReportConverter>{record}</ComReportConverter>
-        </div>
-      ),
+      dataIndex: "description",
+      key: "description",
+      sorter: (a, b) => a?.description?.localeCompare(b?.description),
+      ...getColumnSearchProps("description", "Nội dung"),
     },
 
     {
@@ -173,9 +204,7 @@ export const TableReport = forwardRef((props, ref) => {
                 notificationError
               );
             }}
-            extraMenuItems={
-              record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
-            }
+            extraMenuItems={extraMenuItems}
             excludeDefaultItems={["edit", "delete", "details"]}
           />
         </div>
@@ -213,21 +242,19 @@ export const TableReport = forwardRef((props, ref) => {
   ];
   const extraMenuItems = [
     {
-      label: "Đóng báo cáo",
+      label: "Xóa bài viết",
       onClick: (e) => {
         Modal.confirm({
-          title: "Xác nhận đã sử lý báo cáo",
-          content: "Bạn có chắc đã sử lý báo cáo?",
-          okText: "Đóng báo cáo",
+          title: "Xác nhận xóa bài viết",
+          content: "Bạn có chắc xóa bài viết?",
+          okText: "Xóa bài",
           okType: "primary",
           cancelText: "Hủy",
           onOk: () => {
-            patchData(`manager/report`, `${e.id}`, {
-              reportStatus: "CLOSED",
-            })
+            deleteData(`manager/photo`, `${e.id}`)
               .then((e) => {
                 console.log("11111", e);
-                notificationApi("success", "Thành công", "Đã đóng báo cáo");
+                notificationApi("success", "Thành công", "Đã xóa bài viết");
 
                 reloadData();
               })
@@ -250,7 +277,7 @@ export const TableReport = forwardRef((props, ref) => {
 
   const reloadData = () => {
     table.handleOpenLoading();
-    getData("/manager/report?limit=9999&page=0")
+    getData("/manager/photo?limit=9999&page=0")
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");

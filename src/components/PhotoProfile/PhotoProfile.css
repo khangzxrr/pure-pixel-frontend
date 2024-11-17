@@ -5,8 +5,10 @@
   color: white !important; /* Ensures the color is white */
 }
 .ant-select-focused .ant-select-selector {
-  border-color: white !important; /* Changes the outline color */
-  box-shadow: none !important; /* Removes any additional shadow */
+  /* border-color: white !important; */
+   /* Changes the outline color */
+  /* box-shadow: none !important; */
+   /* Removes any additional shadow */
 }
 .ant-select-selection-item {
   /* background-color: rgb(
