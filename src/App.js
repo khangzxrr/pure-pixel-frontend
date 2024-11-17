@@ -26,17 +26,18 @@ const queryClient = new QueryClient({
 function App() {
   const { initSocket } = useSocketStore();
 
-  OneSignal.init({
-    appId: process.env.REACT_APP_ONE_SIGNAL_APP_ID,
-    notifyButton: {
-      enable: true,
-    },
-    allowLocalhostAsSecureOrigin: true,
-  })
-    .then(() => {})
-    .catch((e) => {
-      console.log(e);
+  if (
+    window.location.hostname !== "localhost" ||
+    window.location.hostname !== "127.0.0.1"
+  ) {
+    OneSignal.init({
+      appId: process.env.REACT_APP_ONE_SIGNAL_APP_ID,
+      notifyButton: {
+        enable: true,
+      },
+      allowLocalhostAsSecureOrigin: true,
     });
+  }
 
   dayjs.locale("vi");
 
@@ -52,9 +53,6 @@ function App() {
         onEvent={async (event, error) => {
           if (event === "onAuthSuccess") {
             // const id = UserService.getUserId();
-
-            initSocket();
-
             // await OneSignal.login(id);
           }
         }}
