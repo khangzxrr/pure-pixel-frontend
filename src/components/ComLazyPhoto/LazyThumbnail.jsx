@@ -36,7 +36,7 @@ const LazyThumbnail = ({ id, src, photo, className, onClick }) => {
   }, []);
 
   return (
-    <div className={className} ref={ref}>
+    <div className={className} ref={ref} onClick={onClick}>
       <div className="w-full" style={{ height: placedholderHeight }}>
         <img
           src={blurHashUrl}
