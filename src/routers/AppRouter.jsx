@@ -409,10 +409,10 @@ export const AppRouter = createBrowserRouter([
       //       path: "/membership",
       //       element: <MembershipPage />,
       //     },
-      //     {
-      //       path: "/blog",
-      //       element: <BlogList />,
-      //     },
+          {
+            path: "/blog",
+            element: <BlogList />,
+          },
       //     {
       //       path: "/ProfileSettings",
       //       element: <ProfileSettings />,

@@ -15,7 +15,8 @@
     123
   ) !important;  */
   /* Ensures the color is black */
-  color: white !important; /* Ensures the color is white */
+  /* color: white !important;  */
+  /* Ensures the color is white */
 }
 
 /* Specific styles for the "Photo privacy" Select component */
@@ -34,5 +35,6 @@
 }
 
 .ant-modal-close {
-  color: white !important; /* Ensures the color is white */
+  /* color: white !important;  */
+  /* Ensures the color is white */
 }
