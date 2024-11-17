@@ -8,8 +8,8 @@ import { useTableState } from "../../../hooks/useTableState";
 import { useModalState } from "../../../hooks/useModalState";
 import ComTable from "../../../components/ComTable/ComTable";
 import useColumnFilters from "../../../components/ComTable/utils";
-import { Image, Tooltip } from "antd";
-import { getData } from "../../../apis/api";
+import { Image, Modal, Tooltip } from "antd";
+import { getData, patchData, putData } from "../../../apis/api";
 import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButonTable";
 import { useNotification } from "../../../Notification/Notification";
 import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
@@ -19,6 +19,7 @@ import EditUpgrede from "./EditReport";
 import ComReportTypeConverter from "../../../components/ComReportTypeConverter/ComReportTypeConverter";
 import ComReportStatusConverter from "../../../components/ComReportStatusConverter/ComReportStatusConverter";
 import ComReportConverter from "../../../components/ComReportConverter/ComReportConverter";
+import ComDateConverter from "./../../../components/ComDateConverter/ComDateConverter";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -42,22 +43,23 @@ export const TableReport = forwardRef((props, ref) => {
     getColumnPriceRangeProps,
     getUniqueValues,
     getColumnFilterProps,
+    getColumnApprox,
   } = useColumnFilters();
   const columns = [
     {
       title: "Người báo cáo",
-      width: 100,
-      fixed: "left",
+      width: 120,
+      // fixed: "left",
       dataIndex: "user.name",
       key: "user.name",
       sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
       ...getColumnSearchProps("user.name", "Người báo cáo"),
       render: (_, record) => (
-        <div className="flex gap-2 items-center ">
+        <div className=" gap-2 items-center ">
           {record?.user?.avatar && (
             <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
               <Image
-                wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
+                wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
                 src={record?.user?.avatar}
                 alt={record?.user?.avatar}
                 preview={{ mask: "Xem ảnh" }}
@@ -65,6 +67,20 @@ export const TableReport = forwardRef((props, ref) => {
             </div>
           )}
           <p>{record?.user?.name}</p>
+        </div>
+      ),
+    },
+    {
+      title: "Ngày báo cáo",
+      width: 120,
+      dataIndex: "createdAt",
+      key: "createdAt",
+      sorter: (a, b) => new Date(a?.createdAt) - new Date(b?.createdAt),
+      ...getColumnApprox("createdAt"),
+      render: (_, render) => (
+        <div>
+          {/* {render?.contract?.signingDate} */}
+          <ComDateConverter time>{render?.createdAt}</ComDateConverter>
         </div>
       ),
     },
@@ -94,8 +110,8 @@ export const TableReport = forwardRef((props, ref) => {
       key: "reportStatus",
       filters: [
         { text: "Chưa phản hồi", value: "OPEN" },
-        { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
-        { text: "Đã trả lời", value: "RESPONSED" },
+        // { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
+        // { text: "Đã trả lời", value: "RESPONSED" },
         { text: "Đóng ", value: "CLOSED" },
       ],
       onFilter: (value, record) => record.reportStatus === value,
@@ -156,13 +172,74 @@ export const TableReport = forwardRef((props, ref) => {
                 notificationError
               );
             }}
-            // extraMenuItems={extraMenuItems}
-            excludeDefaultItems={["edit", "delete"]}
+            extraMenuItems={
+              record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
+            }
+            excludeDefaultItems={["edit", "delete", "details"]}
           />
         </div>
       ),
     },
   ];
+  const extraMenuItems2 = [
+    {
+      label: "Mở lại báo cáo",
+      onClick: (e) => {
+        Modal.confirm({
+          title: "Xác nhận mở lại báo cáo",
+          content: "Bạn có chắc mở lại báo cáo?",
+          okText: "Mở lại",
+          okType: "primary",
+          cancelText: "Hủy",
+          onOk: () => {
+            patchData(`manager/report`, `${e.id}`, {
+              reportStatus: "OPEN",
+            })
+              .then((e) => {
+                console.log("11111", e);
+                notificationApi("success", "Thành công", "Đã mở lại báo cáo");
+
+                reloadData();
+              })
+              .catch((error) => {
+                notificationApi("error", "Không thành công", "Lỗi");
+                console.log("error", error);
+              });
+          },
+        });
+      },
+    },
+  ];
+  const extraMenuItems = [
+    {
+      label: "Đóng báo cáo",
+      onClick: (e) => {
+        Modal.confirm({
+          title: "Xác nhận đã sử lý báo cáo",
+          content: "Bạn có chắc đã sử lý báo cáo?",
+          okText: "Đóng báo cáo",
+          okType: "primary",
+          cancelText: "Hủy",
+          onOk: () => {
+            patchData(`manager/report`, `${e.id}`, {
+              reportStatus: "CLOSED",
+            })
+              .then((e) => {
+                console.log("11111", e);
+                notificationApi("success", "Thành công", "Đã đóng báo cáo");
+
+                reloadData();
+              })
+              .catch((error) => {
+                notificationApi("error", "Không thành công", "Lỗi");
+                console.log("error", error);
+              });
+          },
+        });
+      },
+    },
+  ];
+
   const notificationSuccess = () => {
     notificationApi("success", "thành công", "Đã thành công");
   };
@@ -182,10 +259,9 @@ export const TableReport = forwardRef((props, ref) => {
       })
       .catch((error) => {
         console.error("Error fetching items:", error);
-        table.handleCloseLoading();
-        // if (error?.status === 401) {
-        //   reloadData()
-        // }
+        if (error?.status === 401) {
+          reloadData();
+        }
       });
   };
   useEffect(() => {

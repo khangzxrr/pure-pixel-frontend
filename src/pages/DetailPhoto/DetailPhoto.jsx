@@ -59,6 +59,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const popupReport = useModalState();
   const popupShare = useModalState();
   const navigate = useNavigate();
+  const imageRef = useRef(null);
 
   const { id } = useParams();
 
@@ -155,7 +156,17 @@ export default function DetailedPhotoView({ onClose, photo }) {
       setCurrentPhoto(nextPhoto);
     }
   };
-
+const handleFullScreen = () => {
+  if (imageRef?.current?.requestFullscreen) {
+    imageRef?.current?.requestFullscreen();
+  } else if (imageRef?.current?.webkitRequestFullscreen) {
+    /* Safari */
+    imageRef?.current?.webkitRequestFullscreen();
+  } else if (imageRef?.current?.msRequestFullscreen) {
+    /* IE11 */
+    imageRef?.current?.msRequestFullscreen();
+  }
+};
   const handlePreviousButtonOnClick = () => {
     if (previousPhotoData?.objects.length > 0) {
       setIsOriginalPhotoLoaded(false);
@@ -219,10 +230,14 @@ export default function DetailedPhotoView({ onClose, photo }) {
                 </Icon>
               </button>
             )}
-            <button className="absolute top-4 right-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px]  bg-opacity-50 hover:bg-opacity-75 hover:scale-110">
+            <button
+              onClick={handleFullScreen}
+              className="z-10 absolute top-4 right-4 text-white p-2 rounded-full bg-slate-400 border-slate-500 border-[1px] bg-opacity-50 hover:bg-opacity-75 hover:scale-110"
+            >
               <Icon>
                 <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" />
               </Icon>
+              {/* nút phóng to ảnh */}
             </button>
             <div
               ref={ref}
@@ -243,11 +258,22 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     ? currentPhoto?.signedUrl?.url
                     : currentPhoto?.signedUrl?.thumbnail
                 }
+        
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
                 transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
                 className="h-full max-h-screen absolute w-auto"
                 lazy="lazy"
+              />
+              <img
+                ref={imageRef}
+                src={
+                  !isOriginalPhotoLoaded
+                    ? currentPhoto?.signedUrl?.placeholder
+                    : currentPhoto?.signedUrl?.url
+                }
+                alt={currentPhoto.title}
+                className="w-0 h-0"
               />
             </div>
 
@@ -411,17 +437,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
                 <ExifList exifData={currentPhoto?.exif} />
               </div>
             )}
-
-            {/* Nút Xem thêm/Ẩn bớt */}
-            {/* <div className="flex justify-center">
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className=" text-white rounded-md"
-              >
-                {isExpanded ? "Ẩn bớt" : "Xem thêm"}
-              </button>
-            </div> */}
-
             <div className="mb-6">
               <CommentPhoto id={currentPhoto.id} reload={refreshPhoto} />
             </div>
