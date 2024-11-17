@@ -11,7 +11,6 @@ import locale from "antd/es/locale/vi_VN"; // Import locale tiếng Việt cho a
 import { NotificationProvider } from "./Notification/Notification";
 import dayjs from "dayjs";
 import "dayjs/locale/vi"; // Import locale tiếng Việt
-import useSocketStore from "./states/UseSocketStore";
 import ChatProvider from "./components/ChatComponent/ChatProvider";
 import OneSignal from "react-onesignal";
 
@@ -24,11 +23,9 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const { initSocket } = useSocketStore();
-
   if (
-    window.location.hostname !== "localhost" ||
-    window.location.hostname !== "127.0.0.1"
+    !window.location.hostname.toLowerCase().includes("localhost") &&
+    !window.location.hostname.toLowerCase().includes("127.0.0.1")
   ) {
     OneSignal.init({
       appId: process.env.REACT_APP_ONE_SIGNAL_APP_ID,
