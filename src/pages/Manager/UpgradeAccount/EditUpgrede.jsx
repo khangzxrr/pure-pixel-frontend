@@ -51,7 +51,7 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
       (value) => (data.price = value)
     );
     if (change !== null) {
-      putData("/upgrade-package", selectedUpgrede.id,{
+      putData("/manager/upgrade-package", selectedUpgrede.id, {
         ...data,
         status: "ENABLED",
       })
@@ -59,7 +59,7 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
           notificationApi("success", "Thành công", "Đã cập nhật thành công");
           setDisabled(false);
           setTimeout(() => {
-            tableRef()
+            tableRef();
           }, 100);
           onClose();
         })

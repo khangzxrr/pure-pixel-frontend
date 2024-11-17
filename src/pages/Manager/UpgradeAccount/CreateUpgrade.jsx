@@ -47,7 +47,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
       (value) => (data.price = value)
     );
     if (change !== null) {
-      postData("/upgrade-package", {
+      postData("/manager/upgrade-package", {
         ...data,
         status: "ENABLED",
       })

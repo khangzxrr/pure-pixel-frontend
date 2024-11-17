@@ -15,19 +15,19 @@ import { useNotification } from "../../../Notification/Notification";
 import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
 import ComModal from "../../../components/ComModal/ComModal";
 import DetailUpgrede from "./DetailUpgrede";
-import EditUpgrede from './EditReport';
+import EditUpgrede from "./EditReport";
 import ComReportTypeConverter from "../../../components/ComReportTypeConverter/ComReportTypeConverter";
 import ComReportStatusConverter from "../../../components/ComReportStatusConverter/ComReportStatusConverter";
 import ComReportConverter from "../../../components/ComReportConverter/ComReportConverter";
-  function formatCurrency(number) {
-    // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
-    if (typeof number === "number") {
-      return number.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-    }
+function formatCurrency(number) {
+  // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
+  if (typeof number === "number") {
+    return number.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
   }
+}
 export const TableReport = forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState({});
@@ -157,7 +157,7 @@ export const TableReport = forwardRef((props, ref) => {
               );
             }}
             // extraMenuItems={extraMenuItems}
-            excludeDefaultItems={["edit","delete"]}
+            excludeDefaultItems={["edit", "delete"]}
           />
         </div>
       ),
@@ -169,9 +169,7 @@ export const TableReport = forwardRef((props, ref) => {
   const notificationError = () => {
     notificationApi("error", "Lỗi", "Lỗi");
   };
-  useImperativeHandle(ref, () => ({
-    reloadData,
-  }));
+
   const reloadData = () => {
     table.handleOpenLoading();
     getData("/manager/report?limit=9999&page=0")
@@ -184,18 +182,21 @@ export const TableReport = forwardRef((props, ref) => {
       })
       .catch((error) => {
         console.error("Error fetching items:", error);
-        if (error?.status === 401) {
-          reloadData()
-        }
+        table.handleCloseLoading();
+        // if (error?.status === 401) {
+        //   reloadData()
+        // }
       });
   };
   useEffect(() => {
-    reloadData();
+    setTimeout(() => {
+      reloadData();
+    }, 500);
   }, []);
 
-  console.log('====================================');
+  console.log("====================================");
   console.log(data);
-  console.log('====================================');
+  console.log("====================================");
   return (
     <div>
       <ComTable
