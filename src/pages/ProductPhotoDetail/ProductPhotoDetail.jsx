@@ -11,6 +11,7 @@ import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 import DetailUser from "../DetailUser/DetailUser";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
+import { useQueryClient } from "@tanstack/react-query";
 function calculateTimeFromNow(dateString) {
   const startDate = new Date(dateString);
   const now = new Date();
@@ -65,7 +66,7 @@ const ProductPhotoDetail = () => {
   const popup = useModalState();
   const popupReport = useModalState();
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const queryClient = useQueryClient();
   const reload = () => {
     getData(`photo/${id}`)
       .then((response) => {
@@ -153,7 +154,7 @@ const ProductPhotoDetail = () => {
               setPaymentStatus("SUCCESS");
               message.success("Thanh toán thành công!");
               clearInterval(intervalId);
-
+              queryClient.invalidateQueries({ queryKey: ["photo-bought"] });
               // Cập nhật trạng thái pricetag
               setPricetagStatus((prevStatus) => {
                 const newStatus = { ...prevStatus };

@@ -27,21 +27,21 @@ const InspirationPhoto = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory,
+    (state) => state.selectedPhotoCategory
   );
   const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate,
+    (state) => state.filterByPhotoDate
   );
   const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
   const searchResult = UseCategoryStore((state) => state.searchResult);
   const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle,
+    (state) => state.searchByPhotoTitle
   );
   const setNamePhotographer = UsePhotographerFilterStore(
-    (state) => state.setNamePhotographer,
+    (state) => state.setNamePhotographer
   );
-
+  const searchByTags = UseCategoryStore((state) => state.searchByTags);
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
@@ -66,7 +66,7 @@ const InspirationPhoto = () => {
       watermark,
       selling,
       photographerName,
-      title,
+      title
     );
     return response;
   };
@@ -191,7 +191,7 @@ const InspirationPhoto = () => {
                                   setNameUserOther(photo.photographer.name);
                                   setActiveTitle(null);
                                   navigate(
-                                    `/user/${photo.photographer.id}/photos`,
+                                    `/user/${photo.photographer.id}/photos`
                                   );
                                   setUserOtherId(photo.photographer.id);
                                 }}
