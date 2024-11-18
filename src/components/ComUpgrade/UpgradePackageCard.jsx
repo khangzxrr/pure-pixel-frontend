@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useKeycloak } from "@react-keycloak/web";
 import useModalStore from "../../states/UseModalStore";
 import UserService from "../../services/Keycloak";
+import UpdatePackageDropdown from "./UpdatePackageDropdown";
 
 const UpgradePackageCard = ({
   packageItem,
@@ -137,38 +138,10 @@ const UpgradePackageCard = ({
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-center mt-5 mb-3">
-        {!userData ? (
-          <button
-            onClick={handleLogin}
-            className="bg-yellow-500 text-[#202225] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
-          >
-            Đăng nhập để sử dụng gói
-          </button>
-        ) : isCurrentPackage ? (
-          <button
-            onClick={handleUpgrade}
-            className="bg-green-500 text-white rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
-          >
-            {" "}
-            Gia hạn gói
-          </button>
-        ) : currentPackage ? (
-          <button
-            onClick={handleUpgrade}
-            className="bg-yellow-500 text-[#202225] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
-          >
-            Chuyển gói
-          </button>
-        ) : (
-          <button
-            onClick={handleUpgrade}
-            className="bg-yellow-500 text-[#202225] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
-          >
-            Nâng cấp
-          </button>
-        )}
-      </div>
+      <UpdatePackageDropdown
+        currentPackage={currentPackage}
+        packageItem={packageItem}
+      />
     </div>
   );
 };
