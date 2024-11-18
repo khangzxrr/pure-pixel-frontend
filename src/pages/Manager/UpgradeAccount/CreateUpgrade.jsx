@@ -9,6 +9,7 @@ import { MonyNumber } from "./../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
 import { postData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
+import ComTextArea from "../../../components/ComInput/ComTextArea";
 
 export default function CreateUpgrade({ onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
@@ -47,7 +48,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
       (value) => (data.price = value)
     );
     if (change !== null) {
-      postData("/upgrade-package", {
+      postData("/manager/upgrade-package", {
         ...data,
         status: "ENABLED",
       })
@@ -170,7 +171,18 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                     />
                   </div>
                 </div>
-
+                <div className="sm:col-span-2">
+                  <div className="mt-2.5">
+                    <ComTextArea
+                   
+                      rows={5}
+                      label={"Tóm tắt về gói"}
+                      placeholder={"Vui lòng nhập bản tóm tắt "}
+                      {...register("summary")}
+                      required
+                    />
+                  </div>
+                </div>
                 {fields.map((description, index) => (
                   <div className="sm:col-span-2" key={index}>
                     <div className="mt-2.5">

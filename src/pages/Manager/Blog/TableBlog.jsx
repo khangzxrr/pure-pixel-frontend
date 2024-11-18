@@ -75,6 +75,14 @@ export const TableBlog = forwardRef((props, ref) => {
       key: "content",
       width: 150,
       ...getColumnSearchProps("content", "Nội dung"),
+      render: (_, record) => (
+        <>
+          <div
+            className="uploaded-content line-clamp-3"
+            dangerouslySetInnerHTML={{ __html: record.content }}
+          />
+        </>
+      ),
     },
     {
       title: "Thao tác",

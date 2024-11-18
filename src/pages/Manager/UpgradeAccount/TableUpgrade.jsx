@@ -79,13 +79,22 @@ export const TableUpgrade = forwardRef((props, ref) => {
       sorter: (a, b) => a.maxPackageCount - b.maxPackageCount,
       ...getColumnSearchProps("maxPackageCount", "Số lượng"),
     },
+    // {
+    //   title: "Số lượng đã đăng ký",
+    //   width: 120,
+    //   dataIndex: "totalOrder",
+    //   key: "totalOrder",
+    //   sorter: (a, b) => a.totalOrder - b.totalOrder,
+    //   // ...getColumnPriceRangeProps("price", "Giá Tiền"),
+    // },
+
     {
-      title: "Số lượng đã đăng ký",
+      title: "Thông tin tóm tắt",
       width: 120,
-      dataIndex: "totalOrder",
-      key: "totalOrder",
-      sorter: (a, b) => a.totalOrder - b.totalOrder,
-      // ...getColumnPriceRangeProps("price", "Giá Tiền"),
+      dataIndex: "summary",
+      key: "summary",
+      sorter: (a, b) => a.maxPackageCount - b.maxPackageCount,
+      ...getColumnSearchProps("summary", "Tóm tắt"),
     },
     {
       title: "Thông tin bổ sung",
@@ -129,7 +138,7 @@ export const TableUpgrade = forwardRef((props, ref) => {
             }}
             showModalDelete={() => {
               ComConfirmDeleteModal(
-                `/upgrade-package`,
+                `/manager/upgrade-package`,
                 record.id,
                 `Bạn có chắc chắn muốn xóa?`,
                 reloadData,

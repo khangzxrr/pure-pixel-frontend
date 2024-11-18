@@ -6,7 +6,6 @@ import UseInspirationStore from "../../states/UseInspirationStore";
 import UserService from "../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
 import UseSidebarStore from "../../states/UseSidebarStore";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import InspirationNav from "../Inspiration/InspirationNav/InspirationNav";
 import PhotographerNav from "../Photographer/PhotographerList/PhotographerNav";
 import SellingPhotoNav from "../SellingPhoto/SellingPhotoNav";
@@ -27,7 +26,6 @@ const Explore = () => {
   const [isPhotographer, setIsPhotographer] = useState(false);
   const { keycloak } = useKeycloak();
   const user = UserService.getTokenParsed();
-  console.log(user);
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();

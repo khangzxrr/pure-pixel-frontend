@@ -1,15 +1,14 @@
 import React, { useRef } from "react";
-import { TableReport } from "./TableReport";
 import { useModalState } from "../../../hooks/useModalState";
+import { TableTransaction } from "./TableTransaction";
 
 
-export default function Report() {
+export default function TransactionManager() {
   const modal = useModalState();
   const tableRef = useRef(null);
   return (
     <>
-      <TableReport ref={tableRef} />
-
+      <TableTransaction ref={tableRef} />
     </>
   );
 }

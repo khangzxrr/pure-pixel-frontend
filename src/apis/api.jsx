@@ -50,7 +50,7 @@ export const putData = async (endpoint, id, data, headers = {}) => {
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      window.location.href = "/login";
+      // window.location.href = "/login";
     } else {
       throw error;
     }
@@ -62,7 +62,7 @@ export const patchData = async (endpoint, id, data, headers = {}) => {
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      window.location.href = "/login";
+      // window.location.href = "/login";
     } else {
       throw error;
     }
@@ -74,7 +74,7 @@ export const deleteData = async (endpoint, id, data, headers = {}) => {
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      window.location.href = "/login";
+      // window.location.href = "/login";
     } else {
       throw error;
     }

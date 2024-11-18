@@ -9,6 +9,7 @@ import { MonyNumber } from "./../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
 import {  putData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
+import ComTextArea from "../../../components/ComInput/ComTextArea";
 
 export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
@@ -51,7 +52,7 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
       (value) => (data.price = value)
     );
     if (change !== null) {
-      putData("/upgrade-package", selectedUpgrede.id,{
+      putData("/manager/upgrade-package", selectedUpgrede.id, {
         ...data,
         status: "ENABLED",
       })
@@ -59,12 +60,12 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
           notificationApi("success", "Thành công", "Đã cập nhật thành công");
           setDisabled(false);
           setTimeout(() => {
-            tableRef()
+            tableRef();
           }, 100);
           onClose();
         })
         .catch((error) => {
-          console.log(error);
+          console.log(111, error.response);
           setDisabled(false);
           if (error?.data?.statusCode === 400) {
             setError("name", { message: "Tên gói này đã tồn tại" });
@@ -163,6 +164,19 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
                       label={"Số lượng gói dịch vụ tối đa "}
                       placeholder={"Vui lòng nhập số lượng gói dịch vụ tối đa "}
                       {...register("maxPackageCount")}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <div className="mt-2.5">
+                    <ComTextArea
+                      type={"numbers"}
+                      rows={5}
+                      label={"Tóm tắt về gói"}
+                      placeholder={"Vui lòng nhập bản tóm tắt "}
+                      {...register("summary")}
                       required
                     />
                   </div>

@@ -2,58 +2,60 @@ import React, { useEffect, useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import ComButton from "../../../components/ComButton/ComButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ComNumber from "../../../components/ComInput/ComNumber";
 import ComInput from "../../../components/ComInput/ComInput";
-import ComSelect from "../../../components/ComInput/ComSelect";
-import { MonyNumber } from "../../../components/MonyNumber/MonyNumber";
+import ComUpImgOne from "../../../components/ComUpImg/ComUpImgOne";
 import { useNotification } from "../../../Notification/Notification";
 import { patchData, putData } from "../../../apis/api";
 import { BlogYup } from "../../../yup/Blog";
-import ComTextArea from "../../../components/ComInput/ComTextArea";
-import ComUpImgOne from "../../../components/ComUpImg/ComUpImgOne";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export default function EditBlog({ selectedUpgrede, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
   const [image, setImages] = useState(null);
+  const [content, setContent] = useState(selectedUpgrede.content || "");
+
   const methods = useForm({
     resolver: yupResolver(BlogYup),
-    values: selectedUpgrede,
+    defaultValues: {
+      title: selectedUpgrede.title,
+      status: selectedUpgrede.status,
+    },
   });
+
   const {
     handleSubmit,
     register,
-    setFocus,
-    watch,
-    setValue,
-    setError,
-    trigger,
     formState: { errors },
     control,
   } = methods;
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "descriptions",
-  });
 
   const onChange = (data) => {
-    const selectedImages = data;
-    console.log(selectedImages);
-    setImages(selectedImages);
+    setImages(data);
   };
 
   const onSubmit = (data) => {
-    console.log("====================================");
-    console.log(data);
-    console.log("====================================");
+    // Kiểm tra nếu nội dung trống
+    if (!content || content === "<p><br></p>") {
+      notificationApi(
+        "error",
+        "Nội dung không hợp lệ",
+        "Vui lòng nhập nội dung bài viết."
+      );
+      return;
+    }
+
     setDisabled(true);
+
+    // Nếu không thay đổi hình ảnh
     if (!image) {
       patchData("/blog", selectedUpgrede.id, {
-        title: data?.title,
-        content: data?.content,
-        status: data?.status,
+        title: data.title,
+        content: content,
+        status: data.status,
       })
-        .then((e) => {
+        .then(() => {
           notificationApi("success", "Thành công", "Đã cập nhật");
           setDisabled(false);
           setTimeout(() => {
@@ -62,35 +64,35 @@ export default function EditBlog({ selectedUpgrede, onClose, tableRef }) {
           onClose();
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
           setDisabled(false);
-
           notificationApi("error", "Không thành công", "Vui lòng thử lại");
         });
-      return;
     } else {
+      // Nếu có thay đổi hình ảnh
       const formData = new FormData();
       formData.append("thumbnailFile", image);
       formData.append("title", data.title);
-      formData.append("content", data.content);
+      formData.append("content", content);
       formData.append("status", data.status);
+
       putData("/blog", selectedUpgrede.id, formData)
-        .then((e) => {
+        .then(() => {
           notificationApi("success", "Thành công", "Đã cập nhật");
           setDisabled(false);
           setTimeout(() => {
-            tableRef();
+            tableRef.current.reloadData();
           }, 100);
           onClose();
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
           setDisabled(false);
-
           notificationApi("error", "Không thành công", "Vui lòng thử lại");
         });
     }
   };
+
   return (
     <div>
       <div className="bg-white">
@@ -115,32 +117,41 @@ export default function EditBlog({ selectedUpgrede, onClose, tableRef }) {
 
                 <div className="sm:col-span-2">
                   <div className="mt-2.5">
-                    <ComTextArea
-                      label={"Nội dung bài viết "}
-                      placeholder={"Vui lòng nhập Nội dung bài viết "}
-                      {...register("content")}
-                      rows={5}
-                      required
+                    <label className="block text-sm font-medium text-gray-700">
+                      Nội dung bài viết <span className="text-red-500">*</span>
+                    </label>
+                    <ReactQuill
+                      theme="snow"
+                      value={content}
+                      // {...register("content")}
+                      onChange={setContent}
+                      placeholder="Vui lòng nhập nội dung bài viết"
                     />
+                    {errors.content && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {errors.content.message}
+                      </p>
+                    )}
                   </div>
                 </div>
-              </div>
-              <div className="sm:col-span-2">
-                <ComUpImgOne
-                  onChange={onChange}
-                  label={"Hình ảnh Blog"}
-                  error={image ? "" : "Vui lòng chọn hình ảnh"}
-                  required
-                  imgUrl={selectedUpgrede?.thumbnail}
-                />
+
+                <div className="sm:col-span-2">
+                  <ComUpImgOne
+                    onChange={onChange}
+                    label={"Hình ảnh Blog"}
+                    imgUrl={selectedUpgrede?.thumbnail}
+                  />
+                </div>
               </div>
               <div className="mt-10">
                 <ComButton
                   htmlType="submit"
                   disabled={disabled}
-                  className="block w-full rounded-md bg-[#0F296D] text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0F296D] "
+                  className={`block w-full rounded-md bg-[#0F296D] text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0F296D] ${
+                    disabled ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
-                  Tạo mới
+                  {disabled ? "Đang cập nhật..." : "Cập nhật"}
                 </ComButton>
               </div>
             </div>

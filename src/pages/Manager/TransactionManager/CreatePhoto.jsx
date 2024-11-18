@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import ComButton from "../../../components/ComButton/ComButton";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ComNumber from "./../../../components/ComInput/ComNumber";
-import ComInput from "./../../../components/ComInput/ComInput";
+import ComNumber from "../../../components/ComInput/ComNumber";
+import ComInput from "../../../components/ComInput/ComInput";
 import ComSelect from "../../../components/ComInput/ComSelect";
-import { MonyNumber } from "./../../../components/MonyNumber/MonyNumber";
+import { MonyNumber } from "../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
 import { postData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
-import ComTextArea from './../../../components/ComInput/ComTextArea';
+import ComTextArea from '../../../components/ComInput/ComTextArea';
 
 export default function CreateUpgrade({ onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);

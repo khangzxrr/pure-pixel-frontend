@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useNavigate } from "react-router-dom";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
 import { FiShare2 } from "react-icons/fi";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
-import { useKeycloak } from "@react-keycloak/web";
+
 import UseCategoryStore from "../../../states/UseCategoryStore";
 import { IoMdImages } from "react-icons/io";
 import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
@@ -17,15 +17,14 @@ import ComSharePhoto from "../../ComSharePhoto/ComSharePhoto";
 import { useModalState } from "../../../hooks/useModalState";
 import UseUserOtherStore from "./../../../states/UseUserOtherStore";
 
+import LazyThumbnail from "../../ComLazyPhoto/LazyThumbnail";
+
 const InspirationPhoto = () => {
-  const { keycloak } = useKeycloak();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const limit = 20; // Tổng số ảnh
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [isLiked, setIsLiked] = useState(false);
 
   const selectedPhotoCategory = UseCategoryStore(
     (state) => state.selectedPhotoCategory,
@@ -168,10 +167,11 @@ const InspirationPhoto = () => {
                         key={photo.id}
                         className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
                       >
-                        <img
+                        <LazyThumbnail
+                          key={photo.id}
                           src={photo.signedUrl.thumbnail}
-                          alt={`Photo ${photo.id}`}
-                          className="w-full h-auto object-cover"
+                          photo={photo}
+                          className="w-full h-auto object-cover "
                           onClick={() => handleOnClick(photo)}
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">

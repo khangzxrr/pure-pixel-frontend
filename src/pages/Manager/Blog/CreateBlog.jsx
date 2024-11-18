@@ -3,22 +3,27 @@ import { FormProvider, useForm } from "react-hook-form";
 import ComButton from "../../../components/ComButton/ComButton";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ComInput from "./../../../components/ComInput/ComInput";
-import ComTextArea from "./../../../components/ComInput/ComTextArea";
 import ComUpImgOne from "../../../components/ComUpImg/ComUpImgOne";
 import { useNotification } from "../../../Notification/Notification";
 import { postData } from "../../../apis/api";
-import { BlogYup } from "../../../yup/Blog";
+import * as Yup from "yup";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+
+const BlogYup = Yup.object().shape({
+  title: Yup.string().required("Vui lòng nhập tên bài viết"),
+});
 
 export default function CreateBlog({ onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
   const [image, setImages] = useState(null);
+  const [content, setContent] = useState("");
 
   const methods = useForm({
     resolver: yupResolver(BlogYup),
     defaultValues: {
       title: "",
-      content: "",
     },
   });
 
@@ -27,14 +32,16 @@ export default function CreateBlog({ onClose, tableRef }) {
     register,
     formState: { errors },
   } = methods;
-  console.log("====================================");
-  console.log(image);
-  console.log("====================================");
+
   // Hàm thay đổi hình ảnh
   const onChange = (data) => {
     const selectedImages = data;
-    console.log(selectedImages);
     setImages(selectedImages);
+  };
+
+  // Hàm xử lý thay đổi nội dung
+  const handleContentChange = (value) => {
+    setContent(value);
   };
 
   // Hàm submit form
@@ -49,15 +56,25 @@ export default function CreateBlog({ onClose, tableRef }) {
       return;
     }
 
+    // Kiểm tra nếu nội dung trống
+    if (!content || content === "<p><br></p>") {
+      notificationApi(
+        "error",
+        "Nội dung không hợp lệ",
+        "Vui lòng nhập nội dung bài viết."
+      );
+      return;
+    }
+
     setDisabled(true);
     const formData = new FormData();
     formData.append("thumbnailFile", image);
     for (const key in data) {
       formData.append(key, data[key]);
     }
+    formData.append("content", content);
     formData.append("status", "ENABLED");
-    console.log(111111111111, formData);
-    
+
     postData("/blog", formData)
       .then((response) => {
         notificationApi("success", "Thành công", "Đã tạo thành công");
@@ -99,14 +116,20 @@ export default function CreateBlog({ onClose, tableRef }) {
 
                 <div className="sm:col-span-2">
                   <div className="mt-2.5">
-                    <ComTextArea
-                      label={"Nội dung bài viết"}
-                      placeholder={"Vui lòng nhập nội dung bài viết"}
-                      {...register("content")}
-                      rows={5}
-                      error={errors.content?.message}
-                      required
+                    <label className="block text-sm font-medium text-gray-700">
+                      Nội dung bài viết <span className="text-red-500">*</span>
+                    </label>
+                    <ReactQuill
+                      theme="snow"
+                      value={content}
+                      onChange={handleContentChange}
+                      placeholder="Vui lòng nhập nội dung bài viết"
                     />
+                    {errors.content && (
+                      <p className="mt-2 text-sm text-red-600">
+                        {errors.content.message}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="sm:col-span-2">
