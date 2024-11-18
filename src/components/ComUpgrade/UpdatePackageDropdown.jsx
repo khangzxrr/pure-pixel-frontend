@@ -59,6 +59,10 @@ export default function UpdatePackageDropdown({ currentPackage, packageItem }) {
         case "UserHasActivatedUpgradePackage":
           message = "Hiện tại bạn đã có gói nâng cấp đang hoạt động.";
           break;
+        case "NotEnoughBalanceException":
+          message = "Số dư không đủ để thực hiện giao dịch.";
+          break;
+
 
         default:
           message = "Đã xảy ra lỗi không xác định.";
