@@ -168,6 +168,17 @@ export default function PhotoshootPackageManagement() {
       >
         <div className="flex justify-end pb-2">
           <div>
+            <div className="w-full outline outline-2 outline-[#eee] bg-[#eee] rounded-full h-3">
+              <div
+                className="bg-[#777777] h-3 rounded-full transition-all duration-300"
+                style={{ width: `${45}%` }}
+              ></div>
+            </div>
+            <div className="text-right text-[#eee] mt-1">
+              Còn lại: {(1234).toFixed(2)} GB
+            </div>
+          </div>
+          <div>
             <ComButton onClick={modal.handleOpen}>Tạo gói chụp</ComButton>
           </div>
         </div>

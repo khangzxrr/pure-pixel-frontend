@@ -12,7 +12,6 @@ const statuses = [
   { label: "Đang thực hiện", value: "ACCEPTED", color: "#007BFF" }, // Blue
   { label: "Hoàn thành", value: "SUCCESSED", color: "#28A745" }, // Green
   { label: "Đã hủy", value: "DENIED", color: "#DC3545" }, // Red
-  { label: "Thất bại", value: "FAILED", color: "#6C757D" }, // Gray
 ];
 
 const BookingRequestList = () => {

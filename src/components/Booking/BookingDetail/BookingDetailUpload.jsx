@@ -48,7 +48,8 @@ export default function UploadBookingPhoto({ bookingDetail }) {
         break;
 
       default:
-        message.error(`Lỗi không xác định, vui lòng thử lại`);
+        // message.error(`Lỗi không xác định, vui lòng thử lại`);
+        console.log(e);
         break;
     }
     // removePhotoByUid(file.uid);
@@ -73,7 +74,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
     const isValidExif = PhotoService.validateExifData(exif);
 
     if (!isValidExif) {
-      message.error("Ảnh bạn chọn không tồn tại exif hợp lệ");
+      // message.error("Ảnh bạn chọn không tồn tại exif hợp lệ");
 
       return false;
     }

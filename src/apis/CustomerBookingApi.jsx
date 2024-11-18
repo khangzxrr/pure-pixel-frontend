@@ -41,6 +41,18 @@ const requestBooking = async (packageId, body) => {
   );
   return response.data;
 };
+const downloadAllPhoto = async (bookingId) => {
+  console.log("bookingId", bookingId);
+
+  const response = await http.get(
+    `/customer/booking/${bookingId}/download-all`,
+    {
+      responseType: "blob",
+    }
+  );
+
+  return response.data;
+};
 
 export const CustomerBookingApi = {
   findAllBooking,
@@ -48,4 +60,5 @@ export const CustomerBookingApi = {
   getBillItems,
   requestBooking,
   reviewBooking,
+  downloadAllPhoto,
 };
