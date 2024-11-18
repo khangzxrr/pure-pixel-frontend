@@ -22,7 +22,7 @@ const SidebarLayout = ({
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
-  
+
   const { data } = useQuery({
     queryKey: ["me"],
     queryFn: () => UserApi.getApplicationProfile(),

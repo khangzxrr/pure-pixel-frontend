@@ -1,11 +1,10 @@
 import { MessageCircleMore } from "lucide-react";
 import React from "react";
 import formatPrice from "../../utils/FormatPriceUtils";
-
+const formatNumber = (number) => {
+  return new Intl.NumberFormat("de-DE").format(number);
+};
 const PhotoshootPackageCard = ({ key, photoshootPackage }) => {
-  //never useNavigate in children because it will cause parent to unmount then lost state
-  // const navigate = useNavigate();
-
   return (
     <div className="flex flex-col group h-auto  bg-[#36393f] rounded-lg overflow-hidden">
       <div className="h-[200px] overflow-hidden rounded-t-lg relative">
@@ -61,7 +60,10 @@ const PhotoshootPackageCard = ({ key, photoshootPackage }) => {
 
         <div className="flex items-center justify-end px-4 pb-2 ">
           <span className="text-sm  font-normal text-gray-400">
-            12 lượt thuê
+            {photoshootPackage._count.bookings
+              ? formatNumber(photoshootPackage._count.bookings)
+              : "Chưa có"}{" "}
+            lượt thuê
           </span>
         </div>
       </div>

@@ -59,15 +59,10 @@ import PackagesUser from "../components/UserOther/PackagesUser";
 import SellingUser from "../components/UserOther/SellingUser";
 import PhotosBought from "../components/PhotoBought/PhotosBought";
 import PhotoBoughtDetail from "../components/PhotoBought/PhotoBoughtDetail";
-
 import CreateBookingPackage from "../components/ComCreateBooking/CreateBookingPackage";
 import PhotoshootPackageList from "../components/Booking/PhotoshootPackageList";
 import PhotoshootPackageDetail from "../components/Booking/PhotoshootPackageDetail";
 import BookingRequestList from "../components/Booking/BookingRequestList";
-import BookingRequestPending from "../components/Booking/BookingRequestState/BookingRequestPending";
-import BookingRequestInProgress from "../components/Booking/BookingRequestState/BookingRequestInProgress";
-import BookingRequestCompleted from "../components/Booking/BookingRequestState/BookingRequestCompleted";
-import BookingRequestCancelled from "../components/Booking/BookingRequestState/BookingRequestCancelled";
 import BookingDetail from "../components/Booking/BookingDetail/BookingDetail";
 import CustomerBooking from "../pages/UserProfile/CustomerBooking";
 import CustomerBookingDetail from "../pages/UserProfile/CustomerBookingDetail";
@@ -297,28 +292,6 @@ export const AppRouter = createBrowserRouter([
                     <BookingRequestList />
                   </ProtectRoute>
                 ),
-                children: [
-                  {
-                    path: "",
-                    element: <Navigate to="pending" replace={true} />,
-                  },
-                  {
-                    path: "pending",
-                    element: <BookingRequestPending />,
-                  },
-                  {
-                    path: "in-progress",
-                    element: <BookingRequestInProgress />,
-                  },
-                  {
-                    path: "completed",
-                    element: <BookingRequestCompleted />,
-                  },
-                  {
-                    path: "cancelled",
-                    element: <BookingRequestCancelled />,
-                  },
-                ],
               },
               {
                 path: "customer-booking",

@@ -230,17 +230,19 @@ const CustomerBookingDetail = () => {
                     alt="Ban Thao"
                     onClick={() => setSelectedPhoto(photo)}
                   />
-                  <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
-                    <Tooltip title="Tải ảnh này về" color="blue">
-                      <DownloadOutlined
-                        className="text-white text-xl cursor-pointer hover:text-red-500"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering the parent onClick
-                          handleDownload(photo);
-                        }}
-                      />
-                    </Tooltip>
-                  </div>
+                  {bookingDetail.status === "SUCCESSED" && (
+                    <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+                      <Tooltip title="Tải ảnh này về" color="blue">
+                        <DownloadOutlined
+                          className="text-white text-xl cursor-pointer hover:text-red-500"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering the parent onClick
+                            handleDownload(photo);
+                          }}
+                        />
+                      </Tooltip>
+                    </div>
+                  )}
                 </div>
               ))}
         </div>

@@ -2,7 +2,9 @@ import { MessageCircleMore, Share2 } from "lucide-react";
 import React, { useState } from "react";
 import formatPrice from "../../utils/FormatPriceUtils";
 import BookingModal from "./../../pages/BookingPage/component/BookingModal";
-
+const formatNumber = (number) => {
+  return new Intl.NumberFormat("de-DE").format(number);
+};
 const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -13,6 +15,7 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
   const hideModal = () => {
     setIsModalVisible(false); // Hàm đóng modal
   };
+  console.log(photoshootPackage);
 
   return (
     <>
@@ -55,7 +58,12 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
           <div className="font-normal">
             {formatPrice(photoshootPackage.price)}
           </div>
-          <div className="font-normal text-sm text-gray-400">12 lượt thuê</div>
+          <div className="font-normal text-sm text-gray-400">
+            {photoshootPackage._count.bookings
+              ? formatNumber(photoshootPackage._count.bookings)
+              : "Chưa có "}
+            lượt thuê
+          </div>
           <div className="flex flex-col gap-1 p-2 border border-gray-600 rounded-lg">
             {photoshootPackage.description}
           </div>
