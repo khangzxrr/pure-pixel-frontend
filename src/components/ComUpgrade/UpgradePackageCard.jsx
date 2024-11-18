@@ -95,16 +95,26 @@ const UpgradePackageCard = ({
           {popularPackageId === packageItem.id ? "Phổ biến nhất" : ""}
         </div>
       </div>
+      {tranferData ? (
+        tranferData.remainPrice === 0 ? (
+          <div className="font-bold text-lg">Miễn phí</div>
+        ) : (
+          <div className="font-bold text-lg">
+            {formatPrice(tranferData.remainPrice)} /{" "}
+            <span className="text-sm font-normal">
+              {packageItem.minOrderMonth} tháng
+            </span>
+          </div>
+        )
+      ) : (
+        <div className="font-bold text-lg">
+          {formatPrice(packageItem.price * packageItem.minOrderMonth)} /{" "}
+          <span className="text-sm font-normal">
+            {packageItem.minOrderMonth} tháng
+          </span>
+        </div>
+      )}
 
-      <div className="font-bold text-lg">
-        {tranferData
-          ? formatPrice(tranferData.remainPrice)
-          : formatPrice(packageItem.price * packageItem.minOrderMonth)}
-        /{" "}
-        <span className="text-sm font-normal">
-          {packageItem.minOrderMonth} tháng
-        </span>
-      </div>
       {!isAvailableUpdate && (
         <div className="font-light text-sm">
           <s>{formatPrice(packageItem.price * packageItem.minOrderMonth)}</s>

@@ -231,7 +231,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
           photoArray.length > 0 ? "col-span-1" : "col-span-6 h-full"
         } ${
           !enableUpdate && "hidden"
-        } flex items-center justify-center bg-red-400 hover:opacity-90`}
+        } flex items-center justify-center bg-[#36393f] hover:opacity-90`}
       >
         <Dragger
           name="avatar"

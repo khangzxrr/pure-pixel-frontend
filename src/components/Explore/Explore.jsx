@@ -117,7 +117,6 @@ const Explore = () => {
                       PRO
                     </div>
                   )}
-                  z{" "}
                 </div>
                 <div
                   onClick={handleLogout}

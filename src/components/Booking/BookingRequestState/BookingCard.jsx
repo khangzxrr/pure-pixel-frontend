@@ -1,56 +1,71 @@
 import { Calendar, MessageCircleMore } from "lucide-react";
 import React, { useState } from "react";
-import BookingRejectWarningModel from "./BookingRejectWarningModel";
 import { useNavigate } from "react-router-dom";
 import formatPrice from "../../../utils/FormatPriceUtils";
-import { useMutation } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
-import { Tooltip } from "antd";
+import { Popconfirm, Tooltip } from "antd";
 import { useNotification } from "../../../Notification/Notification";
+const statuses = [
+  { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
+  { label: "Chờ xác nhận", value: "REQUESTED", color: "#FFA500" }, // Orange
+  { label: "Đang thực hiện", value: "ACCEPTED", color: "#007BFF" }, // Blue
+  { label: "Hoàn thành", value: "SUCCESSED", color: "#28A745" }, // Green
+  { label: "Đã hủy", value: "DENIED", color: "#DC3545" }, // Red
+  { label: "Thất bại", value: "FAILED", color: "#6C757D" }, // Gray
+];
 
-
-const BookingRequestCard = ({ booking, textStateColor, textStateName }) => {
+const getTextColor = (status) => {
+  const statusInfo = statuses.find((s) => s.value === status);
+  return statusInfo ? statusInfo.color : "#6C757D";
+};
+const getStatusName = (status) => {
+  const statusInfo = statuses.find((s) => s.value === status);
+  return statusInfo ? statusInfo.label : "Chưa xác định";
+};
+const BookingCard = ({ booking, status }) => {
+  const queryClient = useQueryClient();
   const { notificationApi } = useNotification();
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
   const navigate = useNavigate();
 
-  const handleShowModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleHideModal = () => {
-    setIsModalVisible(false);
-  };
-
   const acceptBookingMutation = useMutation({
+    mutationKey: "acceptBooking",
     mutationFn: () => PhotographerBookingApi.acceptBooking(booking.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-all-photographer-booking");
+      queryClient.invalidateQueries("booking-photographer-detail");
+      notificationApi("success", "Thành công", "Đã chấp nhận lịch hẹn này");
+      navigate(`/profile/booking/${booking.id}`);
+    },
   });
 
   const handleAcceptButtonOnClick = () => {
     acceptBookingMutation.mutate();
-
-    notificationApi("success", "Thành công", "Đã chấp nhận lịch hẹn này");
-
-    navigate(`/profile/booking/${booking.id}`);
   };
+  const denyBookingMutation = useMutation({
+    mutationKey: "denyBooking",
+    mutationFn: () => PhotographerBookingApi.denyBooking(booking.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-all-photographer-booking");
+    },
+  });
 
+  const handleDenyBooking = () => {
+    denyBookingMutation.mutate();
+  };
   const handleBookingOnClick = () => {
-    if (booking.status === "ACCEPTED") {
+    if (booking.status === "ACCEPTED" || booking.status === "SUCCESSED") {
       navigate(`/profile/booking/${booking.id}`);
     }
   };
 
   return (
     <>
-      {isModalVisible && (
-        <BookingRejectWarningModel
-          booking={booking}
-          onClose={handleHideModal}
-        />
-      )}
       <div
         onClick={() => handleBookingOnClick()}
         className="flex flex-col group h-auto  bg-[#36393f] rounded-lg overflow-hidden pb-2"
@@ -68,9 +83,12 @@ const BookingRequestCard = ({ booking, textStateColor, textStateName }) => {
             <div className="text-xl font-semibold">
               {booking.photoshootPackageHistory.title}
             </div>
-            <div className={`text-[12px] font-normal ${textStateColor}`}>
+            <div
+              className={`text-[12px] font-normal`}
+              style={{ color: ` ${getTextColor(status)}` }}
+            >
               {/* {booking.photoshootPackageHistory.subtitle} */}
-              {textStateName}
+              {getStatusName(status)}
             </div>
           </div>
 
@@ -119,21 +137,30 @@ const BookingRequestCard = ({ booking, textStateColor, textStateName }) => {
           (acceptBookingMutation.isPending ? (
             <div>Đang chấp nhận lịch hẹn này...</div>
           ) : (
-            <div className="flex items-center justify-between gap-2 p-2 px-5">
-              <button
-                onClick={handleShowModal}
-                className="transition duration-300 text-red-500 border border-red-500 w-full px-2 py-1 rounded-lg hover:text-[#eee] hover:bg-red-500"
-              >
-                Từ chối
-              </button>
-
-              <button
-                onClick={() => handleAcceptButtonOnClick()}
-                // onClick={() => navigate(`/profile/booking/${123}`)}
-                className="transition duration-300 bg-[#eee] text-[#202225] w-full px-2 py-1 rounded-lg hover:bg-[#c0c0c0]"
-              >
-                Xác nhận
-              </button>
+            <div className="grid grid-cols-2 gap-3 p-2 px-5">
+              <div className="col-span-1">
+                <Popconfirm
+                  title="Xác nhận từ chối"
+                  description="Bạn có chắc muốn từ chối lịch hẹn này không?"
+                  onConfirm={handleDenyBooking}
+                  onCancel={() => console.log("Cancelled")}
+                  okText="Từ chối"
+                  cancelText="Hủy"
+                >
+                  <button className="transition duration-300 text-red-500 border border-red-500 w-full px-2 py-1 rounded-lg hover:text-[#eee] hover:bg-red-500">
+                    Từ chối
+                  </button>{" "}
+                </Popconfirm>
+              </div>
+              <div className="col-span-1">
+                <button
+                  onClick={() => handleAcceptButtonOnClick()}
+                  // onClick={() => navigate(`/profile/booking/${123}`)}
+                  className="transition duration-300 bg-[#eee] text-[#202225] w-full px-2 py-1 rounded-lg hover:bg-[#c0c0c0]"
+                >
+                  Xác nhận
+                </button>
+              </div>
             </div>
           ))}
       </div>
@@ -141,4 +168,4 @@ const BookingRequestCard = ({ booking, textStateColor, textStateName }) => {
   );
 };
 
-export default BookingRequestCard;
+export default BookingCard;
