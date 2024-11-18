@@ -106,6 +106,7 @@ export default function CustomerBooking() {
                 }}
               >
                 <div className="h-[200px] overflow-hidden rounded-t-lg relative">
+
                   <img
                     src={booking.photoshootPackageHistory.thumbnail}
                     alt=""

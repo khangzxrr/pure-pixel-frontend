@@ -15,6 +15,25 @@ const UseCategoryStore = create((set) => ({
     quote: "ảnh",
     icon: "FaRegImage",
   },
+
+  searchByTags: [], // Mảng lưu trữ tags
+  setSearchByTags: (value) => {
+    // Kiểm tra nếu value là một mảng
+    if (Array.isArray(value)) {
+      set({ searchByTags: value });
+    } else {
+      console.error("searchByTags phải là một mảng.");
+    }
+  },
+  addTag: (tag) =>
+    set((state) => ({
+      searchByTags: [...state.searchByTags, tag],
+    })),
+  removeTag: (tag) =>
+    set((state) => ({
+      searchByTags: state.searchByTags.filter((t) => t !== tag),
+    })),
+
   setSelectedPhotoCategory: (name, param) =>
     set({ selectedPhotoCategory: { name, param } }),
   setFilterByPhotoDate: (name, param) =>

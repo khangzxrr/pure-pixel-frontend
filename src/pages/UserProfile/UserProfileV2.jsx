@@ -10,16 +10,20 @@ import React, { useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import PhotographerApi from "../../apis/PhotographerApi";
 import { useQuery } from "@tanstack/react-query";
+import FollowButton from "../../components/ComFollow/FollowButton";
+import { useKeycloak } from "@react-keycloak/web";
 
 const UserProfileV2 = () => {
   const { userId } = useParams();
-
+  const { keycloak } = useKeycloak();
+  const meId = keycloak?.tokenParsed?.sub;
   const navigate = useNavigate();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["user", userId],
     queryFn: () => PhotographerApi.getPhotographerById(userId),
   });
+  // console.log(data.photographer);
 
   const [hoveredIcon, setHoveredIcon] = useState(null); // State để theo dõi icon nào đang được hover
 
@@ -30,6 +34,12 @@ const UserProfileV2 = () => {
     navigate(`/message?to=${userId}`);
   };
 
+  // const checkIsfollowed = () => {
+  //   if (!data?.photographer?.followers || !meId) return false; // Kiểm tra nếu không có dữ liệu
+  //   return data.photographer.followers.some(
+  //     (follower) => follower.followerId === meId
+  //   );
+  // };
   return (
     <div className="min-h-screen">
       {/* Seller Profile Header */}
@@ -107,6 +117,10 @@ const UserProfileV2 = () => {
                     )}
                     {data?.photographer._count.photos}
                   </div>
+                  {/* <FollowButton
+                    photographerId={data?.photographer?.id}
+                    isFollowed={checkIsfollowed()}
+                  /> */}
                 </div>
               </div>
             </div>

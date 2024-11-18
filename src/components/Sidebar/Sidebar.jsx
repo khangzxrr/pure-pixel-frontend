@@ -134,14 +134,14 @@ const Sidebar = ({
             <InsPhotoFilter />
           </div>
         )}
-        {isInspirationPage && (
+        {/* {isInspirationPage && (
           <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1">
             <div className="text-[12px]">TOP 5 THẺ THỊNH HÀNH HIỆN TẠI</div>
             <div className="flex flex-col gap-2">
               <PhotoTagsTrend />
             </div>
           </div>
-        )}
+        )} */}
         {isPhotographer && (
           <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1 border-y-[1px] border-[#a3a3a3] py-2">
             <div>Bộ lọc nhiếp ảnh gia</div>
