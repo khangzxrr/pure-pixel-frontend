@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +20,7 @@ export default function CustomerBooking() {
   console.log(data);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 p-4">
       {data &&
         data.objects.map((booking) => (
           <div
