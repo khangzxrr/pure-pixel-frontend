@@ -153,7 +153,7 @@ const PhotographerCard = ({ photographer, maxQuoteLength = 30 }) => {
               <div>“{truncateQuote(photographer.quote, maxQuoteLength)}”</div>
             </div>
             <div className="mt-5">
-              {/* <FollowButton userId={userId} photographer={photographer} /> */}
+              <FollowButton userId={userId} photographer={photographer} />
             </div>
           </div>
           <div className="flex justify-end">
