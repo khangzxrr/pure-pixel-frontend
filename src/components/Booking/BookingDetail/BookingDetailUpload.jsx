@@ -172,58 +172,9 @@ export default function UploadBookingPhoto({ bookingDetail }) {
     }
   };
 
-  // const handleToggleWatermark = () => {
-  //   setIsWatermarkAll(!isWatermarkAll);
-  //   toggleWatermark(!isWatermarkAll);
-  // };
-
   const itemRender = () => {
     return "";
   };
-
-  // const SubmitUpload = async () => {
-  //   // Loop over each photo and update them individually
-  //   const updatePromises = photoArray.map(async (photo) => {
-  //     const photoToUpdate = {
-  //       id: photo.response.id,
-  //       categoryId: photo.categoryId,
-  //       title: photo.title,
-  //       watermark: photo.watermark,
-  //       description: photo.description,
-  //       categoryIds: photo.categoryIds,
-  //       visibility: photo.visibility,
-  //       photoTags: photo.photoTags,
-  //       gps: photo.gps,
-  //     };
-
-  //     // Call the API to update a single photo and add watermark concurrently
-  //     return Promise.all([
-  //       updatePhotos.mutateAsync(photoToUpdate),
-  //       photo.watermark
-  //         ? addWatermark.mutateAsync({
-  //             photoId: photo.response.id,
-  //             text: photo.watermarkContent,
-  //           })
-  //         : Promise.resolve(),
-  //     ]);
-  //   });
-
-  //   try {
-  //     // Wait for all update and watermark operations to complete
-  //     await Promise.all(updatePromises);
-  //     navigate("/profile/my-photos");
-  //     // Clear state after successful updates
-  //     clearState();
-
-  //     // Display success message
-  //     message.success("Đã lưu các chỉnh sửa!");
-  //     // navigate("/my-photo/photo/all");
-  //   } catch (error) {
-  //     // Handle errors if any of the updates fail
-  //     console.error("Error updating photos:", error);
-  //     message.error("Có lỗi xảy ra trong quá trình cập nhật!");
-  //   }
-  // };
 
   return (
     <div className="w-full h-full grid grid-cols-6">

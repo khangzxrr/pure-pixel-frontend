@@ -2,9 +2,8 @@ import React from "react";
 import UpgradePackageCard from "./UpgradePackageCard";
 import { useQuery } from "@tanstack/react-query";
 import upgradePackageApi from "../../apis/upgradePackageApi";
-import { Firework } from "../Firework/Firework";
 
-const UpgradePacketList = ({ currentPackage }) => {
+const UpgradePackageList = ({ currentPackage }) => {
   const { data: packageList } = useQuery({
     queryKey: ["upgrade-package-list"],
     queryFn: () => upgradePackageApi.upgradePackageList(),
@@ -23,9 +22,6 @@ const UpgradePacketList = ({ currentPackage }) => {
   return (
     <div className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-10">
       {/* Firework component positioned absolutely over other elements */}
-      <div className="fixed inset-0 z-50 pointer-events-none">
-        <Firework />
-      </div>
 
       {packageList?.objects?.map((item) => (
         <div className="flex justify-center items-center">
@@ -41,4 +37,4 @@ const UpgradePacketList = ({ currentPackage }) => {
   );
 };
 
-export default UpgradePacketList;
+export default UpgradePackageList;

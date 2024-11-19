@@ -71,7 +71,7 @@ export default function CustomUpload() {
     mutationFn: async (photo) => await PhotoApi.addWatermark(photo),
   });
   const handleException = (file, e) => {
-    switch (e.response.data.message) {
+    switch (e && e.response.data.message) {
       case "RunOutPhotoQuotaException":
         notificationApi(
           "error",
@@ -160,6 +160,8 @@ export default function CustomUpload() {
         );
         break;
     }
+    console.log("handleException", file.uid);
+
     removePhotoByUid(file.uid);
   };
 

@@ -303,18 +303,6 @@ const MyPhotoP = () => {
             </div>
           )}
         </div>
-
-        {/* Pagination Bottom */}
-        {totalPages > 0 && (
-          <Pagination
-            current={page}
-            total={totalPages * itemsPerPage}
-            onChange={handlePageClick}
-            pageSize={itemsPerPage}
-            showSizeChanger={false}
-            className="flex justify-end my-2"
-          />
-        )}
       </div>
     </ConfigProvider>
   );

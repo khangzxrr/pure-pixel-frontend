@@ -15,21 +15,24 @@ export default function PhotoCard({ photo }) {
     selectedPhoto,
   } = useUploadPhotoStore();
   const { notificationApi } = useNotification();
-
+  const [isDeleting, setIsDeleting] = useState(false);
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
   });
 
-  const handleRemove = (photo) => {
+  const handleRemove = async (photo) => {
+    if (isDeleting) return;
     if (photo.response) {
       console.log("deletephoto", photo);
+      setIsDeleting(true);
+      removePhotoById(photo.response.id);
 
       try {
-        deletePhoto.mutateAsync(
+        await deletePhoto.mutateAsync(
           { id: photo.response.id },
           {
             onSuccess: () => {
-              removePhotoById(photo.response.id);
+              setIsDeleting(false);
             },
             onError: (error) => {
               message.error("Chưa thể xóa ảnh");
@@ -100,7 +103,14 @@ export default function PhotoCard({ photo }) {
           </p>
         </div>
       )}
-
+      {photo.watermark && (
+        <div
+          className={`absolute inset-0 grid place-items-center z-10 rounded-lg`}
+          onClick={handleSelect}
+        >
+          <p className="text-gray-700 text-xl">PXL</p>
+        </div>
+      )}
       <div className="absolute top-3 right-3 flex items-center z-10 p-2  rounded-xl hover:bg-opacity-80 bg-opacity-30 bg-gray-200">
         <Tooltip title="Xóa ảnh">
           <DeleteOutlined
