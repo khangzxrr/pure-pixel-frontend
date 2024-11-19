@@ -2,7 +2,7 @@ import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import FollowApi from "../../apis/FollowApi";
 
-const FollowButton = ({ userId, photographer }) => {
+const FollowButton = ({ photographer }) => {
   const queryClient = useQueryClient();
 
   const checkIsfollowed = () => {
