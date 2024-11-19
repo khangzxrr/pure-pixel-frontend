@@ -10,6 +10,12 @@ import { FaRegHeart } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { IoMdImages } from "react-icons/io";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
+import ComModal from "../ComModal/ComModal";
+import ComSharePhoto from "../ComSharePhoto/ComSharePhoto";
+import { useModalState } from "../../hooks/useModalState";
+import UseUserOtherStore from "../../states/UseUserOtherStore";
+import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
+import UseUserProfileStore from "../../states/UseUserProfileStore";
 
 const CameraPhoto = ({ nameCamera }) => {
   const { keycloak } = useKeycloak();
@@ -17,9 +23,15 @@ const CameraPhoto = ({ nameCamera }) => {
   const queryClient = useQueryClient();
   const limit = 20;
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const popupShare = useModalState();
   const { cameraId } = useParams();
-  console.log("cameraId", cameraId);
-
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
+  const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
+  const setNamePhotographer = UsePhotographerFilterStore(
+    (state) => state.setNamePhotographer
+  );
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
@@ -34,7 +46,7 @@ const CameraPhoto = ({ nameCamera }) => {
       null,
       null,
       null,
-      cameraId,
+      cameraId
     );
     return response;
   };
@@ -69,6 +81,18 @@ const CameraPhoto = ({ nameCamera }) => {
 
   return (
     <>
+      <ComModal
+        isOpen={popupShare.isModalOpen}
+        onClose={popupShare.handleClose}
+        // width={800}
+        // className={"bg-black"}
+      >
+        <ComSharePhoto
+          photoId={selectedPhoto?.id}
+          userId={selectedPhoto?.photographer.id}
+          onClose={popupShare.handleClose}
+        />
+      </ComModal>
       {selectedImage && (
         <DetailedPhotoView
           idImg={selectedImage}
@@ -141,16 +165,32 @@ const CameraPhoto = ({ nameCamera }) => {
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <div>{photo.photographer.name || "Tên tác giả"}</div>
+                          <div
+                            className="hover:underline cursor-pointer underline-offset-2"
+                            onClick={() => {
+                              setNamePhotographer(photo.photographer.name);
+                              setNameUserOther(photo.photographer.name);
+                              setActiveTitle(null);
+                              navigate(`/user/${photo.photographer.id}/photos`);
+                              setUserOtherId(photo.photographer.id);
+                            }}
+                          >
+                            {photo.photographer.name || "Tên tác giả"}
+                          </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-2">
+                          {/* <div className="flex items-center gap-2">
                             <FaRegHeart className="size-7" />
                             {photo._count?.votes || 0}
-                          </div>
+                          </div> */}
                           <div className="flex items-center gap-2">
-                            <FiShare2 className="size-7" />
-                            {0}
+                            <FiShare2
+                              className="size-7"
+                              onClick={() => {
+                                popupShare.handleOpen();
+                                setSelectedPhoto(photo);
+                              }}
+                            />
                           </div>
                         </div>
                       </div>
