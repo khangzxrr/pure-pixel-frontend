@@ -1,10 +1,10 @@
 import http from "../configs/Http";
 
-const findAllBooking = async (limit, page, status) => {
+const findAllBooking = async (limit, page, status, orderByCreatedAt) => {
   const response = await http.get(
     `/photographer/booking/me?limit=${limit}&page=${page}${
       status ? `&status=${status}` : ""
-    }`
+    }&orderByCreatedAt=${orderByCreatedAt}`
   );
 
   return response.data;

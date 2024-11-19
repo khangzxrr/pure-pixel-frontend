@@ -184,10 +184,13 @@ code {
 .custom-scrollbar2::-webkit-scrollbar-thumb:hover {
   background-color: #888; /* Màu khi di chuột vào thanh cuộn */
 }
-.ant-pagination .ant-pagination-item-active a{
+.ant-pagination .ant-pagination-item-active a {
   color: #4096ff !important;
-
 }
-.ant-pagination .ant-pagination-item a{
+.ant-pagination .ant-pagination-item a {
+  color: #fff;
+}
+
+.custom-close-icon .ant-modal-close {
   color: #fff;
 }

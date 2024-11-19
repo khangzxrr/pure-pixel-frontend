@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import { useKeycloak } from "@react-keycloak/web";
 import UserService from "../../services/Keycloak";
@@ -8,12 +8,12 @@ import { IoPersonSharp } from "react-icons/io5";
 import { FaCameraRetro, FaMoneyBillWave } from "react-icons/fa6";
 
 const UserOtherSide = () => {
-  const { activeItem, setActiveItem } = UseUserOtherStore();
+  const { setUserOtherId, activeItem, setActiveItem, userOtherId } =
+    UseUserOtherStore();
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
   const { userId } = useParams();
 
-  const userOtherId = UseUserOtherStore((state) => state.userOtherId);
   console.log(userOtherId);
 
   const handleLogin = () => keycloak.login();
@@ -48,7 +48,18 @@ const UserOtherSide = () => {
       link: `/user/${userOtherId}/selling`,
     },
   ];
-
+  useEffect(() => {
+    console.log("userId", userId, userOtherId);
+    if (userId !== undefined) {
+      setActiveItem(
+        "UO2",
+        "Hồ sơ",
+        <IoPersonSharp />,
+        `/user/${userId}/photos`
+      );
+      setUserOtherId(userId);
+    }
+  }, [userId]);
   return (
     <UserOtherSidebar
       sideItems={UserOtherItem}
