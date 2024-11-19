@@ -8,6 +8,8 @@ import CreatePhotoshootPackage from "./CreatePhotoshootPackage";
 import { useModalState } from "../../hooks/useModalState";
 import ComButton from "../../components/ComButton/ComButton";
 import upgradePackageApi from "../../apis/upgradePackageApi";
+import UserProfile from "./UserProfile";
+import UserProfileApi from "../../apis/UserProfile";
 
 const PhotoshootPackageManagementV2 = () => {
   const modal = useModalState();
@@ -16,12 +18,10 @@ const PhotoshootPackageManagementV2 = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
   const { data: currentPackage } = useQuery({
-    queryKey: "current-upgrade-package",
-    queryFn: async () => await upgradePackageApi.getCurrentPackage(),
+    queryKey: "me",
+    queryFn: async () => await UserProfileApi.getMyProfile(),
   });
-  console.log(
-    currentPackage && currentPackage.upgradePackageHistory.maxPackageCount
-  );
+  console.log(currentPackage && currentPackage);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["findAllPhotoshootPackages", page],
@@ -31,13 +31,16 @@ const PhotoshootPackageManagementV2 = () => {
   });
   const usedPackage = (data && data.totalRecord) || 0;
   const listPhotoshootPackages = data?.objects || [];
-  const usedPercentage =
-    usedPackage &&
-    currentPackage &&
-    usedPackage / currentPackage.upgradePackageHistory.maxPackageCount;
+  const maxPackageCount = currentPackage
+    ? currentPackage?.maxPackageCount
+    : "Chưa rõ";
+  const packageCount = currentPackage
+    ? currentPackage?.packageCount
+    : "Chưa rõ";
+  const usedPercentage = currentPackage && packageCount / maxPackageCount;
 
-  console.log("usedPercentage:", usedPercentage);
-  console.log("Can create more packages:", usedPercentage < 1);
+  console.log("usedPercentage:", usedPercentage, usedPackage);
+  console.log("Can create more packages:", packageCount < maxPackageCount);
   return (
     <ConfigProvider
       theme={{
@@ -56,11 +59,8 @@ const PhotoshootPackageManagementV2 = () => {
             <div className="flex flex-col mb-2">
               <span className="text-[#eee] mb-2">
                 Số lượng gói đã sử dụng:{" "}
-                <span className="font-semibold">{usedPackage} gói </span> /{" "}
-                {currentPackage
-                  ? currentPackage.upgradePackageHistory.maxPackageCount
-                  : "Chưa rõ"}{" "}
-                gói
+                <span className="font-semibold">{packageCount} gói </span> /{" "}
+                {currentPackage ? maxPackageCount : "Chưa rõ"} gói
               </span>
             </div>
             <div className="w-full outline outline-2 outline-[#eee] bg-[#eee] rounded-full h-3">
@@ -72,15 +72,11 @@ const PhotoshootPackageManagementV2 = () => {
               ></div>
             </div>
           </div>
-          {!usedPercentage < 1 ? (
+          {packageCount < maxPackageCount ? (
             <div>
               <p className="text-sm font-normal m-2">
                 Số gói chụp có thể tạo thêm:{" "}
-                {Math.floor(
-                  currentPackage.upgradePackageHistory.maxPackageCount -
-                    usedPackage
-                )}{" "}
-                gói
+                {Math.floor(maxPackageCount - packageCount)} gói
               </p>
               <ComButton onClick={modal.handleOpen}>Tạo gói chụp</ComButton>
             </div>
@@ -94,12 +90,13 @@ const PhotoshootPackageManagementV2 = () => {
           )}
         </div>
         <Modal
-          title="Sửa thông tin ảnh"
+          title="Tạo gói chụp"
           visible={modal?.isModalOpen} // Use state from Zustand store
           onCancel={modal?.handleClose} // Close the modal on cancel
           footer={null}
           width={1000} // Set the width of the modal
           centered={true}
+          className="custom-close-icon"
         >
           <CreatePhotoshootPackage onClose={modal?.handleClose} />
         </Modal>

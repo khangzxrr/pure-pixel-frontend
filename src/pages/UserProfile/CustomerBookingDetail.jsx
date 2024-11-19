@@ -12,6 +12,8 @@ import {
 } from "@ant-design/icons";
 import { ArrowRight, Calendar, MessageCircleMore } from "lucide-react";
 import { notificationApi } from "../../Notification/Notification";
+import ChatButton from "../../components/ChatButton/ChatButton";
+import ReviewBooking from "./Component/ReviewBooking";
 
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
@@ -74,6 +76,26 @@ const CustomerBookingDetail = () => {
     },
   });
 
+  // Track the current index of the selected photo
+  const currentIndex = bookingDetail?.photos?.findIndex(
+    (photo) => photo?.id === selectedPhoto?.id
+  );
+  // Function to go to the previous photo
+  const handlePreviousPhoto = () => {
+    if (currentIndex < bookingDetail.photos.length - 1) {
+      setSelectedPhoto(bookingDetail.photos[currentIndex + 1]);
+    } else {
+      setSelectedPhoto(bookingDetail.photos[0]);
+    }
+  };
+  // Function to go to the next photo
+  const handleNextPhoto = () => {
+    if (currentIndex > 0) {
+      setSelectedPhoto(bookingDetail.photos[currentIndex - 1]);
+    } else {
+      setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
+    }
+  };
   useEffect(() => {
     if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
       setSelectedPhoto(bookingDetail.photos[0]);
@@ -184,15 +206,10 @@ const CustomerBookingDetail = () => {
                   />
                 </div>
                 <div>{bookingDetail.user.name}</div>
-                <Tooltip title="Nhắn tin" color="blue">
-                  <MessageCircleMore
-                    className="w-5 h-5 ml-2 hover:text-blue-500 z-20"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      navigate(`/message?to=${bookingDetail.user.id}`);
-                    }}
-                  />
-                </Tooltip>
+
+                <ChatButton
+                  userId={bookingDetail.originalPhotoshootPackage.user.id}
+                />
               </div>
               <div className="flex flex-col mt-2 gap-1">
                 <div>Ghi chú</div>
@@ -249,6 +266,9 @@ const CustomerBookingDetail = () => {
               </div>
             </div>
           </div>
+          {/* {bookingDetail.status === "SUCCESSED" && (
+            <ReviewBooking bookingId={bookingId} />
+          )} */}
         </div>
       </div>
       <div className="md:col-span-5 flex flex-col h-[95vh]">
@@ -259,10 +279,16 @@ const CustomerBookingDetail = () => {
         >
           {bookingDetail.photos.length > 1 && (
             <>
-              <div className="absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10">
+              <div
+                onClick={handlePreviousPhoto}
+                className={`absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10`}
+              >
                 <ArrowLeftOutlined />
               </div>
-              <div className="absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10">
+              <div
+                onClick={handleNextPhoto}
+                className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10`}
+              >
                 <ArrowRightOutlined />
               </div>
             </>

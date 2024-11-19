@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
 import { useQuery } from "@tanstack/react-query";
-import { Pagination, Tooltip } from "antd"; // Make sure Tooltip is imported
+import { ConfigProvider, Pagination, Select, Tooltip } from "antd"; // Make sure Tooltip is imported
 import { Calendar, MessageCircleMore } from "lucide-react";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
 import formatPrice from "../../utils/FormatPriceUtils";
 import { useNavigate } from "react-router-dom";
 import { FiCameraOff } from "react-icons/fi";
+import ChatButton from "../../components/ChatButton/ChatButton";
+import { customTheme } from "../../components/Booking/BookingRequestList";
 
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
@@ -32,6 +34,8 @@ export default function CustomerBooking() {
   const navigate = useNavigate();
   const limit = 8;
   const [page, setPage] = useState(1);
+  const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
+
   const isSelectedStatus = (value) => {
     console.log("value", value, status);
     return status === value;
@@ -43,7 +47,13 @@ export default function CustomerBooking() {
   };
   const { isPending, data } = useQuery({
     queryKey: ["get-all-customer-bookings", limit, page, status],
-    queryFn: () => CustomerBookingApi.findAllBooking(limit, page - 1, status),
+    queryFn: () =>
+      CustomerBookingApi.findAllBooking(
+        limit,
+        page - 1,
+        status,
+        orderByCreatedAt
+      ),
     keepPreviousData: true,
   });
 
@@ -52,38 +62,53 @@ export default function CustomerBooking() {
       <div className="flex flex-col gap-2">
         <span className="text-xl">Danh sách lịch chụp của tôi</span>
         <div className="flex justify-between items-center border-b-2 text-sm font-medium border-[#818181] pb-2 mb-2">
-          <div className="flex gap-3">
-            {statuses.map((statusField) => (
-              <button
-                key={statusField.value}
-                onClick={() => {
-                  setStatus(statusField.value);
-                  setPage(1);
+          <ConfigProvider theme={customTheme}>
+            <div className="flex gap-3">
+              {statuses.map((statusField) => (
+                <button
+                  key={statusField.value}
+                  onClick={() => {
+                    setStatus(statusField.value);
+                    setPage(1);
+                  }}
+                  style={{
+                    backgroundColor: isSelectedStatus(statusField.value)
+                      ? "#fff"
+                      : statusField.color,
+                    color: isSelectedStatus(statusField.value)
+                      ? statusField.color
+                      : "#fff",
+                  }}
+                  className={`hover:opacity-90 transition-opacity cursor-pointer border-none rounded-lg px-4 py-2 font-semibold `}
+                >
+                  {statusField.label}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-row">
+              <Select
+                value={orderByCreatedAt}
+                options={[
+                  { label: "Mới nhất", value: "desc" },
+                  { label: "Cũ nhất", value: "asc" },
+                ]}
+                className="photo-privacy-select m-2"
+                onChange={(value) => {
+                  setOrderByCreatedAt(value);
                 }}
-                style={{
-                  backgroundColor: isSelectedStatus(statusField.value)
-                    ? "#fff"
-                    : statusField.color,
-                  color: isSelectedStatus(statusField.value)
-                    ? statusField.color
-                    : "#fff",
-                }}
-                className={`hover:opacity-90 transition-opacity cursor-pointer border-none rounded-lg px-4 py-2 font-semibold `}
-              >
-                {statusField.label}
-              </button>
-            ))}
-          </div>
-          {data && data.totalPage > 1 && (
-            <Pagination
-              current={page}
-              total={data.totalPage * limit}
-              onChange={handlePageClick}
-              pageSize={8}
-              showSizeChanger={false}
-              className="my-2"
-            />
-          )}
+              />
+              {data && data.totalPage > 1 && (
+                <Pagination
+                  current={page}
+                  total={data.totalPage * limit}
+                  onChange={handlePageClick}
+                  pageSize={8}
+                  showSizeChanger={false}
+                  className="my-2"
+                />
+              )}
+            </div>
+          </ConfigProvider>
         </div>
       </div>
       {isPending ? (
@@ -101,12 +126,12 @@ export default function CustomerBooking() {
                     booking.status === "ACCEPTED" ||
                     booking.status === "SUCCESSED"
                   ) {
+                    console.log("navigatebooking");
                     navigate(`/profile/customer-booking/${booking.id}`);
                   }
                 }}
               >
                 <div className="h-[200px] overflow-hidden rounded-t-lg relative">
-
                   <img
                     src={booking.photoshootPackageHistory.thumbnail}
                     alt=""
@@ -134,21 +159,18 @@ export default function CustomerBooking() {
                   <div className="flex items-center gap-2 mt-2">
                     <div className="size-5 overflow-hidden rounded-full">
                       <img
-                        src={booking.user.avatar}
+                        src={booking.originalPhotoshootPackage.user.avatar}
                         alt=""
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="text-sm">{booking.user.name}</div>
-                    <Tooltip title="Nhắn tin" color="blue">
-                      <MessageCircleMore
-                        className="w-5 h-5 ml-2 hover:text-blue-500 z-20"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          navigate(`/message?to=${booking.user.id}`);
-                        }}
-                      />
-                    </Tooltip>
+                    <div className="text-sm">
+                      {booking.originalPhotoshootPackage.user.name}
+                    </div>
+
+                    <ChatButton
+                      userId={booking.originalPhotoshootPackage.user.id}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-1 mt-2">

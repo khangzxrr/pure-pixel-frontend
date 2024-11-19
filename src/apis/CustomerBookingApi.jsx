@@ -1,10 +1,10 @@
 import http from "../configs/Http";
 
-const findAllBooking = async (limit, page, status) => {
+const findAllBooking = async (limit, page, status, orderByCreatedAt) => {
   const response = await http.get(
     `/customer/booking/me?limit=${limit}&page=${page}${
       status ? `&status=${status}` : ""
-    }`
+    }&orderByCreatedAt=${orderByCreatedAt}`
   );
 
   return response.data;
@@ -54,6 +54,15 @@ const downloadAllPhoto = async (bookingId) => {
   return response.data;
 };
 
+const reviewBookingByCustomer = async (bookingId, body) => {
+  console.log("bookingId", bookingId, body);
+
+  const response = await http.post(
+    `/customer/booking/${bookingId}/review`,
+    body
+  );
+  return response.data;
+};
 export const CustomerBookingApi = {
   findAllBooking,
   findById,
@@ -61,4 +70,5 @@ export const CustomerBookingApi = {
   requestBooking,
   reviewBooking,
   downloadAllPhoto,
+  reviewBookingByCustomer,
 };

@@ -11,6 +11,7 @@ import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 import { Popconfirm, Tooltip } from "antd";
 import { useNotification } from "../../../Notification/Notification";
+import ChatButton from "../../ChatButton/ChatButton";
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
   { label: "Chờ xác nhận", value: "REQUESTED", color: "#FFA500" }, // Orange
@@ -105,15 +106,8 @@ const BookingCard = ({ booking, status }) => {
               />
             </div>
             <div className="text-sm ">{booking.user.name}</div>
-            <Tooltip title="Nhắn tin" color="blue">
-              <MessageCircleMore
-                className="w-5 h-5 ml-2 hover:text-blue-500 z-20"
-                onClick={(event) => {
-                  event.preventDefault();
-                  navigate(`/message?to=${booking.user.id}`);
-                }}
-              />
-            </Tooltip>
+
+            <ChatButton userId={booking.user.id} />
           </div>
           <div className="flex flex-col gap-1 mt-2">
             <div>Ghi chú:</div>
