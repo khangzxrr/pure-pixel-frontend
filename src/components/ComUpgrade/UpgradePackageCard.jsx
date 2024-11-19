@@ -47,7 +47,6 @@ const UpgradePackageCard = ({
     packageItem &&
     currentPackage.upgradePackageHistory.originalUpgradePackageId ===
       packageItem.id;
-  console.log("tranferData", tranferData);
 
   const upgradePackage = useMutation({
     mutationKey: "upgrade-package",
@@ -57,8 +56,6 @@ const UpgradePackageCard = ({
       setSelectedUpgradePackage(data);
     },
     onError: (error) => {
-      console.log("Error:", error.response.data.message);
-
       let message;
 
       switch (error.response.data.message) {
@@ -87,7 +84,7 @@ const UpgradePackageCard = ({
   };
 
   return (
-    <div className="flex flex-col gap-2 bg-[#292b2f] p-2 px-5 rounded-md">
+    <div className="flex flex-col gap-2 bg-[#292b2f] w-[400px] p-2 px-5 rounded-md">
       <div className="flex items-center justify-between">
         <div className="font-bold text-lg text-yellow-500">
           {packageItem.name}
@@ -122,7 +119,7 @@ const UpgradePackageCard = ({
         </div>
       )}
 
-      <div className="flex flex-col gap-2 mt-2">
+      <div className="flex flex-col min-h-[250px] gap-2 mt-2">
         <div className="pb-2 border-b border-[#949494] text-sm font-normal">
           {packageItem.maxPackageCount} gói dịch vụ
         </div>

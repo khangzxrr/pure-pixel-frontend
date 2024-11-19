@@ -98,7 +98,9 @@ const Sidebar = ({
       {isOtherProfile && (
         <div className=" flex-grow">
           <div className="flex px-2 h-[48px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
-            {nameUserOther || "Hồ sơ"}
+            <span className="truncate max-w-[200px]">
+              {nameUserOther || "Hồ sơ"}
+            </span>
           </div>
         </div>
       )}

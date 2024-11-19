@@ -2,15 +2,11 @@ import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import FollowApi from "../../apis/FollowApi";
 
-const FollowButton = ({ userId, photographer }) => {
+const FollowButton = ({ photographer }) => {
   const queryClient = useQueryClient();
 
   const checkIsfollowed = () => {
-    const isFollowed = photographer.followers.some(
-      (follower) => follower.followerId === userId
-    );
-
-    return isFollowed;
+    return photographer.isFollowed;
   };
 
   const followMutation = useMutation({
@@ -28,11 +24,7 @@ const FollowButton = ({ userId, photographer }) => {
         queryClient.invalidateQueries({ queryKey: ["followings-me"] });
         // queryClient.invalidateQueries({ queryKey: ["photographers"] });
         queryClient.invalidateQueries({ queryKey: ["me"] });
-        photographer.followers = [
-          {
-            followerId: userId,
-          },
-        ];
+        photographer.isFollowed = true;
       },
       onError: (error) => {
         console.error("Follow error:", error);
@@ -47,7 +39,7 @@ const FollowButton = ({ userId, photographer }) => {
         queryClient.invalidateQueries({ queryKey: ["followings-me"] });
         queryClient.invalidateQueries({ queryKey: ["me"] });
 
-        photographer.followers = [];
+        photographer.isFollowed = false;
       },
       onError: (error) => {
         console.error("Unfollow error:", error);
