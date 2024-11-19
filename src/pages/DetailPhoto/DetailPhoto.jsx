@@ -16,6 +16,14 @@ import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
 import { Blurhash } from "react-blurhash";
 import { motion } from "framer-motion";
 import { useParentSize } from "@cutting/use-get-parent-size";
+import UserService from "../../services/Keycloak";
+import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
+import { ConfigProvider, Modal } from "antd";
+import { useKeycloak } from "@react-keycloak/web";
+import { FaRegHeart } from "react-icons/fa6";
+import UseUserProfileStore from "../../states/UseUserProfileStore";
+import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
+import UseUserOtherStore from "../../states/UseUserOtherStore";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -60,12 +68,17 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const popupShare = useModalState();
   const navigate = useNavigate();
   const imageRef = useRef(null);
-
   const { id } = useParams();
-
+  const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
+  const setNamePhotographer = UsePhotographerFilterStore(
+    (state) => state.setNamePhotographer
+  );
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
+  const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const ref = useRef(null);
   const { width, height } = useParentSize(ref);
-
+  const { keycloak } = useKeycloak();
   const queryClient = useQueryClient();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -156,17 +169,17 @@ export default function DetailedPhotoView({ onClose, photo }) {
       setCurrentPhoto(nextPhoto);
     }
   };
-const handleFullScreen = () => {
-  if (imageRef?.current?.requestFullscreen) {
-    imageRef?.current?.requestFullscreen();
-  } else if (imageRef?.current?.webkitRequestFullscreen) {
-    /* Safari */
-    imageRef?.current?.webkitRequestFullscreen();
-  } else if (imageRef?.current?.msRequestFullscreen) {
-    /* IE11 */
-    imageRef?.current?.msRequestFullscreen();
-  }
-};
+  const handleFullScreen = () => {
+    if (imageRef?.current?.requestFullscreen) {
+      imageRef?.current?.requestFullscreen();
+    } else if (imageRef?.current?.webkitRequestFullscreen) {
+      /* Safari */
+      imageRef?.current?.webkitRequestFullscreen();
+    } else if (imageRef?.current?.msRequestFullscreen) {
+      /* IE11 */
+      imageRef?.current?.msRequestFullscreen();
+    }
+  };
   const handlePreviousButtonOnClick = () => {
     if (previousPhotoData?.objects.length > 0) {
       setIsOriginalPhotoLoaded(false);
@@ -194,6 +207,12 @@ const handleFullScreen = () => {
     navigate(`/message?to=${currentPhoto?.photographer.id}`);
   };
 
+  const handleLoginWarning = () => {
+    setIsOpenLoginModal(true);
+  };
+  const handleCloseLoginWarning = () => {
+    setIsOpenLoginModal(false);
+  };
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
@@ -208,6 +227,29 @@ const handleFullScreen = () => {
           />
         </ComModal>
 
+        <ConfigProvider
+          theme={{
+            components: {
+              Modal: {
+                contentBg: "#292b2f",
+                headerBg: "#292b2f",
+                titleColor: "white",
+              },
+            },
+          }}
+        >
+          <Modal
+            title=""
+            visible={isOpenLoginModal} // Use state from Zustand store
+            onCancel={handleCloseLoginWarning} // Close the modal on cancel
+            footer={null}
+            width={500} // Set the width of the modal
+            centered={true}
+            className="custom-close-icon"
+          >
+            <LoginWarningModal onCloseLogin={handleCloseLoginWarning} />
+          </Modal>
+        </ConfigProvider>
         <div className="flex flex-col md:flex-row bg-black text-white md:h-screen w-screen">
           {/* Left side - Image */}
           <div className="flex-1 md:relative h-screen">
@@ -258,7 +300,6 @@ const handleFullScreen = () => {
                     ? currentPhoto?.signedUrl?.url
                     : currentPhoto?.signedUrl?.thumbnail
                 }
-        
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
                 transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
@@ -309,13 +350,19 @@ const handleFullScreen = () => {
                 <img
                   src={currentPhoto?.photographer?.avatar}
                   alt="GueM"
-                  onClick={popup.handleOpen}
+                  // onClick={popup.handleOpen}
                   className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
                 />
                 <div>
                   <h2
                     className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                    onClick={popup.handleOpen}
+                    onClick={() => {
+                      setNamePhotographer(currentPhoto?.photographer.name);
+                      setNameUserOther(currentPhoto?.photographer.name);
+                      setActiveTitle(null);
+                      navigate(`/user/${currentPhoto?.photographer.id}/photos`);
+                      setUserOtherId(currentPhoto?.photographer.id);
+                    }}
                   >
                     {currentPhoto?.photographer?.name}
                   </h2>
@@ -326,28 +373,51 @@ const handleFullScreen = () => {
               </div>
               <div className="flex">
                 {/* icon tin nhắn */}
-
-                <button
-                  className="p-2 rounded-full hover:bg-gray-800"
-                  onClick={() => handleChatOnClick()}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    width="24"
-                    height="24"
-                    stroke="currentColor"
-                    viewBox="0 0 50 50"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                {keycloak?.authenticated ? (
+                  <button
+                    className="p-2 rounded-full hover:bg-gray-800"
+                    onClick={() => handleChatOnClick()}
                   >
-                    <path
-                      d="M 25 2 C 12.347656 2 2 11.597656 2 23.5 C 2 30.007813 5.132813 35.785156 10 39.71875 L 10 48.65625 L 11.46875 47.875 L 18.6875 44.125 C 20.703125 44.664063 22.800781 45 25 45 C 37.652344 45 48 35.402344 48 23.5 C 48 11.597656 37.652344 2 25 2 Z M 25 4 C 36.644531 4 46 12.757813 46 23.5 C 46 34.242188 36.644531 43 25 43 C 22.835938 43 20.742188 42.6875 18.78125 42.125 L 18.40625 42.03125 L 18.0625 42.21875 L 12 45.375 L 12 38.8125 L 11.625 38.53125 C 6.960938 34.941406 4 29.539063 4 23.5 C 4 12.757813 13.355469 4 25 4 Z M 22.71875 17.71875 L 10.6875 30.46875 L 21.5 24.40625 L 27.28125 30.59375 L 39.15625 17.71875 L 28.625 23.625 Z"
-                      fill="white"
-                    ></path>
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      width="24"
+                      height="24"
+                      stroke="currentColor"
+                      viewBox="0 0 50 50"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path
+                        d="M 25 2 C 12.347656 2 2 11.597656 2 23.5 C 2 30.007813 5.132813 35.785156 10 39.71875 L 10 48.65625 L 11.46875 47.875 L 18.6875 44.125 C 20.703125 44.664063 22.800781 45 25 45 C 37.652344 45 48 35.402344 48 23.5 C 48 11.597656 37.652344 2 25 2 Z M 25 4 C 36.644531 4 46 12.757813 46 23.5 C 46 34.242188 36.644531 43 25 43 C 22.835938 43 20.742188 42.6875 18.78125 42.125 L 18.40625 42.03125 L 18.0625 42.21875 L 12 45.375 L 12 38.8125 L 11.625 38.53125 C 6.960938 34.941406 4 29.539063 4 23.5 C 4 12.757813 13.355469 4 25 4 Z M 22.71875 17.71875 L 10.6875 30.46875 L 21.5 24.40625 L 27.28125 30.59375 L 39.15625 17.71875 L 28.625 23.625 Z"
+                        fill="white"
+                      ></path>
+                    </svg>
+                  </button>
+                ) : (
+                  <button
+                    className="p-2 rounded-full hover:bg-gray-800"
+                    onClick={() => handleLoginWarning()}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      width="24"
+                      height="24"
+                      stroke="currentColor"
+                      viewBox="0 0 50 50"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path
+                        d="M 25 2 C 12.347656 2 2 11.597656 2 23.5 C 2 30.007813 5.132813 35.785156 10 39.71875 L 10 48.65625 L 11.46875 47.875 L 18.6875 44.125 C 20.703125 44.664063 22.800781 45 25 45 C 37.652344 45 48 35.402344 48 23.5 C 48 11.597656 37.652344 2 25 2 Z M 25 4 C 36.644531 4 46 12.757813 46 23.5 C 46 34.242188 36.644531 43 25 43 C 22.835938 43 20.742188 42.6875 18.78125 42.125 L 18.40625 42.03125 L 18.0625 42.21875 L 12 45.375 L 12 38.8125 L 11.625 38.53125 C 6.960938 34.941406 4 29.539063 4 23.5 C 4 12.757813 13.355469 4 25 4 Z M 22.71875 17.71875 L 10.6875 30.46875 L 21.5 24.40625 L 27.28125 30.59375 L 39.15625 17.71875 L 28.625 23.625 Z"
+                        fill="white"
+                      ></path>
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -357,15 +427,25 @@ const handleFullScreen = () => {
             {/* <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div> */}
 
             <div className="flex items-center space-x-6 mb-6">
-              <div className="flex items-center gap-2">
-                <LikeButton
-                  size="size-5"
-                  reloadData={() => refreshPhoto()}
-                  photoId={currentPhoto.id}
-                  key={currentPhoto.id}
-                />
-                <span>{currentPhoto?._count?.votes}</span>
-              </div>
+              {keycloak.authenticated ? (
+                <div className="flex items-center gap-2">
+                  <LikeButton
+                    size="size-5"
+                    reloadData={() => refreshPhoto()}
+                    photoId={currentPhoto.id}
+                    key={currentPhoto.id}
+                  />
+                  <span>{currentPhoto?._count?.votes}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <FaRegHeart
+                    className="size-5"
+                    onClick={() => handleLoginWarning()}
+                  />
+                  <span>{currentPhoto?._count?.votes}</span>
+                </div>
+              )}
 
               <button className="flex items-center hover:text-blue-500">
                 <Icon className="mr-2">
@@ -403,30 +483,59 @@ const handleFullScreen = () => {
                     </Icon>
                   </button>
                 </MenuButton>
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                >
-                  <MenuItem>
-                    <button
-                      onClick={() => {}}
-                      className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
-                    >
-                      Lưu bài viết
-                    </button>
-                  </MenuItem>
+                {keycloak.authenticated ? (
+                  <MenuItems
+                    transition
+                    className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  >
+                    <MenuItem>
+                      <button
+                        onClick={() => {}}
+                        className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                      >
+                        Lưu bài viết
+                      </button>
+                    </MenuItem>
 
-                  <MenuItem>
-                    <button
-                      onClick={() => {
-                        popupReport.handleOpen();
-                      }}
-                      className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
-                    >
-                      Báo cáo bài viết
-                    </button>
-                  </MenuItem>
-                </MenuItems>
+                    <MenuItem>
+                      <button
+                        onClick={() => {
+                          popupReport.handleOpen();
+                        }}
+                        className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                      >
+                        Báo cáo bài viết
+                      </button>
+                    </MenuItem>
+                  </MenuItems>
+                ) : (
+                  <MenuItems
+                    transition
+                    className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  >
+                    <MenuItem>
+                      <button
+                        onClick={() => {
+                          handleLoginWarning();
+                        }}
+                        className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                      >
+                        Lưu bài viết
+                      </button>
+                    </MenuItem>
+
+                    <MenuItem>
+                      <button
+                        onClick={() => {
+                          handleLoginWarning();
+                        }}
+                        className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                      >
+                        Báo cáo bài viết
+                      </button>
+                    </MenuItem>
+                  </MenuItems>
+                )}
               </Menu>
             </div>
 
