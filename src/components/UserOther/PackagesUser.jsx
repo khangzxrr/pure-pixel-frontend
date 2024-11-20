@@ -4,6 +4,7 @@ import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { FaArrowRight } from "react-icons/fa6";
 import { FiCameraOff } from "react-icons/fi";
+import formatPrice from "./../../utils/FormatPriceUtils";
 
 const PackagesUser = () => {
   const { userId } = useParams();
@@ -55,7 +56,7 @@ const PackagesUser = () => {
                   <div>
                     <div className="text-xl">{item?.title}</div>
                     <div className="truncate max-w-[200px] md:max-w-[300px]  font-normal text-sm">
-                      {item?.description}
+                      {formatPrice(item?.price)}
                     </div>
                   </div>
                   <div

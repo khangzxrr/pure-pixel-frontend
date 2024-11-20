@@ -24,7 +24,7 @@ const MyPhotoP = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
   const { inputValue, setInputValue, setSearchResult } = UseMyPhotoFilter();
   const filterByPhotoDate = UseMyPhotoFilter(
     (state) => state.filterByPhotoDate
@@ -232,7 +232,7 @@ const MyPhotoP = () => {
       {/* </motion.div> */}
 
       {/* Pagination Top */}
-      <div className="flex flex-col h-full py-2 bg-[#2f3136]">
+      <div className="flex flex-col h-full py-2 ">
         {totalPages > 1 && (
           <Pagination
             current={page}
@@ -245,7 +245,7 @@ const MyPhotoP = () => {
         )}
 
         {/* Photo Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 mx-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-2 mx-2">
           {isError ? (
             <div className="text-red-500">{JSON.stringify(error)}</div>
           ) : isFetching ? (
@@ -303,18 +303,6 @@ const MyPhotoP = () => {
             </div>
           )}
         </div>
-
-        {/* Pagination Bottom */}
-        {totalPages > 0 && (
-          <Pagination
-            current={page}
-            total={totalPages * itemsPerPage}
-            onChange={handlePageClick}
-            pageSize={itemsPerPage}
-            showSizeChanger={false}
-            className="flex justify-end my-2"
-          />
-        )}
       </div>
     </ConfigProvider>
   );

@@ -53,6 +53,9 @@ const ViewFollowingsModal = ({ onClose }) => {
         queryClient.invalidateQueries({
           queryKey: ["followings-me"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["me"],
+        });
       },
 
       onError: (error) => {

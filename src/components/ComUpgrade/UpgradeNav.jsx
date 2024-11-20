@@ -36,7 +36,7 @@ const UpgradeNav = () => {
         <div className="flex items-center gap-2">
           <div
             onClick={() => navigate("/profile")}
-            className="flex items-center gap-2 p-2 rounded-lg hover:bg-[#616161] transition duration-200"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-[#4f545c] hover:cursor-pointer transition duration-200"
           >
             <div className="size-8 overflow-hidden rounded-full">
               <img

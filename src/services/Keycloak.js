@@ -1,8 +1,11 @@
 import Keycloak from "keycloak-js";
 
 const keycloakService = new Keycloak({
+  // eslint-disable-next-line no-undef
   url: import.meta.env.VITE_KEYCLOAK_URL,
+  // eslint-disable-next-line no-undef
   realm: import.meta.env.VITE_KEYCLOAK_REALM,
+  // eslint-disable-next-line no-undef
   clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
 });
 
@@ -18,7 +21,7 @@ const isLoggedIn = () => !!keycloakService.token;
 
 const updateToken = async () => {
   try {
-    return await keycloakService.updateToken(-1);
+    return await keycloakService.updateToken(5);
   } catch (e) {
     doLogin();
   }
@@ -28,7 +31,6 @@ const hasRole = (roles) =>
   roles?.some((role) => keycloakService.hasResourceRole(role));
 
 const getUserRoles = () => {
-  console.log(import.meta.env.REACT_APP_KEYCLOAK_URL);
   if (
     !keycloakService.tokenParsed ||
     !keycloakService.tokenParsed.realm_access
@@ -49,5 +51,4 @@ const UserService = {
   getUserRoles,
   keycloakService,
 };
-
 export default UserService;

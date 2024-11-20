@@ -30,7 +30,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
     mutationFn: () => CategoryApi.getAllCategories(),
     onSuccess: (data) => {
       setCategories(
-        data.map((category) => ({ label: category.name, value: category.id }))
+        data.map((category) => ({ label: category.name, value: category.id })),
       );
     },
     onError: (error) => {
@@ -75,7 +75,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
     console.log(
       "selectedPhoto",
       selectedPhoto?.gps?.longitude,
-      selectedPhoto?.gps?.longitude === undefined
+      selectedPhoto?.gps?.longitude === undefined,
     );
 
     if (
@@ -142,7 +142,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   updatePhotoPropertyByUid(
                     selectedPhoto.file.uid,
                     "title",
-                    e.target.value
+                    e.target.value,
                   );
                 }}
               />
@@ -169,7 +169,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   updatePhotoPropertyByUid(
                     selectedPhoto.file.uid,
                     "description",
-                    e.target.value
+                    e.target.value,
                   );
                 }}
               />
@@ -243,7 +243,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   updatePhotoPropertyByUid(
                     selectedPhoto.file.uid,
                     "categoryIds",
-                    value
+                    value,
                   );
                 }}
               />
@@ -270,7 +270,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   updatePhotoPropertyByUid(
                     selectedPhoto.file.uid,
                     "photoTags",
-                    value
+                    value,
                   );
                 }}
                 options={[]} // Các tùy chọn thẻ, nếu có sẵn
@@ -309,7 +309,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                       updatePhotoPropertyByUid(
                         selectedPhoto.file.uid,
                         "visibility",
-                        value
+                        value,
                       );
                     }}
                   />
@@ -343,7 +343,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                         updatePhotoPropertyByUid(
                           selectedPhoto.file.uid,
                           "watermark",
-                          checked
+                          checked,
                         );
                       }}
                     >
@@ -369,7 +369,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                 <Map
                   {...viewState}
                   mapStyle="mapbox://styles/mapbox/streets-v9"
-                  mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+                  mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
                   style={{ width: "100%", height: "100%" }}
                   onClick={() => setIsOpenMapModal(true)}
                 >

@@ -5,14 +5,13 @@ import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PhotographerApi from "../../apis/PhotographerApi";
 import { useKeycloak } from "@react-keycloak/web";
-import UserService from "../../services/Keycloak";
 import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
 import FollowApi from "../../apis/FollowApi";
 
 const ListPhotographers = () => {
-  const { keyloack } = useKeycloak();
-  const userData = UserService.getTokenParsed();
-  const userId = userData?.sub;
+  const { keycloak } = useKeycloak();
+
+  const userId = keycloak.tokenParsed?.sub;
 
   const filterByVote = UsePhotographerFilterStore(
     (state) => state.filterByVote
@@ -22,10 +21,10 @@ const ListPhotographers = () => {
   );
   const orderByVoteCount = filterByVote.param;
   const photographerName = searchResult;
-  const isFollowed = false;
+
   const { data, fetchNextPage, hasNextPage, isLoading, isError, error } =
     useInfiniteQuery({
-      queryKey: ["photographers", searchResult, filterByVote, isFollowed],
+      queryKey: ["photographers", searchResult, filterByVote, userId],
       queryFn: ({ pageParam = 0 }) =>
         PhotographerApi.getAllPhotographers(
           10,
@@ -33,37 +32,16 @@ const ListPhotographers = () => {
           photographerName,
           null,
           orderByVoteCount,
-          isFollowed
+          null,
+          "desc"
         ),
       getNextPageParam: (lastPage, allPages) => {
-        const totalRecords = lastPage.totalRecord;
         const totalPages = lastPage.totalPage;
         const currentPage = allPages.length;
 
         return currentPage < totalPages ? currentPage : undefined;
       },
     });
-
-  const {
-    data: dataFollower,
-    fetchNextPage: fetchNextPageFollower,
-    hasNextPage: hasNextPageFollower,
-    isLoading: isLoadingFollower,
-    isError: isErrorFollower,
-    error: errorFollower,
-  } = useInfiniteQuery({
-    queryKey: ["followers-me"],
-    queryFn: ({ pageParam = 0 }) => FollowApi.getAllFolllowerMe(10, pageParam),
-    getNextPageParam: (lastPage, allPages) => {
-      const totalRecords = lastPage.totalRecord; // Tổng số bản ghi từ API
-      const totalPages = lastPage.totalPage; // Tổng số trang từ API
-      const currentPage = allPages.length; // Số trang đã tải
-
-      return currentPage < totalPages ? currentPage : undefined;
-    },
-  });
-  const listFollowers = dataFollower?.pages.flatMap((page) => page.objects);
-  console.log("listFollowers", listFollowers);
 
   const photographers =
     data?.pages
@@ -72,15 +50,13 @@ const ListPhotographers = () => {
 
   return (
     <div id="" className="flex flex-col px-2 py-1 h-screen">
-      {listFollowers && listFollowers.length < 1 && (
-        <div className="text-center my-2">
-          <div className="text-xl font-bold">Bạn chưa theo dõi ai cả</div>
-          <div className="font-normal">
-            Bắt đầu theo dõi các nhiếp ảnh gia và cập nhật những bức ảnh mới
-            nhất của họ tại đây!
-          </div>
+      {/* <div className="text-center my-2">
+        <div className="text-xl font-bold">Bạn chưa theo dõi ai cả</div>
+        <div className="font-normal">
+          Bắt đầu theo dõi các nhiếp ảnh gia và cập nhật những bức ảnh mới nhất
+          của họ tại đây!
         </div>
-      )}
+      </div> */}
 
       <InfiniteScroll
         dataLength={photographers.length}
@@ -104,11 +80,8 @@ const ListPhotographers = () => {
           !isError &&
           photographers.map((photographer) => (
             <PhotographerCard
-              key={photographer.id}
-              id={photographer.id}
-              name={photographer.name}
-              avatar={photographer.avatar}
-              quote={photographer.quote}
+              //  key={photographer.id}
+              photographer={photographer}
             />
           ))}
       </InfiniteScroll>

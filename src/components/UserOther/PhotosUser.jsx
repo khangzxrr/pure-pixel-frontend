@@ -23,6 +23,7 @@ const PhotosUser = () => {
   const popupShare = useModalState();
 
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
@@ -40,7 +41,7 @@ const PhotosUser = () => {
       null,
       null,
       photographerId,
-      null,
+      null
     );
     return response;
   };
@@ -67,7 +68,7 @@ const PhotosUser = () => {
   };
   const handleOnClick = (photo) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    setSelectedPhoto(photo);
+    setSelectedImage(photo);
   };
   return (
     <>
@@ -83,12 +84,12 @@ const PhotosUser = () => {
           onClose={popupShare.handleClose}
         />
       </ComModal>
-      {selectedPhoto && (
+      {selectedImage && (
         <DetailedPhotoView
-          photo={selectedPhoto}
+          photo={selectedImage}
           onClose={() => {
             navigate(`/user/${userId}/photos`);
-            setSelectedPhoto(null);
+            setSelectedImage(null);
           }}
         />
       )}

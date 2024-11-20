@@ -10,7 +10,7 @@ const useSocketStore = create(
   devtools((set, get) => ({
     socket: null,
     initSocket: () => {
-      const socket = io(process.env.REACT_APP_WEBSOCKET_UPLOAD_PHOTO, {
+      const socket = io(import.meta.env.VITE_WEBSOCKET_UPLOAD_PHOTO, {
         autoConnect: true,
         extraHeaders: {
           Authorization: `bearer ${UserService.getToken()}`,
@@ -37,7 +37,7 @@ const useSocketStore = create(
           console.log(
             "finish-process-photos",
             data,
-            useUploadPhotoStore.getState()
+            useUploadPhotoStore.getState(),
           );
 
           // message.info({
@@ -49,7 +49,7 @@ const useSocketStore = create(
             `Đã xử lý ảnh ${data.title} thành công! Giờ bạn có thể xem và tương tác với ảnh`,
             "",
             "unlimit",
-            "finish-process-photos"
+            "finish-process-photos",
           );
           // Access the function dynamically
           useUploadPhotoStore
@@ -61,7 +61,7 @@ const useSocketStore = create(
         });
       }
     },
-  }))
+  })),
 );
 
 export default useSocketStore;
