@@ -14,7 +14,7 @@ import { ArrowRight, Calendar, MessageCircleMore } from "lucide-react";
 import { notificationApi } from "../../Notification/Notification";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import ReviewBooking from "./Component/ReviewBooking";
-import calculateDateDifference from "../../utils/CalculateDateDifference";
+
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
   const [isDownloading, setIsDownloading] = useState(false);
@@ -51,14 +51,14 @@ const CustomerBookingDetail = () => {
         notificationApi(
           "success",
           "Tải ảnh thành công",
-          "Tất cả ảnh đã được tải về thành công."
+          "Tất cả ảnh đã được tải về thành công.",
         );
       } catch (error) {
         console.error("Error downloading file:", error);
         notificationApi(
           "error",
           "Lỗi khi tải ảnh",
-          "Lỗi khi tải ảnh, vui lòng thử lại sau."
+          "Lỗi khi tải ảnh, vui lòng thử lại sau.",
         );
       } finally {
         setIsDownloading(false);
@@ -69,7 +69,7 @@ const CustomerBookingDetail = () => {
       notificationApi(
         "error",
         "Lỗi khi tải ảnh",
-        "Lỗi khi tải ảnh, vui lòng thử lại sau.   "
+        "Lỗi khi tải ảnh, vui lòng thử lại sau.   ",
       );
       setIsDownloading(false);
     },
@@ -77,7 +77,7 @@ const CustomerBookingDetail = () => {
 
   // Track the current index of the selected photo
   const currentIndex = bookingDetail?.photos?.findIndex(
-    (photo) => photo?.id === selectedPhoto?.id
+    (photo) => photo?.id === selectedPhoto?.id,
   );
   // Function to go to the previous photo
   const handlePreviousPhoto = () => {
@@ -147,7 +147,7 @@ const CustomerBookingDetail = () => {
   console.log(bookingDetail.originalPhotoshootPackage.user.id);
 
   const userReview = bookingDetail.reviews.find(
-    (review) => review.userId === bookingDetail.user.id
+    (review) => review.userId === bookingDetail.user.id,
   );
 
   return (
@@ -172,8 +172,8 @@ const CustomerBookingDetail = () => {
                     bookingDetail.status === "ACCEPTED"
                       ? "text-blue-500"
                       : bookingDetail.status === "SUCCESSED"
-                      ? "text-green-500"
-                      : "text-yellow-500"
+                        ? "text-green-500"
+                        : "text-yellow-500"
                   } font-normal text-sm`}
                 >
                   {bookingDetail.status === "ACCEPTED" ? (

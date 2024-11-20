@@ -1,4 +1,4 @@
-export default calculateDateDifference = (inputDate) => {
+export default function calculateDateDifference(inputDate) {
   const currentDate = new Date();
   const givenDate = new Date(inputDate);
   const differenceInMs = inputDate ? currentDate - givenDate : -1;
@@ -20,4 +20,4 @@ export default calculateDateDifference = (inputDate) => {
     const days = Math.floor(differenceInHours / 24);
     return `${days} ngày trước`;
   }
-};
+}
