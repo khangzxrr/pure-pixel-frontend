@@ -50,7 +50,7 @@ export default function UpdatePhotoModal() {
     mutationFn: () => CategoryApi.getAllCategories(),
     onSuccess: (data) => {
       setCategories(
-        data.map((category) => ({ label: category.name, value: category.id })),
+        data.map((category) => ({ label: category.name, value: category.id }))
       );
     },
     onError: (error) => {
@@ -67,7 +67,7 @@ export default function UpdatePhotoModal() {
         "Thông tin ảnh đã được cập nhật.",
         "",
         0,
-        "update-photo-success",
+        "update-photo-success"
       );
       queryClient.invalidateQueries("my-photo");
 
@@ -80,7 +80,7 @@ export default function UpdatePhotoModal() {
         "Vui lòng thử lại sau.",
         "",
         0,
-        "update-photo-error",
+        "update-photo-error"
       );
     },
   });
@@ -168,7 +168,7 @@ export default function UpdatePhotoModal() {
         },
         (error) => {
           console.error("Error getting current location:", error);
-        },
+        }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
@@ -207,6 +207,7 @@ export default function UpdatePhotoModal() {
         footer={null}
         centered={true} // Center the modal
         width={1000} // Set the width of the modal
+        className="custom-close-icon "
       >
         <div className="px-2 grid grid-cols-10 lg:px-2 text-[#d7d7d8] font-normal lg:text-base text-xs gap-2 h-[86vh]">
           <div className="col-span-10 md:col-span-5 flex justify-center my-auto">
@@ -215,6 +216,11 @@ export default function UpdatePhotoModal() {
               className="h-[200px] md:h-full md:w-[400px] shadow-gray-600 shadow-xl drop-shadow-none z-0 mx-auto"
               alt={selectedUpdatePhoto.thumbnailPhotoUrl}
             />
+            {selectedUpdatePhoto.watermark && (
+              <div className="absolute top-1/2 text-4xl  text-gray-700 z-10">
+                PXL
+              </div>
+            )}
           </div>
 
           <div className="col-span-10 md:col-span-5 w-full overflow-y-scroll custom-scrollbar">
@@ -259,7 +265,7 @@ export default function UpdatePhotoModal() {
                       field.onChange(e);
                       updateSelectedUpdatePhotoField(
                         "description",
-                        e.target.value,
+                        e.target.value
                       );
                     }}
                   />
@@ -379,7 +385,7 @@ export default function UpdatePhotoModal() {
                             field.onChange(checked);
                             updateSelectedUpdatePhotoField(
                               "watermark",
-                              checked,
+                              checked
                             );
                           }}
                         >

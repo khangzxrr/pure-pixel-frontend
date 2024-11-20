@@ -7,11 +7,9 @@ import MapBoxApi from "../../apis/MapBoxApi";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useModalState } from "../../hooks/useModalState";
-import ComModal from "../../components/ComModal/ComModal";
-import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
 import DetailedPhotoView from "../DetailPhoto/DetailPhoto";
-import { set } from "react-hook-form";
-import { Tooltip } from "antd";
+import { Spin, Tooltip } from "antd";
+import { notificationApi } from "../../Notification/Notification";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN; // Set your mapbox token here
 function getZoomValue(zoom) {
@@ -47,7 +45,8 @@ export default function PhotoMap() {
   const queryClient = useQueryClient(); // Initialize the QueryClient
   const popupDetail = useModalState();
   console.log("zoom value", getZoomValue(viewState.zoom));
-
+  const [isLoadingCurrentLocation, setIsLoadingCurrentLocation] =
+    useState(false);
   const {
     data: photos,
     isLoading,
@@ -61,7 +60,7 @@ export default function PhotoMap() {
         limit,
         viewState.longitude,
         viewState.latitude,
-        getZoomValue(viewState.zoom),
+        getZoomValue(viewState.zoom)
       ),
     keepPreviousData: true, // Add this option to keep previous data while fetching
   });
@@ -73,7 +72,7 @@ export default function PhotoMap() {
         "Data:",
         data,
         data.features[0].properties.full_address,
-        selectedLocate,
+        selectedLocate
       );
 
       setSelectedLocate({
@@ -131,6 +130,7 @@ export default function PhotoMap() {
     console.log("map move end", event); // Log the current zoom level
   };
   function setToCurrentLocation() {
+    setIsLoadingCurrentLocation(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -142,13 +142,32 @@ export default function PhotoMap() {
             zoom: 13,
           }));
           queryClient.invalidateQueries(["photo-by-coordinates"]);
+          setIsLoadingCurrentLocation(false);
         },
         (error) => {
           console.error("Error getting current location:", error);
-        },
+          setIsLoadingCurrentLocation(false);
+          notificationApi(
+            "error",
+            "Lỗi",
+            "Không thể xác định vị trí hiện tại của bạn",
+            "",
+            0,
+            "get-current-location-error"
+          );
+        }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
+      setIsLoadingCurrentLocation(false);
+      notificationApi(
+        "error",
+        "Lỗi",
+        "Trình duyệt không hỗ trợ xác định vị trí hiện tại",
+        "",
+        0,
+        "get-current-location-error"
+      );
     }
   }
   useEffect(() => {
@@ -170,16 +189,16 @@ export default function PhotoMap() {
   return (
     <div className="relative w-full h-screen">
       {/* <ComModal
-        isOpen={popupDetail.isModalOpen}
-        // width={800}
-        // className={"bg-black"}
-      >
-        <ComSharePhoto
-          photoId={selectedLocate?.id}
-          userId={selectedLocate?.photographer_id}
-          onClose={popupDetail.handleClose}
-        />
-      </ComModal> */}
+          isOpen={popupDetail.isModalOpen}
+          // width={800}
+          // className={"bg-black"}
+        >
+          <ComSharePhoto
+            photoId={selectedLocate?.id}
+            userId={selectedLocate?.photographer_id}
+            onClose={popupDetail.handleClose}
+          />
+        </ComModal> */}
       {popupDetail.isModalOpen && selectedLocate && (
         <DetailedPhotoView
           photo={selectedLocate}
@@ -274,14 +293,31 @@ export default function PhotoMap() {
           </div>
         </div>
       ) : null}
-      <Tooltip title="Nhấn để về vị trí hiện tại" color="red" placement="left">
+      <Tooltip
+        title={
+          isLoadingCurrentLocation
+            ? "Đang trở về vị trí hiện tại"
+            : "Nhấn để về vị trí hiện tại"
+        }
+        color="red"
+        placement="left"
+      >
+        {" "}
         <div
           className="absolute top-4 right-3 bg-white flex items-center justify-center p-2 shadow-md rounded-lg cursor-pointer"
           onClick={() => setToCurrentLocation()}
         >
           <div className="flex flex-row h-full text-gray-600">
-            <IoLocationSharp fontSize={22} color="red" />
-            <a className="font-normal text-base">Vị trí hiện tại</a>
+            {isLoadingCurrentLocation ? (
+              <Spin />
+            ) : (
+              <IoLocationSharp fontSize={22} color="red" />
+            )}{" "}
+            <a className="font-normal text-base">
+              {isLoadingCurrentLocation
+                ? "Đang về vị trí hiện tại"
+                : "Trở về Vị trí hiện tại"}
+            </a>
           </div>
         </div>
       </Tooltip>

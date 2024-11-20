@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "antd";
+import { Modal, Spin, Tooltip } from "antd";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Map, { Marker, Popup } from "react-map-gl";
@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { SearchBox } from "@mapbox/search-js-react";
 import { v4 as uuidv4 } from "uuid"; // For session token
 import MapBoxApi from "../../../apis/MapBoxApi";
+import { notificationApi } from "../../../Notification/Notification";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN; // Set your mapbox token here
 
@@ -18,7 +19,8 @@ export default function MapBoxModal() {
     selectedPhoto,
     updatePhotoPropertyByUid,
   } = useUploadPhotoStore();
-
+  const [isLoadingCurrentLocation, setIsLoadingCurrentLocation] =
+    useState(false);
   const [selectedLocate, setSelectedLocate] = useState(null);
   const [viewState, setViewState] = useState({
     latitude: 11.16667,
@@ -27,8 +29,8 @@ export default function MapBoxModal() {
   });
   const sessionToken = uuidv4(); // Generate a session token
 
-  // Get user's current location
-  useEffect(() => {
+  function getCurrentLocation() {
+    setIsLoadingCurrentLocation(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -45,14 +47,37 @@ export default function MapBoxModal() {
               title: "Vị trí hiện tại của bạn",
             });
           }
+          setIsLoadingCurrentLocation(false);
         },
         (error) => {
           console.error("Error getting current location:", error);
-        },
+          setIsLoadingCurrentLocation(false);
+          notificationApi(
+            "error",
+            "Lỗi",
+            "Không thể xác định vị trí hiện tại của bạn",
+            "",
+            0,
+            "get-current-location-error"
+          );
+        }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
+      setIsLoadingCurrentLocation(false);
+      notificationApi(
+        "error",
+        "Lỗi",
+        "Trình duyệt không hỗ trợ xác định vị trí hiện tại",
+        "",
+        0,
+        "get-current-location-error"
+      );
     }
+  }
+  // Get user's current location
+  useEffect(() => {
+    getCurrentLocation();
   }, []);
 
   // Update viewState whenever selectedLocate changes
@@ -139,7 +164,31 @@ export default function MapBoxModal() {
       <div className="flex w-full h-full">
         <div className="relative w-full h-[80vh] max-h-[600px]">
           {/* Add SearchBox for location search */}
-          <div className="absolute w-1/4 top-3 right-3 flex flex-col items-center z-10">
+          <div className="absolute w-1/3 top-3 right-3 flex flex-row items-center z-10">
+            <Tooltip
+              title={
+                isLoadingCurrentLocation
+                  ? "Đang trở về vị trí hiện tại"
+                  : "Nhấn để về vị trí hiện tại"
+              }
+              color="red"
+              placement="left"
+            >
+              <div
+                className=" bg-white flex items-center justify-center mx-3 p-2 shadow-md rounded-lg cursor-pointer"
+                onClick={() => {
+                  getCurrentLocation(); // Explicitly call the function onClick
+                }}
+              >
+                <div className="flex flex-row h-full text-gray-600">
+                  {isLoadingCurrentLocation ? (
+                    <Spin />
+                  ) : (
+                    <IoLocationSharp fontSize={22} color="red" />
+                  )}
+                </div>
+              </div>
+            </Tooltip>
             <SearchBox
               accessToken={MAPBOX_TOKEN}
               onRetrieve={handleRetrieve} // Handle the selection of a suggestion

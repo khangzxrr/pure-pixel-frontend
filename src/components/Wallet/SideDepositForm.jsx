@@ -1,9 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Popconfirm, Spin, Tooltip } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { CiLogout } from "react-icons/ci";
 import Wallet from "../../pages/UserProfile/Wallet";
 import { WalletApi } from "../../apis/Wallet";
+import { TransactionApi } from "../../apis/TransactionApi";
+import { notificationApi } from "../../Notification/Notification";
+import CountdownTimer from "../ComUpgrade/CountdownTimer";
 
 const formatNumber = (number) => {
   return new Intl.NumberFormat("de-DE").format(number);
@@ -14,10 +17,12 @@ export default function SideDepositForm({
   isNavVisible,
   setIsNavVisible,
 }) {
+  const queryClient = useQueryClient();
   const [deposit, setDeposit] = useState("");
   const [formattedDeposit, setFormattedDeposit] = useState("");
   const [selectDeposit, setSelectDeposit] = useState();
   const [QRCode, setQRCode] = useState();
+  const [transactionId, setTransactionId] = useState();
   const [isQRCodeVisible, setIsQRCodeVisible] = useState(false);
   const selectDepositList = [
     10000, 20000, 50000, 70000, 100000, 200000, 500000, 1000000,
@@ -38,7 +43,12 @@ export default function SideDepositForm({
     setFormattedDeposit(formatNumber(item));
     setSelectDeposit(index);
   };
-
+  // Fetch transaction details based on selected transaction ID
+  const { data: transactionDetail, refetch } = useQuery({
+    queryKey: ["getTransactionById", transactionId],
+    queryFn: () => TransactionApi.getTransactionById(transactionId),
+    enabled: !!transactionId, // Only fetch if ID is available
+  });
   const confirm = (e) => {
     if (deposit < 10000) {
       return;
@@ -58,6 +68,7 @@ export default function SideDepositForm({
     mutationFn: (amount) => WalletApi.createDeposit({ amount: amount }),
     onSuccess: (data) => {
       console.log(data);
+      setTransactionId(data.transactionId);
       setQRCode(data.testQRCode);
       setIsQRCodeVisible(true);
       setDeposit("");
@@ -84,7 +95,48 @@ export default function SideDepositForm({
     };
   }, [sideNavRef]);
   console.log("SideDepositForm", createDeposit.isLoading, QRCode);
+  useEffect(() => {
+    let interval;
 
+    // Polling logic
+    if (isNavVisible && transactionDetail) {
+      interval = setInterval(() => {
+        refetch();
+      }, 3000);
+    }
+
+    // Success and expiration logic
+    if (transactionDetail) {
+      if (transactionDetail.status === "SUCCESS") {
+        notificationApi(
+          "success",
+          "Nạp tiền thành công",
+          "Nạp thành cong, vui lòng kiểm tra ví của bạn"
+        );
+        setTimeout(() => {
+          setIsNavVisible(false);
+          setDeposit("");
+          setSelectDeposit("");
+          setQRCode(null);
+          setTransactionId(null);
+          queryClient.invalidateQueries("getTransactionById");
+          queryClient.invalidateQueries("wallet");
+        }, 3000);
+      }
+
+      if (transactionDetail.status === "EXPIRED") {
+        setIsNavVisible(false);
+        notificationApi(
+          "error",
+          "Mã QR hết hiệu lực",
+          "Mã QR hết hiệu lực, bạn vui lòng thử lại sau"
+        );
+      }
+    }
+
+    // Cleanup function to stop polling when modal closes or component unmounts
+    return () => clearInterval(interval);
+  }, [isNavVisible, transactionDetail]);
   return (
     <div
       ref={sideNavRef}
@@ -163,6 +215,23 @@ export default function SideDepositForm({
               <div className=" w-full flex justify-center mt-4">
                 <img src={QRCode} alt="QRCode" className="w-2/3 h-2/3" />
               </div>
+              {transactionDetail && transactionDetail.status === "PENDING" && (
+                <CountdownTimer />
+              )}
+              {transactionDetail && transactionDetail?.status === "SUCCESS" && (
+                <div className="p-4 text-center text-green-500 text-lg">
+                  {" "}
+                  {/* Reduced to text-lg */}
+                  Thanh toán thành công!
+                </div>
+              )}{" "}
+              {transactionDetail && transactionDetail.status === "EXPIRED" && (
+                <div className="p-4 text-center text-red-500 text-lg">
+                  {" "}
+                  {/* Reduced to text-lg */}
+                  Mã QR quá hạn, vui lòng thử lại.
+                </div>
+              )}
             </div>
           )
         )}
