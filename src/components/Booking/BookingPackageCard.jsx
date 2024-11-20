@@ -1,11 +1,21 @@
 import { MessageCircleMore } from "lucide-react";
 import React from "react";
 import formatPrice from "../../utils/FormatPriceUtils";
-
-const PhotoshootPackageCard = ({ key, photoshootPackage }) => {
-  //never useNavigate in children because it will cause parent to unmount then lost state
-  // const navigate = useNavigate();
-
+import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
+import UseUserOtherStore from "../../states/UseUserOtherStore";
+import UseUserProfileStore from "../../states/UseUserProfileStore";
+import { useNavigate } from "react-router-dom";
+const formatNumber = (number) => {
+  return new Intl.NumberFormat("de-DE").format(number);
+};
+const PhotoshootPackageCard = ({ key, photoshootPackage, onClick }) => {
+  const navigate = useNavigate();
+  const setNamePhotographer = UsePhotographerFilterStore(
+    (state) => state.setNamePhotographer
+  );
+  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
+  const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   return (
     <div className="flex flex-col group h-auto  bg-[#36393f] rounded-lg overflow-hidden">
       <div className="h-[200px] overflow-hidden rounded-t-lg relative">
@@ -24,7 +34,16 @@ const PhotoshootPackageCard = ({ key, photoshootPackage }) => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="truncate max-w-[100px] hover:underline underline-offset-2 hover:cursor-pointer sm:max-w-[150px] text-sm sm:text-base">
+              <div
+                onClick={() => {
+                  setNamePhotographer(photoshootPackage?.user.name);
+                  setNameUserOther(photoshootPackage?.user.name);
+                  setActiveTitle(null);
+                  setUserOtherId(photoshootPackage?.user.id);
+                  navigate(`/user/${photoshootPackage?.user.id}`);
+                }}
+                className="truncate max-w-[100px] hover:underline underline-offset-2 hover:cursor-pointer sm:max-w-[150px] text-sm sm:text-base"
+              >
                 {photoshootPackage.user.name}
               </div>
             </div>
@@ -41,7 +60,7 @@ const PhotoshootPackageCard = ({ key, photoshootPackage }) => {
       </div>
 
       <div
-        // onClick={() => }
+        onClick={onClick}
         className="flex flex-col gap-2 px-4 py-2 hover:cursor-pointer"
       >
         <div className="text-lg sm:text-2xl font-semibold">
@@ -61,7 +80,10 @@ const PhotoshootPackageCard = ({ key, photoshootPackage }) => {
 
         <div className="flex items-center justify-end px-4 pb-2 ">
           <span className="text-sm  font-normal text-gray-400">
-            12 lượt thuê
+            {photoshootPackage._count.bookings
+              ? formatNumber(photoshootPackage._count.bookings)
+              : "Chưa có"}{" "}
+            lượt thuê
           </span>
         </div>
       </div>
