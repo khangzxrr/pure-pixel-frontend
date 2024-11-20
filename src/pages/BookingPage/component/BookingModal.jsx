@@ -13,7 +13,7 @@ import { photoShootInput } from "../../../yup/PhotoShootInput";
 import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
 
 import { useNotification } from "../../../Notification/Notification";
-
+import { useNavigate } from "react-router-dom";
 
 // Set dayjs to use the Vietnamese locale
 dayjs.locale("vi");
@@ -23,6 +23,7 @@ const { RangePicker } = DatePicker; // Destructure RangePicker from DatePicker
 // Create yup schema for validation
 
 export default function BookingModal({ photoPackage, onClose }) {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     control,
@@ -37,7 +38,12 @@ export default function BookingModal({ photoPackage, onClose }) {
     mutationFn: async ({ packageId, body }) =>
       await CustomerBookingApi.requestBooking(packageId, body),
     onSuccess: () => {
-      notificationApi("success", "Thành công", "Đã gửi yêu cầu đặt lịch");
+      notificationApi(
+        "success",
+        "Đã gửi yêu cầu đặt lịch",
+        "Vui lòng kiểm tra trạng thái trong mục lịch hẹn của bạn."
+      );
+      navigate("/profile/customer-booking");
     },
     onError: (error) => {
       let errorMessage = "Đã có lỗi xảy ra";

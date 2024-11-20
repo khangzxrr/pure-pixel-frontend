@@ -17,6 +17,13 @@ const SearchCategoryItems = [
     param: "photographerName",
     icon: "BsPersonBoundingBox",
   },
+  // {
+  //   id: "s3",
+  //   title: "Thẻ",
+  //   quote: "thẻ",
+  //   param: "photoTags",
+  //   icon: "MdNumbers",
+  // },
 ];
 
 export default SearchCategoryItems;

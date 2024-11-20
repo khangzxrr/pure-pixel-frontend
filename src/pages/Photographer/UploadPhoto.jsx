@@ -14,13 +14,19 @@ export default function UploadPhoto() {
     setPreviousSelectedPhoto,
     setNextSelectedPhoto,
     getPhotoByUid,
+    uidHashmap,
   } = useUploadPhotoStore();
   const { setIsUpgraded } = useUpgradePackageStore();
   useEffect(() => {
     setIsUpgraded(false);
   }, []);
 
-  const photoData = getPhotoByUid(selectedPhoto);
+  const photoData =
+    getPhotoByUid(selectedPhoto) !== undefined
+      ? getPhotoByUid(selectedPhoto)
+      : getPhotoByUid(uidHashmap[0]);
+  console.log("photoData", photoData, selectedPhoto);
+
   return (
     <div className="">
       <div className="flex flex-col h-[95vh]">
@@ -51,6 +57,11 @@ export default function UploadPhoto() {
                     </div>
                   </>
                 )}
+                {photoData.watermark && (
+                  <div className="absolute top-1/2 text-4xl  text-gray-700 z-10">
+                    PXL
+                  </div>
+                )}
                 <img
                   src={photoData?.reviewUrl}
                   className="h-full shadow-gray-600 shadow-xl drop-shadow-none z-0"
@@ -59,7 +70,7 @@ export default function UploadPhoto() {
               </div>
 
               <div className="col-span-10 md:col-span-6 h-full overflow-hidden">
-                <UploadPhotoInfoBar />
+                <UploadPhotoInfoBar photoData={photoData} />
               </div>
             </div>
           )}

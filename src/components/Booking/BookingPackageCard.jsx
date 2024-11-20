@@ -39,8 +39,10 @@ const PhotoshootPackageCard = ({ key, photoshootPackage, onClick }) => {
                   setNamePhotographer(photoshootPackage?.user.name);
                   setNameUserOther(photoshootPackage?.user.name);
                   setActiveTitle(null);
+
                   setUserOtherId(photoshootPackage?.user.id);
                   navigate(`/user/${photoshootPackage?.user.id}`);
+
                 }}
                 className="truncate max-w-[100px] hover:underline underline-offset-2 hover:cursor-pointer sm:max-w-[150px] text-sm sm:text-base"
               >

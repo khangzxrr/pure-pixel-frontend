@@ -5,11 +5,14 @@ import { NavLink, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import UserProfileApi from "../../apis/UserProfile";
 import UserService from "../../services/Keycloak";
+import UseUserOtherStore from "../../states/UseUserOtherStore";
+import { IoPersonSharp } from "react-icons/io5";
 
 export default function Photos() {
   const { userId } = useParams();
   // const isCurrentUser =
   //   UserService.isLoggedIn() && userId === UserService.getUserId(); // Get userId from the URL parameters
+
   const {
     data: userData,
     isFetching,

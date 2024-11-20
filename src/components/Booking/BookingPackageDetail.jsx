@@ -2,7 +2,10 @@ import { MessageCircleMore, Share2 } from "lucide-react";
 import React, { useState } from "react";
 import formatPrice from "../../utils/FormatPriceUtils";
 import BookingModal from "./../../pages/BookingPage/component/BookingModal";
-
+import ChatButton from "../ChatButton/ChatButton";
+const formatNumber = (number) => {
+  return new Intl.NumberFormat("de-DE").format(number);
+};
 const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -13,6 +16,7 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
   const hideModal = () => {
     setIsModalVisible(false); // Hàm đóng modal
   };
+  console.log(photoshootPackage);
 
   return (
     <>
@@ -43,9 +47,7 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
               <button className="px-2 py-1 text-[12px]  rounded-full border hover:bg-[#4f545c]">
                 Theo dõi
               </button>
-              <div className="hover:cursor-pointer">
-                <MessageCircleMore className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
+              <ChatButton userId={photoshootPackage.user.id} />
             </div>
           </div>
           <div className="flex justify-between items-start">
@@ -55,7 +57,12 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
           <div className="font-normal">
             {formatPrice(photoshootPackage.price)}
           </div>
-          <div className="font-normal text-sm text-gray-400">12 lượt thuê</div>
+          <div className="font-normal text-sm text-gray-400">
+            {photoshootPackage._count.bookings
+              ? formatNumber(photoshootPackage._count.bookings)
+              : "Chưa có"}{" "}
+            lượt thuê
+          </div>
           <div className="flex flex-col gap-1 p-2 border border-gray-600 rounded-lg">
             {photoshootPackage.description}
           </div>

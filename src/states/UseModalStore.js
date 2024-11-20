@@ -1,33 +1,47 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { create } from "zustand"; // Import `zustand` to create a store
+import { devtools } from "zustand/middleware"; // Import `devtools` middleware for debugging
 
+// Create a Zustand store for managing modal states
 const useModalStore = create(
   devtools((set) => ({
+    // State and setter for "Update Photo" modal visibility
     isUpdatePhotoModal: false,
-    isUpdateOpenMapModal: false,
-    isUpgradePackageQRModal: false,
-
-    selectedUpdatePhoto: {},
-    selectedUpgradePackage: {},
-    isUpdateProfileModalVisible: false, // Initial state of the modal
-    setIsUpdateProfileModalVisible: (value) =>
-      set({ isUpdateProfileModalVisible: value }), // Function to update the modal state
     setIsUpdatePhotoModal: (value) => set({ isUpdatePhotoModal: value }),
-    setIsUpgradePackageQRModal: (value) =>
-      set({ isUpgradePackageQRModal: value }),
-    setSelectedUpgradePackage: (packageItem) =>
-      set({ selectedUpgradePackage: packageItem }),
+
+    // State and setter for "Update Open Map" modal visibility
+    isUpdateOpenMapModal: false,
     setIsUpdateOpenMapModal: (value) => set({ isUpdateOpenMapModal: value }),
 
-    setSelectedPhoto: (photo) => set({ selectedUpdatePhoto: photo }),
+    // State and setter for "Upgrade Package QR" modal visibility
+    isUpgradePackageQRModal: false,
+    setIsUpgradePackageQRModal: (value) =>
+      set({ isUpgradePackageQRModal: value }),
+
+    // State and setter for "Upgrade Payment" modal visibility
+    isUpgradePaymentModal: false,
+    setIsUpgradePaymentModal: (value) => set({ isUpgradePaymentModal: value }),
+
+    // State to store selected photo details and related setters
+    selectedUpdatePhoto: {}, // Object to store the currently selected photo details
+    setSelectedPhoto: (photo) => set({ selectedUpdatePhoto: photo }), // Setter for selected photo details
     updateSelectedUpdatePhotoField: (field, value) =>
       set((state) => ({
         selectedUpdatePhoto: {
-          ...state.selectedUpdatePhoto,
-          [field]: value,
+          ...state.selectedUpdatePhoto, // Copy existing fields
+          [field]: value, // Update the specified field
         },
       })),
+
+    // State to store selected upgrade package details and setter
+    selectedUpgradePackage: {}, // Object to store the selected upgrade package
+    setSelectedUpgradePackage: (packageItem) =>
+      set({ selectedUpgradePackage: packageItem }),
+
+    // State and setter for "Update Profile" modal visibility
+    isUpdateProfileModalVisible: false, // Initial visibility state of the profile modal
+    setIsUpdateProfileModalVisible: (value) =>
+      set({ isUpdateProfileModalVisible: value }), // Setter for profile modal visibility
   })),
 );
 
-export default useModalStore;
+export default useModalStore; // Export the store for use in components

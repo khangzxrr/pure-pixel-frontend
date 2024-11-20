@@ -182,11 +182,12 @@ const useBookingPhotoStore = create(
           newUidHashmap[photo.uid] = idx;
           newPhotoIdHashmap[photo.photoId] = idx;
         });
+        const newSelectedPhotoIndex = updatedPhotoArray.length - 1;
 
         // Set selectedPhoto as the first element in the newUidHashmap
         const newSelectedPhoto =
           state.selectedPhoto === uid
-            ? Object.keys(newUidHashmap)[0] || null
+            ? Object.keys(newUidHashmap)[newSelectedPhotoIndex] || null
             : state.selectedPhoto;
         return {
           photoArray: updatedPhotoArray,
@@ -217,11 +218,12 @@ const useBookingPhotoStore = create(
           newUidHashmap[photo.uid] = idx;
           newPhotoIdHashmap[photo.id] = idx;
         });
+        const newSelectedPhotoIndex = updatedPhotoArray.length - 1;
 
         // Set selectedPhoto as the first element in the newUidHashmap
         const newSelectedPhoto =
           state.selectedPhoto === uid
-            ? Object.keys(newUidHashmap)[0] || null
+            ? Object.keys(newUidHashmap)[newSelectedPhotoIndex] || null
             : state.selectedPhoto;
 
         return {
@@ -241,14 +243,6 @@ const useBookingPhotoStore = create(
         isUpdatingPhotos: false,
         isOpenDraftModal: false,
       });
-    },
-
-    setIsOpenDraftModal: (status) => {
-      set({ isOpenDraftModal: status });
-    },
-
-    setIsOpenMapModal: (status) => {
-      set({ isOpenMapModal: status });
     },
 
     isPhotoExistByUid: (uid) => {
@@ -271,40 +265,7 @@ const useBookingPhotoStore = create(
         };
       }),
 
-    toggleWatermark: (status) =>
-      set((state) => {
-        const photoArray = state.photoArray.map((photo) => ({
-          ...photo,
-          watermark: status,
-        }));
-
-        return { photoArray };
-      }),
-
     setNextSelectedPhoto: () => {
-      set((state) => {
-        const { uidHashmap, selectedPhoto } = state;
-        if (!selectedPhoto) return;
-
-        // Get all uids as an array from the keys of uidHashmap
-        const uids = Object.keys(uidHashmap);
-        const currentIndex = uids.indexOf(selectedPhoto);
-
-        // If the current UID is not found, do nothing
-        if (currentIndex === -1) return;
-
-        // Calculate the next index with wrap-around to the start of the array
-        const nextIndex = (currentIndex + 1) % uids.length;
-        const nextUid = uids[nextIndex];
-
-        console.log("setNext", currentIndex, nextIndex, nextUid);
-
-        // Return the new selected UID
-        return { selectedPhoto: nextUid };
-      });
-    },
-
-    setPreviousSelectedPhoto: () => {
       set((state) => {
         const { uidHashmap, selectedPhoto } = state;
         if (!selectedPhoto) return;
@@ -324,6 +285,29 @@ const useBookingPhotoStore = create(
 
         // Return the new selected UID
         return { selectedPhoto: previousUid };
+      });
+    },
+
+    setPreviousSelectedPhoto: () => {
+      set((state) => {
+        const { uidHashmap, selectedPhoto } = state;
+        if (!selectedPhoto) return;
+
+        // Get all uids as an array from the keys of uidHashmap
+        const uids = Object.keys(uidHashmap);
+        const currentIndex = uids.indexOf(selectedPhoto);
+
+        // If the current UID is not found, do nothing
+        if (currentIndex === -1) return;
+
+        // Calculate the next index with wrap-around to the start of the array
+        const nextIndex = (currentIndex + 1) % uids.length;
+        const nextUid = uids[nextIndex];
+
+        console.log("setNext", currentIndex, nextIndex, nextUid);
+
+        // Return the new selected UID
+        return { selectedPhoto: nextUid };
       });
     },
   }))
