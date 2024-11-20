@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { FiCameraOff } from "react-icons/fi";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import { customTheme } from "../../components/Booking/BookingRequestList";
-import { calculateDateDifference } from "../../utils/CalculateDateDifference";
+import calculateDateDifference from "../../utils/CalculateDateDifference";
 
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow

@@ -12,7 +12,7 @@ import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 import { Popconfirm, Tooltip } from "antd";
 import { useNotification } from "../../../Notification/Notification";
 import ChatButton from "../../ChatButton/ChatButton";
-import { calculateDateDifference } from "../../../utils/CalculateDateDifference";
+import calculateDateDifference from "../../../utils/CalculateDateDifference";
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
   { label: "Chờ xác nhận", value: "REQUESTED", color: "#FFA500" }, // Orange

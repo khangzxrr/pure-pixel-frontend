@@ -14,7 +14,7 @@ import { ArrowRight, Calendar, MessageCircleMore } from "lucide-react";
 import { notificationApi } from "../../Notification/Notification";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import ReviewBooking from "./Component/ReviewBooking";
-import { calculateDateDifference } from "../../utils/CalculateDateDifference";
+import calculateDateDifference from "../../utils/CalculateDateDifference";
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
   const [isDownloading, setIsDownloading] = useState(false);
