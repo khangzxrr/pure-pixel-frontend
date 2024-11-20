@@ -1,4 +1,4 @@
-export const calculateDateDifference = (inputDate) => {
+export default calculateDateDifference = (inputDate) => {
   const currentDate = new Date();
   const givenDate = new Date(inputDate);
   const differenceInMs = inputDate ? currentDate - givenDate : -1;
