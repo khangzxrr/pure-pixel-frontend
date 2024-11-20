@@ -27,21 +27,21 @@ const InspirationPhoto = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory,
+    (state) => state.selectedPhotoCategory
   );
   const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate,
+    (state) => state.filterByPhotoDate
   );
   const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
   const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
   const searchResult = UseCategoryStore((state) => state.searchResult);
   const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle,
+    (state) => state.searchByPhotoTitle
   );
   const setNamePhotographer = UsePhotographerFilterStore(
-    (state) => state.setNamePhotographer,
+    (state) => state.setNamePhotographer
   );
-
+  const searchByTags = UseCategoryStore((state) => state.searchByTags);
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
@@ -66,7 +66,7 @@ const InspirationPhoto = () => {
       watermark,
       selling,
       photographerName,
-      title,
+      title
     );
     return response;
   };
@@ -151,7 +151,7 @@ const InspirationPhoto = () => {
               dataLength={photoList.length}
               next={fetchNextPage}
               hasMore={hasNextPage}
-              scrollThreshold={0.3}
+              scrollThreshold={0.5}
               scrollableTarget="inspiration"
               endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
             >
@@ -167,18 +167,17 @@ const InspirationPhoto = () => {
                         key={photo.id}
                         className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
                       >
-                        {/* <LazyThumbnail */}
-                        {/*   key={photo.id} */}
-                        {/*   src={photo.signedUrl.thumbnail} */}
-                        {/*   photo={photo} */}
-                        {/*   className="w-full h-auto object-cover " */}
-                        {/*   ionClick={() => handleOnClick(photo)} */}
-                        {/* /> */}
-                        <img
+                        {/* <LazyThumbnail
                           key={photo.id}
                           src={photo.signedUrl.thumbnail}
                           photo={photo}
                           className="w-full h-auto object-cover "
+                          onClick={() => handleOnClick(photo)}
+                        /> */}
+                        <img
+                          src={photo.signedUrl.thumbnail}
+                          alt={`Photo ${photo.id}`}
+                          className="w-full h-auto object-cover"
                           onClick={() => handleOnClick(photo)}
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
@@ -198,7 +197,7 @@ const InspirationPhoto = () => {
                                   setNameUserOther(photo.photographer.name);
                                   setActiveTitle(null);
                                   navigate(
-                                    `/user/${photo.photographer.id}/photos`,
+                                    `/user/${photo.photographer.id}/photos`
                                   );
                                   setUserOtherId(photo.photographer.id);
                                 }}

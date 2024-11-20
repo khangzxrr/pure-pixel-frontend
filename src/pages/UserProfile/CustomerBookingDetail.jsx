@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
 import { message, Tooltip } from "antd";
@@ -11,10 +11,13 @@ import {
   DownloadOutlined,
 } from "@ant-design/icons";
 import { ArrowRight, Calendar, MessageCircleMore } from "lucide-react";
-
+import { notificationApi } from "../../Notification/Notification";
+import ChatButton from "../../components/ChatButton/ChatButton";
+import ReviewBooking from "./Component/ReviewBooking";
+import { calculateDateDifference } from "../../utils/CalculateDateDifference";
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
-  const navigate = useNavigate();
+  const [isDownloading, setIsDownloading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   const { isPending, data: bookingDetail } = useQuery({
@@ -26,12 +29,78 @@ const CustomerBookingDetail = () => {
     queryKey: ["customer-booking-bill-items", bookingId],
     queryFn: () => CustomerBookingApi.getBillItems(bookingId),
   });
+  const downloadPhoto = useMutation({
+    mutationFn: (bookingId) => CustomerBookingApi.downloadAllPhoto(bookingId),
+    onSuccess: async (data) => {
+      console.log(data);
+      try {
+        // Create a URL for the Blob
+        const href = URL.createObjectURL(data);
 
-  useEffect(() => {
-    if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
+        // Create a temporary <a> element to trigger the download
+        const link = document.createElement("a");
+        link.href = href;
+        link.download = "all_photos.zip"; // Default filename for the ZIP file
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
+
+        notificationApi(
+          "success",
+          "Tải ảnh thành công",
+          "Tất cả ảnh đã được tải về thành công."
+        );
+      } catch (error) {
+        console.error("Error downloading file:", error);
+        notificationApi(
+          "error",
+          "Lỗi khi tải ảnh",
+          "Lỗi khi tải ảnh, vui lòng thử lại sau."
+        );
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    onError: (error) => {
+      console.error("Error:", error);
+      notificationApi(
+        "error",
+        "Lỗi khi tải ảnh",
+        "Lỗi khi tải ảnh, vui lòng thử lại sau.   "
+      );
+      setIsDownloading(false);
+    },
+  });
+
+  // Track the current index of the selected photo
+  const currentIndex = bookingDetail?.photos?.findIndex(
+    (photo) => photo?.id === selectedPhoto?.id
+  );
+  // Function to go to the previous photo
+  const handlePreviousPhoto = () => {
+    if (currentIndex < bookingDetail.photos.length - 1) {
+      setSelectedPhoto(bookingDetail.photos[currentIndex + 1]);
+    } else {
       setSelectedPhoto(bookingDetail.photos[0]);
     }
+  };
+  // Function to go to the next photo
+  const handleNextPhoto = () => {
+    if (currentIndex > 0) {
+      setSelectedPhoto(bookingDetail.photos[currentIndex - 1]);
+    } else {
+      setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
+    }
+  };
+  useEffect(() => {
+    if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
+      setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
+    }
   }, [bookingDetail]);
+  //Download single photo
   const handleDownload = async (photo) => {
     if (photo && photo.signedUrl?.url) {
       try {
@@ -67,10 +136,19 @@ const CustomerBookingDetail = () => {
       message.error("Vui lòng chọn một ảnh hợp lệ trước khi tải xuống.");
     }
   };
-
+  //Download all Photo
+  const downloadAllPhoto = () => {
+    setIsDownloading(true);
+    downloadPhoto.mutate(bookingId); // bookingId is passed to mutationFn
+  };
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
   }
+  console.log(bookingDetail.originalPhotoshootPackage.user.id);
+
+  const userReview = bookingDetail.reviews.find(
+    (review) => review.userId === bookingDetail.user.id
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-8 overflow-hidden">
@@ -101,12 +179,20 @@ const CustomerBookingDetail = () => {
                   {bookingDetail.status === "ACCEPTED" ? (
                     "Đang thực hiện"
                   ) : bookingDetail.status === "SUCCESSED" ? (
-                    <p
-                      // onClick={handleDownloadAllPhoto}
-                      className="flex items-center gap-1 cursor-pointer"
-                    >
-                      <span>Đã hoàn thành</span>
-                    </p>
+                    isDownloading ? (
+                      <p className="flex items-center gap-1 text-yellow-500">
+                        Ảnh đang được tải về...
+                      </p>
+                    ) : (
+                      <Tooltip title="Nhấn để tải tất cả ảnh về" color="green">
+                        <p
+                          onClick={downloadAllPhoto} // Trigger the mutation function
+                          className="flex items-center gap-1 cursor-pointer bg-green-500 text-[#fff] px-2 py-1 rounded-md hover:opacity-80"
+                        >
+                          <span>Nhấn để tải ảnh</span>
+                        </p>
+                      </Tooltip>
+                    )
                   ) : (
                     "Chờ xác nhận"
                   )}
@@ -118,21 +204,16 @@ const CustomerBookingDetail = () => {
               <div className="flex items-center gap-2">
                 <div className="size-7 overflow-hidden rounded-full">
                   <img
-                    src={bookingDetail.user.avatar}
+                    src={bookingDetail.originalPhotoshootPackage.user.avatar}
                     alt=""
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div>{bookingDetail.user.name}</div>
-                <Tooltip title="Nhắn tin" color="blue">
-                  <MessageCircleMore
-                    className="w-5 h-5 ml-2 hover:text-blue-500 z-20"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      navigate(`/message?to=${bookingDetail.user.id}`);
-                    }}
-                  />
-                </Tooltip>
+                <div>{bookingDetail.originalPhotoshootPackage.user.name}</div>
+
+                <ChatButton
+                  userId={bookingDetail.originalPhotoshootPackage.user.id}
+                />
               </div>
               <div className="flex flex-col mt-2 gap-1">
                 <div>Ghi chú</div>
@@ -141,14 +222,20 @@ const CustomerBookingDetail = () => {
                 </p>
                 <div className="flex flex-col mt-2 gap-1">
                   <div>Thời gian hẹn:</div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <div className="font-normal text-sm">
-                      {FormatDateTime(bookingDetail.startDate)}
+                  <div className="flex justify-between items-center w-full">
+                    {/* Start: Calendar Icon and Arrow */}
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      <div className="font-normal">
+                        {FormatDateTime(bookingDetail.startDate)}
+                      </div>
+                      <ArrowRight className="w-4 h-4" />
+                      <div className="font-normal">
+                        {FormatDateTime(bookingDetail.endDate)}
+                      </div>
                     </div>
-                    <ArrowRight className="w-4 h-4" />
-                    <div className="font-normal text-sm">
-                      {FormatDateTime(bookingDetail.endDate)}
+                    <div className="text-right font-normal text-sm text-[#a3a3a3]">
+                      {calculateDateDifference(bookingDetail.createdAt)}
                     </div>
                   </div>
                 </div>
@@ -189,6 +276,13 @@ const CustomerBookingDetail = () => {
               </div>
             </div>
           </div>
+          {bookingDetail.status === "SUCCESSED" && (
+            <ReviewBooking
+              bookingId={bookingId}
+              userReview={userReview}
+              role="customer"
+            />
+          )}
         </div>
       </div>
       <div className="md:col-span-5 flex flex-col h-[95vh]">
@@ -199,10 +293,16 @@ const CustomerBookingDetail = () => {
         >
           {bookingDetail.photos.length > 1 && (
             <>
-              <div className="absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10">
+              <div
+                onClick={handlePreviousPhoto}
+                className={`absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10`}
+              >
                 <ArrowLeftOutlined />
               </div>
-              <div className="absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10">
+              <div
+                onClick={handleNextPhoto}
+                className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10`}
+              >
                 <ArrowRightOutlined />
               </div>
             </>
@@ -230,17 +330,19 @@ const CustomerBookingDetail = () => {
                     alt="Ban Thao"
                     onClick={() => setSelectedPhoto(photo)}
                   />
-                  <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
-                    <Tooltip title="Tải ảnh này về" color="blue">
-                      <DownloadOutlined
-                        className="text-white text-xl cursor-pointer hover:text-red-500"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering the parent onClick
-                          handleDownload(photo);
-                        }}
-                      />
-                    </Tooltip>
-                  </div>
+                  {bookingDetail.status === "SUCCESSED" && (
+                    <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+                      <Tooltip title="Tải ảnh này về" color="blue">
+                        <DownloadOutlined
+                          className="text-white text-xl cursor-pointer hover:text-red-500"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering the parent onClick
+                            handleDownload(photo);
+                          }}
+                        />
+                      </Tooltip>
+                    </div>
+                  )}
                 </div>
               ))}
         </div>

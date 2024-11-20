@@ -5,6 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
+import { FaUserAltSlash } from "react-icons/fa";
 const ViewFollowersModal = ({ onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const ViewFollowersModal = ({ onClose }) => {
           isVisible ? "translate-y-0" : "-translate-y-full"
         } flex justify-center items-center bg-[#43474e]  text-[#eee] rounded-lg  relative`}
       >
-        <div className="flex flex-col w-[300px] md:w-[600px] max-h-[600px] relative gap-2">
+        <div className="flex flex-col w-[300px] md:w-[600px] max-h-[600px]  min-h-[300px] relative gap-2">
           <button className="absolute right-0 m-1" onClick={onClose}>
             <IoCloseSharp className="size-6" />
           </button>
@@ -58,29 +59,36 @@ const ViewFollowersModal = ({ onClose }) => {
               </div>
             )}
             {isError && <div>{error.message}</div>}
-            {listFollowers?.map((user) => (
-              <div className="flex items-center justify-between pb-2 mx-2 border-b border-[#8f8f8f]">
-                <div
-                  onClick={() => {
-                    navigate(`/user/${user?.follower?.id}/photos`);
-                    setNameUserOther(user?.follower?.name);
-                    setUserOtherId(user?.follower?.id);
-                  }}
-                  className="flex items-center gap-2 group hover:cursor-pointer "
-                >
-                  <div className="md:size-10 size-7 overflow-hidden rounded-full">
-                    <img
-                      src={user?.follower?.avatar}
-                      alt=""
-                      className="size-full object-cover"
-                    />
-                  </div>
-                  <div className="font-normal md:text-md text-sm truncate md:max-w-auto max-w-[130px] transition duration-200 group-hover:text-blue-500 group-hover:cursor-pointer">
-                    {user?.follower?.name}
+            {!isLoading && !isError && listFollowers?.length > 0 ? (
+              listFollowers?.map((user) => (
+                <div className="flex items-center justify-between pb-2 mx-2 border-b border-[#8f8f8f]">
+                  <div
+                    onClick={() => {
+                      navigate(`/user/${user?.follower?.id}/photos`);
+                      setNameUserOther(user?.follower?.name);
+                      setUserOtherId(user?.follower?.id);
+                    }}
+                    className="flex items-center gap-2 group hover:cursor-pointer "
+                  >
+                    <div className="md:size-10 size-7 overflow-hidden rounded-full">
+                      <img
+                        src={user?.follower?.avatar}
+                        alt=""
+                        className="size-full object-cover"
+                      />
+                    </div>
+                    <div className="font-normal md:text-md text-sm truncate md:max-w-auto max-w-[130px] transition duration-200 group-hover:text-blue-500 group-hover:cursor-pointer">
+                      {user?.follower?.name}
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center text-[#8b8d91] justify-center h-[200px]">
+                <FaUserAltSlash className="size-12" />
+                <div>Chưa ai theo dõi bạn!</div>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

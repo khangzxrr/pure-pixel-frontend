@@ -21,6 +21,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import PhotoShootApi from "../../../apis/PhotoShootApi";
 import { useNavigate } from "react-router-dom";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
+import { notificationApi } from "../../../Notification/Notification";
+import ReviewBooking from "../../../pages/UserProfile/Component/ReviewBooking";
 
 const { RangePicker } = DatePicker; // Destructure RangePicker from DatePicker
 dayjs.locale("vi");
@@ -49,7 +51,14 @@ const BookingDetailInfo = ({ bookingDetail }) => {
   const setBookingPaidMutation = useMutation({
     mutationFn: () => PhotographerBookingApi.paidBooking(bookingDetail.id),
     onSuccess: () => {
-      queryClient.invalidateQueries(["booking-detail"]);
+      queryClient.invalidateQueries("booking-photographer-detail");
+      queryClient.invalidateQueries("get-all-photographer-booking");
+      navigate("/profile/booking-request");
+      notificationApi(
+        "success",
+        "Thành công",
+        "Đơn chụp ảnh đã được thực hiện xong"
+      );
       setIsEdit(false);
     },
   });
@@ -72,20 +81,9 @@ const BookingDetailInfo = ({ bookingDetail }) => {
     },
   });
   const handleOk = (data) => {
-    if (data.dateRange && data.dateRange.length === 2) {
-      const formattedDates = {
-        startDate: data.dateRange[0].format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-        endDate: data.dateRange[1].format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-      };
-      console.log("Formatted Dates:", data, formattedDates);
-      updateBookingDetail.mutate({
-        description: data.description,
-        startDate: formattedDates.startDate,
-        endDate: formattedDates.endDate,
-      });
-    } else {
-      console.log("Date range is not properly selected.");
-    }
+    updateBookingDetail.mutate({
+      description: data.description,
+    });
   };
 
   return (
@@ -220,46 +218,16 @@ const BookingDetailInfo = ({ bookingDetail }) => {
                         {errors.title.message}
                       </p>
                     )}
-                    <div>Thời gian hẹn:</div>
-                    <Controller
-                      name="dateRange"
-                      control={control}
-                      render={({ field }) => (
-                        <>
-                          <RangePicker
-                            {...field}
-                            format="HH:mm DD-MM-YYYY"
-                            showTime={{
-                              format: "HH:mm",
-                              defaultValue: [dayjs().hour(0), dayjs().hour(23)],
-                            }}
-                            placeholder={[
-                              "Chọn giờ & ngày bắt đầu",
-                              "Chọn giờ & ngày kết thúc",
-                            ]}
-                            className={`w-full m-2 cursor-pointer text-[#d7d7d8] ${
-                              errors.dateRange ? "border-red-500" : ""
-                            }`}
-                            onChange={(value) => field.onChange(value)}
-                            value={
-                              field.value || [
-                                bookingDetail.startDate
-                                  ? dayjs(bookingDetail.startDate)
-                                  : dayjs(),
-                                bookingDetail.endDate
-                                  ? dayjs(bookingDetail.endDate)
-                                  : dayjs(),
-                              ]
-                            }
-                          />
-                          {errors.dateRange && (
-                            <p className="text-red-500 text-xs mt-1">
-                              {errors.dateRange.message}
-                            </p>
-                          )}
-                        </>
-                      )}
-                    />
+                    <div className="flex flex-col gap-2 mt-2">
+                      <div>Thời gian hẹn:</div>
+                      <div className="flex gap-1 font-normal items-center text-sm">
+                        <Calendar className="w-4 h-4" />
+                        <div>
+                          {FormatDateTime(bookingDetail.startDate)} -{" "}
+                          {FormatDateTime(bookingDetail.endDate)}
+                        </div>
+                      </div>
+                    </div>
                   </form>
                 </ConfigProvider>
               )}
@@ -298,6 +266,13 @@ const BookingDetailInfo = ({ bookingDetail }) => {
         bookingDetail={bookingDetail}
         enableUpdate={enableUpdate}
       />
+      {/* {bookingDetail.status === "SUCCESSED" && (
+        <ReviewBooking
+          bookingId={bookingDetail.bookingId}
+          userReview={bookingDetail ? bookingDetail.reviews[0] : ""}
+          role="photographer"
+        />
+      )} */}
     </div>
   );
 };

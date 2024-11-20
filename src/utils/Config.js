@@ -1,5 +1,5 @@
 export const KEYCLOAK_CONFIG = {
-  url: process.env.REACT_APP_KEYCLOAK_URL,
-  realm: process.env.REACT_APP_KEYCLOAK_RALM,
-  clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
+  url: import.meta.env.VITE_KEYCLOAK_URL,
+  realm: import.meta.env.VITE_KEYCLOAK_RALM,
+  clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
 };

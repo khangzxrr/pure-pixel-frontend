@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import PhotoApi from "../../apis/PhotoApi";
+import { MdNumbers } from "react-icons/md";
 
 const PhotoTagsTrend = () => {
   const {
@@ -28,7 +29,7 @@ const PhotoTagsTrend = () => {
             className="flex gap-2 items-center hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md px-2 py-[2px] transition-colors duration-200"
             key={tag.name}
           >
-            # {tag.name}
+            <MdNumbers /> {tag.name}
           </div>
         ))}
     </>

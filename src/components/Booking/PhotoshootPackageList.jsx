@@ -48,10 +48,11 @@ const PhotoshootPackageList = () => {
           ) : (
             <>
               {data.objects.map((photoshootPackage) => (
-                <div onClick={() => navigate(photoshootPackage.id)}>
+                <div>
                   <PhotoshootPackageCard
                     key={photoshootPackage.id}
                     photoshootPackage={photoshootPackage}
+                    onClick={() => navigate(photoshootPackage.id)}
                   />
                 </div>
               ))}
