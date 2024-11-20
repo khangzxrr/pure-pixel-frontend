@@ -8,7 +8,7 @@ import ComTable from "../ComTable/ComTable";
 import { getData } from "../../apis/api";
 import ComMenuButonTable from "../ComMenuButonTable/ComMenuButonTable";
 import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter";
-import ComStatusWalletConverter from './../ComStatusConverter/ComStatusWalletConverter';
+import ComStatusWalletConverter from "./../ComStatusConverter/ComStatusWalletConverter";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {

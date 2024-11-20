@@ -6,7 +6,6 @@ import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import { useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { notificationApi } from "../../../Notification/Notification";
-import debounce from "lodash.debounce";
 
 export default function BookingPhotoList({ enableUpdate }) {
   const { bookingId } = useParams();
@@ -29,20 +28,20 @@ export default function BookingPhotoList({ enableUpdate }) {
     setSelectedPhotoByUid(photo.uid);
   };
 
-  const handleRemove = debounce(async (photo) => {
+  const handleRemove = async (photo) => {
     if (isDeleting) return;
-    setIsDeleting(true);
-
     if (photo.id) {
       try {
-        const photoId = photo.id;
+        removePhotoById(photo.id);
+        setIsDeleting(true);
         await deletePhoto.mutateAsync(
-          { photoId: photoId, bookingId: bookingId },
+          { photoId: photo.id, bookingId: bookingId },
           {
             onSuccess: () => {
-              removePhotoById(photoId);
+              setIsDeleting(false);
             },
             onError: (error) => {
+              console.log("deleteError", error);
               notificationApi(
                 "error",
                 "Xóa ảnh không thành công",
@@ -63,14 +62,11 @@ export default function BookingPhotoList({ enableUpdate }) {
           0,
           "delele-booking-photo-error"
         );
-      } finally {
-        setIsDeleting(false);
       }
     } else {
       removePhotoByUid(photo.uid);
-      setIsDeleting(false);
     }
-  }, 300); // Adjust the debounce delay as needed
+  }; // Adjust the debounce delay as needed
 
   return (
     <div className="flex overflow-x-scroll custom-scrollbar w-full">
@@ -102,7 +98,7 @@ export default function BookingPhotoList({ enableUpdate }) {
             </div>
           )}
 
-          {enableUpdate && (
+          {enableUpdate && photo.status === "done" && (
             <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
               <Tooltip title="Xóa ảnh này" color="red">
                 <DeleteOutlined

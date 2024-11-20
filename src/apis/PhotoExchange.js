@@ -1,7 +1,9 @@
 import http from "../configs/Http";
 
-const getPhotoBought = async () => {
-  const response = await http.get(`photo-exchange/me/photo-buy`);
+const getPhotoBought = async (limit, page) => {
+  const response = await http.get(
+    `photo-exchange/me/photo-buy?limit=${limit}&page=${page}`
+  );
   return response.data;
 };
 

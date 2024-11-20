@@ -25,7 +25,6 @@ const PhotoProfile = ({ userData }) => {
   const UserAvarta = data?.avatar;
   const quotaTotal = data?.maxPhotoQuota;
   const quotaUsed = data?.photoQuotaUsage;
-  console.log(quotaUsed, quotaTotal);
 
   const handleOpenFollowersModal = () => {
     setFollowersShowModal(true);
@@ -72,13 +71,13 @@ const PhotoProfile = ({ userData }) => {
                 onClick={handleOpenFollowersModal}
                 className="px-[12px] py-[4px] bg-[#fff3] rounded-full hover:cursor-pointer hover:bg-[#ffffff67] transition duration-200"
               >
-                {FollowingsCount} người theo dõi
+                {FollowersCount} người theo dõi
               </div>
               <div
                 onClick={handleOpenFollowingsModal}
                 className="px-[12px] py-[4px] bg-[#fff3] rounded-full hover:cursor-pointer hover:bg-[#ffffff67] transition duration-200"
               >
-                {FollowersCount} đang theo dõi
+                {FollowingsCount} đang theo dõi
               </div>
               <div className="flex items-center gap-1 px-[12px] py-[4px] bg-[#fff3] rounded-full">
                 {PhotoTotal} <FaImages />

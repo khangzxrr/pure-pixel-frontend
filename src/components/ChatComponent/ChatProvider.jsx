@@ -4,7 +4,11 @@ import { useKeycloak } from "@react-keycloak/web";
 import ChatClientProvider from "./ChatClientProvider";
 
 const ChatProvider = ({ children }) => {
-  const { keycloak } = useKeycloak();
+  const { keycloak, initialized } = useKeycloak();
+
+  if (!initialized) {
+    return <div>Loading...</div>;
+  }
 
   if (keycloak.authenticated && keycloak.tokenParsed) {
     const user = {

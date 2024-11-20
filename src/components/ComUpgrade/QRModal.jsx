@@ -52,11 +52,6 @@ export default function QRModal() {
   // Stop polling and close modal when transaction is successful
   useEffect(() => {
     if (isUpgradePackageQRModal && transactionDetail?.status === "SUCCESS") {
-      notificationApi(
-        "success",
-        "Nâng cấp gói thành công",
-        "Bây giờ bạn có thể trải nghiệm gói mới của mình"
-      );
       //call keycloak update token method, with -1 minValidity it will update immediately
       keycloak.updateToken(-1).then(() => {});
       startFireworks();
@@ -66,7 +61,7 @@ export default function QRModal() {
         setIsUpgraded(true);
         queryClient.invalidateQueries("upgrade-package-list");
         queryClient.invalidateQueries("getTransactionById");
-        navigate("/upload/public");
+        navigate("/profile/wallet");
       }, 3000);
     }
     if (transactionDetail?.status === "EXPIRED") {
@@ -103,7 +98,7 @@ export default function QRModal() {
         <div className="text-center">
           <CheckCircleOutlined style={{ fontSize: "48px", color: "#52c41a" }} />
           <h2 className="mt-4">Bạn đã nâng cấp thành công</h2>
-          <p>Bạn đã thanh toán thành công, hãy thử đăng ảnh trước nhé!</p>
+          <p>Vui lòng kiểm tra giao dịch trong lịch sử nhé!!</p>
         </div>
       ) : (
         <div className="flex flex-col h-4/5">

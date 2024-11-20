@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import UserService from "../../services/Keycloak";
 import { useKeycloak } from "@react-keycloak/web";
@@ -7,8 +7,10 @@ import { Sidebar } from "lucide-react";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import UserOtherSide from "./UserOtherSide";
 import UseSidebarStore from "../../states/UseSidebarStore";
+import { IoPersonSharp } from "react-icons/io5";
 
 const UserOther = () => {
+  const { userId } = useParams();
   const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote } = UseUserOtherStore();
   const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
@@ -22,6 +24,7 @@ const UserOther = () => {
     navigate("/");
     keycloak.logout();
   };
+
   return (
     <SidebarLayout
       isSidebarOpen={isSidebarOpen}
