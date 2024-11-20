@@ -43,14 +43,19 @@ function App() {
       <ReactKeycloakProvider
         initOptions={{
           onLoad: "check-sso",
-          // silentCheckSsoRedirectUri:
-          //   window.location.origin + "/silent-check-sso.html",
+          silentCheckSsoRedirectUri:
+            window.location.origin + "/silent-check-sso.html",
         }}
         authClient={UserService.keycloakService}
         onEvent={async (event, error) => {
           if (event === "onAuthSuccess") {
-            // const id = UserService.getUserId();
-            // await OneSignal.login(id);
+            if (
+              !window.location.hostname.toLowerCase().includes("localhost") &&
+              !window.location.hostname.toLowerCase().includes("127.0.0.1")
+            ) {
+              const id = UserService.getUserId();
+              await OneSignal.login(id);
+            }
           }
         }}
       >
