@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { FiCameraOff } from "react-icons/fi";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import { customTheme } from "../../components/Booking/BookingRequestList";
+import { calculateDateDifference } from "../../utils/CalculateDateDifference";
 
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
@@ -189,6 +190,9 @@ export default function CustomerBooking() {
                         {FormatDateTime(booking.endDate)}
                       </div>
                     </div>
+                  </div>
+                  <div className="text-right font-normal text-sm text-[#a3a3a3]">
+                    {calculateDateDifference(booking.createdAt)}
                   </div>
                 </div>
               </div>

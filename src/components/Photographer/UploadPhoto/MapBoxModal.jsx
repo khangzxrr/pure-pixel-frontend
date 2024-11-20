@@ -58,9 +58,9 @@ export default function MapBoxModal() {
             "Không thể xác định vị trí hiện tại của bạn",
             "",
             0,
-            "get-current-location-error",
+            "get-current-location-error"
           );
-        },
+        }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
@@ -71,7 +71,7 @@ export default function MapBoxModal() {
         "Trình duyệt không hỗ trợ xác định vị trí hiện tại",
         "",
         0,
-        "get-current-location-error",
+        "get-current-location-error"
       );
     }
   }

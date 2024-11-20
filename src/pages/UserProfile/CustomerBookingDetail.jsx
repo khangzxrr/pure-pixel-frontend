@@ -14,10 +14,9 @@ import { ArrowRight, Calendar, MessageCircleMore } from "lucide-react";
 import { notificationApi } from "../../Notification/Notification";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import ReviewBooking from "./Component/ReviewBooking";
-
+import { calculateDateDifference } from "../../utils/CalculateDateDifference";
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
-  const navigate = useNavigate();
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
@@ -70,7 +69,7 @@ const CustomerBookingDetail = () => {
       notificationApi(
         "error",
         "Lỗi khi tải ảnh",
-        "Lỗi khi tải ảnh, vui lòng thử lại sau."
+        "Lỗi khi tải ảnh, vui lòng thử lại sau.   "
       );
       setIsDownloading(false);
     },
@@ -98,7 +97,7 @@ const CustomerBookingDetail = () => {
   };
   useEffect(() => {
     if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
-      setSelectedPhoto(bookingDetail.photos[0]);
+      setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
     }
   }, [bookingDetail]);
   //Download single photo
@@ -145,6 +144,11 @@ const CustomerBookingDetail = () => {
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
   }
+  console.log(bookingDetail.originalPhotoshootPackage.user.id);
+
+  const userReview = bookingDetail.reviews.find(
+    (review) => review.userId === bookingDetail.user.id
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-8 overflow-hidden">
@@ -200,12 +204,12 @@ const CustomerBookingDetail = () => {
               <div className="flex items-center gap-2">
                 <div className="size-7 overflow-hidden rounded-full">
                   <img
-                    src={bookingDetail.user.avatar}
+                    src={bookingDetail.originalPhotoshootPackage.user.avatar}
                     alt=""
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div>{bookingDetail.user.name}</div>
+                <div>{bookingDetail.originalPhotoshootPackage.user.name}</div>
 
                 <ChatButton
                   userId={bookingDetail.originalPhotoshootPackage.user.id}
@@ -218,14 +222,20 @@ const CustomerBookingDetail = () => {
                 </p>
                 <div className="flex flex-col mt-2 gap-1">
                   <div>Thời gian hẹn:</div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <div className="font-normal text-sm">
-                      {FormatDateTime(bookingDetail.startDate)}
+                  <div className="flex justify-between items-center w-full">
+                    {/* Start: Calendar Icon and Arrow */}
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      <div className="font-normal">
+                        {FormatDateTime(bookingDetail.startDate)}
+                      </div>
+                      <ArrowRight className="w-4 h-4" />
+                      <div className="font-normal">
+                        {FormatDateTime(bookingDetail.endDate)}
+                      </div>
                     </div>
-                    <ArrowRight className="w-4 h-4" />
-                    <div className="font-normal text-sm">
-                      {FormatDateTime(bookingDetail.endDate)}
+                    <div className="text-right font-normal text-sm text-[#a3a3a3]">
+                      {calculateDateDifference(bookingDetail.createdAt)}
                     </div>
                   </div>
                 </div>
@@ -266,9 +276,13 @@ const CustomerBookingDetail = () => {
               </div>
             </div>
           </div>
-          {/* {bookingDetail.status === "SUCCESSED" && (
-            <ReviewBooking bookingId={bookingId} />
-          )} */}
+          {bookingDetail.status === "SUCCESSED" && (
+            <ReviewBooking
+              bookingId={bookingId}
+              userReview={userReview}
+              role="customer"
+            />
+          )}
         </div>
       </div>
       <div className="md:col-span-5 flex flex-col h-[95vh]">

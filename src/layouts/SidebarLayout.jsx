@@ -67,9 +67,9 @@ const SidebarLayout = ({
       <div className="flex w-full">
         {/* left sidebar */}
         <div
-          className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-[310px] ${
-            isSidebarOpen ? "w-[310px]" : "w-0 overflow-hidden"
-          } lg:overflow-visible`}
+          className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-72 ${
+            isSidebarOpen ? "w-60" : "w-0 overflow-hidden"
+          } lg:overflow-visible  absolute lg:relative z-30 h-screen`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             {sidebarContent}
@@ -164,7 +164,7 @@ const SidebarLayout = ({
             <Outlet />
           </div>
           {/* Nút cuộn lên đầu trang */}
-          {isVisible && (
+          {isVisible && !isSidebarOpen && (
             <button
               onClick={scrollToTop}
               className="fixed bottom-5 right-10 z-20 bg-[#4e535e] border-2 hover:bg-[#777777] text-white p-2 rounded-full transition-colors duration-200"

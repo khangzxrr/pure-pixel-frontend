@@ -7,9 +7,11 @@ import { ConfigProvider, Modal } from "antd";
 import CreatePhotoshootPackage from "./CreatePhotoshootPackage";
 import { useModalState } from "../../hooks/useModalState";
 import ComButton from "../../components/ComButton/ComButton";
+import MyPhotoshootPackageCard from "./MyPhotoshootPackageCard";
 import upgradePackageApi from "../../apis/upgradePackageApi";
 import UserProfile from "./UserProfile";
 import UserProfileApi from "../../apis/UserProfile";
+
 
 const PhotoshootPackageManagementV2 = () => {
   const modal = useModalState();
@@ -40,7 +42,12 @@ const PhotoshootPackageManagementV2 = () => {
   const usedPercentage = currentPackage && packageCount / maxPackageCount;
 
   console.log("usedPercentage:", usedPercentage, usedPackage);
-  console.log("Can create more packages:", packageCount < maxPackageCount);
+  console.log(
+    "Can create more packages:",
+    parseInt(packageCount),
+    parseInt(maxPackageCount),
+    parseInt(packageCount) < parseInt(maxPackageCount)
+  );
   return (
     <ConfigProvider
       theme={{
@@ -72,7 +79,7 @@ const PhotoshootPackageManagementV2 = () => {
               ></div>
             </div>
           </div>
-          {packageCount < maxPackageCount ? (
+          {parseInt(packageCount) < parseInt(maxPackageCount) ? (
             <div>
               <p className="text-sm font-normal m-2">
                 Số gói chụp có thể tạo thêm:{" "}
@@ -101,15 +108,19 @@ const PhotoshootPackageManagementV2 = () => {
           <CreatePhotoshootPackage onClose={modal?.handleClose} />
         </Modal>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {listPhotoshootPackages.map((photoshootPackage) => (
+          {/* {listPhotoshootPackages.map((photoshootPackage) => (
             <div
-              onClick={() =>
-                navigate(`/profile/photoshoot-package/${photoshootPackage.id}`)
-              }
+            onClick={() =>
+              navigate(`/profile/photoshoot-package/${photoshootPackage.id}`)
+            }
             >
               <PhotoshootPackageCard photoshootPackage={photoshootPackage} />
             </div>
-          ))}
+           
+          ))} */}
+          <div onClick={() => navigate(`/profile/photoshoot-package/${123}`)}>
+            <MyPhotoshootPackageCard />
+          </div>
         </div>
       </div>
     </ConfigProvider>

@@ -71,10 +71,10 @@ const Explore = () => {
   return (
     <div className="flex flex-grow h-screen ">
       <div className="flex w-full">
-        <div
-          className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-[310px] ${
-            isSidebarOpen ? "w-[310px]" : "w-0 overflow-hidden"
-          } lg:overflow-visible`}
+      <div
+          className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-72 ${
+            isSidebarOpen ? "w-60" : "w-0 overflow-hidden"
+          } lg:overflow-visible absolute lg:relative z-20 h-screen`}
         >
           {/* <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"> */}
           <div className="flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar">
@@ -146,8 +146,10 @@ const Explore = () => {
           <div
             id="inspiration"
             className={`flex flex-col l  relative 
-       custom-scrollbar ${
-         isSidebarOpen ? `overflow-hidden` : `overflow-y-scroll`
+       ${
+        isSidebarOpen
+        ? `overflow-hidden `
+        : `overflow-y-scroll custom-scrollbar `
        }`}
           >
             <div className="sticky top-0 px-2 z-10 flex  items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
@@ -193,7 +195,7 @@ const Explore = () => {
               )}
             </div>
             <Outlet />
-            {isVisible && (
+            {isVisible && !isSidebarOpen && (
               <button
                 onClick={scrollToTop}
                 className="fixed bottom-5 right-10 z-20 bg-[#4e535e] border-2 hover:bg-[#777777] text-white p-2 rounded-full transition-colors duration-200"

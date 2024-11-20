@@ -1,4 +1,4 @@
-import { ConfigProvider, Modal } from "antd";
+import { ConfigProvider, Modal, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import useModalStore from "../../states/UseModalStore";
 import { useKeycloak } from "@react-keycloak/web";
@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { notificationApi } from "../../Notification/Notification";
 import ComPriceConverter from "../ComPriceConverter/ComPriceConverter";
 import CountdownTimer from "./CountdownTimer";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function UpgradePaymentModal() {
   const navigate = useNavigate();
@@ -24,7 +25,9 @@ export default function UpgradePaymentModal() {
   const [tranferType, setTranferType] = useState("");
   const { keycloak } = useKeycloak();
   const { startFireworks, stopFireworks } = useFireworkStore();
-
+  const [isDisable, setIsDisable] = useState(false);
+  const [disableWalletPayment, setDisableWalletPayment] = useState(false);
+  const [disableSePayPayment, setDisableSePayPayment] = useState(false);
   // Fetch transaction details based on selected transaction ID
   const { data: transactionDetail, refetch } = useQuery({
     queryKey: ["getTransactionById", selectedUpgradePackage?.transactionId],
@@ -38,10 +41,9 @@ export default function UpgradePaymentModal() {
     onSuccess: (data) => {
       if (tranferType === "SEPAY") {
         console.log("   ", data, selectedUpgradePackage);
-
         setSelectedUpgradePackage({
           ...selectedUpgradePackage, // Keep existing properties
-          transactionId: data.transactionId, // Update or add new properties
+          transactionId: data.serviceTransaction.transaction.id, // Update or add new properties
           mockQrCode: data.mockQrCode, // Update or add new properties
         });
       } else {
@@ -55,6 +57,8 @@ export default function UpgradePaymentModal() {
         startFireworks();
         setTimeout(() => {
           setIsUpgradePaymentModal(false);
+          setIsDisable(false);
+          setDisableSePayPayment(false);
           stopFireworks();
           queryClient.invalidateQueries("upgrade-package-list");
           queryClient.invalidateQueries("getTransactionById");
@@ -84,6 +88,12 @@ export default function UpgradePaymentModal() {
     },
   });
   const handleUpgrade = () => {
+    setIsDisable(true);
+    if (tranferType === "SEPAY") {
+      setDisableWalletPayment(true);
+    } else {
+      setDisableSePayPayment(true);
+    }
     upgradePackage.mutate({
       paymentMethod: tranferType,
       acceptTransfer: true,
@@ -97,17 +107,21 @@ export default function UpgradePaymentModal() {
   // Polling logic: refetch the query every 3 seconds when the modal is open
   useEffect(() => {
     let interval;
-
+    console.log("get in effect", isUpgradePaymentModal, transactionDetail);
     // Polling logic
     if (isUpgradePaymentModal && transactionDetail) {
       interval = setInterval(() => {
+        console.log("refetch");
         refetch();
       }, 3000);
     }
 
     // Success and expiration logic
-    if (transactionDetail) {
+    if (isUpgradePaymentModal && transactionDetail) {
+      console.log("get in success and expiration logic");
       if (transactionDetail.status === "SUCCESS") {
+        console.log("get in success");
+
         keycloak.updateToken(-1).then(() => {});
         startFireworks();
         notificationApi(
@@ -118,6 +132,8 @@ export default function UpgradePaymentModal() {
         setTimeout(() => {
           stopFireworks();
           setIsUpgradePaymentModal(false);
+          setIsDisable(false);
+          setDisableWalletPayment(false);
           queryClient.invalidateQueries("upgrade-package-list");
           queryClient.invalidateQueries("getTransactionById");
           navigate("/profile/wallet");
@@ -136,7 +152,7 @@ export default function UpgradePaymentModal() {
 
     // Cleanup function to stop polling when modal closes or component unmounts
     return () => clearInterval(interval);
-  }, [isUpgradePaymentModal, transactionDetail]);
+  }, [isUpgradePaymentModal, transactionDetail, selectedUpgradePackage]);
 
   return (
     <ConfigProvider
@@ -192,8 +208,9 @@ export default function UpgradePaymentModal() {
                       tranferType === "SEPAY"
                         ? "bg-white text-gray-900"
                         : "bg-gray-700 text-white"
-                    }`}
+                    } ${disableSePayPayment ? "cursor-not-allowed" : ""}`}
                     onClick={() => setTranferType("SEPAY")}
+                    disabled={disableSePayPayment}
                   >
                     <span className="text-base">
                       Thanh toán bằng mã QR (SEPAY)
@@ -205,11 +222,11 @@ export default function UpgradePaymentModal() {
                       tranferType === "WALLET"
                         ? "bg-white text-gray-900"
                         : "bg-gray-700 text-white"
-                    }`}
+                    } ${disableWalletPayment ? "cursor-not-allowed" : ""}`}
+                    disabled={disableWalletPayment}
                     onClick={() => setTranferType("WALLET")}
                   >
-                    <span className="text-base">Thanh toán bằng ví</span>{" "}
-                    {/* Downgraded to text-base */}
+                    <span className="text-base"> Thanh toán bằng ví</span>
                   </button>
                 </div>
 
@@ -297,8 +314,13 @@ export default function UpgradePaymentModal() {
               <button
                 className="w-full bg-white text-gray-900 rounded-lg py-3 font-semibold text-base hover:bg-gray-200 transition-colors"
                 onClick={handleUpgrade}
+                disabled={isDisable}
               >
-                Xác nhận thanh toán
+                {isDisable ? (
+                  <Spin indicator={<LoadingOutlined spin />} />
+                ) : (
+                  "Xác nhận thanh toán"
+                )}
               </button>
             )}
             {tranferType === "SEPAY" && !selectedUpgradePackage.mockQrCode && (

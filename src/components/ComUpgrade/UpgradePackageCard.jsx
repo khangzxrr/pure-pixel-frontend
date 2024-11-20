@@ -51,6 +51,13 @@ const UpgradePackageCard = ({
     packageItem &&
     currentPackage.upgradePackageHistory.originalUpgradePackageId ===
       packageItem.id;
+  console.log(
+    "isCurrentPackage",
+    isCurrentPackage,
+    tranferData,
+    currentPackage
+  );
+
   const handleOpenPaymentModal = () => {
     setIsUpgradePaymentModal(true);
     setSelectedUpgradePackage({

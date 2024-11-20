@@ -60,7 +60,7 @@ export default function PhotoMap() {
         limit,
         viewState.longitude,
         viewState.latitude,
-        getZoomValue(viewState.zoom),
+        getZoomValue(viewState.zoom)
       ),
     keepPreviousData: true, // Add this option to keep previous data while fetching
   });
@@ -72,7 +72,7 @@ export default function PhotoMap() {
         "Data:",
         data,
         data.features[0].properties.full_address,
-        selectedLocate,
+        selectedLocate
       );
 
       setSelectedLocate({
@@ -153,9 +153,9 @@ export default function PhotoMap() {
             "Không thể xác định vị trí hiện tại của bạn",
             "",
             0,
-            "get-current-location-error",
+            "get-current-location-error"
           );
-        },
+        }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
@@ -166,7 +166,7 @@ export default function PhotoMap() {
         "Trình duyệt không hỗ trợ xác định vị trí hiện tại",
         "",
         0,
-        "get-current-location-error",
+        "get-current-location-error"
       );
     }
   }
@@ -189,16 +189,16 @@ export default function PhotoMap() {
   return (
     <div className="relative w-full h-screen">
       {/* <ComModal
-        isOpen={popupDetail.isModalOpen}
-        // width={800}
-        // className={"bg-black"}
-      >
-        <ComSharePhoto
-          photoId={selectedLocate?.id}
-          userId={selectedLocate?.photographer_id}
-          onClose={popupDetail.handleClose}
-        />
-      </ComModal> */}
+          isOpen={popupDetail.isModalOpen}
+          // width={800}
+          // className={"bg-black"}
+        >
+          <ComSharePhoto
+            photoId={selectedLocate?.id}
+            userId={selectedLocate?.photographer_id}
+            onClose={popupDetail.handleClose}
+          />
+        </ComModal> */}
       {popupDetail.isModalOpen && selectedLocate && (
         <DetailedPhotoView
           photo={selectedLocate}

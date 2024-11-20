@@ -22,6 +22,7 @@ import PhotoShootApi from "../../../apis/PhotoShootApi";
 import { useNavigate } from "react-router-dom";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import { notificationApi } from "../../../Notification/Notification";
+import ReviewBooking from "../../../pages/UserProfile/Component/ReviewBooking";
 
 const { RangePicker } = DatePicker; // Destructure RangePicker from DatePicker
 dayjs.locale("vi");
@@ -265,6 +266,13 @@ const BookingDetailInfo = ({ bookingDetail }) => {
         bookingDetail={bookingDetail}
         enableUpdate={enableUpdate}
       />
+      {/* {bookingDetail.status === "SUCCESSED" && (
+        <ReviewBooking
+          bookingId={bookingDetail.bookingId}
+          userReview={bookingDetail ? bookingDetail.reviews[0] : ""}
+          role="photographer"
+        />
+      )} */}
     </div>
   );
 };

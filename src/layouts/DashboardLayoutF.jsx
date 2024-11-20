@@ -46,16 +46,16 @@ const DashboardLayoutF = () => {
       >
         <ServerSide />
       </div>
-      <div className="">
-        <NotificationModal
-          isOpen={isNotificationOpen}
-          onClose={closeNotificationModal}
-        />
-      </div>
 
       {/* Main content */}
       <div className="  w-full overflow-y-auto custom-scrollbar">
         <Outlet />
+        <div className="">
+          <NotificationModal
+            isOpen={isNotificationOpen}
+            onClose={closeNotificationModal}
+          />
+        </div>
       </div>
     </div>
   );

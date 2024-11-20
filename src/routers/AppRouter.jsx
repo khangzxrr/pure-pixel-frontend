@@ -55,6 +55,7 @@ import UpgradeToPtgPage from "../pages/UpgradeToPtg/UpgradeToPtgPage";
 import BookmarkLayout from "../layouts/BookmarkLayout";
 import PhotoManager from "../pages/Manager/PhotoManager/PhotoManager";
 import TransactionManager from "../pages/Manager/TransactionManager/TransactionManager";
+import MyPhotoshootPackageDetail from "../pages/UserProfile/MyPhotoshootPackageDetail";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -264,7 +265,8 @@ export const AppRouter = createBrowserRouter([
                 path: "photoshoot-package/:photoshootPackageId",
                 element: (
                   <ProtectRoute checkRole={"photographer"}>
-                    <PhotoshootPackageDetail />
+                    {/* <PhotoshootPackageDetail /> */}
+                    <MyPhotoshootPackageDetail />
                   </ProtectRoute>
                 ),
               },
