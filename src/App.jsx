@@ -28,7 +28,7 @@ function App() {
     !window.location.hostname.toLowerCase().includes("127.0.0.1")
   ) {
     OneSignal.init({
-      appId: process.env.REACT_APP_ONE_SIGNAL_APP_ID,
+      appId: import.meta.env.VITE_ONE_SIGNAL_APP_ID,
       notifyButton: {
         enable: true,
       },
