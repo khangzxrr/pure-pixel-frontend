@@ -2,11 +2,7 @@ import React from "react";
 import UploadPhotoForm from "./UploadPhotoForm";
 // import "./UploadPhoto.css";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-export default function UploadPhotoInfoBar() {
-  const { selectedPhoto, getPhotoByUid } = useUploadPhotoStore();
-
-  const photoData = getPhotoByUid(selectedPhoto);
-
+export default function UploadPhotoInfoBar({ photoData }) {
   return (
     <div className="w-full h-full mx-auto overflow-y-auto custom-scrollbar">
       <div>

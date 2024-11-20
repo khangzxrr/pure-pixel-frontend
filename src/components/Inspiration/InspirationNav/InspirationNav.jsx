@@ -9,6 +9,7 @@ import SearchCategoryItems from "./SearchCategoryItems";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { FaRegImage } from "react-icons/fa6";
 import { BsPersonBoundingBox } from "react-icons/bs";
+import { MdNumbers } from "react-icons/md";
 
 const InspirationNav = ({
   toggleSidebar,
@@ -24,12 +25,17 @@ const InspirationNav = ({
     setSearchByPhotoTitle,
     setSearchCategory,
     searchCategory,
+    searchByTags,
+    setSearchByTags,
+    addTag,
+    removeTag,
   } = UseCategoryStore();
 
   // Ánh xạ giữa tên icon và component thực tế
   const iconMapping = {
     FaRegImage: <FaRegImage />,
     BsPersonBoundingBox: <BsPersonBoundingBox />,
+    MdNumbers: <MdNumbers />,
   };
 
   // Hàm thay đổi danh mục tìm kiếm

@@ -1,8 +1,7 @@
 import http from "./../configs/Http";
 
 // const getPublicPhotos = async (limit, page, categoryName) => {
-//   //go 1 chu no nhay chung 1000 cai suggest
-//   //AI SUCKK
+
 //   //Nếu categoryName không tồn tại hoặc là undefined, không thêm nó vào URL
 //   const url = categoryName
 //     ? `/photo/public?limit=${limit}&page=${page}&categoryName=${categoryName}`
@@ -23,15 +22,15 @@ const getPublicPhotos = async (
   title,
   photographerId,
   cameraId,
-  bookmarked
+  bookmarked,
+  tags // Thêm tags vào danh sách tham số
 ) => {
-  // Tạo một đối tượng chứa các tham số
+  // Tạo một đối tượng chứa các tham số cơ bản
   const params = {
     limit,
     page,
   };
 
-  // Chỉ thêm categoryName nếu nó tồn tại và không phải là undefined hoặc null
   if (categoryName) {
     params.categoryName = categoryName;
   }
@@ -63,9 +62,15 @@ const getPublicPhotos = async (
     params.bookmarked = bookmarked;
   }
 
-  // Tạo chuỗi truy vấn từ đối tượng params
-  const queryString = new URLSearchParams(params).toString();
-  const url = `/photo/public?${queryString}`;
+  // Tạo instance URLSearchParams
+  const queryString = new URLSearchParams(params);
+
+  // Xử lý tags (nếu có)
+  if (tags && Array.isArray(tags)) {
+    tags.forEach((tag) => queryString.append("tags", tag));
+  }
+
+  const url = `/photo/public?${queryString.toString()}`;
 
   const response = await http.get(url);
   return response.data;

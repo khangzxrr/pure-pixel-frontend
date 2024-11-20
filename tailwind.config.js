@@ -4,8 +4,5 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [
-    require("@tailwindcss/aspect-ratio"),
-    require("tailwind-scrollbar"),
-  ],
+  plugins: [import("@tailwindcss/aspect-ratio"), import("tailwind-scrollbar")],
 };
