@@ -190,3 +190,7 @@ code {
 .ant-pagination .ant-pagination-item a {
   color: #fff;
 }
+
+.custom-close-icon .ant-modal-close {
+  color: #fff;
+}
