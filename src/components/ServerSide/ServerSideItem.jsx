@@ -40,6 +40,7 @@ const ServerSideItem = ({
         onClick={onNotificationClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        title={name}
         className="relative flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200"
       >
         {icon}
@@ -65,6 +66,7 @@ const ServerSideItem = ({
   return (
     <Link
       to={link}
+      title={name}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

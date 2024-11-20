@@ -7,9 +7,11 @@ import { ConfigProvider, Modal } from "antd";
 import CreatePhotoshootPackage from "./CreatePhotoshootPackage";
 import { useModalState } from "../../hooks/useModalState";
 import ComButton from "../../components/ComButton/ComButton";
+import MyPhotoshootPackageCard from "./MyPhotoshootPackageCard";
 import upgradePackageApi from "../../apis/upgradePackageApi";
 import UserProfile from "./UserProfile";
 import UserProfileApi from "../../apis/UserProfile";
+
 
 const PhotoshootPackageManagementV2 = () => {
   const modal = useModalState();
@@ -101,15 +103,19 @@ const PhotoshootPackageManagementV2 = () => {
           <CreatePhotoshootPackage onClose={modal?.handleClose} />
         </Modal>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {listPhotoshootPackages.map((photoshootPackage) => (
+          {/* {listPhotoshootPackages.map((photoshootPackage) => (
             <div
-              onClick={() =>
-                navigate(`/profile/photoshoot-package/${photoshootPackage.id}`)
-              }
+            onClick={() =>
+              navigate(`/profile/photoshoot-package/${photoshootPackage.id}`)
+            }
             >
               <PhotoshootPackageCard photoshootPackage={photoshootPackage} />
             </div>
-          ))}
+           
+          ))} */}
+          <div onClick={() => navigate(`/profile/photoshoot-package/${123}`)}>
+            <MyPhotoshootPackageCard />
+          </div>
         </div>
       </div>
     </ConfigProvider>
