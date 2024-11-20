@@ -1,0 +1,26 @@
+#test {
+  position: absolute;
+  left: 0;
+  top: 40%;
+  right: 0;
+  height: 100px;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}
+
+.fancy_title canvas {
+  margin: 0 auto;
+  text-align: center;
+}
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
