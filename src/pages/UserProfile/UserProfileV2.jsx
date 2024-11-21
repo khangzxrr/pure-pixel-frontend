@@ -25,7 +25,6 @@ const UserProfileV2 = () => {
     queryKey: ["user", userId],
     queryFn: () => PhotographerApi.getPhotographerById(userId),
   });
-  // console.log(data.photographer);
 
   const [hoveredIcon, setHoveredIcon] = useState(null); // State để theo dõi icon nào đang được hover
 

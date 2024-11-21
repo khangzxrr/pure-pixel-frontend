@@ -18,7 +18,6 @@ const FollowButton = ({ photographer }) => {
   });
 
   const handleFollow = () => {
-    console.log("follow!");
     followMutation.mutate(photographer.id, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["followings-me"] });
@@ -33,7 +32,6 @@ const FollowButton = ({ photographer }) => {
   };
 
   const handleUnFollow = () => {
-    console.log("unfolloW!");
     unFollowMutation.mutate(photographer.id, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["followings-me"] });

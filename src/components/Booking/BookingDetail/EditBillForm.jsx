@@ -61,11 +61,9 @@ export default function EditBillForm({
       description: "Mô tả thêm",
       type: data.type,
     });
-    console.log("Save edit", data);
 
     setEditItemId(null); // Exit edit mode
   };
-  console.log(errors);
   return (
     <div className="grid grid-cols-1 md:grid-cols-10 gap-1 items-center">
       <div

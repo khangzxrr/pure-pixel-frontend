@@ -30,7 +30,6 @@ export default function UploadBookingPhoto({ bookingDetail }) {
   const navigate = useNavigate();
   const { notificationApi } = useNotification();
   const enableUpdate = bookingDetail.status === "ACCEPTED";
-  console.log("enableUpdate", enableUpdate);
 
   //use keycloak to trigger refresh component when new token comes
 
@@ -139,13 +138,11 @@ export default function UploadBookingPhoto({ bookingDetail }) {
   const handleChange = async (info) => {
     if (info.file.status === "uploading") {
       // updatePhotoPropertyByUid(info.file.uid, "status", "uploading");
-      console.log("updatePhotoPropertyByUid: uploading");
 
       return;
     }
     if (info.file.status === "done") {
       // updatePhotoPropertyByUid(info.file.uid, "status", "done");
-      console.log("updatePhotoPropertyByUid: done");
 
       return;
     }

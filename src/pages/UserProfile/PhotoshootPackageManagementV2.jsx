@@ -11,11 +11,13 @@ import MyPhotoshootPackageCard from "./MyPhotoshootPackageCard";
 import upgradePackageApi from "../../apis/upgradePackageApi";
 import UserProfile from "./UserProfile";
 import UserProfileApi from "../../apis/UserProfile";
-
+import useModalStore from "../../states/UseModalStore";
+import UpdatePhotoshootPackage from "./UpdatePhotoshootPackage";
 
 const PhotoshootPackageManagementV2 = () => {
   const modal = useModalState();
-
+  const { isUpdatePhotoshootPackageModal, setIsUpdatePhotoshootPackageModal } =
+    useModalStore();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
@@ -60,6 +62,30 @@ const PhotoshootPackageManagementV2 = () => {
         },
       }}
     >
+      <Modal
+        title="Tạo gói chụp"
+        visible={modal?.isModalOpen} // Use state from Zustand store
+        onCancel={modal?.handleClose} // Close the modal on cancel
+        footer={null}
+        width={1000} // Set the width of the modal
+        centered={true}
+        className="custom-close-icon"
+      >
+        <CreatePhotoshootPackage onClose={modal?.handleClose} />
+      </Modal>
+      <Modal
+        title="Sửa gói chụp"
+        visible={isUpdatePhotoshootPackageModal} // Use state from Zustand store
+        onCancel={() => setIsUpdatePhotoshootPackageModal(false)} // Close the modal on cancel
+        footer={null}
+        width={1000} // Set the width of the modal
+        centered={true}
+        className="custom-close-icon"
+      >
+        <UpdatePhotoshootPackage
+          onClose={() => setIsUpdatePhotoshootPackageModal(false)}
+        />
+      </Modal>
       <div className="min-h-screen p-4">
         <div className="flex justify-between pb-2">
           <div>
@@ -96,31 +122,17 @@ const PhotoshootPackageManagementV2 = () => {
             </div>
           )}
         </div>
-        <Modal
-          title="Tạo gói chụp"
-          visible={modal?.isModalOpen} // Use state from Zustand store
-          onCancel={modal?.handleClose} // Close the modal on cancel
-          footer={null}
-          width={1000} // Set the width of the modal
-          centered={true}
-          className="custom-close-icon"
-        >
-          <CreatePhotoshootPackage onClose={modal?.handleClose} />
-        </Modal>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {/* {listPhotoshootPackages.map((photoshootPackage) => (
+          {listPhotoshootPackages.map((packageDetail) => (
             <div
-            onClick={() =>
-              navigate(`/profile/photoshoot-package/${photoshootPackage.id}`)
-            }
+              onClick={() =>
+                navigate(`/profile/photoshoot-package/${packageDetail.id}`)
+              }
             >
-              <PhotoshootPackageCard photoshootPackage={photoshootPackage} />
+              <MyPhotoshootPackageCard packageDetail={packageDetail} />
             </div>
-           
-          ))} */}
-          <div onClick={() => navigate(`/profile/photoshoot-package/${123}`)}>
-            <MyPhotoshootPackageCard />
-          </div>
+          ))}
         </div>
       </div>
     </ConfigProvider>

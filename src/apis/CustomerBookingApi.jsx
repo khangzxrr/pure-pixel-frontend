@@ -33,8 +33,6 @@ const reviewBooking = async (bookingId, data) => {
 };
 
 const requestBooking = async (packageId, body) => {
-  console.log("packageId", packageId, body);
-
   const response = await http.post(
     `/customer/booking/photoshoot-package/${packageId}/request`,
     body
@@ -42,8 +40,6 @@ const requestBooking = async (packageId, body) => {
   return response.data;
 };
 const downloadAllPhoto = async (bookingId) => {
-  console.log("bookingId", bookingId);
-
   const response = await http.get(
     `/customer/booking/${bookingId}/download-all`,
     {
@@ -55,8 +51,6 @@ const downloadAllPhoto = async (bookingId) => {
 };
 
 const reviewBookingByCustomer = async (bookingId, body) => {
-  console.log("bookingId", bookingId, body);
-
   const response = await http.post(
     `/customer/booking/${bookingId}/review`,
     body

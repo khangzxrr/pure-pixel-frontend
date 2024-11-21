@@ -41,7 +41,15 @@ const useModalStore = create(
     isUpdateProfileModalVisible: false, // Initial visibility state of the profile modal
     setIsUpdateProfileModalVisible: (value) =>
       set({ isUpdateProfileModalVisible: value }), // Setter for profile modal visibility
-  })),
+
+    // Set the name of the store for update photoshootpackage modal
+    isUpdatePhotoshootPackageModal: false,
+    setIsUpdatePhotoshootPackageModal: (value) =>
+      set({ isUpdatePhotoshootPackageModal: value }),
+    selectedUpdatePhotoshootPackage: {}, // Object to store the currently selected photoshoot package details
+    setSelectedUpdatePhotoshootPackage: (packageItem) =>
+      set({ selectedUpdatePhotoshootPackage: packageItem }),
+  }))
 );
 
 export default useModalStore; // Export the store for use in components

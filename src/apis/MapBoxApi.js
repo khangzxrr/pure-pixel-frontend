@@ -3,10 +3,10 @@ import http, { externalHttp } from "../configs/Http";
 const BASE_URL = "https://api.mapbox.com/search/geocode/v6";
 
 const getAddressByCoordinate = async (longitude, latitude) => {
-  console.log("getAddressByCoordinate", longitude, latitude);
-
   const response = await externalHttp.get(
-    `${BASE_URL}/reverse?longitude=${longitude}&latitude=${latitude}&types=place&language=vi&limit=1&access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`,
+    `${BASE_URL}/reverse?longitude=${longitude}&latitude=${latitude}&types=place&language=vi&limit=1&access_token=${
+      import.meta.env.VITE_MAPBOX_TOKEN
+    }`
   );
   return response.data;
 };
@@ -16,19 +16,10 @@ const getPhotoListByCoorddinate = async (
   limit,
   longitude,
   latitude,
-  distance,
+  distance
 ) => {
-  console.log(
-    "getPhotoListByCoorddinate",
-    page,
-    limit,
-    longitude,
-    latitude,
-    distance,
-  );
-
   const response = await http.get(
-    `/photo/public?limit=${limit}&page=${page}&gps=true&longitude=${longitude}&latitude=${latitude}&distance=${distance}`,
+    `/photo/public?limit=${limit}&page=${page}&gps=true&longitude=${longitude}&latitude=${latitude}&distance=${distance}`
   );
   return response.data;
 };
@@ -36,8 +27,8 @@ const getPhotoListByCoorddinate = async (
 const getCoordinateByAddress = async (address) => {
   const response = await externalHttp.get(
     `${BASE_URL}/forward?q=${encodeURIComponent(
-      address,
-    )}&country=VN&access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`,
+      address
+    )}&country=VN&access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`
   );
   return response.data;
 };

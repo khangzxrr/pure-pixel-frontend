@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from "react";
 import NotificationApi from "../../apis/NotificationApi";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
-import BookingNotification from "./BookingNotification";
+
+import useNotificationStore from "../../states/UseNotificationStore";
+import { notificationApi } from "../../Notification/Notification";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   const [showModal, setShowModal] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const { initSocket, joinNotification, leaveNotification } =
+    useNotificationStore();
+
+  const showUpNotification = (data) => {
+    notificationApi("info", data.title, data.content);
+    console.log(data);
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -21,6 +33,21 @@ const NotificationModal = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    initSocket();
+    joinNotification((data) => {
+      showUpNotification(data);
+
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+    });
+
+    return () => {
+      leaveNotification();
+    };
+  }, []);
+
   const handleClickOutside = (e) => {
     if (e.target.id === "modal-overlay") {
       onClose();
@@ -32,7 +59,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
     const validPage = Math.max(0, Math.min(pageParam, 9999));
     const response = await NotificationApi.getAllNotifactions(
       validLimit,
-      validPage
+      validPage,
     );
     return response;
   };
@@ -75,24 +102,20 @@ const NotificationModal = ({ isOpen, onClose }) => {
               className="border-b border-gray-500 px-1 py-2"
               key={notification.id}
             >
-              {notification.referenceType === "BOOKING" ? (
-                <BookingNotification notification={notification} />
-              ) : (
-                <div className="flex items-center gap-2 p-2 rounded-sm hover:cursor-pointer hover:bg-gray-500 transition-colors duration-200">
-                  <div className="w-[35px] h-[35px] overflow-hidden rounded-full">
-                    <img
-                      src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-[225px] lg:w-[335px] text-sm lg:text-base">
-                    {/* <span className="font-bold">{notification.name}</span> đã bắt
-                  đầu theo dõi bạn */}
-                    {notification.content}
-                  </div>
+              <div className="flex items-center gap-2 p-2 rounded-sm hover:cursor-pointer hover:bg-gray-500 transition-colors duration-200">
+                <div className="w-[35px] h-[35px] overflow-hidden rounded-full">
+                  <img
+                    src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              )}
+                <div className="w-[225px] lg:w-[335px] text-sm lg:text-base">
+                  {/* <span className="font-bold">{notification.name}</span> đã bắt
+                  đầu theo dõi bạn */}
+                  {notification.content}
+                </div>
+              </div>
             </div>
           ))}
         </div>

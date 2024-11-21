@@ -47,7 +47,6 @@ const BookmarkList = () => {
     }
   };
   const handleOnClick = (photo) => {
-    console.log(`selected photo `);
     setSelectedImage(photo);
   };
 

@@ -51,7 +51,6 @@ export default function Package() {
         console.log(error);
       });
   };
-  console.log(dataUpgrade);
 
   const handIcon = (number) => {
     if (number > 0) {
@@ -92,8 +91,8 @@ export default function Package() {
                   </div>
                 </div>
                 <div className=" p-2 bg-[#EDF6FE] mx-4 rounded-[20px] ">
-                  Nhiếp ảnh gia đam mê muốn nâng cao kỹ năng và khả
-                  năng tiếp xúc với hình ảnh của mình
+                  Nhiếp ảnh gia đam mê muốn nâng cao kỹ năng và khả năng tiếp
+                  xúc với hình ảnh của mình
                 </div>
                 <table className="p-2 w-full">
                   <tbody className="">
