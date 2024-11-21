@@ -5,14 +5,6 @@ const PurePixelLoading = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    // Load Google font
-    const WebFont = require("webfontloader");
-    WebFont.load({
-      google: {
-        families: ["Charm"],
-      },
-    });
-
     const ctx = canvasRef.current.getContext("2d");
 
     let dashLen = 220,

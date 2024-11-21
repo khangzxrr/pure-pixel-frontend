@@ -1,6 +1,5 @@
 import { notification } from "antd";
 import React, { useContext } from "react";
-import { SmileOutlined } from "@ant-design/icons";
 
 // Create context for notification API
 const NotificationContext = React.createContext();

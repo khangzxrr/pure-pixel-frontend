@@ -5,15 +5,11 @@ import ServerSide from "../components/ServerSide/ServerSide";
 import UseSidebarStore from "../states/UseSidebarStore";
 import NotificationModal from "./../components/ComNotificate/NotificationModal";
 import UseNotificationStore from "../states/UseNotificationStore";
-import UserService from "../services/Keycloak";
 
 const DashboardLayoutF = () => {
-  const { keycloak } = useKeycloak();
-  const { isSidebarOpen, toggleSidebar, setIsSidebarOpen } = UseSidebarStore(); // Lấy setIsSidebarOpen
+  const { isSidebarOpen, setIsSidebarOpen } = UseSidebarStore(); // Lấy setIsSidebarOpen
   const { isNotificationOpen, closeNotificationModal } = UseNotificationStore();
-  const userData = UserService.getTokenParsed();
   // const role = userData?.resource_access.purepixel.roles;
-  const navigate = useNavigate();
 
   // useEffect(() => {
   //   if (role?.includes("purepixel-admin")) {

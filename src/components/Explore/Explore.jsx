@@ -25,6 +25,7 @@ const Explore = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
   const { keycloak } = useKeycloak();
+
   const user = UserService.getTokenParsed();
 
   const handleLogin = () => keycloak.login();
@@ -71,7 +72,7 @@ const Explore = () => {
   return (
     <div className="flex flex-grow h-screen ">
       <div className="flex w-full">
-      <div
+        <div
           className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-72 ${
             isSidebarOpen ? "w-60" : "w-0 overflow-hidden"
           } lg:overflow-visible absolute lg:relative z-20 h-screen`}
@@ -147,9 +148,9 @@ const Explore = () => {
             id="inspiration"
             className={`flex flex-col l  relative 
        ${
-        isSidebarOpen
-        ? `overflow-hidden `
-        : `overflow-y-scroll custom-scrollbar `
+         isSidebarOpen
+           ? `overflow-hidden `
+           : `overflow-y-scroll custom-scrollbar `
        }`}
           >
             <div className="sticky top-0 px-2 z-10 flex  items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3 w-full">
