@@ -14,32 +14,19 @@
   background-color: #292b2f;
   border-color: #e0e0e0;
 }
-.ant-picker-range:active {
+/* .ant-picker-range:active {
   cursor: pointer;
   color: #d7d7d8;
   background-color: #292b2f;
   border-color: #e0e0e0;
-}
+} */
 .ant-picker-focused {
   cursor: pointer;
   color: #d7d7d8;
   background-color: #292b2f;
   border-color: #e0e0e0;
 }
-.ant-picker-input > input::placeholder {
-  color: orange;
-}
 
-.ant-picker-input-active > input {
-  color: orange;
-}
-.ant-picker-input > input {
-  color: orange;
-}
-
-.ant-picker-input-placeholder > input {
-  color: red;
-}
 .anticon-swap-right {
   color: #d7d7d8;
 }

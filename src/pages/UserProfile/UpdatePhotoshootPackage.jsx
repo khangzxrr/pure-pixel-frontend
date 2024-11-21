@@ -3,9 +3,6 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Upload, Tooltip, Input, Button } from "antd";
-import { MessageCircleMore, Share2 } from "lucide-react";
-import ComButton from "../../components/ComButton/ComButton";
-import { PhotoshootPackageYup } from "../../yup/PhotoshootPackageYup";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import PhotoService from "../../services/PhotoService";
 import { useNotification } from "../../Notification/Notification";
@@ -15,16 +12,16 @@ import {
   PlusOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+import { PhotoshootPackageYup } from "../../yup/PhotoshootPackageYup";
 
 const { Dragger } = Upload;
 
-export default function CreatePhotoshootPackage({
+export default function UpdatePhotoshootPackage({
   photoshootPackage,
   onClose,
 }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
-  const [thumbnail, setThumbnail] = useState();
   const [thumbnailUrl, setThumbnailUrl] = useState(
     "https://t3.ftcdn.net/jpg/04/92/94/70/360_F_492947093_LOGkIRfXScJs3PS2tgjJ4lGR74B0hs7Z.jpg"
   );
@@ -149,24 +146,11 @@ export default function CreatePhotoshootPackage({
       <div className="rounded-lg grid grid-cols-1 md:grid-cols-4 gap-5 row-span-7 h-[68vh]">
         <div className="grid grid-cols-1 md:grid-cols-2 col-span-3 bg-[#43474E] rounded-lg">
           <div className="overflow-hidden  rounded-none md:rounded-l-lg flex items-center justify-center">
-            <Dragger
-              name="thumbnail"
-              listType="picture-card"
-              showUploadList={false}
-              onChange={onThumbnailChange}
-              accept=".jpg,.jpeg,.png,.gif,.webp"
-              style={{
-                backgroundColor: "#d7d7d8",
-                // border: "none",
-              }}
-            >
-              {/* <button type="button">Đổi ảnh bìa</button> */}
-              <img
-                src={thumbnailUrl}
-                className="w-11/12 object-cover"
-                alt="Thumbnail"
-              />
-            </Dragger>
+            <img
+              src={thumbnailUrl}
+              className="w-11/12 object-cover"
+              alt="Thumbnail"
+            />
           </div>
 
           <div className="flex flex-col gap-3 py-4 px-6 h-full">
@@ -180,110 +164,17 @@ export default function CreatePhotoshootPackage({
               </div>
               <div className=" overflow-scroll custom-scrollbar h-[44vh]">
                 <div className="text-xl font-semibold m-1">
-                  <Controller
-                    name="title"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e);
-                          setTitle(e.target.value);
-                        }}
-                        className={`w-fit text-[#d7d7d8] bg-transparent hover:bg-transparent focus:bg-transparent mb-4 p-1 lg:text-base text-xs focus:ring-0 focus:outline-none border-b-[1px] placeholder:text-[#d7d7d8]  ${
-                          errors.title
-                            ? "border-red-500 focus:border-red-600 hover:border-red-600"
-                            : "border-[#ababab] focus:border-[#e0e0e0] hover:border-b-[#e0e0e0]"
-                        }`}
-                        placeholder="Tựa đề của gói"
-                      />
-                    )}
-                  />
-                  {errors.title && (
-                    <p className="text-red-500 text-xs -mt-2 mb-1">
-                      {errors.title.message}
-                    </p>
-                  )}
+                  {title ? title : "Tựa đề"}
                 </div>
                 <div className="font-normal m-2">
-                  <Controller
-                    name="price"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e);
-                        }}
-                        className={`w-fit text-[#d7d7d8] bg-transparent hover:bg-transparent focus:bg-transparent mb-4 p-1 lg:text-base text-xs focus:ring-0 focus:outline-none border-b-[1px] placeholder:text-[#d7d7d8]  ${
-                          errors.price
-                            ? "border-red-500 focus:border-red-600 hover:border-red-600"
-                            : "border-[#ababab] focus:border-[#e0e0e0] hover:border-b-[#e0e0e0]"
-                        }`}
-                        plac
-                        placeholder="Giá gói"
-                      />
-                    )}
-                  />
-                  {errors.price && (
-                    <p className="text-red-500 text-xs -mt-2 mb-1">
-                      {errors.price.message}
-                    </p>
-                  )}{" "}
+                  {price ? formatPrice(price) : "Giá gói"}
                 </div>
                 <div className="font-normal text-sm text-gray-400 m-2">
-                  <Controller
-                    name="subtitle"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e);
-                          setSubtitle(e.target.value);
-                        }}
-                        className={`w-fit text-[#d7d7d8] bg-transparent hover:bg-transparent focus:bg-transparent mb-4 p-1 lg:text-base text-xs focus:ring-0 focus:outline-none border-b-[1px] placeholder:text-[#d7d7d8]  ${
-                          errors.subtitle
-                            ? "border-red-500 focus:border-red-600 hover:border-red-600"
-                            : "border-[#ababab] focus:border-[#e0e0e0] hover:border-b-[#e0e0e0]"
-                        }`}
-                        plac
-                        placeholder="Phụ đề"
-                      />
-                    )}
-                  />
-                  {errors.subtitle && (
-                    <p className="text-red-500 text-xs -mt-2 mb-1">
-                      {errors.subtitle.message}
-                    </p>
-                  )}{" "}
+                  {subtitle ? subtitle : "Phụ đề"}
                 </div>
 
-                <div className="flex flex-col gap-1 m-2">
-                  <Controller
-                    name="description"
-                    control={control}
-                    render={({ field }) => (
-                      <textarea
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e);
-                          setDescription(e.target.value);
-                        }}
-                        className={`w-full text-[#d7d7d8] bg-transparent hover:bg-transparent focus:bg-transparent mb-4 p-2  lg:text-base text-xs focus:ring-0 focus:outline-none border-[1px] rounded-lg  placeholder:text-[#d7d7d8]  ${
-                          errors.description
-                            ? "border-red-500 focus:border-red-600 hover:border-red-600"
-                            : "border-[#ababab] focus:border-[#e0e0e0] hover:border-[#e0e0e0]"
-                        }`}
-                        placeholder="Phần mô tả chi tiết gói sẽ nằm ở đây"
-                      />
-                    )}
-                  />
-                  {errors.description && (
-                    <p className="text-red-500 text-xs -mt-2 mb-1">
-                      {errors.description.message}
-                    </p>
-                  )}{" "}
+                <div className="flex flex-col gap-1 p-2 border border-gray-600 rounded-lg m-2">
+                  {description ? description : "Phần mô tả sẽ hiển thị ở đây"}
                 </div>
               </div>
             </div>

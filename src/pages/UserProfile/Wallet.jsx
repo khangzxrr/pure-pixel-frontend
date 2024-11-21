@@ -73,18 +73,7 @@ export default function Wallet() {
   } = useQuery({
     queryKey: "wallet", // Unique query key
     queryFn: () => WalletApi.getWallet(), // Query function
-    onSuccess: (data) => {
-      // You can handle success here if needed
-      console.log("Wallet data fetched successfully:", data);
-    },
-    onError: (error) => {
-      console.error("Error fetching wallet:", error);
-    },
   });
-
-  useEffect(() => {
-    console.log("wallet", isLoggedIn);
-  }, [isLoggedIn]);
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);

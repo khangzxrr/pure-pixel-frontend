@@ -13,11 +13,6 @@ const ProtectRoute = ({ children, checkRole }) => {
 
   const hasRole = clientRoles.includes(checkRole);
 
-  if (hasRole) {
-    console.log(`${checkRole} is present in clientRoles`);
-  } else {
-    console.log(`${checkRole} is not present in clientRoles`);
-  }
   useEffect(() => {
     if (!hasRole) {
       navigate("/", { replace: true });

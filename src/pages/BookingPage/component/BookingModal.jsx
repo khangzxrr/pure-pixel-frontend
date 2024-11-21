@@ -55,7 +55,7 @@ export default function BookingModal({ photoPackage, onClose }) {
             "Bạn không thể đặt lịch cho gói chụp ảnh do mình đã đặt.";
           break;
         case "ExistBookingWithSelectedDateException":
-          errorMessage = "Đã có lịch hẹn khác vào thời gian bạn chọn.";
+          errorMessage = "Bạn đã có gói chụp cho khoảng thời gian này.";
           break;
         // Add other cases as needed
         default:
@@ -81,8 +81,7 @@ export default function BookingModal({ photoPackage, onClose }) {
         body: {
           startDate: formattedDates.startDate,
           endDate: formattedDates.endDate,
-          expect: data.expect,
-          locate: data.locate,
+          discription: data.discription,
         },
       });
 
@@ -98,7 +97,21 @@ export default function BookingModal({ photoPackage, onClose }) {
   };
 
   return (
-    <ConfigProvider locale={vi_VN}>
+    <ConfigProvider
+      locale={vi_VN}
+      theme={{
+        components: {
+          Modal: {
+            contentBg: "#2f3136",
+            headerBg: "#2f3136",
+            titleColor: "white",
+          },
+          DatePicker: {
+            activeBorderColor: "#e0e0e0",
+          },
+        },
+      }}
+    >
       {/* Ant Design Modal */}
       <Modal
         visible={true}
@@ -106,13 +119,15 @@ export default function BookingModal({ photoPackage, onClose }) {
         onCancel={handleCancel}
       >
         <div>
-          <p className="text-lg font-bold">{photoPackage?.title}</p>
-          <p className="text-xs text-gray-600 m-1">{photoPackage?.subtitle}</p>
-          <p className="text-sm text-gray-400">{photoPackage?.description}</p>
+          <p className="text-lg font-bold text-[#d7d7d8]">
+            {photoPackage?.title}
+          </p>
+          <p className="text-xs text-[#d7d7d8] m-1">{photoPackage?.subtitle}</p>
+          <p className="text-sm text-[#d7d7d8]">{photoPackage?.description}</p>
 
           {/* Ant Design RangePicker with React Hook Form */}
           <form onSubmit={handleSubmit(handleOk)} className="mt-2">
-            <p className="text-sm py-3 text-gray-600">Chọn ngày hẹn</p>
+            <p className="text-sm py-3 text-[#d7d7d8]">Chọn ngày hẹn</p>
             <Controller
               name="dateRange"
               control={control}
@@ -120,6 +135,7 @@ export default function BookingModal({ photoPackage, onClose }) {
               render={({ field }) => (
                 <>
                   <RangePicker
+                    style={{ backgroundColor: "#292b2f", outline: "none" }}
                     {...field}
                     format="HH:mm DD-MM-YYYY"
                     showTime={{
@@ -130,7 +146,7 @@ export default function BookingModal({ photoPackage, onClose }) {
                       "Chọn giờ & ngày bắt đầu",
                       "Chọn giờ & ngày kết thúc",
                     ]}
-                    className={`w-full font-light ${
+                    className={`custom-range-picker w-full font-light ${
                       errors.dateRange ? "border-red-500" : ""
                     }`}
                     onChange={(value) => field.onChange(value)}
@@ -145,22 +161,24 @@ export default function BookingModal({ photoPackage, onClose }) {
             />
 
             {/* TextArea for "expect" */}
-            <p className="text-sm py-3 text-gray-600 mt-4">
+            <p className="text-sm py-3 text-[#d7d7d8] mt-4">
               Bạn có thể chia sẻ thêm về kỳ vọng của bạn cho buổi chụp ảnh
               không?
             </p>
 
             <Controller
-              name="expect"
+              name="discription"
               control={control}
               defaultValue=""
               render={({ field }) => (
                 <>
-                  <Input.TextArea
+                  <textarea
                     {...field}
                     placeholder="Nhập kỳ vọng của bạn"
-                    className={`w-full ${
-                      errors.expect ? "border-red-500" : ""
+                    className={`w-full text-[#d7d7d8] bg-transparent hover:bg-transparent focus:bg-transparent mb-4 p-2  lg:text-base text-xs focus:ring-0 focus:outline-none border-[1px] rounded-lg  placeholder:text-[#d7d7d8]  ${
+                      errors.description
+                        ? "border-red-500 focus:border-red-600 hover:border-red-600"
+                        : "border-[#4c4e52] focus:border-[#e0e0e0] hover:border-[#e0e0e0]"
                     }`}
                     rows={4}
                   />

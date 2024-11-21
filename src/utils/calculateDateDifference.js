@@ -9,7 +9,9 @@ export default function calculateDateDifference(inputDate) {
 
   const differenceInHours = differenceInMs / (1000 * 60 * 60);
 
-  if (differenceInHours < 1) {
+  if (differenceInHours < 1 / 30) {
+    return "Vừa xong";
+  } else if (differenceInHours < 1) {
     const hours = Math.floor(differenceInHours);
     const minutes = Math.floor((differenceInHours - hours) * 60);
     return `${minutes} phút trước`;

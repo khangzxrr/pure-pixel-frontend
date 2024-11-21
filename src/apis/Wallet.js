@@ -5,14 +5,14 @@ const getWallet = async () => {
 
   return response.data;
 };
-const getTransaction = async (
+const getTransaction = async ({
   limit,
   page,
   type,
   status,
   orderByAmount,
-  orderByCreatedAt
-) => {
+  orderByCreatedAt,
+}) => {
   // const response = await http.get(
   //     "/wallet/transaction?limit=10&page=0&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
   //   );

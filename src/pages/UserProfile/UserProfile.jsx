@@ -31,7 +31,6 @@ const UserProfile = () => {
   const openModal = () => {
     setIsUpdateProfileModalVisible(true);
   };
-  console.log(userDataKeyCloak, userData, isLoading, "userData");
 
   const [scrollY, setScrollY] = useState(0);
   const defaultHeight = 350;

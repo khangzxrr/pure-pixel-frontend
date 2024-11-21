@@ -76,7 +76,6 @@ const NewfeedCard = ({
   const handleOnClick = (id) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     setSelectedImage(id);
-    console.log(id);
   };
   return (
     <>

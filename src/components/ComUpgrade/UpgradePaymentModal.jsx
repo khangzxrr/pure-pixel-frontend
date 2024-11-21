@@ -40,7 +40,6 @@ export default function UpgradePaymentModal() {
     mutationFn: async (data) => await upgradePackageApi.upgradeOrder(data),
     onSuccess: (data) => {
       if (tranferType === "SEPAY") {
-        console.log("   ", data, selectedUpgradePackage);
         setSelectedUpgradePackage({
           ...selectedUpgradePackage, // Keep existing properties
           transactionId: data.serviceTransaction.transaction.id, // Update or add new properties
@@ -67,6 +66,7 @@ export default function UpgradePaymentModal() {
       }
     },
     onError: (error) => {
+      setIsDisable(false);
       console.log("Error:", error.response.data.message);
       let message;
       switch (error.response.data.message) {
@@ -103,25 +103,19 @@ export default function UpgradePaymentModal() {
     });
   };
 
-  console.log("selectedUpgradePackage", selectedUpgradePackage);
   // Polling logic: refetch the query every 3 seconds when the modal is open
   useEffect(() => {
     let interval;
-    console.log("get in effect", isUpgradePaymentModal, transactionDetail);
     // Polling logic
     if (isUpgradePaymentModal && transactionDetail) {
       interval = setInterval(() => {
-        console.log("refetch");
         refetch();
       }, 3000);
     }
 
     // Success and expiration logic
     if (isUpgradePaymentModal && transactionDetail) {
-      console.log("get in success and expiration logic");
       if (transactionDetail.status === "SUCCESS") {
-        console.log("get in success");
-
         keycloak.updateToken(-1).then(() => {});
         startFireworks();
         notificationApi(
@@ -141,6 +135,8 @@ export default function UpgradePaymentModal() {
       }
 
       if (transactionDetail.status === "EXPIRED") {
+        setIsDisable(false);
+
         setIsUpgradePaymentModal(false);
         notificationApi(
           "error",
@@ -242,9 +238,9 @@ export default function UpgradePaymentModal() {
                       {transactionDetail?.status === "PENDING" && (
                         <div className="text-center text-yellow-500 text-base mt-4">
                           Đang chờ thanh toán...
+                          <CountdownTimer />
                         </div>
                       )}
-                      <CountdownTimer />
                     </div>
                   )}
               </div>

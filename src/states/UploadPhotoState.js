@@ -17,7 +17,6 @@ const useUploadPhotoStore = create(
 
     getPhotoByUid: (uid) => {
       const index = get().uidHashmap[uid];
-      console.log("getPhotoByUid", uid, index);
 
       return get().photoArray[index];
     },
@@ -40,8 +39,6 @@ const useUploadPhotoStore = create(
       });
     },
     updatePhotoPropertyByUid: (uid, key, value) => {
-      console.log("");
-
       set((state) => {
         const index = state.uidHashmap[uid];
 
@@ -81,14 +78,9 @@ const useUploadPhotoStore = create(
 
     updatePhotoPropertyById: (id, key, value) => {
       set((state) => {
-        console.log("updatePhotoPropertyById", id, key, value);
-
         const index = state.photoIdHashmap[id];
-        console.log("index", index, state.photoIdHashmap, id);
 
         if (index !== undefined && state.photoArray[index]) {
-          console.log("updatePhotoPropertyById", state.photoArray[index]);
-
           state.photoArray[index][key] = value;
           // state.selectedPhoto[key] = value;
 
@@ -103,8 +95,6 @@ const useUploadPhotoStore = create(
     },
     setPhotoUploadResponse: (uid, response) =>
       set((state) => {
-        console.log("setPhotoUploadResponse", uid, response);
-
         const index = state.uidHashmap[uid];
         state.photoIdHashmap[response.id] = index;
 
@@ -132,7 +122,6 @@ const useUploadPhotoStore = create(
     removePhotoByUid: (uid) =>
       set((state) => {
         const index = state.uidHashmap[uid];
-        console.log("removePhotoByUid", uid, index);
 
         if (index === undefined) return state; // Exit if uid not found
 
@@ -147,7 +136,6 @@ const useUploadPhotoStore = create(
         updatedPhotoArray.forEach((photo, idx) => {
           newUidHashmap[photo.file.uid] = idx;
         });
-        console.log("removePhotoByUid", newUidHashmap);
 
         // Set selectedPhoto as the first element in the newUidHashmap
         const newSelectedPhoto =
@@ -166,12 +154,6 @@ const useUploadPhotoStore = create(
         const index = state.photoIdHashmap[photoId];
 
         if (index === -1) return state; // Exit if photoId not found
-        console.log(
-          "removePhotoById",
-          index,
-          photoId,
-          state.photoIdHashmap[photoId]
-        );
 
         const uid = state.photoArray[index].file.uid;
 
@@ -268,8 +250,6 @@ const useUploadPhotoStore = create(
         const nextIndex = (currentIndex + 1) % uids.length;
         const nextUid = uids[nextIndex];
 
-        console.log("setNext", currentIndex, nextIndex, nextUid);
-
         // Return the new selected UID
         return { selectedPhoto: nextUid };
       });
@@ -290,8 +270,6 @@ const useUploadPhotoStore = create(
         // Calculate the previous index using circular logic
         const previousIndex = (currentIndex - 1 + uids.length) % uids.length;
         const previousUid = uids[previousIndex];
-
-        console.log("setPrevious", currentIndex, previousIndex, previousUid);
 
         // Return the new selected UID
         return { selectedPhoto: previousUid };

@@ -74,6 +74,7 @@ export default function SideWithdrawalForm({
       console.log(data);
       message.success("Yêu cầu rút tiền thành công");
       queryClient.invalidateQueries("transactionList"); // Invalidate the wallet query to refetch the data
+      queryClient.invalidateQueries("wallet"); // Invalidate the wallet query to refetch the data
       reset();
       closeNav();
     },

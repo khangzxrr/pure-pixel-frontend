@@ -150,8 +150,6 @@ const getPhotoComments = async (id) => {
 const commentPhoto = async (id, content, onProgress) => {
   const response = await http.post(`photo/${id}/comment`, content, {
     onUploadProgress: (progressEvent) => {
-      console.log("progressEvent", progressEvent);
-
       if (onProgress) {
         // const percentCompleted = Math.round(
         //   (progressEvent.loaded * 100) / progressEvent.total

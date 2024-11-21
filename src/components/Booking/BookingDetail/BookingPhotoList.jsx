@@ -41,7 +41,6 @@ export default function BookingPhotoList({ enableUpdate }) {
               setIsDeleting(false);
             },
             onError: (error) => {
-              console.log("deleteError", error);
               notificationApi(
                 "error",
                 "Xóa ảnh không thành công",

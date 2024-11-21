@@ -169,15 +169,9 @@ export default function CustomUpload() {
     console.log("beforeUpload", file);
 
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    console.log("isJpgOrPng", isJpgOrPng);
     const isLt150M = file.size / 1024 / 1024 < 150;
-    console.log("isLt150M", isLt150M);
 
     const exif = await PhotoService.getExifData(file);
-
-    console.log("exif", exif);
-
-    console.log("true false", isJpgOrPng && isLt150M);
 
     if (!isJpgOrPng) {
       notificationApi(
@@ -192,7 +186,6 @@ export default function CustomUpload() {
       return false;
     }
 
-    console.log("isLt150M", isLt150M);
     if (!isLt150M) {
       notificationApi(
         "error",
@@ -206,7 +199,6 @@ export default function CustomUpload() {
       return false;
     }
 
-    console.log("isValidExif", exif);
     if (exif === undefined) {
       notificationApi(
         "error",
@@ -221,7 +213,6 @@ export default function CustomUpload() {
 
     try {
       const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(file);
-      console.log("reviewUrl", reviewUrl);
 
       addPhoto(file.uid, {
         reviewUrl,
@@ -272,13 +263,11 @@ export default function CustomUpload() {
   const handleChange = async (info) => {
     if (info.file.status === "uploading") {
       // updatePhotoPropertyByUid(info.file.uid, "status", "uploading");
-      console.log("updatePhotoPropertyByUid: uploading");
 
       return;
     }
     if (info.file.status === "done") {
       // updatePhotoPropertyByUid(info.file.uid, "status", "done");
-      console.log("updatePhotoPropertyByUid: done");
 
       return;
     }

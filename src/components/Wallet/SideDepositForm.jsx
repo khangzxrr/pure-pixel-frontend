@@ -68,6 +68,8 @@ export default function SideDepositForm({
     mutationFn: (amount) => WalletApi.createDeposit({ amount: amount }),
     onSuccess: (data) => {
       console.log(data);
+      queryClient.invalidateQueries("transactionList"); // Invalidate the wallet query to refetch the data
+      queryClient.invalidateQueries("wallet"); // Invalidate the wallet query to refetch the data
       setTransactionId(data.transactionId);
       setQRCode(data.testQRCode);
       setIsQRCodeVisible(true);

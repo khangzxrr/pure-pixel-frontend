@@ -16,3 +16,11 @@
 .ant-picker-ok button span {
   display: none;
 }
+
+.custom-range-picker .ant-picker-input > input::placeholder {
+  color: #d7d7d8;
+}
+
+.custom-range-picker .ant-picker-input-placeholder > input {
+  color: #d7d7d8;
+}

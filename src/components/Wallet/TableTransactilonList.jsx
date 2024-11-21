@@ -9,6 +9,8 @@ import { getData } from "../../apis/api";
 import ComMenuButonTable from "../ComMenuButonTable/ComMenuButonTable";
 import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter";
 import ComStatusWalletConverter from "./../ComStatusConverter/ComStatusWalletConverter";
+import { useQuery } from "@tanstack/react-query";
+import { WalletApi } from "../../apis/Wallet";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -19,10 +21,8 @@ function formatCurrency(number) {
   }
 }
 export default function TableTransactilonList() {
-  const [data, setData] = useState([]);
   const { getColumnSearchProps, getColumnApprox, getColumnPriceRangeProps } =
     useColumnFilters();
-  const table = useTableState();
   const columns = [
     {
       title: "Số tiền",
@@ -153,34 +153,42 @@ export default function TableTransactilonList() {
     //   ),
     // },
   ];
-  const reloadData = () => {
-    getData(
-      "/wallet/transaction?limit=9999&page=0&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
-    )
-      .then((e) => {
-        setData(e?.data?.objects);
-        console.log("====================================");
-        console.log(1111, e);
-        console.log("====================================");
-        table.handleCloseLoading();
-      })
-      .catch((error) => {
-        console.error("Error fetching items:", error);
-        reloadData();
+  const {
+    data: transaction,
+    error,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["transactionList"], // Unique query key for caching
+    queryFn: () => {
+      return WalletApi.getTransaction({
+        limit: 9999,
+        page: 0,
+        orderByAmount: "asc",
+        orderByCreatedAt: "desc ",
       });
-  };
+    },
+    onSuccess: (data) => {
+      console.log("Transaction data fetched successfully:", data);
+    },
+    onError: (error) => {
+      console.error("Error fetching transaction:", error);
+    },
+  });
   useEffect(() => {
-    reloadData();
+    console.log("transaction", transaction?.objects);
   }, []);
   return (
     <div>
-      <ComTable
-        y={"70vh"}
-        x
-        columns={columns}
-        dataSource={data}
-        loading={table.loading}
-      />
+      {transaction && transaction.objects.length > 0 && (
+        <ComTable
+          y={"70vh"}
+          x
+          columns={columns}
+          dataSource={transaction?.objects}
+          loading={isLoading}
+        />
+      )}
     </div>
   );
 }
