@@ -99,7 +99,7 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
                   </div>
                 </div>
                 <div className="sm:col-span-1">
-                  <div div className="mt-2.5">
+                  <div className="mt-2.5">
                     <ComSelect
                       size={"large"}
                       style={{
