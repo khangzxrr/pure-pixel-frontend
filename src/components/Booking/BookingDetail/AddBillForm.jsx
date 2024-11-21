@@ -43,7 +43,6 @@ export default function AddBillForm({ bookingId }) {
   });
 
   const handleAddBillItem = (data) => {
-    console.log(data);
     // const unformattedPrice = parseInt(data.price.replace(/\./g, ""), 10);
     addBillItemMutation.mutate({
       title: data.title,

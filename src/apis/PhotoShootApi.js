@@ -10,8 +10,6 @@ const getBookingByCustomer = async (limit, page) => {
   return response.data;
 };
 const handleRequestByPhotographer = async (bookingId, type) => {
-  console.log("packageId", bookingId, type);
-
   const response = await http.post(
     `/photographer/booking/${bookingId}/${type}`
   );

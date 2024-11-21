@@ -3,26 +3,21 @@ import React, { useState } from "react";
 import { getData } from "../../apis/api";
 
 function ComUserIdConverter({ children }) {
-  const [data, setData] = useState({})
-    const reloadData = () => {
- 
-      getData(`/user/${children}`)
-        .then((e) => {
-          setData(e?.data?.objects);
-          console.log("====================================");
-          console.log(e?.data);
-          console.log("====================================");
-        })
-        .catch((error) => {
-          console.error("Error fetching items:", error);
-          if (error?.status === 401) {
-            reloadData();
-          }
-        });
-    };
-  useEffect(() => {
-      
-    }, [children]);
+  const [data, setData] = useState({});
+  const reloadData = () => {
+    getData(`/user/${children}`)
+      .then((e) => {
+        setData(e?.data?.objects);
+        console.log(e?.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching items:", error);
+        if (error?.status === 401) {
+          reloadData();
+        }
+      });
+  };
+  useEffect(() => {}, [children]);
 
   return (
     <>

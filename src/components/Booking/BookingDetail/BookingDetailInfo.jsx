@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import { notificationApi } from "../../../Notification/Notification";
 import ReviewBooking from "../../../pages/UserProfile/Component/ReviewBooking";
+import calculateDateDifference from "../../../utils/calculateDateDifference";
 
 const { RangePicker } = DatePicker; // Destructure RangePicker from DatePicker
 dayjs.locale("vi");
@@ -32,7 +33,6 @@ const BookingDetailInfo = ({ bookingDetail }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const enableUpdate = bookingDetail.status === "ACCEPTED";
-  console.log(bookingDetail);
   const {
     handleSubmit,
     control,
@@ -63,12 +63,10 @@ const BookingDetailInfo = ({ bookingDetail }) => {
     },
   });
   const handleOnConfirm = () => {
-    console.log("Booking completed");
     setBookingPaidMutation.mutate();
   };
   const updateBookingDetail = useMutation({
     mutationFn: ({ description, startDate, endDate }) => {
-      console.log("bookingDetail.id", description, startDate, endDate);
       return PhotoShootApi.updateBooking(bookingDetail.id, {
         description,
         startDate,
@@ -228,9 +226,15 @@ const BookingDetailInfo = ({ bookingDetail }) => {
                         </div>
                       </div>
                     </div>
+                    <div className="text-right font-normal text-sm text-[#a3a3a3]">
+                      {calculateDateDifference(bookingDetail.createdAt)}
+                    </div>
                   </form>
                 </ConfigProvider>
               )}
+              <div className="text-right font-normal text-sm text-[#a3a3a3]">
+                {calculateDateDifference(bookingDetail.createdAt)}
+              </div>
             </div>
           )}
           <div className="w-full flex justify-center my-2">
@@ -266,13 +270,13 @@ const BookingDetailInfo = ({ bookingDetail }) => {
         bookingDetail={bookingDetail}
         enableUpdate={enableUpdate}
       />
-      {/* {bookingDetail.status === "SUCCESSED" && (
+      {bookingDetail.status === "SUCCESSED" && (
         <ReviewBooking
           bookingId={bookingDetail.bookingId}
           userReview={bookingDetail ? bookingDetail.reviews[0] : ""}
           role="photographer"
         />
-      )} */}
+      )}
     </div>
   );
 };

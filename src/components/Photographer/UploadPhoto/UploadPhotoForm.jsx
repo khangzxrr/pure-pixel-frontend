@@ -24,13 +24,11 @@ export default function UploadPhotoForm({ selectedPhoto }) {
   });
   const [selectedLocate, setSelectedLocate] = useState();
 
-  console.log("selectphoto", selectedPhoto);
-
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
     onSuccess: (data) => {
       setCategories(
-        data.map((category) => ({ label: category.name, value: category.id })),
+        data.map((category) => ({ label: category.name, value: category.id }))
       );
     },
     onError: (error) => {
@@ -42,8 +40,6 @@ export default function UploadPhotoForm({ selectedPhoto }) {
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
-      console.log("selectedPhoto", selectedPhoto.gps);
-
       setSelectedLocate({
         ...selectedLocate,
         address: data.features[0].properties.full_address,
@@ -75,7 +71,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
     console.log(
       "selectedPhoto",
       selectedPhoto?.gps?.longitude,
-      selectedPhoto?.gps?.longitude === undefined,
+      selectedPhoto?.gps?.longitude === undefined
     );
 
     if (
@@ -142,7 +138,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   updatePhotoPropertyByUid(
                     selectedPhoto.file.uid,
                     "title",
-                    e.target.value,
+                    e.target.value
                   );
                 }}
               />
@@ -169,7 +165,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   updatePhotoPropertyByUid(
                     selectedPhoto.file.uid,
                     "description",
-                    e.target.value,
+                    e.target.value
                   );
                 }}
               />
@@ -243,7 +239,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   updatePhotoPropertyByUid(
                     selectedPhoto.file.uid,
                     "categoryIds",
-                    value,
+                    value
                   );
                 }}
               />
@@ -270,7 +266,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                   updatePhotoPropertyByUid(
                     selectedPhoto.file.uid,
                     "photoTags",
-                    value,
+                    value
                   );
                 }}
                 options={[]} // Các tùy chọn thẻ, nếu có sẵn
@@ -309,7 +305,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                       updatePhotoPropertyByUid(
                         selectedPhoto.file.uid,
                         "visibility",
-                        value,
+                        value
                       );
                     }}
                   />
@@ -343,7 +339,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                         updatePhotoPropertyByUid(
                           selectedPhoto.file.uid,
                           "watermark",
-                          checked,
+                          checked
                         );
                       }}
                     >

@@ -16,7 +16,6 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
   const hideModal = () => {
     setIsModalVisible(false); // Hàm đóng modal
   };
-  console.log(photoshootPackage);
 
   return (
     <>

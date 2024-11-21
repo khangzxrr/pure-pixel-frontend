@@ -1,8 +1,6 @@
 import React from "react";
 
 const BookingPackageShowCaseList = ({ photoshootPackage }) => {
-  console.log(photoshootPackage.showcases);
-
   return (
     <div className="flex flex-col bg-[#292b2f] p-4 gap-2 rounded-lg">
       <div className="">Bộ sưu tập</div>

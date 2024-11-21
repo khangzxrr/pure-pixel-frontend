@@ -39,7 +39,6 @@ const LikeButton = ({ photoId, size = "size-7", reloadData }) => {
       deleteData(`/photo`, `${photoId}/vote`, {
         isUpvote: true,
       }).then((data) => {
-        console.log(data);
         setIsLiked(false);
         reloadData();
       });

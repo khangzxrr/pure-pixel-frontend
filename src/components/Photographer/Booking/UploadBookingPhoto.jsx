@@ -140,13 +140,10 @@ export default function UploadBookingPhoto({ bookingId }) {
 
   const handleChange = async (info) => {
     if (info.file.status === "uploading") {
-      console.log("updatePhotoPropertyByUid: uploading");
-
       return;
     }
     if (info.file.status === "done") {
       // updatePhotoPropertyByUid(info.file.uid, "status", "done");
-      console.log("updatePhotoPropertyByUid: done");
 
       return;
     }

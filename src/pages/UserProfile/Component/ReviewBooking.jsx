@@ -43,12 +43,10 @@ export default function ReviewBooking({ bookingId, userReview, role }) {
   const handleSubmit = () => {
     if (validateFields()) {
       // Submit logic here
-      console.log("Star:", star, "Description:", description);
-
       addReviewForBooking.mutate({ star, description });
     }
   };
-
+  console.log("userReview", userReview, role === "photographer");
   return (
     <ConfigProvider
       theme={{
@@ -59,7 +57,7 @@ export default function ReviewBooking({ bookingId, userReview, role }) {
         },
       }}
     >
-      {userReview ? (
+      {!userReview ? (
         <div className="flex flex-col gap-2 m-2 p-4 bg-[#2d2f34] rounded-lg">
           <p className="text-[#e0e0e0] font-semibold">Đánh giá</p>
           <div>
@@ -115,7 +113,13 @@ export default function ReviewBooking({ bookingId, userReview, role }) {
         </div>
       ) : (
         <div className="flex flex-col gap-2 m-2 p-4 bg-[#2d2f34] rounded-lg">
-          <p className="text-[#e0e0e0] font-semibold">Đánh giá</p>
+          <p className="text-[#e0e0e0] font-semibold">
+            Đánh giá {role === "photographer" ? "của khách" : ""}
+          </p>
+          <div className="flex flex-row my-auto">
+            <img className="w-8 h-8 mx-2" src={userReview.user.avatar} />
+            <p>{userReview.user.name}</p>
+          </div>
           <div>
             <Rate disabled tooltips={desc} value={userReview.star} />
             {userReview.star ? (

@@ -24,10 +24,18 @@ const findById = async (id) => {
 
   return response.data;
 };
+const deletePhotoshootPackage = async (packageId) => {
+  const response = await http.delete(
+    `/photographer/photoshoot-package/${packageId}`
+  );
+  return response.data;
+};
+const photographerFindById = async (id) => {
+  const response = await http.get(`/photographer/photoshoot-package/${id}`);
 
+  return response.data;
+};
 const createPhotoshootPackage = async (data) => {
-  console.log("data", data);
-
   const formData = new FormData();
 
   if (data?.title) {
@@ -87,6 +95,8 @@ const PhotoshootPackageApi = {
   getPackagesByPhotographerId,
   findAll,
   findById,
+  deletePhotoshootPackage,
+  photographerFindById,
   createPhotoshootPackage,
   getAllPhotoshootPackages,
 };

@@ -14,13 +14,14 @@ import { ArrowRight, Calendar, MessageCircleMore } from "lucide-react";
 import { notificationApi } from "../../Notification/Notification";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import ReviewBooking from "./Component/ReviewBooking";
+import calculateDateDifference from "../../utils/calculateDateDifference";
 
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
-  const { isPending, data: bookingDetail } = useQuery({
+  const { data: bookingDetail, isPending } = useQuery({
     queryKey: ["customer-booking-detail", bookingId],
     queryFn: () => CustomerBookingApi.findById(bookingId),
   });
@@ -51,14 +52,14 @@ const CustomerBookingDetail = () => {
         notificationApi(
           "success",
           "Tải ảnh thành công",
-          "Tất cả ảnh đã được tải về thành công.",
+          "Tất cả ảnh đã được tải về thành công."
         );
       } catch (error) {
         console.error("Error downloading file:", error);
         notificationApi(
           "error",
           "Lỗi khi tải ảnh",
-          "Lỗi khi tải ảnh, vui lòng thử lại sau.",
+          "Lỗi khi tải ảnh, vui lòng thử lại sau."
         );
       } finally {
         setIsDownloading(false);
@@ -69,7 +70,7 @@ const CustomerBookingDetail = () => {
       notificationApi(
         "error",
         "Lỗi khi tải ảnh",
-        "Lỗi khi tải ảnh, vui lòng thử lại sau.   ",
+        "Lỗi khi tải ảnh, vui lòng thử lại sau.   "
       );
       setIsDownloading(false);
     },
@@ -77,7 +78,7 @@ const CustomerBookingDetail = () => {
 
   // Track the current index of the selected photo
   const currentIndex = bookingDetail?.photos?.findIndex(
-    (photo) => photo?.id === selectedPhoto?.id,
+    (photo) => photo?.id === selectedPhoto?.id
   );
   // Function to go to the previous photo
   const handlePreviousPhoto = () => {
@@ -147,9 +148,9 @@ const CustomerBookingDetail = () => {
   console.log(bookingDetail.originalPhotoshootPackage.user.id);
 
   const userReview = bookingDetail.reviews.find(
-    (review) => review.userId === bookingDetail.user.id,
+    (review) => review.userId === bookingDetail.user.id
   );
-
+  console.log(bookingDetail.user.id, bookingDetail.reviews, userReview);
   return (
     <div className="grid grid-cols-1 md:grid-cols-8 overflow-hidden">
       <div className="md:col-span-3 flex h-[95vh] overflow-y-scroll custom-scrollbar">
@@ -172,8 +173,8 @@ const CustomerBookingDetail = () => {
                     bookingDetail.status === "ACCEPTED"
                       ? "text-blue-500"
                       : bookingDetail.status === "SUCCESSED"
-                        ? "text-green-500"
-                        : "text-yellow-500"
+                      ? "text-green-500"
+                      : "text-yellow-500"
                   } font-normal text-sm`}
                 >
                   {bookingDetail.status === "ACCEPTED" ? (
@@ -234,9 +235,9 @@ const CustomerBookingDetail = () => {
                         {FormatDateTime(bookingDetail.endDate)}
                       </div>
                     </div>
-                    <div className="text-right font-normal text-sm text-[#a3a3a3]">
-                      {calculateDateDifference(bookingDetail.createdAt)}
-                    </div>
+                  </div>
+                  <div className="text-right font-normal text-sm text-[#a3a3a3]">
+                    {calculateDateDifference(bookingDetail.createdAt)}
                   </div>
                 </div>
               </div>
