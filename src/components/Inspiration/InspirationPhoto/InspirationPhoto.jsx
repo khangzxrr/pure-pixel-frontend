@@ -7,7 +7,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
 import { FiShare2 } from "react-icons/fi";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
-
 import UseCategoryStore from "../../../states/UseCategoryStore";
 import { IoMdImages } from "react-icons/io";
 import UsePhotographerFilterStore from "../../../states/UsePhotographerFilterStore";
@@ -41,10 +40,10 @@ const InspirationPhoto = () => {
   const setNamePhotographer = UsePhotographerFilterStore(
     (state) => state.setNamePhotographer
   );
-  const searchByTags = UseCategoryStore((state) => state.searchByTags);
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
-  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
+  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
+  const searchByTags = UseCategoryStore((state) => state.searchByTags);
   const popupShare = useModalState();
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
