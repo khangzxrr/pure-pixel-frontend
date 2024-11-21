@@ -21,6 +21,9 @@ import ComReportStatusConverter from "../../../components/ComReportStatusConvert
 import ComReportConverter from "../../../components/ComReportConverter/ComReportConverter";
 import ComDateConverter from "./../../../components/ComDateConverter/ComDateConverter";
 import { Link } from "react-router-dom";
+import ComTypeWalletConverter from "../../../components/ComStatusConverter/ComTypeWalletConverter";
+import { FaWallet } from "react-icons/fa";
+import ComStatusWalletConverter from "../../../components/ComStatusConverter/ComStatusWalletConverter";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -48,63 +51,40 @@ export const TableTransaction = forwardRef((props, ref) => {
   } = useColumnFilters();
   const columns = [
     {
-      title: "Người đăng",
-      width: 120,
-      // fixed: "left",
-      dataIndex: "photographer.name",
-      key: "photographer.name",
-      sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
-      ...getColumnSearchProps("photographer.name", "Người báo cáo"),
-      render: (_, record) => (
-        <div className=" gap-2 items-center ">
-          {record?.photographer?.avatar && (
-            <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
-              <Image
-                wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
-                src={record?.photographer?.avatar}
-                alt={record?.photographer?.avatar}
-                preview={{ mask: "Xem ảnh" }}
-              />
-            </div>
-          )}
-          <p>{record?.photographer?.name}</p>
-        </div>
-      ),
-    },
-    {
-      title: "ID bài  ",
+      title: "ID giao dịch",
       width: 150,
       dataIndex: "id",
       key: "id",
       sorter: (a, b) => a?.id?.localeCompare(b?.id),
-      ...getColumnSearchProps("id", "ID bài "),
+      ...getColumnSearchProps("id", "ID giao dịch"),
     },
     {
-      title: "Hình ảnh",
-      width: 120,
-      dataIndex: "maxPackageCount",
-      key: "maxPackageCount",
+      title: "Loại",
+      width: 100,
+      dataIndex: "type",
+      key: "type",
+      filters: [
+        { text: "Nâng cấp tài khoản", value: "UPGRADE_TO_PHOTOGRAPHER" },
+        { text: "Nạp tiền", value: "DEPOSIT" },
+        { text: "Mua ảnh", value: "IMAGE_BUY" },
+        { text: "Rút tiền", value: "WITHDRAWAL" },
+      ],
+      onFilter: (value, record) => record.type === value,
+      sorter: (a, b) => a?.type?.localeCompare(b?.type),
       render: (_, record) => (
         <div>
-          {record?.signedUrl?.url && (
-            <div className=" flex items-center justify-center overflow-hidden gap-3">
-              <Image
-                wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
-                src={record?.signedUrl?.url}
-                alt={record?.signedUrl?.url}
-                preview={{ mask: "Xem ảnh" }}
-              />
-              <a
-                href={`/photo/${record.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Bài viết
-              </a>
-            </div>
-          )}
+          <ComTypeWalletConverter>{record.type}</ComTypeWalletConverter>
         </div>
       ),
+    },
+    {
+      title: "Số tiền",
+      width: 100,
+      dataIndex: "amount",
+      key: "amount",
+      sorter: (a, b) => a.amount - b.amount,
+      ...getColumnPriceRangeProps("amount", "Giá Tiền"),
+      render: (_, record) => <div>{formatCurrency(record.amount)}</div>,
     },
     {
       title: "Ngày đăng",
@@ -120,154 +100,100 @@ export const TableTransaction = forwardRef((props, ref) => {
         </div>
       ),
     },
-    // {
-    //   title: "Thể loại báo cáo",
-    //   width: 100,
-    //   dataIndex: "reportType",
-    //   key: "reportType",
-    //   filters: [
-    //     { text: "Hình ảnh", value: "PHOTO" },
-    //     { text: "Người dùng", value: "USER" },
-    //     { text: "Dịch vụ", value: "BOOKING" },
-    //     { text: "Bình luận", value: "COMMENT" },
-    //   ],
-    //   onFilter: (value, record) => record.reportType === value,
-    //   sorter: (a, b) => a?.reportType?.localeCompare(b?.reportType),
-    //   render: (_, record) => (
-    //     <div>
-    //       <ComReportTypeConverter>{record?.reportType}</ComReportTypeConverter>
-    //     </div>
-    //   ),
-    // },
-    // {
-    //   title: "Trạng thái",
-    //   width: 120,
-    //   dataIndex: "reportStatus",
-    //   key: "reportStatus",
-    //   filters: [
-    //     { text: "Chưa phản hồi", value: "OPEN" },
-    //     // { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
-    //     // { text: "Đã trả lời", value: "RESPONSED" },
-    //     { text: "Đóng ", value: "CLOSED" },
-    //   ],
-    //   onFilter: (value, record) => record.reportStatus === value,
-    //   sorter: (a, b) => a?.reportStatus?.localeCompare(b?.reportStatus),
-    //   render: (_, record) => (
-    //     <div>
-    //       <ComReportStatusConverter>
-    //         {record?.reportStatus}
-    //       </ComReportStatusConverter>
-    //     </div>
-    //   ),
-    // },
     {
-      title: "Tên bài ",
-      width: 150,
-      dataIndex: "title",
-      key: "title",
-      sorter: (a, b) => a?.title?.localeCompare(b?.title),
-      ...getColumnSearchProps("title", "Tên bài"),
-    },
-    {
-      title: "Nội dung",
-      width: 150,
-      dataIndex: "description",
-      key: "description",
-      sorter: (a, b) => a?.description?.localeCompare(b?.description),
-      ...getColumnSearchProps("description", "Nội dung"),
-    },
-
-    {
-      title: "Thao tác",
-      key: "operation",
-      fixed: "right",
-      width: 50,
+      title: "Hình thức thanh toán ",
+      width: 100,
+      dataIndex: "paymentMethod",
+      key: "paymentMethod",
+      filters: [
+        { text: "SEPAY", value: "SEPAY" },
+        { text: "Ví", value: "WALLET" },
+        // { text: "Momo", value: "Momo" },
+      ],
+      onFilter: (value, record) => record.paymentMethod === value,
+      sorter: (a, b) => a?.paymentMethod?.localeCompare(b?.paymentMethod),
+      // ...getColumnSearchProps("paymentMethod", "Thanh toán bằng"),
       render: (_, record) => (
-        <div className="flex items-center flex-col">
-          <ComMenuButonTable
-            record={record}
-            showModalDetails={() => {
-              modalDetail.handleOpen();
-              setSelectedData(record);
-            }}
-            showModalEdit={() => {
-              modalEdit.handleOpen();
-              setSelectedData(record);
-            }}
-            showModalDelete={() => {
-              ComConfirmDeleteModal(
-                `/upgrade-package`,
-                record.id,
-                `Bạn có chắc chắn muốn xóa?`,
-                reloadData,
-                notificationSuccess,
-                notificationError
-              );
-            }}
-            extraMenuItems={extraMenuItems}
-            excludeDefaultItems={["edit", "delete", "details"]}
-          />
+        <div>
+          <h1>
+            {record.paymentMethod === "SEPAY" && (
+              <div className="flex flex-row justify-center">
+                <img
+                  src="https://sepay.vn/assets/img/logo/sepay-820x820-blue-icon.png"
+                  alt="sepay"
+                  className="w-8 h-8"
+                />
+                <p className="ml-3 font-normal">Sepay</p>
+              </div>
+            )}
+            {record.paymentMethod === "WALLET" && (
+              <div className="flex flex-row justify-center">
+                <FaWallet className="text-3xl" />
+                <p className="ml-3 font-normal">Ví</p>
+              </div>
+            )}
+          </h1>
         </div>
       ),
     },
-  ];
-  const extraMenuItems2 = [
     {
-      label: "Mở lại báo cáo",
-      onClick: (e) => {
-        Modal.confirm({
-          title: "Xác nhận mở lại báo cáo",
-          content: "Bạn có chắc mở lại báo cáo?",
-          okText: "Mở lại",
-          okType: "primary",
-          cancelText: "Hủy",
-          onOk: () => {
-            patchData(`manager/report`, `${e.id}`, {
-              reportStatus: "OPEN",
-            })
-              .then((e) => {
-                console.log("11111", e);
-                notificationApi("success", "Thành công", "Đã mở lại báo cáo");
-
-                reloadData();
-              })
-              .catch((error) => {
-                notificationApi("error", "Không thành công", "Lỗi");
-                console.log("error", error);
-              });
-          },
-        });
-      },
+      title: "Trạng thái",
+      width: 100,
+      dataIndex: "status",
+      key: "status",
+      filters: [
+        { text: "Đã thanh toán", value: "Paid" },
+        { text: "Chưa thanh toán", value: "UnPaid" },
+        { text: "Đã hủy", value: "Faied" },
+        { text: "Hết hạn", value: "OverDue" },
+      ],
+      onFilter: (value, record) => record.status === value,
+      sorter: (a, b) => a?.status?.localeCompare(b?.status),
+      // ...getColumnSearchProps("method", "Thanh toán bằng"),
+      render: (_, record) => (
+        <div>
+          <h1>
+            <ComStatusWalletConverter>{record.status}</ComStatusWalletConverter>
+          </h1>
+        </div>
+      ),
     },
+    // {
+    //   title: "Thao tác",
+    //   key: "operation",
+    //   fixed: "right",
+    //   width: 50,
+    //   render: (_, record) => (
+    //     <div className="flex items-center flex-col">
+    //       <ComMenuButonTable
+    //         record={record}
+    //         showModalDetails={() => {
+    //           modalDetail.handleOpen();
+    //           setSelectedData(record);
+    //         }}
+    //         showModalEdit={() => {
+    //           modalEdit.handleOpen();
+    //           setSelectedData(record);
+    //         }}
+    //         showModalDelete={() => {
+    //           ComConfirmDeleteModal(
+    //             `/upgrade-package`,
+    //             record.id,
+    //             `Bạn có chắc chắn muốn xóa?`,
+    //             reloadData,
+    //             notificationSuccess,
+    //             notificationError
+    //           );
+    //         }}
+    //         extraMenuItems={extraMenuItems}
+    //         excludeDefaultItems={["edit", "delete", "details"]}
+    //       />
+    //     </div>
+    //   ),
+    // },
   ];
-  const extraMenuItems = [
-    {
-      label: "Xóa bài viết",
-      onClick: (e) => {
-        Modal.confirm({
-          title: "Xác nhận xóa bài viết",
-          content: "Bạn có chắc xóa bài viết?",
-          okText: "Xóa bài",
-          okType: "primary",
-          cancelText: "Hủy",
-          onOk: () => {
-            deleteData(`manager/photo`, `${e.id}`)
-              .then((e) => {
-                console.log("11111", e);
-                notificationApi("success", "Thành công", "Đã xóa bài viết");
 
-                reloadData();
-              })
-              .catch((error) => {
-                notificationApi("error", "Không thành công", "Lỗi");
-                console.log("error", error);
-              });
-          },
-        });
-      },
-    },
-  ];
-
+ 
   const notificationSuccess = () => {
     notificationApi("success", "thành công", "Đã thành công");
   };
@@ -277,11 +203,13 @@ export const TableTransaction = forwardRef((props, ref) => {
 
   const reloadData = () => {
     table.handleOpenLoading();
-    getData("/manager/photo?limit=9999&page=0")
+    getData(
+      "manager/transaction?limit=9999&page=0&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
+    )
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");
-        console.log(e?.data);
+        console.log(123213213,e?.data);
         console.log("====================================");
         table.handleCloseLoading();
       })
