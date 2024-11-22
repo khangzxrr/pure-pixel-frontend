@@ -147,7 +147,7 @@ export const TableCamera = forwardRef((props, ref) => {
   return (
     <div>
       <ComTable
-        y={"50vh"}
+        y={"65vh"}
         x={1020}
         columns={columns}
         dataSource={data}

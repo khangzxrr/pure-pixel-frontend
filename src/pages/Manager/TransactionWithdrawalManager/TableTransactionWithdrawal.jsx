@@ -19,7 +19,7 @@ import EditUpgrede from "./EditReport";
 import ComReportTypeConverter from "../../../components/ComReportTypeConverter/ComReportTypeConverter";
 import ComReportStatusConverter from "../../../components/ComReportStatusConverter/ComReportStatusConverter";
 import ComReportConverter from "../../../components/ComReportConverter/ComReportConverter";
-import ComDateConverter from "./../../../components/ComDateConverter/ComDateConverter";
+import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
 import { Link } from "react-router-dom";
 import ComTypeWalletConverter from "../../../components/ComStatusConverter/ComTypeWalletConverter";
 import { FaWallet } from "react-icons/fa";
@@ -33,7 +33,7 @@ function formatCurrency(number) {
     });
   }
 }
-export const TableTransaction = forwardRef((props, ref) => {
+export const TableTransactionWithdrawal = forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState({});
   const table = useTableState();
@@ -58,25 +58,25 @@ export const TableTransaction = forwardRef((props, ref) => {
       sorter: (a, b) => a?.id?.localeCompare(b?.id),
       ...getColumnSearchProps("id", "ID giao dịch"),
     },
-    {
-      title: "Loại",
-      width: 100,
-      dataIndex: "type",
-      key: "type",
-      filters: [
-        { text: "Nâng cấp tài khoản", value: "UPGRADE_TO_PHOTOGRAPHER" },
-        { text: "Nạp tiền", value: "DEPOSIT" },
-        { text: "Mua ảnh", value: "IMAGE_BUY" },
-        { text: "Rút tiền", value: "WITHDRAWAL" },
-      ],
-      onFilter: (value, record) => record.type === value,
-      sorter: (a, b) => a?.type?.localeCompare(b?.type),
-      render: (_, record) => (
-        <div>
-          <ComTypeWalletConverter>{record.type}</ComTypeWalletConverter>
-        </div>
-      ),
-    },
+    // {
+    //   title: "Loại",
+    //   width: 100,
+    //   dataIndex: "type",
+    //   key: "type",
+    //   filters: [
+    //     { text: "Nâng cấp tài khoản", value: "UPGRADE_TO_PHOTOGRAPHER" },
+    //     { text: "Nạp tiền", value: "DEPOSIT" },
+    //     { text: "Mua ảnh", value: "IMAGE_BUY" },
+    //     { text: "Rút tiền", value: "WITHDRAWAL" },
+    //   ],
+    //   onFilter: (value, record) => record.type === value,
+    //   sorter: (a, b) => a?.type?.localeCompare(b?.type),
+    //   render: (_, record) => (
+    //     <div>
+    //       <ComTypeWalletConverter>{record.type}</ComTypeWalletConverter>
+    //     </div>
+    //   ),
+    // },
     {
       title: "Số tiền",
       width: 100,
@@ -87,7 +87,7 @@ export const TableTransaction = forwardRef((props, ref) => {
       render: (_, record) => <div>{formatCurrency(record.amount)}</div>,
     },
     {
-      title: "Ngày đăng",
+      title: "Ngày tạo",
       width: 120,
       dataIndex: "createdAt",
       key: "createdAt",
@@ -100,42 +100,42 @@ export const TableTransaction = forwardRef((props, ref) => {
         </div>
       ),
     },
-    {
-      title: "Hình thức thanh toán ",
-      width: 100,
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
-      filters: [
-        { text: "SEPAY", value: "SEPAY" },
-        { text: "Ví", value: "WALLET" },
-        // { text: "Momo", value: "Momo" },
-      ],
-      onFilter: (value, record) => record.paymentMethod === value,
-      sorter: (a, b) => a?.paymentMethod?.localeCompare(b?.paymentMethod),
-      // ...getColumnSearchProps("paymentMethod", "Thanh toán bằng"),
-      render: (_, record) => (
-        <div>
-          <h1>
-            {record.paymentMethod === "SEPAY" && (
-              <div className="flex flex-row justify-center">
-                <img
-                  src="https://sepay.vn/assets/img/logo/sepay-820x820-blue-icon.png"
-                  alt="sepay"
-                  className="w-8 h-8"
-                />
-                <p className="ml-3 font-normal">Sepay</p>
-              </div>
-            )}
-            {record.paymentMethod === "WALLET" && (
-              <div className="flex flex-row justify-center">
-                <FaWallet className="text-3xl" />
-                <p className="ml-3 font-normal">Ví</p>
-              </div>
-            )}
-          </h1>
-        </div>
-      ),
-    },
+    // {
+    //   title: "Hình thức thanh toán ",
+    //   width: 100,
+    //   dataIndex: "paymentMethod",
+    //   key: "paymentMethod",
+    //   filters: [
+    //     { text: "SEPAY", value: "SEPAY" },
+    //     { text: "Ví", value: "WALLET" },
+    //     // { text: "Momo", value: "Momo" },
+    //   ],
+    //   onFilter: (value, record) => record.paymentMethod === value,
+    //   sorter: (a, b) => a?.paymentMethod?.localeCompare(b?.paymentMethod),
+    //   // ...getColumnSearchProps("paymentMethod", "Thanh toán bằng"),
+    //   render: (_, record) => (
+    //     <div>
+    //       <h1>
+    //         {record.paymentMethod === "SEPAY" && (
+    //           <div className="flex flex-row justify-center">
+    //             <img
+    //               src="https://sepay.vn/assets/img/logo/sepay-820x820-blue-icon.png"
+    //               alt="sepay"
+    //               className="w-8 h-8"
+    //             />
+    //             <p className="ml-3 font-normal">Sepay</p>
+    //           </div>
+    //         )}
+    //         {record.paymentMethod === "WALLET" && (
+    //           <div className="flex flex-row justify-center">
+    //             <FaWallet className="text-3xl" />
+    //             <p className="ml-3 font-normal">Ví</p>
+    //           </div>
+    //         )}
+    //       </h1>
+    //     </div>
+    //   ),
+    // },
     {
       title: "Trạng thái",
       width: 100,
@@ -158,58 +158,65 @@ export const TableTransaction = forwardRef((props, ref) => {
         </div>
       ),
     },
-    // {
-    //   title: "Thao tác",
-    //   key: "operation",
-    //   fixed: "right",
-    //   width: 50,
-    //   render: (_, record) => (
-    //     <div className="flex items-center flex-col">
-    //       <ComMenuButonTable
-    //         record={record}
-    //         showModalDetails={() => {
-    //           modalDetail.handleOpen();
-    //           setSelectedData(record);
-    //         }}
-    //         showModalEdit={() => {
-    //           modalEdit.handleOpen();
-    //           setSelectedData(record);
-    //         }}
-    //         showModalDelete={() => {
-    //           ComConfirmDeleteModal(
-    //             `/upgrade-package`,
-    //             record.id,
-    //             `Bạn có chắc chắn muốn xóa?`,
-    //             reloadData,
-    //             notificationSuccess,
-    //             notificationError
-    //           );
-    //         }}
-    //         extraMenuItems={extraMenuItems}
-    //         excludeDefaultItems={["edit", "delete", "details"]}
-    //       />
-    //     </div>
-    //   ),
-    // },
+    {
+      title: "Thao tác",
+      key: "operation",
+      fixed: "right",
+      width: 50,
+      render: (_, record) => (
+        <>
+          {record.status === "PENDING" && (
+            <div className="flex items-center flex-col">
+              <ComMenuButonTable
+                record={record}
+                extraMenuItems={extraMenuItems}
+                excludeDefaultItems={["edit", "delete", "details"]}
+              />
+            </div>
+          )}
+        </>
+      ),
+    },
   ];
 
- 
-  const notificationSuccess = () => {
-    notificationApi("success", "thành công", "Đã thành công");
-  };
-  const notificationError = () => {
-    notificationApi("error", "Lỗi", "Lỗi");
-  };
+  const extraMenuItems = [
+    {
+      label: "Xác nhận đã chuyển tiền",
+      onClick: (e) => {
+        Modal.confirm({
+          title: "Xác nhận đã chuyển tiền",
+          content: "Bạn có chắc đã chuyển tiền cho người dùng?",
+          okText: "Đóng báo cáo",
+          okType: "primary",
+          cancelText: "Hủy",
+          onOk: () => {
+            patchData(`manager/transaction`, `${e.id}`, {
+              status: "SUCCESS",
+            })
+              .then((e) => {
+                console.log("11111", e);
+                notificationApi("success", "Thành công", "Đã đổi trạng thái");
 
+                reloadData();
+              })
+              .catch((error) => {
+                notificationApi("error", "Không thành công", "Lỗi");
+                console.log("error", error);
+              });
+          },
+        });
+      },
+    },
+  ];
   const reloadData = () => {
     table.handleOpenLoading();
     getData(
-      "manager/transaction?limit=9999&page=0&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
+      "manager/transaction?limit=9999&page=0&type=WITHDRAWAL&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
     )
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");
-        console.log(123213213,e?.data);
+        console.log(123213213, e?.data);
         console.log("====================================");
         table.handleCloseLoading();
       })
