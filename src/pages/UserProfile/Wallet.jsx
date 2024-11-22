@@ -172,6 +172,7 @@ export default function Wallet() {
           sideNavRef={sideNavDrawalRef}
           setIsNavVisible={setIsNavDrawalVisible}
           isNavVisible={isNavDrawalVisible}
+          balance={wallet ? wallet.walletBalance : 0}
         />
       </div>
     </>
