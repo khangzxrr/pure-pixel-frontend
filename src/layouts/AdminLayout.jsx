@@ -10,6 +10,7 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import {
+  BanknotesIcon,
   Bars3Icon,
   BellIcon,
   CalendarIcon,
@@ -19,6 +20,7 @@ import {
   FolderIcon,
   HomeIcon,
   UsersIcon,
+  VideoCameraIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -34,6 +36,7 @@ import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Affix } from "antd";
 import { useKeycloak } from "@react-keycloak/web";
+import { PackageIcon } from "lucide-react";
 
 const navigation = [
   {
@@ -81,6 +84,24 @@ const navigation = [
     name: "Giao dịch",
     href: "/admin/transaction",
     icon: ChartPieIcon,
+    current: false,
+  },
+  {
+    name: "Gói dịch vụ ",
+    href: "/admin/service-package",
+    icon: PackageIcon,
+    current: false,
+  },
+  {
+    name: "Camera ",
+    href: "/admin/camera",
+    icon: VideoCameraIcon,
+    current: false,
+  },
+  {
+    name: "Xử lý rút tiền ",
+    href: "/admin/withdrawal-processing",
+    icon: BanknotesIcon,
     current: false,
   },
 ];
@@ -158,7 +179,7 @@ export default function AdminLayout({ children }) {
                                   item.href === activeCategory
                                     ? "bg-gray-50 text-black"
                                     : "hover:bg-gray-50  hover:text-black text-white",
-                                  "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 ",
+                                  "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 "
                                 )}
                               >
                                 <div className="flex gap-2">
@@ -176,7 +197,7 @@ export default function AdminLayout({ children }) {
                                     item.href === activeCategory
                                       ? "bg-gray-50 text-black"
                                       : "hover:bg-gray-50 hover:text-black text-white",
-                                    "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700",
+                                    "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700"
                                   )}
                                 >
                                   <ChevronRightIcon
@@ -202,7 +223,7 @@ export default function AdminLayout({ children }) {
                                           subItem.href === activeCategory
                                             ? "bg-gray-50 "
                                             : "hover:bg-gray-50 hover:text-black text-white",
-                                          "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 ",
+                                          "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 "
                                         )}
                                       >
                                         {subItem.name}
@@ -260,7 +281,7 @@ export default function AdminLayout({ children }) {
                               item.href === activeCategory
                                 ? "bg-gray-50 text-black"
                                 : "hover:bg-gray-50  hover:text-black text-white",
-                              "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 ",
+                              "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 "
                             )}
                           >
                             <div className="flex gap-2">
@@ -278,7 +299,7 @@ export default function AdminLayout({ children }) {
                                 item.href === activeCategory
                                   ? "bg-gray-50 text-black"
                                   : "hover:bg-gray-50 hover:text-black text-white",
-                                "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700",
+                                "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700"
                               )}
                             >
                               <ChevronRightIcon
@@ -301,7 +322,7 @@ export default function AdminLayout({ children }) {
                                       subItem.href === activeCategory
                                         ? "bg-gray-50 "
                                         : "hover:bg-gray-50 hover:text-black text-white",
-                                      "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 my-2",
+                                      "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 my-2"
                                     )}
                                   >
                                     {subItem.name}
@@ -419,7 +440,7 @@ export default function AdminLayout({ children }) {
             </div>
           </Affix>
 
-          <main className="py-2  bg-[#43474e] h-[calc(100vh-64px)]">
+          <main className="py-2  bg-[#43474e] min-h-[calc(100vh-64px)]">
             <div className="sm:px-6 lg:px-2">{children}</div>
           </main>
         </div>

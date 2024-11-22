@@ -4,28 +4,28 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { useTableState } from "./../../../hooks/useTableState";
-import { useModalState } from "./../../../hooks/useModalState";
-import ComTable from "./../../../components/ComTable/ComTable";
-import useColumnFilters from "./../../../components/ComTable/utils";
+import { useTableState } from "../../../hooks/useTableState";
+import { useModalState } from "../../../hooks/useModalState";
+import ComTable from "../../../components/ComTable/ComTable";
+import useColumnFilters from "../../../components/ComTable/utils";
 import { Image, Tooltip } from "antd";
-import { getData } from "./../../../apis/api";
+import { getData } from "../../../apis/api";
 import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButonTable";
 import { useNotification } from "../../../Notification/Notification";
 import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
 import ComModal from "../../../components/ComModal/ComModal";
 import DetailUpgrede from "./DetailUpgrede";
-import EditUpgrede from "./EditUpgrede";
-function formatCurrency(number) {
-  // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
-  if (typeof number === "number") {
-    return number.toLocaleString("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    });
+import EditCamera from './EditCamera';
+  function formatCurrency(number) {
+    // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
+    if (typeof number === "number") {
+      return number.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
+    }
   }
-}
-export const TableUpgrade = forwardRef((props, ref) => {
+export const TableCamera = forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState({});
   const table = useTableState();
@@ -42,81 +42,46 @@ export const TableUpgrade = forwardRef((props, ref) => {
   } = useColumnFilters();
   const columns = [
     {
-      title: "Tên gói",
-      width: "10%",
+      title: "Tên",
+      width: 100,
       fixed: "left",
       dataIndex: "name",
       key: "name",
       sorter: (a, b) => a?.name?.localeCompare(b?.name),
-      ...getColumnSearchProps("name", "Tên gói"),
+      ...getColumnSearchProps("name", "Tên"),
     },
+
     {
-      title: "Giá Tiền",
-      width: 100,
-      dataIndex: "price",
-      key: "price",
-      sorter: (a, b) => a.price - b.price,
-      ...getColumnPriceRangeProps("price", "Giá Tiền"),
+      title: "Hình ảnh",
+      dataIndex: "thumbnail",
+      key: "thumbnail",
+      width: 50,
       render: (_, record) => (
-        <div>
-          <h1>{formatCurrency(record.price)}</h1>
-        </div>
+        <>
+          <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
+            <Image
+              wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
+              src={record?.thumbnail}
+              alt={record?.thumbnail}
+              preview={{ mask: "Xem ảnh" }}
+            />
+          </div>
+        </>
       ),
     },
     {
-      title: "Dung lượng upload tối da",
-      width: 120,
-      dataIndex: "maxPhotoQuota",
-      key: "maxPhotoQuota",
-      sorter: (a, b) => a.maxPhotoQuota - b.maxPhotoQuota,
-      ...getColumnSearchProps("maxPhotoQuota", "Dung lượng"),
-    },
-    {
-      title: "Số lượng gói dịch vụ tối đa",
-      width: 120,
-      dataIndex: "maxPackageCount",
-      key: "maxPackageCount",
-      sorter: (a, b) => a.maxPackageCount - b.maxPackageCount,
-      ...getColumnSearchProps("maxPackageCount", "Số lượng"),
-    },
-    // {
-    //   title: "Số lượng đã đăng ký",
-    //   width: 120,
-    //   dataIndex: "totalOrder",
-    //   key: "totalOrder",
-    //   sorter: (a, b) => a.totalOrder - b.totalOrder,
-    //   // ...getColumnPriceRangeProps("price", "Giá Tiền"),
-    // },
-
-    {
-      title: "Thông tin tóm tắt",
-      width: 120,
-      dataIndex: "summary",
-      key: "summary",
-      sorter: (a, b) => a.maxPackageCount - b.maxPackageCount,
-      ...getColumnSearchProps("summary", "Tóm tắt"),
-    },
-    {
-      title: "Thông tin bổ sung",
-      dataIndex: "descriptions",
-      key: "descriptions",
-      width: 300,
-      ...getColumnSearchProps("descriptions", "chi tiết"),
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (descriptions) => (
-        <Tooltip
-          placement="topLeft"
-          title={descriptions.map((desc, index) => (
-            <div key={index}>{desc}</div> // Hiển thị từng mô tả trong tooltip
-          ))}
-        >
-          {/* Hiển thị từng phần tử trên giao diện */}
-          {descriptions.map((desc, index) => (
-            <div key={index}>{desc}</div>
-          ))}
-        </Tooltip>
+      title: "Nội dung",
+      dataIndex: "description",
+      key: "description",
+      width: 150,
+      ...getColumnSearchProps("description", "Nội dung"),
+      render: (_, record) => (
+        <>
+          <div
+            className="uploaded-content line-clamp-3"
+            dangerouslySetInnerHTML={{ __html: record.description }}
+          />
+        </>
       ),
     },
     {
@@ -138,7 +103,7 @@ export const TableUpgrade = forwardRef((props, ref) => {
             }}
             showModalDelete={() => {
               ComConfirmDeleteModal(
-                `/manager/upgrade-package`,
+                `/manager/camera`,
                 record.id,
                 `Bạn có chắc chắn muốn xóa?`,
                 reloadData,
@@ -147,14 +112,14 @@ export const TableUpgrade = forwardRef((props, ref) => {
               );
             }}
             // extraMenuItems={extraMenuItems}
-            // excludeDefaultItems={["details"]}
+            excludeDefaultItems={["details"]}
           />
         </div>
       ),
     },
   ];
   const notificationSuccess = () => {
-    notificationApi("success", "thành công", "Đã thành công");
+    notificationApi("success", "Thành công", "Đã xóa blog");
   };
   const notificationError = () => {
     notificationApi("error", "Lỗi", "Lỗi");
@@ -164,7 +129,7 @@ export const TableUpgrade = forwardRef((props, ref) => {
   }));
   const reloadData = () => {
     table.handleOpenLoading();
-    getData("/upgrade-package?limit=9999&page=0")
+    getData("/manager/camera?limit=9999&page=0&orderByCreatedAt=desc")
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");
@@ -183,6 +148,7 @@ export const TableUpgrade = forwardRef((props, ref) => {
     <div>
       <ComTable
         y={"65vh"}
+        x={1020}
         columns={columns}
         dataSource={data}
         loading={table.loading}
@@ -200,7 +166,7 @@ export const TableUpgrade = forwardRef((props, ref) => {
         onClose={modalEdit?.handleClose}
         width={800}
       >
-        <EditUpgrede
+        <EditCamera
           selectedUpgrede={selectedData}
           tableRef={reloadData}
           onClose={modalEdit?.handleClose}
