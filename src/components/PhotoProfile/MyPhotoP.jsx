@@ -66,7 +66,8 @@ const MyPhotoP = () => {
         orderByUpVote,
         watermark,
         selling,
-        searchResult
+        searchResult,
+        "RAW"
       ),
     keepPreviousData: true,
   });

@@ -56,6 +56,7 @@ import BookmarkLayout from "../layouts/BookmarkLayout";
 import PhotoManager from "../pages/Manager/PhotoManager/PhotoManager";
 import TransactionManager from "../pages/Manager/TransactionManager/TransactionManager";
 import MyPhotoshootPackageDetail from "../pages/UserProfile/MyPhotoshootPackageDetail";
+import PhotoManager2 from "../pages/Manager/PhotoManager2/PhotoManager2";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -373,7 +374,7 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/admin/photo",
-            element: <PhotoManager />,
+            element: <PhotoManager2 />,
           },
           {
             path: "/admin/transaction",
