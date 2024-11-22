@@ -6,16 +6,22 @@ import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { SlOptions } from "react-icons/sl";
 import DeleteWarning from "../../../components/ComWarning/DeleteWarning";
+import UpdatePhotoInManager from "../../../components/ComInputModal/UpdatePhotoInManager";
+import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 
 const PhotoManager2 = () => {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [selectedPhotoId, setSelectedPhotoId] = useState(null);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [sortDate, setSortDate] = useState("desc");
+  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const itemsPerPage = 6;
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["manager-photos", page],
-    queryFn: () => ManagerPhotoApi.getAllPhotos(itemsPerPage, page - 1),
+    queryKey: ["manager-photos", page, sortDate],
+    queryFn: () =>
+      ManagerPhotoApi.getAllPhotos(itemsPerPage, page - 1, sortDate),
     keepPreviousData: true,
   });
   4;
@@ -27,12 +33,38 @@ const PhotoManager2 = () => {
   const handleCloseDeleteModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleOpenUpdateModal = (photo) => {
+    setIsModalUpdateOpen(true);
+    setSelectedPhoto(photo);
+  };
+  const deletePhoto = useMutation({
+    mutationFn: (photoId) => ManagerPhotoApi.deletePhoto(photoId),
+  });
+
+  const handleDeletePhoto = () => {
+    deletePhoto.mutate(selectedPhotoId, {
+      onSuccess: () => {
+        message.success("Xóa thành công");
+        queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
+      },
+      onError: (error) => {
+        message.error(error.message);
+      },
+    });
+  };
+  const handleCloseUpdateModal = () => {
+    setIsModalUpdateOpen(false);
+  };
   const photosList = data?.objects;
+  console.log("photosList", photosList);
+
   const totalPages = data?.totalPage || 1;
   const columns = [
     {
       title: "ID ảnh",
       dataIndex: "photoId",
+      render: (photoId) => <div className="w-[300px]">{photoId}</div>,
     },
     {
       title: "Hình ảnh",
@@ -66,7 +98,7 @@ const PhotoManager2 = () => {
     {
       title: "Người dùng",
       dataIndex: "user",
-      render: (user) => <div className="truncate max-w-[200px]">{user}</div>,
+      render: (user) => <div className="truncate w-[200px]">{user}</div>,
     },
     {
       title: "Loại ảnh",
@@ -82,7 +114,18 @@ const PhotoManager2 = () => {
       ),
     },
     {
-      title: "Ngày tạo",
+      title: (
+        <div className="flex justify-between items-center">
+          <div>Ngày tạo</div>
+          <div
+            onClick={() =>
+              sortDate === "asc" ? setSortDate("desc") : setSortDate("asc")
+            }
+          >
+            {sortDate === "asc" ? <IoMdArrowDropdown /> : <IoMdArrowDropup />}
+          </div>
+        </div>
+      ),
       dataIndex: "createdAt",
     },
     {
@@ -115,7 +158,10 @@ const PhotoManager2 = () => {
         >
           <div className="py-1">
             <MenuItem>
-              <div className="block px-4 py-2 text-sm text-[#eee] hover:cursor-pointer data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none">
+              <div
+                onClick={() => handleOpenUpdateModal(photo)}
+                className="block px-4 py-2 text-sm text-[#eee] hover:cursor-pointer data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
+              >
                 Chỉnh sửa
               </div>
             </MenuItem>
@@ -143,21 +189,6 @@ const PhotoManager2 = () => {
     }
   };
 
-  const deletePhoto = useMutation({
-    mutationFn: (photoId) => ManagerPhotoApi.deletePhoto(photoId),
-  });
-
-  const handleDeletePhoto = () => {
-    deletePhoto.mutate(selectedPhotoId, {
-      onSuccess: () => {
-        message.success("Xóa thành công");
-        queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
-      },
-      onError: (error) => {
-        message.error(error.message);
-      },
-    });
-  };
   return (
     <>
       <ConfigProvider
@@ -171,6 +202,20 @@ const PhotoManager2 = () => {
           },
         }}
       >
+        <Modal
+          title=""
+          visible={isModalUpdateOpen} // Use state from Zustand store
+          onCancel={handleCloseUpdateModal} // Close the modal on cancel
+          footer={null}
+          width={800} // Set the width of the modal
+          centered={true}
+          className="custom-close-icon"
+        >
+          <UpdatePhotoInManager
+            onClose={handleCloseUpdateModal}
+            photo={selectedPhoto}
+          />
+        </Modal>
         <Modal
           title=""
           visible={isModalOpen} // Use state from Zustand store

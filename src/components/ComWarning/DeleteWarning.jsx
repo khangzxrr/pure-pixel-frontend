@@ -9,7 +9,7 @@ const DeleteWarning = ({ onClose, onDelete }) => {
     <div className="flex flex-col items-center justify-center gap-4">
       <div className="text-[#eee]">
         Bạn có chắc chắn muốn
-        <span className="font-bold text-red-500">XÓA</span> hình ảnh này không?
+        <span className="font-bold text-red-500"> XÓA</span> hình ảnh này không?
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 place-items-stretch w-full">
         <button
