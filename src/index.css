@@ -192,5 +192,8 @@ code {
 }
 
 .custom-close-icon .ant-modal-close {
-  color: #fff;
+  color: #d7d7d8;
+}
+.custom-close-icon .ant-modal-close:hover {
+  color: white;
 }

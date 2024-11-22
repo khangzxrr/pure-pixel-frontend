@@ -117,6 +117,7 @@ export default function BookingModal({ photoPackage, onClose }) {
         visible={true}
         onOk={handleSubmit(handleOk)}
         onCancel={handleCancel}
+        className="custom-close-icon"
       >
         <div>
           <p className="text-lg font-bold text-[#d7d7d8]">

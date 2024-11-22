@@ -67,6 +67,8 @@ export default function UpgradePaymentModal() {
     },
     onError: (error) => {
       setIsDisable(false);
+      setDisableWalletPayment(false);
+      setDisableSePayPayment(false);
       console.log("Error:", error.response.data.message);
       let message;
       switch (error.response.data.message) {
