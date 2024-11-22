@@ -42,7 +42,6 @@ const PhotoshootPackageCard = ({ key, photoshootPackage, onClick }) => {
 
                   setUserOtherId(photoshootPackage?.user.id);
                   navigate(`/user/${photoshootPackage?.user.id}`);
-
                 }}
                 className="truncate max-w-[100px] hover:underline underline-offset-2 hover:cursor-pointer sm:max-w-[150px] text-sm sm:text-base"
               >
@@ -72,7 +71,7 @@ const PhotoshootPackageCard = ({ key, photoshootPackage, onClick }) => {
           {formatPrice(photoshootPackage.price)}
         </div>
         <div>
-          <div className="text-sm sm:text-base font-semibold">Mô tả chung:</div>
+          <div className="text-sm sm:text-base font-normal">Mô tả chung:</div>
           <div className="font-normal text-xs sm:text-sm">
             <ul className="list-disc list-inside">
               <li>{photoshootPackage.description}</li>
