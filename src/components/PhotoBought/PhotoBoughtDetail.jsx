@@ -1,7 +1,5 @@
-import { useKeycloak } from "@react-keycloak/web";
-import React, { useState } from "react";
-import UserService from "../../services/Keycloak";
-import { useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import PhotoExchange from "../../apis/PhotoExchange";
 import PhotoApi from "../../apis/PhotoApi";
@@ -16,12 +14,7 @@ const PhotoBoughtDetail = () => {
   });
   const sizeList = data;
 
-  const {
-    data: photoData,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
+  const { data: photoData, isLoading } = useQuery({
     queryKey: ["photo-by-id", boughtId],
     queryFn: () => PhotoApi.getPhotoById(boughtId), // Không cần `await` khi đã trả về `Promise`
   });
