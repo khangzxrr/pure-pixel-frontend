@@ -182,7 +182,7 @@ export default function TableTransactilonList() {
     <div>
       {transaction && transaction.objects.length > 0 && (
         <ComTable
-          y={"70vh"}
+          y={"65vh"}
           x
           columns={columns}
           dataSource={transaction?.objects}

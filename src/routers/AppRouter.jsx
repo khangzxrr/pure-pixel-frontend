@@ -59,6 +59,7 @@ import MyPhotoshootPackageDetail from "../pages/UserProfile/MyPhotoshootPackageD
 import PhotoManager2 from "../pages/Manager/PhotoManager2/PhotoManager2";
 import ServicePackageManager from './../pages/Manager/ServicePackage/ServicePackageManager';
 import CameraManager from "../pages/Manager/Camera/CameraManager";
+import TransactionWithdrawalManager from "../pages/Manager/TransactionWithdrawalManager/TransactionWithdrawalManager";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -400,7 +401,7 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/admin/withdrawal-processing",
-            element: <BlogManager />,
+            element: <TransactionWithdrawalManager />,
           },
         ],
       },

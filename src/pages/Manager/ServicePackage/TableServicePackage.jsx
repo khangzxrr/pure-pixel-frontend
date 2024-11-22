@@ -42,13 +42,13 @@ export const TableServicePackage = forwardRef((props, ref) => {
   } = useColumnFilters();
   const columns = [
     {
-      title: "Tên bài viết",
+      title: "Tên gói chụp",
       width: 100,
       fixed: "left",
       dataIndex: "title",
       key: "title",
       sorter: (a, b) => a?.title?.localeCompare(b?.title),
-      ...getColumnSearchProps("title", "Tên bài viết"),
+      ...getColumnSearchProps("title", "Tên gói chụp"),
     },
 
     {
@@ -70,16 +70,29 @@ export const TableServicePackage = forwardRef((props, ref) => {
       ),
     },
     {
+      title: "Giá Tiền",
+      width: 100,
+      dataIndex: "price",
+      key: "price",
+      sorter: (a, b) => a.price - b.price,
+      ...getColumnPriceRangeProps("price", "Giá Tiền"),
+      render: (_, record) => (
+        <div>
+          <h1>{formatCurrency(record.price)}</h1>
+        </div>
+      ),
+    },
+    {
       title: "Nội dung",
-      dataIndex: "content",
-      key: "content",
+      dataIndex: "description",
+      key: "description",
       width: 150,
-      ...getColumnSearchProps("content", "Nội dung"),
+      ...getColumnSearchProps("description", "Nội dung"),
       render: (_, record) => (
         <>
           <div
-            className="uploaded-content line-clamp-3"
-            dangerouslySetInnerHTML={{ __html: record.content }}
+            className="uploaded-description line-clamp-3"
+            dangerouslySetInnerHTML={{ __html: record.description }}
           />
         </>
       ),
@@ -103,7 +116,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
             }}
             showModalDelete={() => {
               ComConfirmDeleteModal(
-                `/blog`,
+                `/manager/photoshoot-package`,
                 record.id,
                 `Bạn có chắc chắn muốn xóa?`,
                 reloadData,
@@ -112,14 +125,14 @@ export const TableServicePackage = forwardRef((props, ref) => {
               );
             }}
             // extraMenuItems={extraMenuItems}
-            excludeDefaultItems={["details"]}
+            excludeDefaultItems={["details","edit"]}
           />
         </div>
       ),
     },
   ];
   const notificationSuccess = () => {
-    notificationApi("success", "Thành công", "Đã xóa blog");
+    notificationApi("success", "Thành công", "Đã xóa gói chụp");
   };
   const notificationError = () => {
     notificationApi("error", "Lỗi", "Lỗi");
@@ -129,7 +142,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
   }));
   const reloadData = () => {
     table.handleOpenLoading();
-    getData("/blog?limit=9999&page=0&orderByCreatedAt=desc")
+    getData("/photoshoot-package?limit=9999&page=0&orderByCreatedAt=desc")
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");
@@ -147,7 +160,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
   return (
     <div>
       <ComTable
-        y={"50vh"}
+        y={"65vh"}
         x={1020}
         columns={columns}
         dataSource={data}
