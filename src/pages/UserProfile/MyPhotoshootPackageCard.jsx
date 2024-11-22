@@ -1,9 +1,31 @@
 import React from "react";
 import formatPrice from "../../utils/FormatPriceUtils";
 import calculateDateDifference from "../../utils/calculateDateDifference";
-
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Tooltip } from "antd";
+import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 const MyPhotoshootPackageCard = ({ packageDetail }) => {
   console.log("packageDetail", packageDetail);
+  const queryClient = useQueryClient();
+  const deletePhotoshootPackage = useMutation({
+    mutationFn: async (data) => {
+      // Await inside mutation function
+      return await PhotoshootPackageApi.deletePhotoshootPackage(
+        packageDetail.id
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("findAllPhotoshootPackages");
+    },
+    onError: (error) => {
+      notificationApi(
+        "error",
+        "Tạo gói chụp thất bại",
+        "Không thể tạo gói của bạn. Vui lòng thử lại."
+      );
+    },
+  });
 
   return (
     <div className="flex flex-col gap-2 rounded-lg bg-[#36393f] group hover:cursor-pointer">
@@ -15,13 +37,49 @@ const MyPhotoshootPackageCard = ({ packageDetail }) => {
         />
       </div>
       <div className="flex flex-col gap-1 px-2">
-        <div className=" text-2xl">{packageDetail.title}</div>
+        <div className=" text-2xl flex flex-row justify-between">
+          <p>{packageDetail.title}</p>
+          <div className="flex items-center gap-1">
+            <Tooltip
+              title="Xóa gói"
+              color="red"
+              placement="top"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent default behavior (if applicable)
+                e.stopPropagation(); // Prevent event from propagating to parent elements
+                // Your onClick logic for the Pencil icon here
+                console.log("delete  clicked");
+                deletePhotoshootPackage.mutate();
+              }}
+            >
+              <div className="text-lg hover:opacity-80 px-2 py-1 rounded-lg">
+                <DeleteOutlined className="text-red-500 hover:text-red-600" />
+              </div>
+            </Tooltip>
+
+            <Tooltip title="Cập nhật gói" color="blue" placement="top">
+              <div
+                className="text-lg hover:opacity-80 px-2 py-1 rounded-lg"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default behavior (if applicable)
+                  e.stopPropagation(); // Prevent event from propagating to parent elements
+                  // Your onClick logic for the Pencil icon here
+                  console.log("Pencil clicked");
+                }}
+              >
+                <EditOutlined className="text-blue-500 hover:text-blue-600" />
+              </div>
+            </Tooltip>
+          </div>
+        </div>
         <div className="font-normal underline underline-offset-2">
           {formatPrice(packageDetail.price)}
         </div>
         <div className="flex flex-col mt-2">
-          <div>Mô tả chung</div>
-          {packageDetail.description}
+          <div className="font-semibold">Mô tả chung</div>
+          <p className=" font-normal text-gray-200">
+            {packageDetail.description}
+          </p>
         </div>
       </div>
       <div className=" flex items-center justify-between p-2 text-sm font-normal text-[#9ca3af]">

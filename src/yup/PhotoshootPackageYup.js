@@ -5,10 +5,18 @@ export const PhotoshootPackageYup = yup.object({
   subtitle: yup.string().required("Vui lòng nhập phụ đề."),
   price: yup
     .number()
-    .typeError("Giá phải là một số.")
-    .required("Vui lòng nhập giá.")
-    .positive("Giá phải lớn hơn 0.")
-    .min(10000, "Giá phải lớn hơn 10,000vnđ"), // Ensures price is more than 10,000
+    .transform((value, originalValue) => {
+      if (typeof originalValue === "string") {
+        // Convert the value to a number
+        const parsedValue = parseInt(originalValue.replace(/\./g, ""), 10);
+        return isNaN(parsedValue) ? undefined : parsedValue;
+      }
+      return value;
+    })
+    .typeError("Giá phải là số")
+    .required("Giá là bắt buộc")
+    .min(10000, "Giá ít nhất là 10.000đ") // Minimum price validation
+    .max(10000000000, "Giá phải ít hơn 10 tỷ đồng"), // Maximum price validation
   description: yup
     .string()
     .required("Vui lòng nhập mô tả.")
