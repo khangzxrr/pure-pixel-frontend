@@ -56,6 +56,8 @@ import BookmarkLayout from "../layouts/BookmarkLayout";
 import PhotoManager from "../pages/Manager/PhotoManager/PhotoManager";
 import TransactionManager from "../pages/Manager/TransactionManager/TransactionManager";
 import MyPhotoshootPackageDetail from "../pages/UserProfile/MyPhotoshootPackageDetail";
+import ServicePackageManager from './../pages/Manager/ServicePackage/ServicePackageManager';
+import CameraManager from "../pages/Manager/Camera/CameraManager";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -385,6 +387,18 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/admin/blog",
+            element: <BlogManager />,
+          },
+          {
+            path: "/admin/service-package",
+            element: <ServicePackageManager />,
+          },
+          {
+            path: "/admin/camera",
+            element: <CameraManager />,
+          },
+          {
+            path: "/admin/withdrawal-processing",
             element: <BlogManager />,
           },
         ],

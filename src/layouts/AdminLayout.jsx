@@ -10,6 +10,7 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import {
+  BanknotesIcon,
   Bars3Icon,
   BellIcon,
   CalendarIcon,
@@ -19,6 +20,7 @@ import {
   FolderIcon,
   HomeIcon,
   UsersIcon,
+  VideoCameraIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -34,6 +36,7 @@ import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Affix } from "antd";
 import { useKeycloak } from "@react-keycloak/web";
+import { PackageIcon } from "lucide-react";
 
 const navigation = [
   {
@@ -81,6 +84,24 @@ const navigation = [
     name: "Giao dịch",
     href: "/admin/transaction",
     icon: ChartPieIcon,
+    current: false,
+  },
+  {
+    name: "Gói dịch vụ ",
+    href: "/admin/service-package",
+    icon: PackageIcon,
+    current: false,
+  },
+  {
+    name: "Camera ",
+    href: "/admin/camera",
+    icon: VideoCameraIcon,
+    current: false,
+  },
+  {
+    name: "Xử lý rút tiền ",
+    href: "/admin/withdrawal-processing",
+    icon: BanknotesIcon,
     current: false,
   },
 ];
