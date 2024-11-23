@@ -433,36 +433,39 @@ export default function UpdatePhotoshootPackage({ onClose }) {
           </Tooltip>
         </div>
         {/* Show case list */}
-        {showcasesUrl.map((showcase, index) => (
-          <div
-            key={`showcase-${index}`}
-            className="col-span-1  h-full py-2 px-1 relative group"
-          >
-            <img
-              src={showcase.photoUrl}
-              alt={`Showcase ${index + 1}`}
-              className="w-full h-full object-cover rounded-md"
-            />
-            <button
-              type="button" // Prevent the button from acting as a submit button
-              onClick={(e) => {
-                e.preventDefault(); // Prevent default form submission
-                deletePhotoFromShowcases(index);
-              }}
-              className="absolute top-3 right-2 hover:bg-opacity-70 bg-white text-red-500 hover:text-red-600 text-xl px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+        {showcasesUrl &&
+          showcasesUrl.length > 0 &&
+          showcasesUrl.map((showcase, index) => (
+            <div
+              key={`showcase-${index}`}
+              className="col-span-1  h-full py-2 px-1 relative group"
             >
-              <DeleteOutlined className="w-7 h-7" />
-            </button>
-          </div>
-        ))}
+              <img
+                src={showcase.photoUrl}
+                alt={`Showcase ${index + 1}`}
+                className="w-full h-full object-cover rounded-md"
+              />
+              <button
+                type="button" // Prevent the button from acting as a submit button
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default form submission
+                  deletePhotoFromShowcases(index);
+                }}
+                className="absolute top-3 right-2 hover:bg-opacity-70 bg-white text-red-500 hover:text-red-600 text-xl px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <DeleteOutlined className="w-7 h-7" />
+              </button>
+            </div>
+          ))}
 
         {/* Add placeholder cells to ensure grid structure */}
-        {[...Array(21 - showcasesUrl.length - 1)].map((_, index) => (
-          <div
-            key={`placeholder-${index}`}
-            className="col-span-1  h-full bg-[#767676] rounded-md"
-          />
-        ))}
+        {showcasesUrl &&
+          [...Array(21 - showcasesUrl.length - 1)].map((_, index) => (
+            <div
+              key={`placeholder-${index}`}
+              className="col-span-1  h-full bg-[#767676] rounded-md"
+            />
+          ))}
       </div>
     </form>
   );

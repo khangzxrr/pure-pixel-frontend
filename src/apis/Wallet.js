@@ -21,7 +21,7 @@ const getTransaction = async ({
       type ? "type=" + type : ""
     }&${
       status ? "status=" + status : ""
-    }&orderByPaymentMethod=asc&orderByAmount=${orderByAmount}&orderByType=asc&orderByCreatedAt=${orderByCreatedAt}`
+    }&orderByPaymentMethod=asc&orderByAmount=${orderByAmount}&orderByType=desc&orderByCreatedAt=${orderByCreatedAt}`
   );
   return response.data;
 };

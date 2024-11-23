@@ -261,6 +261,7 @@ export default function CustomUpload() {
   };
 
   const customRequest = async ({ file, onError, onSuccess }) => {
+    console.log("customRequest", file);
     try {
       const response = await uploadPhoto.mutateAsync({
         file,
