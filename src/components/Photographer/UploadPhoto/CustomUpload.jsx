@@ -70,6 +70,8 @@ export default function CustomUpload() {
     mutateKey: "add-watermark",
     mutationFn: async (photo) => await PhotoApi.addWatermark(photo),
   });
+
+  //handle exception from api response
   const handleException = (file, e) => {
     switch (e && e.response.data.message) {
       case "RunOutPhotoQuotaException":
@@ -162,7 +164,7 @@ export default function CustomUpload() {
     }
     console.log("handleException", file.uid);
 
-    removePhotoByUid(file.uid);
+    updatePhotoPropertyByUid(file.uid, "status", "error");
   };
 
   const beforeUpload = async (file) => {
@@ -210,7 +212,29 @@ export default function CustomUpload() {
       );
       return false;
     }
+    // if (!exif.Model) {
+    //   notificationApi(
+    //     "error",
+    //     "Tải ảnh lên thất bại",
+    //     "Ảnh bạn chọn thiếu thông tin loại máy chụp (Model)",
+    //     "",
+    //     0,
+    //     "upload-photo-dragger-error"
+    //   );
+    //   return false;
+    // }
 
+    // if (!exif.Make) {
+    //   notificationApi(
+    //     "error",
+    //     "Tải ảnh lên thất bại",
+    //     "Ảnh bạn chọn thiếu thông tin nhà sản xuất (Make)",
+    //     "",
+    //     0,
+    //     "upload-photo-dragger-error"
+    //   );
+    //   return false;
+    // }
     try {
       const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(file);
 
@@ -288,7 +312,7 @@ export default function CustomUpload() {
           message.error(`Lỗi không xác định, vui lòng thử lại`);
           break;
       }
-      removePhotoByUid(info.file.uid);
+      // removePhotoByUid(info.file.uid);
 
       return;
     }
@@ -348,7 +372,7 @@ export default function CustomUpload() {
         {/* scrollbar for photo list */}
         <div
           className={`bg-[#36393f] grid grid-rows-8 overflow-x-auto lg:col-span-6 md:col-span-5 sm:col-span-5 xs:col-span-5 col-span-5 ${
-            photoArray.some((photo) => photo.status === "done") ? "" : "hidden"
+            photoArray.length > 0 ? "" : "hidden"
           }`}
         >
           <div
@@ -382,7 +406,7 @@ export default function CustomUpload() {
 
         <div
           className={`tranlation duration-150 ${
-            photoArray.some((photo) => photo.status === "done")
+            photoArray.length > 0
               ? "lg:col-span-1 md:col-span-2 sm:col-span-2 col-span-2  grid grid-row-4 "
               : "col-span-7"
           }  bg-[#42454a] `}
@@ -390,9 +414,7 @@ export default function CustomUpload() {
         >
           <div
             className={`w-full row-span-3 ${
-              photoArray.some((photo) => photo.status === "done")
-                ? ""
-                : "hidden"
+              photoArray.length > 0 ? "" : "hidden"
             } ${
               photoArray.some((photo) => photo.status === "uploading")
                 ? "bg-gray-400 cursor-not-allowed"
@@ -419,9 +441,7 @@ export default function CustomUpload() {
           </div>
           <div
             className={` ${
-              photoArray.some((photo) => photo.status === "done")
-                ? "row-span-1"
-                : "row-span-7"
+              photoArray.length > 0 ? "row-span-1" : "row-span-7"
             }`}
           >
             <Dragger
@@ -442,61 +462,22 @@ export default function CustomUpload() {
                 border: "0px",
               }}
             >
-              {photoArray.some((photo) => photo.status === "done") ? (
+              {photoArray.length > 0 ? (
                 <div className="hover:text-white text-gray-200 text-6xl">
                   <PlusCircleOutlined />
                 </div>
               ) : (
                 <div className="h-screen bg-[#36393f] hover:bg-gray-600">
                   <div className="h-1/2 w-full flex justify-center items-center">
-                    {!photoArray.some(
-                      (photo) => photo.status === "uploading"
-                    ) ? (
-                      <div>
-                        <p className="h-1/2 text-2xl text-white font-semibold">
-                          Nhấp hoặc kéo tệp vào khu vực này để tải lên
-                        </p>
-                        <p className="h-1/2 text-white font-extralight">
-                          Hỗ trợ tải lên một hoặc nhiều tệp. Nghiêm cấm tải lên
-                          dữ liệu công ty hoặc các tệp bị cấm khác.
-                        </p>
-                      </div>
-                    ) : (
-                      <div>
-                        <ConfigProvider
-                          theme={{
-                            components: {
-                              Progress: {
-                                circleIconFontSize: "1.5em", // Customize the icon size if needed
-                                circleTextColor: "#f0f0f0", // Change the text color inside the circle
-                                circleTextFontSize: "1.2em", // Change the text size inside the circle
-                                defaultColor: "#52c41a", // Default color of the progress bar
-                                remainingColor: "rgba(255, 255, 255, 0.2)", // Color of the unfilled part
-                              },
-                            },
-                          }}
-                        >
-                          <Progress
-                            type="circle"
-                            percent={
-                              photoArray.reduce(
-                                (acc, photo) => acc + (photo.percent || 0),
-                                0
-                              ) / photoArray.length
-                            }
-                            strokeColor="#52c41a" // Main progress bar color
-                            className="custom-progress-text"
-                          />
-                        </ConfigProvider>
-                        <div>
-                          <p className="text-white text-lg font-normal   mt-3 ">
-                            {photoArray[0].percent < 70
-                              ? "Đang tải ảnh lên"
-                              : "Đang xử lý ảnh"}
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                    <div>
+                      <p className="h-1/2 text-2xl text-white font-semibold">
+                        Nhấp hoặc kéo tệp vào khu vực này để tải lên
+                      </p>
+                      <p className="h-1/2 text-white font-extralight">
+                        Hỗ trợ tải lên một hoặc nhiều tệp. Nghiêm cấm tải lên dữ
+                        liệu công ty hoặc các tệp bị cấm khác.
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}

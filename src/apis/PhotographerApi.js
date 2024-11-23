@@ -59,6 +59,7 @@ const getMyPhotos = async (
   const params = {
     limit,
     page,
+    photoType: "RAW",
   };
   // if (categoryName) {
   //   params.categoryName = categoryName;

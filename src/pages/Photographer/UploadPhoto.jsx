@@ -16,11 +16,6 @@ export default function UploadPhoto() {
     getPhotoByUid,
     uidHashmap,
   } = useUploadPhotoStore();
-  const { setIsUpgraded } = useUpgradePackageStore();
-  useEffect(() => {
-    setIsUpgraded(false);
-  }, []);
-
   const photoData =
     getPhotoByUid(selectedPhoto) !== undefined
       ? getPhotoByUid(selectedPhoto)
@@ -29,16 +24,12 @@ export default function UploadPhoto() {
 
   return (
     <div className="">
-      <div className="flex flex-col h-[95vh]">
+      <div className="flex flex-col h-[97vh]">
         <div className="flex flex-col w-full h-full">
-          <div
-            className={`flex ${
-              photoArray.some((photo) => photo.status === "done") ? "" : "h-1/2"
-            }`}
-          >
+          <div className={`flex ${photoArray.length > 0 ? "" : "h-1/2"}`}>
             <CustomUpload />
           </div>
-          {photoArray.some((photo) => photo.status === "done") && (
+          {photoArray.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-10 gap-4 h-3/4 lg:h-2/3 bg-[#2f3136]">
               <div className="col-span-10 md:col-span-4 h-full bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden">
                 {photoArray.length > 1 && (

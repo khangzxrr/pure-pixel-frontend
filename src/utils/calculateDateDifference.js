@@ -12,14 +12,22 @@ export default function calculateDateDifference(inputDate) {
   if (differenceInHours < 1 / 30) {
     return "Vừa xong";
   } else if (differenceInHours < 1) {
-    const hours = Math.floor(differenceInHours);
-    const minutes = Math.floor((differenceInHours - hours) * 60);
+    const minutes = Math.floor(differenceInHours * 60);
     return `${minutes} phút trước`;
   } else if (differenceInHours < 24) {
     const hours = Math.floor(differenceInHours);
     return `${hours} giờ trước`;
-  } else {
+  } else if (differenceInHours < 24 * 30) {
     const days = Math.floor(differenceInHours / 24);
     return `${days} ngày trước`;
+  } else {
+    // Format the date as HH:mm - DD-MM-YYYY
+    const hours = String(givenDate.getHours()).padStart(2, "0");
+    const minutes = String(givenDate.getMinutes()).padStart(2, "0");
+    const day = String(givenDate.getDate()).padStart(2, "0");
+    const month = String(givenDate.getMonth() + 1).padStart(2, "0");
+    const year = givenDate.getFullYear();
+
+    return `${hours}:${minutes}-${day}-${month}-${year}`;
   }
 }

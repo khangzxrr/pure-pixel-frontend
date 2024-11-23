@@ -1,6 +1,6 @@
 import { Checkbox, message, Progress, Tooltip } from "antd";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, UndoOutlined } from "@ant-design/icons";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -50,7 +50,14 @@ export default function PhotoCard({ photo }) {
   const handleSelect = () => {
     setSelectedPhotoByUid(photo.file.uid);
   };
-
+  const reUploadPhoto = () => {
+    notificationApi(
+      "info",
+      "Đang thử lại tải ảnh",
+      "Tính năng chưa có, vui lòng thử lại"
+    );
+    console.log("reupload");
+  };
   return (
     <div className="relative grid grid-rows-2 p-2">
       <div className="lg:w-[200px] lg:h-[150px] w-[180px] h-[135px]">
@@ -88,7 +95,7 @@ export default function PhotoCard({ photo }) {
           </div>
         </div>
       </div>
-      {photo.status !== "done" && (
+      {photo.status === "uploading" && (
         <div
           className={`absolute inset-0 grid place-items-center ${
             photo.file.uid === selectedPhoto
@@ -101,6 +108,26 @@ export default function PhotoCard({ photo }) {
           <p className="text-blue-500">
             {photo.percent < 70 ? "Đang tải ảnh lên" : "Đang xử lý ảnh"}
           </p>
+        </div>
+      )}
+      {photo.status === "error" && (
+        <div
+          className={`absolute inset-0 grid place-items-center bg-gray-300 bg-opacity-80  z-10 rounded-lg`}
+        >
+          <Tooltip
+            title="Thử lại"
+            color="blue"
+            onClick={(e) => {
+              e.preventDefault(); // Prevent default behavior (if applicable)
+              e.stopPropagation(); // Prevent event from propagating to parent elements
+              reUploadPhoto();
+            }}
+          >
+            <div className="flex flex-col items-center cursor-pointer text-blue-500 hover:opacity-80">
+              <UndoOutlined className="text-4xl text-blue-500" />
+              <p className="text-blue-500 mt-2">Thử lại</p>
+            </div>
+          </Tooltip>
         </div>
       )}
       {photo.watermark && (

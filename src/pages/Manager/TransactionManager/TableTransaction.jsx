@@ -193,9 +193,8 @@ export const TableTransaction = forwardRef((props, ref) => {
     // },
   ];
 
- 
   const notificationSuccess = () => {
-    notificationApi("success", "thành công", "Đã thành công");
+    notificationApi("success", "Thành công", "Đã thành công");
   };
   const notificationError = () => {
     notificationApi("error", "Lỗi", "Lỗi");
@@ -209,7 +208,7 @@ export const TableTransaction = forwardRef((props, ref) => {
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");
-        console.log(123213213,e?.data);
+        console.log(123213213, e?.data);
         console.log("====================================");
         table.handleCloseLoading();
       })

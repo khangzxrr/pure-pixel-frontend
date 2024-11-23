@@ -81,8 +81,6 @@ export default function Wallet() {
 
   return (
     <>
-      {/* <TableTransactilonList /> */}
-
       <div className="relative">
         {/* The Main Content */}
         <div
@@ -172,6 +170,7 @@ export default function Wallet() {
           sideNavRef={sideNavDrawalRef}
           setIsNavVisible={setIsNavDrawalVisible}
           isNavVisible={isNavDrawalVisible}
+          balance={wallet ? wallet.walletBalance : 0}
         />
       </div>
     </>

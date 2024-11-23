@@ -15,7 +15,7 @@ function ComDateConverter({ children, formatData = "YYYY-MM-DD", time }) {
 
       // Format date with or without time
       const formattedDate = time
-        ? date.format("HH:mm / DD-MM-YYYY") // Return date with time if `time` is true
+        ? date.format("HH:mm - DD-MM-YYYY") // Return date with time if `time` is true
         : date.format("DD-MM-YYYY"); // Return only date if `time` is false
 
       return formattedDate;

@@ -22,17 +22,12 @@ export default function CreatePhotoshootPackage({
   photoshootPackage,
   onClose,
 }) {
-  const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
   const [thumbnail, setThumbnail] = useState();
   const [thumbnailUrl, setThumbnailUrl] = useState();
   const [showcases, setShowcases] = useState([]);
   const [showcasesUrl, setShowcasesUrl] = useState([]);
 
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
   const queryClient = useQueryClient();
   const {
     handleSubmit,
@@ -61,7 +56,6 @@ export default function CreatePhotoshootPackage({
         "Tạo gói chụp thành công",
         "Gói chụp ảnh của bạn đã được tạo thành công."
       );
-      setDisabled(false);
       setThumbnail(null);
       setShowcases([]);
       setThumbnailUrl();
@@ -77,10 +71,12 @@ export default function CreatePhotoshootPackage({
         "Tạo gói chụp thất bại",
         "Không thể tạo gói của bạn. Vui lòng thử lại."
       );
-      setDisabled(false);
     },
   });
-
+  const {
+    mutate: createPhotoshootMutate,
+    isPending: isCreatePhotoshootPending,
+  } = createPhotoShootPackage;
   const onThumbnailChange = async (info) => {
     console.log(info, info.file.originFileObj);
     try {
@@ -130,15 +126,12 @@ export default function CreatePhotoshootPackage({
     setShowcasesUrl(updatedShowcasesUrl);
   };
   const onSubmit = async (data) => {
-    setDisabled(true);
-
     if (!thumbnail) {
       notificationApi(
         "error",
         "Hình ảnh không hợp lệ",
         "Vui lòng chọn ảnh bìa."
       );
-      setDisabled(false);
       return;
     }
 
@@ -148,12 +141,11 @@ export default function CreatePhotoshootPackage({
         "Hình ảnh không hợp lệ",
         "Vui lòng chọn ảnh cho bộ sưu tập."
       );
-      setDisabled(false);
       return;
     }
 
     try {
-      await createPhotoShootPackage.mutate({ thumbnail, showcases, ...data });
+      await createPhotoshootMutate({ thumbnail, showcases, ...data });
     } catch (error) {
       console.log(error);
     }
@@ -246,7 +238,7 @@ export default function CreatePhotoshootPackage({
                               ? "border-red-500 focus:border-red-600 hover:border-red-600"
                               : "border-[#ababab] focus:border-[#e0e0e0] hover:border-b-[#e0e0e0]"
                           }`}
-                          style={{ minWidth: "130px" }} // Add minimum width directly
+                          style={{ minWidth: "150px" }} // Add minimum width directly
                           placeholder="Tựa đề của gói"
                         />
                       </>
@@ -365,11 +357,13 @@ export default function CreatePhotoshootPackage({
             </div>
             <div>
               <button
-                disabled={disabled}
+                disabled={isCreatePhotoshootPending}
                 type="submit"
                 className="w-full py-2 px-5 bg-[#eee] text-center text-[#57585a] font-semibold rounded-lg hover:bg-[#b3b3b3] hover:text-black transition duration-300"
               >
-                {disabled ? "Đang tạo gói chụp..." : "Tạo gói chụp"}
+                {isCreatePhotoshootPending
+                  ? "Đang tạo gói chụp..."
+                  : "Tạo gói chụp"}
               </button>
             </div>
           </div>

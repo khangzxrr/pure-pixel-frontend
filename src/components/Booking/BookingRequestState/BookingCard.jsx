@@ -42,7 +42,7 @@ const BookingCard = ({ booking, status }) => {
       queryClient.invalidateQueries("get-all-photographer-booking");
       queryClient.invalidateQueries("booking-photographer-detail");
       notificationApi("success", "Thành công", "Đã chấp nhận lịch hẹn này");
-      navigate(`/profile/booking/${booking.id}`);
+      navigate(`/profile/booking-request/${booking.id}`);
     },
   });
 
@@ -62,7 +62,7 @@ const BookingCard = ({ booking, status }) => {
   };
   const handleBookingOnClick = () => {
     if (booking.status === "ACCEPTED" || booking.status === "SUCCESSED") {
-      navigate(`/profile/booking/${booking.id}`);
+      navigate(`/profile/booking-request/${booking.id}`);
     }
   };
 
@@ -154,7 +154,6 @@ const BookingCard = ({ booking, status }) => {
               <div className="col-span-1">
                 <button
                   onClick={() => handleAcceptButtonOnClick()}
-                  // onClick={() => navigate(`/profile/booking/${123}`)}
                   className="transition duration-300 bg-[#eee] text-[#202225] w-full px-2 py-1 rounded-lg hover:bg-[#c0c0c0]"
                 >
                   Xác nhận

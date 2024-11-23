@@ -6,21 +6,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { WalletApi } from "../../apis/Wallet";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-// Validation schema using Yup
-const withdrawalSchema = yup.object().shape({
-  amount: yup
-    .number()
-    .typeError("Vui lòng nhập số tiền hợp lệ")
-    .min(10000, "Số tiền rút phải lớn hơn 10,000 VND")
-    .required("Số tiền không được để trống"),
-  bankNumber: yup
-    .string()
-    .required("Số tài khoản ngân hàng không được để trống")
-    .matches(/^\d+$/, "Số tài khoản ngân hàng phải là số"),
-  bankName: yup.string().required("Tên ngân hàng không được để trống"),
-  bankUsername: yup.string().required("Tên người nhận không được để trống"),
-});
+import { notificationApi } from "../../Notification/Notification";
+import { NumericFormat } from "react-number-format";
 
 const formatNumber = (number) => {
   return new Intl.NumberFormat("de-DE").format(number);
@@ -30,7 +17,31 @@ export default function SideWithdrawalForm({
   sideNavRef,
   isNavVisible,
   setIsNavVisible,
+  balance,
 }) {
+  // Validation schema using Yup
+  const withdrawalSchema = yup.object().shape({
+    amount: yup
+      .number()
+      .typeError("Vui lòng nhập số tiền hợp lệ")
+      .min(10000, "Số tiền rút phải lớn hơn 10,000 VND")
+      .max(balance + 1, "Số dư không đủ để thực hiện giao dịch") // Maximum price validation
+      .transform((value, originalValue) => {
+        if (typeof originalValue === "string") {
+          // Convert the value to a number
+          const parsedValue = parseInt(originalValue.replace(/\./g, ""), 10);
+          return isNaN(parsedValue) ? undefined : parsedValue;
+        }
+        return value;
+      })
+      .required("Số tiền không được để trống"),
+    bankNumber: yup
+      .string()
+      .required("Số tài khoản ngân hàng không được để trống")
+      .matches(/^\d+$/, "Số tài khoản ngân hàng phải là số"),
+    bankName: yup.string().required("Tên ngân hàng không được để trống"),
+    bankUsername: yup.string().required("Tên người nhận không được để trống"),
+  });
   const [bankList, setBankList] = useState([]);
   const queryClient = useQueryClient(); // Get the QueryClient instance
 
@@ -82,13 +93,33 @@ export default function SideWithdrawalForm({
       console.log("Loading...");
     },
     onError: (error) => {
-      console.error("Error posting comment:", error);
+      let message;
+      switch (error.response.data.message) {
+        case "NotEnoughBalanceException":
+          message = "Số dư không đủ để thực hiện giao dịch";
+          break;
+
+        default:
+          message = "Yêu cầu rút tiền thất bại, thử lại sau";
+          break;
+      }
+      notificationApi(
+        "error",
+        "Yêu cầu rút tiền thất bại",
+        message,
+        "",
+        0,
+        "withdrawal-form"
+      );
+      console.error("Error posting comment:", error.response.data.message);
     },
   });
 
   const confirm = (data) => {
     if (data.amount < 10000) {
       message.error("Số tiền rút phải lớn hơn 10,000 VND");
+    } else if (data.amount > balance) {
+      message.error("Số dư không đủ để thực hiện giao dịch");
     } else {
       createWithdrawal.mutate(data);
       console.log(data);
@@ -146,15 +177,17 @@ export default function SideWithdrawalForm({
                   name="amount"
                   control={control}
                   render={({ field }) => (
-                    <Input
+                    <NumericFormat
                       {...field}
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      suffix=" ₫"
                       className={`w-5/6 mx-9 my-2 bg-[#dddddd] p-2 rounded-lg text-[#2a2c32] ${
                         errors.amount ? "border-red-500" : ""
                       }`}
-                      placeholder="Nhập số tiền bạn muốn rút"
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\./g, "");
-                        field.onChange(value);
+                      placeholder="Nhập giá"
+                      onValueChange={(values) => {
+                        field.onChange(values.value);
                       }}
                     />
                   )}
@@ -248,7 +281,7 @@ export default function SideWithdrawalForm({
                 getPopupContainer={() => sideNavRef.current}
                 disabled={!isValid}
               >
-                <p className="m-2 px-8 py-1 rounded-md bg-blue-500 text-white hover:bg-blue-400">
+                <p className="m-2 px-8 py-1 rounded-md bg-blue-500 text-white hover:bg-blue-400 cursor-pointer">
                   Yêu cầu rút
                 </p>
               </Popconfirm>
