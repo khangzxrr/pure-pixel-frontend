@@ -9,7 +9,9 @@ export default function ChatButton({ userId }) {
     <Tooltip title="Nhắn tin" color="blue">
       <MessageCircleMore
         className="w-5 h-5 ml-2 hover:text-blue-500 z-20"
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault(); // Prevent default behavior (if applicable)
+          e.stopPropagation(); // Prevent event from propagating to parent elements
           navigate(`/message?to=${userId}`);
         }}
       />

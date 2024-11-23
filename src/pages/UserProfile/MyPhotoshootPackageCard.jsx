@@ -1,11 +1,20 @@
 import React from "react";
 import formatPrice from "../../utils/FormatPriceUtils";
 import calculateDateDifference from "../../utils/calculateDateDifference";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import { Tooltip } from "antd";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-const MyPhotoshootPackageCard = ({ packageDetail }) => {
+import useModalStore from "../../states/UseModalStore";
+const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
+  const {
+    setIsUpdatePhotoshootPackageModal,
+    setSelectedUpdatePhotoshootPackage,
+  } = useModalStore();
   console.log("packageDetail", packageDetail);
   const queryClient = useQueryClient();
   const deletePhotoshootPackage = useMutation({
@@ -16,6 +25,11 @@ const MyPhotoshootPackageCard = ({ packageDetail }) => {
       );
     },
     onSuccess: () => {
+      console.log("deletePhotoshootPackage success", page);
+
+      queryClient.invalidateQueries({
+        queryKey: ["findAllPhotoshootPackages", page],
+      });
       queryClient.invalidateQueries("findAllPhotoshootPackages");
     },
     onError: (error) => {
@@ -26,7 +40,8 @@ const MyPhotoshootPackageCard = ({ packageDetail }) => {
       );
     },
   });
-
+  const { mutate: deletePhotoshootPackageMutate, isPending } =
+    deletePhotoshootPackage;
   return (
     <div className="flex flex-col gap-2 rounded-lg bg-[#36393f] group hover:cursor-pointer">
       <div className="h-[150px] overflow-hidden rounded-t-lg">
@@ -40,20 +55,23 @@ const MyPhotoshootPackageCard = ({ packageDetail }) => {
         <div className=" text-2xl flex flex-row justify-between">
           <p>{packageDetail.title}</p>
           <div className="flex items-center gap-1">
-            <Tooltip
-              title="Xóa gói"
-              color="red"
-              placement="top"
-              onClick={(e) => {
-                e.preventDefault(); // Prevent default behavior (if applicable)
-                e.stopPropagation(); // Prevent event from propagating to parent elements
-                // Your onClick logic for the Pencil icon here
-                console.log("delete  clicked");
-                deletePhotoshootPackage.mutate();
-              }}
-            >
-              <div className="text-lg hover:opacity-80 px-2 py-1 rounded-lg">
-                <DeleteOutlined className="text-red-500 hover:text-red-600" />
+            <Tooltip title="Xóa gói" color="red" placement="top">
+              <div
+                className="text-lg hover:opacity-80 px-2 py-1 rounded-lg"
+                disable={isPending}
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default behavior (if applicable)
+                  e.stopPropagation(); // Prevent event from propagating to parent elements
+                  // Your onClick logic for the Pencil icon here
+                  console.log("delete  clicked");
+                  deletePhotoshootPackageMutate();
+                }}
+              >
+                {isPending ? (
+                  <LoadingOutlined className="text-red-500 hover:text-red-600" />
+                ) : (
+                  <DeleteOutlined className="text-red-500 hover:text-red-600" />
+                )}
               </div>
             </Tooltip>
 
@@ -65,6 +83,8 @@ const MyPhotoshootPackageCard = ({ packageDetail }) => {
                   e.stopPropagation(); // Prevent event from propagating to parent elements
                   // Your onClick logic for the Pencil icon here
                   console.log("Pencil clicked");
+                  setIsUpdatePhotoshootPackageModal(true);
+                  setSelectedUpdatePhotoshootPackage(packageDetail.id);
                 }}
               >
                 <EditOutlined className="text-blue-500 hover:text-blue-600" />

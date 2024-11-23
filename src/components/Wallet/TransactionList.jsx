@@ -5,8 +5,8 @@ import UserService from "../../services/Keycloak";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import TransactionLine from "./TransactionLine";
 import { Button, Dropdown, Pagination, Tooltip } from "antd";
-import TransactionSkeleton from "./TransactionSkeleton";
 import CustomPagination from "./CustomPagination";
+import TableSkeleton from "../Skeleton/TableSkeleton";
 
 const buttonTypes = [
   { key: "", label: "Tất cả" },
@@ -263,7 +263,7 @@ export default function TransactionList() {
             </tr>
           </thead>
           {isLoading ? (
-            <TransactionSkeleton />
+            <TableSkeleton />
           ) : (
             <tbody className="bg-[#36393f]">
               {transaction && transaction.objects.length > 0 ? (

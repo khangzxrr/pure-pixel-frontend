@@ -1,6 +1,6 @@
 import React from "react";
 
-function ComStatusWalletConverter({ children  }) {
+function ComStatusWalletConverter({ children }) {
   const convertStatus = (type) => {
     switch (type) {
       case "SUCCESS":

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import useColumnFilters from "../ComTable/utils";
-import { useTableState } from "./../../hooks/useTableState";
-import { Typography } from "antd";
-import ComBillStatusConverter from "./../ComStatusConverter/ComBillStatusConverter";
+import { ConfigProvider, Pagination, Typography } from "antd";
 import ComDateConverter from "../ComDateConverter/ComDateConverter";
 import ComTable from "../ComTable/ComTable";
-import { getData } from "../../apis/api";
-import ComMenuButonTable from "../ComMenuButonTable/ComMenuButonTable";
-import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter";
 import ComStatusWalletConverter from "./../ComStatusConverter/ComStatusWalletConverter";
 import { useQuery } from "@tanstack/react-query";
 import { WalletApi } from "../../apis/Wallet";
+import { WalletOutlined } from "@ant-design/icons";
+import TableSkeleton from "../Skeleton/TableSkeleton";
+import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter";
+import calculateDateDifference from "../../utils/calculateDateDifference";
+import ComNoteWalletConverter from "../ComStatusConverter/ComNoteWalletConventer";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -21,43 +21,52 @@ function formatCurrency(number) {
   }
 }
 export default function TableTransactilonList() {
-  const { getColumnSearchProps, getColumnApprox, getColumnPriceRangeProps } =
-    useColumnFilters();
+  const limit = 10;
+  const [page, setPage] = useState(1);
+  const [orderByAmount, setOrderByAmount] = useState("asc");
+  const [orderByCreatedAt, setOrderByCreatedAt] = useState("asc");
+  const [type, setType] = useState("");
   const columns = [
     {
       title: "Số tiền",
-      width: 100,
+      width: "10%",
       fixed: "left",
       dataIndex: "amount",
       key: "amount",
       sorter: (a, b) => a.amount - b.amount,
-      ...getColumnPriceRangeProps("amount", "Số Tiền"),
       render: (_, record) => (
         <div>
-          <h1
-            className={
-              record.type === "DEPOSIT" ? `text-green-400` : "text-red-400"
-            }
-          >
-            {record.type === "DEPOSIT" ? `+` : "-"}
-            {formatCurrency(record.amount)}
+          <h1>
+            {record.status === "SUCCESS" && record.amount !== 0 ? (
+              record.type === "IMAGE_SELL" || record.type === "DEPOSIT" ? (
+                <span className="text-green-400">
+                  +{formatCurrency(record.amount)}
+                </span>
+              ) : (
+                <span className="text-red-400">
+                  -{formatCurrency(record.amount)}
+                </span>
+              )
+            ) : record.status === "PENDING" ? (
+              <span className="text-yellow-400">
+                {"  "}
+                {formatCurrency(record.amount)}
+              </span>
+            ) : (
+              <span className="text-gray-400">
+                {"  "}
+                {formatCurrency(record.amount)}
+              </span>
+            )}
           </h1>
         </div>
       ),
     },
     {
       title: "Loại",
-      width: 100,
+      width: "25%",
       dataIndex: "type",
       key: "type",
-      filters: [
-        { text: "Nâng cấp tài khoản", value: "UPGRADE_TO_PHOTOGRAPHER" },
-        { text: "Nạp tiền", value: "DEPOSIT" },
-        { text: "Mua ảnh", value: "IMAGE_BUY" },
-        { text: "Rút tiền", value: "WITHDRAWAL" },
-      ],
-      onFilter: (value, record) => record.type === value,
-      sorter: (a, b) => a?.type?.localeCompare(b?.type),
       render: (_, record) => (
         <div>
           <ComTypeWalletConverter>{record.type}</ComTypeWalletConverter>
@@ -65,34 +74,42 @@ export default function TableTransactilonList() {
       ),
     },
     {
+      title: "Ghi chú",
+      width: "15%",
+      dataIndex: "type",
+      key: "type",
+      render: (_, record) => (
+        <div>
+          <ComNoteWalletConverter type={record.type} amount={record.amount} />
+        </div>
+      ),
+    },
+    {
       title: "Thanh toán bằng",
-      width: 100,
+      width: "15%",
       dataIndex: "method",
       key: "method",
-      filters: [
-        { text: "SEPAY", value: "SEPAY" },
-        { text: "Tiền mặt", value: "Cash" },
-        { text: "Momo", value: "Momo" },
-      ],
-      onFilter: (value, record) => record.paymentMethod === value,
-      sorter: (a, b) => a?.paymentMethod?.localeCompare(b?.paymentMethod),
-      // ...getColumnSearchProps("paymentMethod", "Thanh toán bằng"),
       render: (_, record) => (
         <div>
           <h1>
             {record.paymentMethod === "SEPAY" ? (
-              <div className="flex flex-row justify-center">
+              <div className="flex flex-row justify-start">
                 <img
                   src="https://sepay.vn/assets/img/logo/sepay-820x820-blue-icon.png"
                   alt="sepay"
-                  className="w-8 h-8"
+                  className="w-7 h-7"
                 />
                 <p className="ml-3 font-normal">Sepay</p>
               </div>
-            ) : record.method === "None" ? (
-              "Chưa thanh toán"
+            ) : record.paymentMethod === "WALLET" ? (
+              <div className="flex flex-row justify-start">
+                <WalletOutlined
+                  style={{ fontSize: "24px", color: "#2c6acd" }}
+                />
+                <p className="ml-3 font-normal">Ví</p>
+              </div>
             ) : (
-              record.method
+              record.paymentMethod
             )}
           </h1>
         </div>
@@ -100,18 +117,10 @@ export default function TableTransactilonList() {
     },
     {
       title: "Trạng thái",
-      width: 100,
+      width: "15%",
       dataIndex: "status",
       key: "status",
-      filters: [
-        { text: "Đã thanh toán", value: "Paid" },
-        { text: "Chưa thanh toán", value: "UnPaid" },
-        { text: "Đã hủy", value: "Faied" },
-        { text: "Hết hạn", value: "OverDue" },
-      ],
-      onFilter: (value, record) => record.status === value,
-      sorter: (a, b) => a?.status?.localeCompare(b?.status),
-      // ...getColumnSearchProps("method", "Thanh toán bằng"),
+
       render: (_, record) => (
         <div>
           <h1>
@@ -123,72 +132,90 @@ export default function TableTransactilonList() {
 
     {
       title: "Thời gian cập nhật",
-      width: 100,
+      width: "15%",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
-      ...getColumnApprox("updatedAt", "Thời gian thanh toán"),
       render: (updatedAt, record) => (
-        <div>
-          <ComDateConverter time>{updatedAt}</ComDateConverter>
-        </div>
+        <div>{calculateDateDifference(updatedAt)}</div>
       ),
     },
-    // {
-    //   title: "Thao tác",
-    //   key: "operation",
-    //   fixed: "right",
-    //   width: 50,
-    //   render: (_, record) => (
-    //     <div className="flex items-center flex-col">
-    //       <ComMenuButonTable
-    //         record={record}
-    //         //    showModalDetails={() => showModal(record)}
-    //         //    showModalEdit={showModalEdit}
-    //         // extraMenuItems={extraMenuItems}
-    //         excludeDefaultItems={["delete", "edit"]}
-    //         // order={order}
-    //       />
-    //     </div>
-    //   ),
-    // },
   ];
   const {
     data: transaction,
     error,
     isLoading,
+    isFetching,
     isError,
   } = useQuery({
-    queryKey: ["transactionList"], // Unique query key for caching
+    queryKey: ["transactionList", page], // Unique query key for caching
     queryFn: () => {
       return WalletApi.getTransaction({
-        limit: 9999,
-        page: 0,
-        orderByAmount: "asc",
-        orderByCreatedAt: "desc ",
+        limit,
+        page: page - 1,
+        type,
+        orderByAmount,
+        orderByCreatedAt,
       });
     },
-    onSuccess: (data) => {
-      console.log("Transaction data fetched successfully:", data);
-    },
-    onError: (error) => {
-      console.error("Error fetching transaction:", error);
-    },
+    keepPreviousData: true,
   });
-  useEffect(() => {
-    console.log("transaction", transaction?.objects);
-  }, []);
+  const totalPages = transaction ? transaction.totalPage : 0;
+  console.log("transaction", transaction);
+
+  const handlePageClick = (pageNumber) => {
+    if (pageNumber !== page) {
+      setPage(pageNumber);
+    }
+  };
   return (
     <div>
-      {transaction && transaction.objects.length > 0 && (
+      {!isFetching && totalPages > 1 && (
+        <ConfigProvider
+          theme={{
+            token: {
+              colorBgContainer: "#1e1e1e",
+              colorText: "#b3b3b3",
+              colorPrimary: "white",
+              colorBgTextHover: "#333333",
+              colorBgTextActive: "#333333",
+              colorTextDisabled: "#666666",
+            },
+          }}
+        >
+          <Pagination
+            current={page}
+            total={totalPages * limit}
+            onChange={handlePageClick}
+            pageSize={limit}
+            showSizeChanger={false}
+            className="flex justify-end my-2"
+          />
+        </ConfigProvider>
+      )}
+      {/* {isLoading && (
+        <>
+          <TableSkeleton col={5} row={10} isPagination={true} />
+        </>
+      )} */}
+      <>
         <ComTable
           y={"65vh"}
           x
           columns={columns}
-          dataSource={transaction?.objects}
-          loading={isLoading}
+          dataSource={
+            transaction && transaction.objects.length > 0
+              ? transaction?.objects
+              : []
+          }
+          loading={{
+            indicator: isLoading ? (
+              <TableSkeleton col={6} row={10} isPagination={true} />
+            ) : null,
+            spinning: isLoading,
+          }}
+          pagination={false}
         />
-      )}
+      </>
     </div>
   );
 }

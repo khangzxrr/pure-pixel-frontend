@@ -16,8 +16,11 @@ import UpdatePhotoshootPackage from "./UpdatePhotoshootPackage";
 
 const PhotoshootPackageManagementV2 = () => {
   const modal = useModalState();
-  const { isUpdatePhotoshootPackageModal, setIsUpdatePhotoshootPackageModal } =
-    useModalStore();
+  const {
+    isUpdatePhotoshootPackageModal,
+    setIsUpdatePhotoshootPackageModal,
+    setSelectedUpdatePhotoshootPackage,
+  } = useModalStore();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
@@ -76,14 +79,20 @@ const PhotoshootPackageManagementV2 = () => {
       <Modal
         title="Sửa gói chụp"
         visible={isUpdatePhotoshootPackageModal} // Use state from Zustand store
-        onCancel={() => setIsUpdatePhotoshootPackageModal(false)} // Close the modal on cancel
+        onCancel={() => {
+          setIsUpdatePhotoshootPackageModal(false);
+          setSelectedUpdatePhotoshootPackage("");
+        }} // Close the modal on cancel
         footer={null}
         width={1000} // Set the width of the modal
         centered={true}
         className="custom-close-icon"
       >
         <UpdatePhotoshootPackage
-          onClose={() => setIsUpdatePhotoshootPackageModal(false)}
+          onClose={() => {
+            setIsUpdatePhotoshootPackageModal(false);
+            setSelectedUpdatePhotoshootPackage("");
+          }}
         />
       </Modal>
       <div className="min-h-screen p-4">
@@ -130,7 +139,10 @@ const PhotoshootPackageManagementV2 = () => {
                 navigate(`/profile/photoshoot-package/${packageDetail.id}`)
               }
             >
-              <MyPhotoshootPackageCard packageDetail={packageDetail} />
+              <MyPhotoshootPackageCard
+                packageDetail={packageDetail}
+                page={page}
+              />
             </div>
           ))}
         </div>
