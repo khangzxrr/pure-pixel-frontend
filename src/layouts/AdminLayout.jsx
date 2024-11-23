@@ -45,17 +45,17 @@ const navigation = [
     icon: HomeIcon,
     current: false,
   },
-  {
-    name: "Team",
-    icon: UsersIcon,
-    current: false,
-    children: [
-      { name: "GraphQL API", href: "/admin/API" },
-      { name: "iOS App", href: "/admin/App" },
-      { name: "Android App", href: "/admin/Android", current: true },
-      { name: "New Customer Portal", href: "/admin/Portal" },
-    ],
-  },
+  // {
+  //   name: "Team",
+  //   icon: UsersIcon,
+  //   current: false,
+  //   children: [
+  //     { name: "GraphQL API", href: "/admin/API" },
+  //     { name: "iOS App", href: "/admin/App" },
+  //     { name: "Android App", href: "/admin/Android", current: true },
+  //     { name: "New Customer Portal", href: "/admin/Portal" },
+  //   ],
+  // },
   {
     name: "Gói nâng cấp",
     href: "/admin/upgrade",
