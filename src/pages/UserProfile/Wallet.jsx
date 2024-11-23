@@ -81,8 +81,6 @@ export default function Wallet() {
 
   return (
     <>
-      {/* <TableTransactilonList /> */}
-
       <div className="relative">
         {/* The Main Content */}
         <div

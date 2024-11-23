@@ -279,6 +279,14 @@ export const AppRouter = createBrowserRouter([
                 ),
               },
               {
+                path: "booking-request/:bookingId",
+                element: (
+                  <ProtectRoute checkRole={"photographer"}>
+                    <BookingDetail />
+                  </ProtectRoute>
+                ),
+              },
+              {
                 path: "customer-booking",
                 element: <CustomerBooking />,
               },
@@ -286,14 +294,7 @@ export const AppRouter = createBrowserRouter([
                 path: "customer-booking/:bookingId",
                 element: <CustomerBookingDetail />,
               },
-              {
-                path: "booking/:bookingId",
-                element: (
-                  <ProtectRoute checkRole={"photographer"}>
-                    <BookingDetail />
-                  </ProtectRoute>
-                ),
-              },
+
               {
                 path: "photo-selling",
                 element: (

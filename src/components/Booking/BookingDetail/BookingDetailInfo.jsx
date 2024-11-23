@@ -270,7 +270,7 @@ const BookingDetailInfo = ({ bookingDetail }) => {
         bookingDetail={bookingDetail}
         enableUpdate={enableUpdate}
       />
-      {bookingDetail.status === "SUCCESSED" && (
+      {bookingDetail && bookingDetail.status === "SUCCESSED" && (
         <ReviewBooking
           bookingId={bookingDetail.bookingId}
           userReview={bookingDetail ? bookingDetail.reviews[0] : ""}

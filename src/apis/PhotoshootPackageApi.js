@@ -79,7 +79,50 @@ const createPhotoshootPackage = async (data) => {
   // Return the response data from the server
   return response.data;
 };
+const updatePhotoshootPackage = async (data) => {
+  const formData = new FormData();
 
+  if (data?.title) {
+    formData.append("title", data.title);
+  }
+
+  if (data?.subtitle) {
+    formData.append("subtitle", data.subtitle);
+  }
+
+  if (data?.price) {
+    formData.append("price", data.price);
+  }
+
+  if (data?.description) {
+    formData.append("description", data.description);
+  }
+
+  if (data?.thumbnail) {
+    formData.append("thumbnail", data.thumbnail);
+  }
+
+  // if (data?.showcases?.length > 0) {
+  //   data.showcases.forEach((showcase, index) => {
+  //     formData.append(`showcases[${index}]`, showcase.originFileObj);
+  //   });
+  // }
+
+  // Send the PATCH request to update the user's profile
+  const response = await http.patch(
+    `/photographer/photoshoot-package`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      // onUploadProgress,
+    }
+  );
+
+  // Return the response data from the server
+  return response.data;
+};
 const getAllPhotoshootPackages = async (limit, page) => {
   const params = {
     limit,
@@ -98,6 +141,7 @@ const PhotoshootPackageApi = {
   deletePhotoshootPackage,
   photographerFindById,
   createPhotoshootPackage,
+  updatePhotoshootPackage,
   getAllPhotoshootPackages,
 };
 
