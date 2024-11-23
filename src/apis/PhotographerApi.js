@@ -53,7 +53,8 @@ const getMyPhotos = async (
   orderByUpvote,
   watermark,
   selling,
-  title
+  title,
+  photoType
 ) => {
   const params = {
     limit,
@@ -77,6 +78,9 @@ const getMyPhotos = async (
   }
   if (title) {
     params.title = title;
+  }
+  if (photoType) {
+    params.photoType = photoType;
   }
   const queryString = new URLSearchParams(params).toString();
   const url = `/photographer/me/photo?${queryString}`;

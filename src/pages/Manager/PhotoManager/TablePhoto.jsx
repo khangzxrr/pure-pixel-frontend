@@ -304,7 +304,7 @@ export const TablePhoto = forwardRef((props, ref) => {
   return (
     <div>
       <ComTable
-        y={"50vh"}
+        y={"65vh"}
         columns={columns}
         dataSource={data}
         loading={table.loading}

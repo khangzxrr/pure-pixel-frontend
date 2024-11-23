@@ -8,11 +8,7 @@ const ServerSideItems = [
     id: "logo",
     link: "/",
     icon: (
-      <img
-        src="/assets/logoP.png"
-        alt="logo"
-        className="w-[30px] object-cover"
-      />
+      <img src="/purepixel.png" alt="logo" className="w-[30px] object-cover" />
     ),
   },
   // {

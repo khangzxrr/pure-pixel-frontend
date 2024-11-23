@@ -56,6 +56,10 @@ import BookmarkLayout from "../layouts/BookmarkLayout";
 import PhotoManager from "../pages/Manager/PhotoManager/PhotoManager";
 import TransactionManager from "../pages/Manager/TransactionManager/TransactionManager";
 import MyPhotoshootPackageDetail from "../pages/UserProfile/MyPhotoshootPackageDetail";
+import PhotoManager2 from "../pages/Manager/PhotoManager2/PhotoManager2";
+import ServicePackageManager from './../pages/Manager/ServicePackage/ServicePackageManager';
+import CameraManager from "../pages/Manager/Camera/CameraManager";
+import TransactionWithdrawalManager from "../pages/Manager/TransactionWithdrawalManager/TransactionWithdrawalManager";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -374,7 +378,7 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/admin/photo",
-            element: <PhotoManager />,
+            element: <PhotoManager2 />,
           },
           {
             path: "/admin/transaction",
@@ -387,6 +391,18 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/admin/blog",
             element: <BlogManager />,
+          },
+          {
+            path: "/admin/service-package",
+            element: <ServicePackageManager />,
+          },
+          {
+            path: "/admin/camera",
+            element: <CameraManager />,
+          },
+          {
+            path: "/admin/withdrawal-processing",
+            element: <TransactionWithdrawalManager />,
           },
         ],
       },

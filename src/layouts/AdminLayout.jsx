@@ -10,6 +10,7 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import {
+  BanknotesIcon,
   Bars3Icon,
   BellIcon,
   CalendarIcon,
@@ -19,6 +20,7 @@ import {
   FolderIcon,
   HomeIcon,
   UsersIcon,
+  VideoCameraIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -34,6 +36,7 @@ import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Affix } from "antd";
 import { useKeycloak } from "@react-keycloak/web";
+import { PackageIcon } from "lucide-react";
 
 const navigation = [
   {
@@ -81,6 +84,24 @@ const navigation = [
     name: "Giao dịch",
     href: "/admin/transaction",
     icon: ChartPieIcon,
+    current: false,
+  },
+  {
+    name: "Gói dịch vụ ",
+    href: "/admin/service-package",
+    icon: PackageIcon,
+    current: false,
+  },
+  {
+    name: "Camera ",
+    href: "/admin/camera",
+    icon: VideoCameraIcon,
+    current: false,
+  },
+  {
+    name: "Xử lý rút tiền ",
+    href: "/admin/withdrawal-processing",
+    icon: BanknotesIcon,
     current: false,
   },
 ];
@@ -141,7 +162,7 @@ export default function AdminLayout({ children }) {
                 <div className="flex h-16 shrink-0 items-center">
                   <img
                     alt="Your Company"
-                    src="/assets/logoP.png"
+                    src="/purepixel.png"
                     className="h-8 w-auto"
                   />
                 </div>
@@ -419,7 +440,7 @@ export default function AdminLayout({ children }) {
             </div>
           </Affix>
 
-          <main className="py-2  bg-[#43474e] h-[calc(100vh-64px)]">
+          <main className="py-2  bg-[#43474e] min-h-[calc(100vh-64px)]">
             <div className="sm:px-6 lg:px-2">{children}</div>
           </main>
         </div>

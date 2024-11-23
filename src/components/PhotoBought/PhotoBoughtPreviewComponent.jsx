@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import formatPrice from "./../../utils/FormatPriceUtils";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
 import PhotoExchange from "../../apis/PhotoExchange";
@@ -18,21 +18,19 @@ const PhotoBoughtPreviewComponent = ({ photo, sizeList, photoBoughtId }) => {
     const pricetags = activeSelling.pricetags;
 
     const pricetagEqualSize = pricetags.find(
-      (p) => p.size === photobuy.photoSellHistory.size
+      (p) => p.size === photobuy.photoSellHistory.size,
     );
 
     setSelectedSize(photobuy);
-    setPreviewPhoto(pricetagEqualSize.preview);
+    setPreviewPhoto(photobuy.previewUrl);
   };
-  console.log("====================================");
-  console.log(sizeList);
-  console.log("====================================");
+
   const handleDownload = async () => {
     if (selectedSize) {
       try {
         const data = await PhotoExchange.getPhotoBoughtDetailDownload(
           photoBoughtId,
-          selectedSize.id
+          selectedSize.id,
         );
 
         // Tạo link tải về từ dữ liệu nhận được
@@ -254,7 +252,7 @@ const PhotoBoughtPreviewComponent = ({ photo, sizeList, photoBoughtId }) => {
                   Thời gian mua:{" "}
                   <span className="font-semibold">
                     {FormatDateTime(
-                      selectedSize.userToUserTransaction.createdAt
+                      selectedSize.userToUserTransaction.createdAt,
                     )}
                   </span>
                 </div>

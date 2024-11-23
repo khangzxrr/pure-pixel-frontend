@@ -241,7 +241,7 @@ export default function TableTransactilonList() {
       )} */}
       <>
         <ComTable
-          y={"70vh"}
+          y={"65vh"}
           x
           columns={columns}
           dataSource={
