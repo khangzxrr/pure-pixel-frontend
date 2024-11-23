@@ -5,6 +5,7 @@ import { TbEdit, TbEditOff } from "react-icons/tb";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ManagerPhotoApi from "../../apis/ManagerPhotoApi";
 import { message } from "antd";
+import { notificationApi } from "../../Notification/Notification";
 const UpdatePhotoInManager = ({ photo, onClose }) => {
   const [isWatermark, setIsWatermark] = useState(photo?.watermark);
   const [isVisibility, setIsVisibility] = useState(photo?.visibility);
@@ -24,7 +25,8 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
     };
     updatePhoto.mutate(updateBody, {
       onSuccess: () => {
-        message.success("Cập nhật thành công");
+        // message.success("Cập nhật thành công");
+        notificationApi("success", "Thành công", "Cập nhật ảnh thành công");
         queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
         setIsLoading(false);
         onClose();
