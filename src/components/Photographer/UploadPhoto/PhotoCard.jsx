@@ -51,6 +51,11 @@ export default function PhotoCard({ photo }) {
     setSelectedPhotoByUid(photo.file.uid);
   };
   const reUploadPhoto = () => {
+    notificationApi(
+      "info",
+      "Đang thử lại tải ảnh",
+      "Tính năng chưa có, vui lòng thử lại"
+    );
     console.log("reupload");
   };
   return (
