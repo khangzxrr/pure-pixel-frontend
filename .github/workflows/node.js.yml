@@ -15,8 +15,5 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          cd /home/deploy/pure-pixel-frontend
-          git checkout main
-          git pull
-          yarn install
-          yarn build
+          cd /home/deploy/
+          ./deploy-fe.sh
