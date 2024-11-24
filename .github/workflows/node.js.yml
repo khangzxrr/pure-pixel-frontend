@@ -1,31 +1,19 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Node.js CI
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: SSH - VPS to deploy
-      uses: appleboy/ssh-action@master
-      with:
-        node-version: ${{ matrix.node-version }}
-        clean: false
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: 22
-        script: |
-          cd ~/home/deploy/pure-pixel-frontend
-          git checkout main
-          git pull
-          yarn
-          yarn build
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          clean: false
+      - run: yarn
+      - run: yarn build
+      - run: ls -la
