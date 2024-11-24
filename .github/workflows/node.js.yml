@@ -15,5 +15,9 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          cd /home/deploy/
-          ./deploy-fe.sh
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
+          cd /home/deploy/purepixel-frontend
+          yarn install
+          yarn build
+          
