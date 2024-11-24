@@ -12,8 +12,9 @@ import PhotographerApi from "../../apis/PhotographerApi";
 import { useQuery } from "@tanstack/react-query";
 import FollowButton from "../../components/ComFollow/FollowButton";
 import { useKeycloak } from "@react-keycloak/web";
-import { ConfigProvider, Modal } from "antd";
+import { ConfigProvider, message, Modal } from "antd";
 import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
+import { notificationApi } from "../../Notification/Notification";
 
 const UserProfileV2 = () => {
   const { userId } = useParams();
@@ -25,8 +26,8 @@ const UserProfileV2 = () => {
     queryKey: ["user", userId],
     queryFn: () => PhotographerApi.getPhotographerById(userId),
   });
-
   const [hoveredIcon, setHoveredIcon] = useState(null); // State để theo dõi icon nào đang được hover
+  if (isLoading) return <div>Loading...</div>;
 
   const handleMouseEnter = (icon) => setHoveredIcon(icon);
   const handleMouseLeave = () => setHoveredIcon(null);
@@ -40,6 +41,25 @@ const UserProfileV2 = () => {
   };
   const handleCloseLoginWarning = () => {
     setIsOpenLoginModal(false);
+  };
+
+  const handleShareProfile = () => {
+    const currentUrl = window.location.origin + window.location.pathname;
+    const profileUrl = currentUrl.replace(/\/photos/, ""); // Loại bỏ `/photo` nếu có
+
+    navigator.clipboard
+      .writeText(profileUrl)
+      .then(() => {
+        notificationApi(
+          "success",
+          "Thành công",
+          "Đã sao chép đường dẫn hồ sơ của nhiếp ảnh gia này vào Clipboard."
+        );
+      })
+      .catch((err) => {
+        console.error("Lỗi khi copy link:", err);
+        message.error("Không thể copy link, vui lòng thử lại.");
+      });
   };
   // const checkIsfollowed = () => {
   //   if (!data?.photographer?.followers || !meId) return false; // Kiểm tra nếu không có dữ liệu
@@ -156,15 +176,16 @@ const UserProfileV2 = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex space-x-4">
+              <div className="flex items-center space-x-4">
                 <div
                   onMouseEnter={() => handleMouseEnter("share")}
                   onMouseLeave={handleMouseLeave}
+                  onClick={handleShareProfile}
                   className="relative"
                 >
                   <Share2 className="w-6 h-6" />
                   {hoveredIcon === "share" && (
-                    <span className="absolute flex justify-center w-[70px] bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs rounded-md p-1">
+                    <span className="absolute hover:cursor-pointer flex justify-center w-[70px] bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs rounded-md p-1">
                       Chia sẻ
                     </span>
                   )}
@@ -199,7 +220,7 @@ const UserProfileV2 = () => {
                   </div>
                 )}
 
-                <div
+                {/* <div
                   onMouseEnter={() => handleMouseEnter("more")}
                   onMouseLeave={handleMouseLeave}
                   className="relative"
@@ -210,7 +231,8 @@ const UserProfileV2 = () => {
                       Thêm
                     </span>
                   )}
-                </div>
+                </div> */}
+                <FollowButton photographer={data?.photographer} />
               </div>
             </div>
           </div>

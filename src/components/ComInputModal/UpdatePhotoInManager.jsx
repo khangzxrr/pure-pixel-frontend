@@ -26,13 +26,31 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
     updatePhoto.mutate(updateBody, {
       onSuccess: () => {
         // message.success("Cập nhật thành công");
-        notificationApi("success", "Thành công", "Cập nhật ảnh thành công");
+        notificationApi(
+          "success",
+          "Cập nhật thành công",
+          "Cập nhật ảnh thành công"
+        );
         queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
         setIsLoading(false);
         onClose();
       },
       onError: (error) => {
-        message.error(error.message);
+        const errorMessage = error?.response?.data?.message;
+        if (errorMessage?.includes("PhotoHasActiveSellingException")) {
+          notificationApi(
+            "error",
+            "Cập nhật không thành công",
+            "Ảnh đang bán không thể chỉnh sửa"
+          );
+        } else {
+          notificationApi("error", "Cập nhật không thành công", errorMessage);
+        }
+
+        setIsVisibility(photo?.visibility);
+        setIsWatermark(photo?.watermark);
+        setIsLoading(false);
+        queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
       },
     });
   };

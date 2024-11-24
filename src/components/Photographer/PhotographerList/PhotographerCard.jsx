@@ -57,7 +57,6 @@ const PhotographerCard = ({ photographer, maxQuoteLength = 30 }) => {
   });
 
   const photos = photoData.objects || [];
-  console.log(photos);
 
   // Kiểm tra kiểu dữ liệu trước khi xử lý
   const randomPhotos =

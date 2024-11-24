@@ -16,9 +16,11 @@ import DeleteWarning from "../../../components/ComWarning/DeleteWarning";
 import UpdatePhotoInManager from "../../../components/ComInputModal/UpdatePhotoInManager";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import { notificationApi } from "../../../Notification/Notification";
+import { useNavigate } from "react-router-dom";
 
 const PhotoManager2 = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [selectedPhotoId, setSelectedPhotoId] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -77,7 +79,14 @@ const PhotoManager2 = () => {
       title: "ID ảnh",
       dataIndex: "photoId",
       width: 300,
-      render: (photoId) => <div className="">{photoId}</div>,
+      render: (photoId) => (
+        <div
+          className="hover:text-blue-500 hover:underline underline-offset-2 hover:cursor-pointer"
+          onClick={() => navigate(`/photo/${photoId}`)}
+        >
+          {photoId}
+        </div>
+      ),
     },
     {
       title: "Hình ảnh",
@@ -258,7 +267,7 @@ const PhotoManager2 = () => {
         onChange={onChange}
         scroll={{
           x: 1020, // Chiều rộng để bảng cuộn ngang nếu nội dung vượt quá
-          y: "65vh", // Chiều cao cố định để bảng cuộn dọc
+          y: "74vh", // Chiều cao cố định để bảng cuộn dọc
         }}
         pagination={false}
         showSorterTooltip={{

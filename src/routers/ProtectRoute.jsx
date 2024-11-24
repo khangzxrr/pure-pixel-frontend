@@ -3,25 +3,25 @@ import React, { useEffect } from "react";
 import UserService from "../services/Keycloak";
 import ErrorPage from "../pages/ErrorPage";
 import { useKeycloak } from "@react-keycloak/web";
-const ProtectRoute = ({ children, checkRole }) => {
+
+//checkRoles bay gio co the nhan 1 mang cac role
+const ProtectRoute = ({ children, checkRoles }) => {
   const navigate = useNavigate();
   const { keycloak } = useKeycloak();
-  const userDataKeyCloak = UserService.getTokenParsed();
-  const roles = userDataKeyCloak?.resource_access?.purepixel?.roles[0];
-  const clientRoles =
-    keycloak?.tokenParsed?.resource_access?.[keycloak.clientId]?.roles || [];
-
-  const hasRole = clientRoles.includes(checkRole);
+  const roles =
+    keycloak.tokenParsed?.resource_access?.[keycloak.clientId]?.roles;
 
   useEffect(() => {
-    if (!hasRole) {
-      navigate("/", { replace: true });
+    for (let role of roles) {
+      if (checkRoles.includes(role)) {
+        return;
+      }
     }
-  }, [roles, checkRole]);
 
-  if (hasRole) {
-    return <>{children}</>;
-  }
+    navigate("/", { replace: true });
+  }, [roles, checkRoles]);
+
+  return <>{children}</>;
 };
 
 export default ProtectRoute;
