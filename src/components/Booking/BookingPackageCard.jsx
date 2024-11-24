@@ -48,14 +48,14 @@ const PhotoshootPackageCard = ({ key, photoshootPackage, onClick }) => {
                 {photoshootPackage.user.name}
               </div>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3">
+            {/* <div className="flex items-center gap-2 sm:gap-3">
               <button className="px-2 py-1 text-[12px]  rounded-full border hover:bg-[#4f545c]">
                 Theo dõi
               </button>
               <div className="hover:cursor-pointer">
                 <MessageCircleMore className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@ const PhotoshootPackageCard = ({ key, photoshootPackage, onClick }) => {
         </div>
         <div>
           <div className="text-sm sm:text-base font-normal">Mô tả chung:</div>
-          <div className="font-normal text-xs sm:text-sm">
+          <div className="font-normal text-xs sm:text-sm h-[100px] truncate">
             <ul className="list-disc list-inside">
               <li>{photoshootPackage.description}</li>
             </ul>

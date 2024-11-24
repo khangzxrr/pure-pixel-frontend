@@ -27,7 +27,13 @@ const Explore = () => {
   const { keycloak } = useKeycloak();
 
   const user = UserService.getTokenParsed();
+  console.log(user);
 
+  useEffect(() => {
+    if (user?.resource_access?.purepixel?.roles[0] === "purepixel-admin") {
+      navigate("/admin");
+    }
+  }, [user]);
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
   const handleLogout = () => keycloak.logout();
