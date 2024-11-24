@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { ConfigProvider, message, Modal, Pagination, Table } from "antd";
+import {
+  ConfigProvider,
+  message,
+  Modal,
+  notification,
+  Pagination,
+  Table,
+} from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ManagerPhotoApi from "../../../apis/ManagerPhotoApi";
 import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
@@ -8,16 +15,19 @@ import { SlOptions } from "react-icons/sl";
 import DeleteWarning from "../../../components/ComWarning/DeleteWarning";
 import UpdatePhotoInManager from "../../../components/ComInputModal/UpdatePhotoInManager";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
+import { notificationApi } from "../../../Notification/Notification";
+import { useNavigate } from "react-router-dom";
 
 const PhotoManager2 = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [selectedPhotoId, setSelectedPhotoId] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortDate, setSortDate] = useState("desc");
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-  const itemsPerPage = 6;
+  const itemsPerPage = 10;
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["manager-photos", page, sortDate],
     queryFn: () =>
@@ -45,7 +55,11 @@ const PhotoManager2 = () => {
   const handleDeletePhoto = () => {
     deletePhoto.mutate(selectedPhotoId, {
       onSuccess: () => {
-        message.success("Xóa thành công");
+        notificationApi(
+          "success",
+          "Xóa ảnh thành công",
+          `Ảnh có ID ${selectedPhotoId} đã được xóa.`
+        );
         queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
       },
       onError: (error) => {
@@ -64,7 +78,15 @@ const PhotoManager2 = () => {
     {
       title: "ID ảnh",
       dataIndex: "photoId",
-      render: (photoId) => <div className="w-[300px]">{photoId}</div>,
+      width: 300,
+      render: (photoId) => (
+        <div
+          className="hover:text-blue-500 hover:underline underline-offset-2 hover:cursor-pointer"
+          onClick={() => navigate(`/photo/${photoId}`)}
+        >
+          {photoId}
+        </div>
+      ),
     },
     {
       title: "Hình ảnh",
@@ -102,6 +124,10 @@ const PhotoManager2 = () => {
     },
     {
       title: "Loại ảnh",
+      dataIndex: "photoType",
+    },
+    {
+      title: "Danh mục",
       dataIndex: "categories",
       render: (categories) => (
         <div>
@@ -113,6 +139,7 @@ const PhotoManager2 = () => {
         </div>
       ),
     },
+
     {
       title: (
         <div className="flex justify-between items-center">
@@ -138,6 +165,7 @@ const PhotoManager2 = () => {
     photoId: photo.id,
     photoUrl: photo.signedUrl?.thumbnail,
     photoName: photo.title,
+    photoType: photo.photoType,
     user: photo.photographer?.name,
     categories: photo.categories,
     createdAt: FormatDateTime(photo.createdAt), // Format photo.createdAt,
@@ -237,6 +265,10 @@ const PhotoManager2 = () => {
         columns={columns}
         dataSource={dataPhotosTable}
         onChange={onChange}
+        scroll={{
+          x: 1020, // Chiều rộng để bảng cuộn ngang nếu nội dung vượt quá
+          y: "74vh", // Chiều cao cố định để bảng cuộn dọc
+        }}
         pagination={false}
         showSorterTooltip={{
           target: "sorter-icon",

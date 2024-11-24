@@ -1,0 +1,33 @@
+/* Lớp cho bảng có nền sáng */
+.light-theme-table .ant-table {
+  background-color: #ffffff !important; /* Nền sáng */
+  color: #000000 !important; /* Chữ tối */
+}
+
+/* Tiêu đề cột sáng */
+.light-theme-table .ant-table-thead > tr > th {
+  background-color: #afafaf !important; /* Nền sáng cho tiêu đề */
+  color: #000000 !important; /* Chữ tối cho tiêu đề */
+}
+
+/* Dòng trong bảng sáng */
+.light-theme-table .ant-table-tbody > tr > td {
+  background-color: #ffffff !important; /* Nền sáng cho các dòng */
+  color: #000000 !important; /* Chữ tối cho các dòng */
+}
+
+/* Hover vào dòng trong bảng */
+.light-theme-table .ant-table-tbody > tr:hover {
+  background-color: #c7c7c7 !important;
+}
+
+/* Hover vào các ô trong bảng */
+.light-theme-table .ant-table-tbody > tr > td:hover {
+  background-color: #c7c7c7 !important; /* Màu nền sáng khi hover vào ô */
+}
+
+/* Hover vào tiêu đề cột */
+.light-theme-table .ant-table-thead > tr > th:hover {
+  background-color: #afafaf !important; /* Nền sáng hơn khi hover vào tiêu đề */
+  color: #000000 !important; /* Giữ màu chữ tối khi hover vào tiêu đề */
+}

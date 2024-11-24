@@ -1,8 +1,13 @@
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import FollowApi from "../../apis/FollowApi";
+import { useKeycloak } from "@react-keycloak/web";
+import { ConfigProvider, Modal } from "antd";
+import LoginWarningModal from "../ComLoginWarning/LoginWarningModal";
 
 const FollowButton = ({ photographer }) => {
+  const { keycloak } = useKeycloak();
+  const [isOpenLoginModal, setIsOpenLoginModal] = React.useState(false);
   const queryClient = useQueryClient();
 
   const checkIsfollowed = () => {
@@ -45,18 +50,56 @@ const FollowButton = ({ photographer }) => {
     });
   };
 
+  const handleLoginWarning = () => {
+    setIsOpenLoginModal(true);
+  };
+  const handleCloseLoginWarning = () => {
+    setIsOpenLoginModal(false);
+  };
   return (
-    <div
-      className={`px-5 py-2 rounded-sm  transition-color duration-200 ${
-        checkIsfollowed()
-          ? "bg-[#4e78cb] hover:bg-[#5b72a1]"
-          : "bg-[#6b7280] hover:bg-[#4d525c]"
-      }`}
-    >
-      <button onClick={checkIsfollowed() ? handleUnFollow : handleFollow}>
-        {checkIsfollowed() ? "Đang theo dõi" : "Theo dõi"}
-      </button>
-    </div>
+    <>
+      <ConfigProvider
+        theme={{
+          components: {
+            Modal: {
+              contentBg: "#292b2f",
+              headerBg: "#292b2f",
+              titleColor: "white",
+            },
+          },
+        }}
+      >
+        <Modal
+          title=""
+          visible={isOpenLoginModal} // Use state from Zustand store
+          onCancel={handleCloseLoginWarning} // Close the modal on cancel
+          footer={null}
+          width={500} // Set the width of the modal
+          centered={true}
+          className="custom-close-icon"
+        >
+          <LoginWarningModal onCloseLogin={handleCloseLoginWarning} />
+        </Modal>
+      </ConfigProvider>
+
+      {keycloak?.authenticated ? (
+        <div
+          className={`px-5 py-2 rounded-sm  transition-color duration-200 ${
+            checkIsfollowed()
+              ? "bg-[#4e78cb] hover:bg-[#5b72a1]"
+              : "bg-[#6b7280] hover:bg-[#4d525c]"
+          }`}
+        >
+          <button onClick={checkIsfollowed() ? handleUnFollow : handleFollow}>
+            {checkIsfollowed() ? "Đang theo dõi" : "Theo dõi"}
+          </button>
+        </div>
+      ) : (
+        <div className="px-5 py-2 rounded-sm transition duration-200 bg-[#6b7280] hover:bg-[#4d525c]">
+          <button onClick={handleLoginWarning}>Theo dõi</button>
+        </div>
+      )}
+    </>
   );
 };
 

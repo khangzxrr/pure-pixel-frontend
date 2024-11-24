@@ -5,6 +5,7 @@ import { TbEdit, TbEditOff } from "react-icons/tb";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ManagerPhotoApi from "../../apis/ManagerPhotoApi";
 import { message } from "antd";
+import { notificationApi } from "../../Notification/Notification";
 const UpdatePhotoInManager = ({ photo, onClose }) => {
   const [isWatermark, setIsWatermark] = useState(photo?.watermark);
   const [isVisibility, setIsVisibility] = useState(photo?.visibility);
@@ -24,13 +25,32 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
     };
     updatePhoto.mutate(updateBody, {
       onSuccess: () => {
-        message.success("Cập nhật thành công");
+        // message.success("Cập nhật thành công");
+        notificationApi(
+          "success",
+          "Cập nhật thành công",
+          "Cập nhật ảnh thành công"
+        );
         queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
         setIsLoading(false);
         onClose();
       },
       onError: (error) => {
-        message.error(error.message);
+        const errorMessage = error?.response?.data?.message;
+        if (errorMessage?.includes("PhotoHasActiveSellingException")) {
+          notificationApi(
+            "error",
+            "Cập nhật không thành công",
+            "Ảnh đang bán không thể chỉnh sửa"
+          );
+        } else {
+          notificationApi("error", "Cập nhật không thành công", errorMessage);
+        }
+
+        setIsVisibility(photo?.visibility);
+        setIsWatermark(photo?.watermark);
+        setIsLoading(false);
+        queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
       },
     });
   };

@@ -57,9 +57,10 @@ import PhotoManager from "../pages/Manager/PhotoManager/PhotoManager";
 import TransactionManager from "../pages/Manager/TransactionManager/TransactionManager";
 import MyPhotoshootPackageDetail from "../pages/UserProfile/MyPhotoshootPackageDetail";
 import PhotoManager2 from "../pages/Manager/PhotoManager2/PhotoManager2";
-import ServicePackageManager from './../pages/Manager/ServicePackage/ServicePackageManager';
+import ServicePackageManager from "./../pages/Manager/ServicePackage/ServicePackageManager";
 import CameraManager from "../pages/Manager/Camera/CameraManager";
 import TransactionWithdrawalManager from "../pages/Manager/TransactionWithdrawalManager/TransactionWithdrawalManager";
+import StatiticsPage from "../pages/Admin/StatiticsPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -232,7 +233,9 @@ export const AppRouter = createBrowserRouter([
           {
             path: "profile",
             element: (
-              <ProtectRoute checkRole={"customer"}>
+              <ProtectRoute
+                checkRoles={["customer", "photographer", "manager"]}
+              >
                 <User />
               </ProtectRoute>
             ),
@@ -260,7 +263,7 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "photoshoot-package",
                 element: (
-                  <ProtectRoute checkRole={"photographer"}>
+                  <ProtectRoute checkRoles={["photographer"]}>
                     <PhotoshootPackageManagementV2 />
                   </ProtectRoute>
                 ),
@@ -268,7 +271,7 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "photoshoot-package/:photoshootPackageId",
                 element: (
-                  <ProtectRoute checkRole={"photographer"}>
+                  <ProtectRoute checkRoles={["photographer"]}>
                     {/* <PhotoshootPackageDetail /> */}
                     <MyPhotoshootPackageDetail />
                   </ProtectRoute>
@@ -277,7 +280,7 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "booking-request",
                 element: (
-                  <ProtectRoute checkRole={"photographer"}>
+                  <ProtectRoute checkRoles={["photographer"]}>
                     <BookingRequestList />
                   </ProtectRoute>
                 ),
@@ -285,7 +288,7 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "booking-request/:bookingId",
                 element: (
-                  <ProtectRoute checkRole={"photographer"}>
+                  <ProtectRoute checkRoles={["photographer"]}>
                     <BookingDetail />
                   </ProtectRoute>
                 ),
@@ -302,7 +305,7 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "photo-selling",
                 element: (
-                  <ProtectRoute checkRole={"photographer"}>
+                  <ProtectRoute checkRoles={["photographer", "customer"]}>
                     <SellerProfile />
                   </ProtectRoute>
                 ),
@@ -347,7 +350,9 @@ export const AppRouter = createBrowserRouter([
           {
             path: "message",
             element: (
-              <ProtectRoute checkRole={"customer"}>
+              <ProtectRoute
+                checkRoles={["customer", "photographer", "manager"]}
+              >
                 <ChatPage />
               </ProtectRoute>
             ),
@@ -369,8 +374,12 @@ export const AppRouter = createBrowserRouter([
         ),
         children: [
           {
-            path: "/admin/*",
-            element: <p className="w-screen">12312312321</p>,
+            path: "",
+            element: <Navigate to="/admin/Dashboard" replace={true} />,
+          },
+          {
+            path: "/admin/Dashboard",
+            element: <StatiticsPage />,
           },
           {
             path: "/admin/upgrade",
