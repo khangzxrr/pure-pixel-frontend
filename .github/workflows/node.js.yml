@@ -17,7 +17,7 @@ jobs:
         script: |
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
-          cd /home/deploy/purepixel-frontend
+          cd /home/deploy/pure-pixel-frontend
           yarn install
           yarn build
           
