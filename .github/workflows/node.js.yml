@@ -12,17 +12,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+    - name: SSH - VPS to deploy
+      uses: appleboy/ssh-action@master
       with:
         node-version: ${{ matrix.node-version }}
         clean: false
-    - run: yarn
-    - run: yarn build
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.PASSWORD }}
+        port: 22
+        script: |
+          cd ~/home/deploy/pure-pixel-frontend
+          git checkout main
+          git pull
+          yarn
+          yarn build
