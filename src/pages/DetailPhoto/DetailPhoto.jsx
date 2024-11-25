@@ -311,7 +311,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     ? currentPhoto?.signedUrl?.placeholder
                     : currentPhoto?.signedUrl?.url
                 }
-                alt={currentPhoto.title}
+                // alt={currentPhoto.title}
                 className="w-0 h-0"
               />
             </div>

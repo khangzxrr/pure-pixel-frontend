@@ -103,7 +103,9 @@ const ProductPhotoDetail = () => {
             purchasedImageUrl: null,
           };
         });
-
+console.log('====================================');
+console.log(3333,userData.sub);
+console.log();
         // Kiểm tra xem người dùng đã mua pricetag nào
         if (userData) {
           const userId = userData.sub;
@@ -580,14 +582,18 @@ const ProductPhotoDetail = () => {
                   Bạn đã mua kích thước này
                 </div>
               ) : (
-                <button
-                  className="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition-colors"
-                  onClick={() => {
-                    modal?.handleOpen();
-                  }}
-                >
-                  Mua ngay
-                </button>
+                <>
+                  {userData.sub !== data.photographer.id && (
+                    <button
+                      className="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition-colors"
+                      onClick={() => {
+                        modal?.handleOpen();
+                      }}
+                    >
+                      Mua ngay
+                    </button>
+                  )}
+                </>
               )
             ) : (
               <button
