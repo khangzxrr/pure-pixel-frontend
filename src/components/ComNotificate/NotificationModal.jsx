@@ -5,6 +5,7 @@ import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
 
 import useNotificationStore from "../../states/UseNotificationStore";
 import { notificationApi } from "../../Notification/Notification";
+import { useKeycloak } from "@react-keycloak/web";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   const [showModal, setShowModal] = useState(false);
@@ -12,8 +13,9 @@ const NotificationModal = ({ isOpen, onClose }) => {
 
   const queryClient = useQueryClient();
 
-  const { initSocket, joinNotification, leaveNotification } =
-    useNotificationStore();
+  const { initSocket, socket } = useNotificationStore();
+
+  const { keycloak } = useKeycloak();
 
   const showUpNotification = (data) => {
     notificationApi("info", data.title, data.content);
@@ -34,19 +36,26 @@ const NotificationModal = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   useEffect(() => {
-    initSocket();
-    joinNotification((data) => {
-      showUpNotification(data);
+    if (keycloak?.tokenParsed?.sub) {
+      initSocket(keycloak.token);
+    }
+  }, [keycloak.tokenParsed]);
 
+  useEffect(() => {
+    function showNotification(data) {
+      showUpNotification(data);
       queryClient.invalidateQueries({
         queryKey: ["notifications"],
       });
-    });
+    }
+    if (!socket) return;
+
+    socket.on("notification-event", showNotification);
 
     return () => {
-      leaveNotification();
+      socket.off("notification-event", showNotification);
     };
-  }, []);
+  }, [socket]);
 
   const handleClickOutside = (e) => {
     if (e.target.id === "modal-overlay") {
