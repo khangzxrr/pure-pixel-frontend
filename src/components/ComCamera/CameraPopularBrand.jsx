@@ -8,9 +8,10 @@ const CameraPopularBrand = () => {
   );
   const list5BrandCamera = listTopBrandCamera.slice(0, 5);
   const setNameCamera = UseCameraStore((state) => state.setNameCamera);
-
-  const handleOnClickCamera = (brand, name) => {
+  const setIdCamera = UseCameraStore((state) => state.setIdCamera);
+  const handleOnClickCamera = (brand, name, cameraId) => {
     setNameCamera(brand, name);
+    setIdCamera(cameraId);
   };
   return (
     <div className="bg-[#2f3136] flex flex-col p-4">
@@ -44,7 +45,11 @@ const CameraPopularBrand = () => {
                     <Link
                       to={`/explore/camera-model/${camera.id}`}
                       onClick={() =>
-                        handleOnClickCamera(item.maker.name, camera.name)
+                        handleOnClickCamera(
+                          item.maker.name,
+                          camera.name,
+                          camera.id
+                        )
                       }
                     >
                       {camera.name}

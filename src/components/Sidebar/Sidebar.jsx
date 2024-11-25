@@ -65,12 +65,17 @@ const Sidebar = ({
         </div>
       )}
       {isImg && (
-        <div className=" h-[150px] overflow-hidden">
-          <img
-            className="w-full h-full object-cover"
-            src="https://picsum.photos/1920/1080?random=1"
-            alt=""
-          />
+        // <div className=" h-[150px] overflow-hidden">
+        //   <img
+        //     className="w-full h-full object-cover"
+        //     src="https://picsum.photos/1920/1080?random=1"
+        //     alt=""
+        //   />
+        // </div>
+        <div className=" flex-grow">
+          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
+            {"Khám phá"}
+          </div>
         </div>
       )}
       {isUpload && (
