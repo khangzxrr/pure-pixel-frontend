@@ -49,7 +49,9 @@ const SellerProfile = () => {
         .catch((error) => {
           console.log(error);
         });
-      getData(`photographer/me/photo?limit=10&page=0&selling=true`)
+      getData(
+        `photographer/me/photo?limit=10&page=0&selling=true&orderByUpdatedAt=desc`
+      )
         .then((data) => {
           setProducts(data?.data?.objects);
           console.log(123, data);
@@ -116,10 +118,11 @@ const SellerProfile = () => {
               />
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">
-                  {product.photoSellings[0].description}
+                  {product.title}
+                  {/* {product.photoSellings[0].description} */}
                 </h3>
                 <p className="text-gray-300">
-                  Giá:
+                  Giá:{" "}
                   {formatCurrency(
                     product?.photoSellings[0]?.pricetags[0]?.price
                   )}
