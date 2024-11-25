@@ -6,6 +6,11 @@ import { useKeycloak } from "@react-keycloak/web";
 const ProtectRoute = ({ children, checkRoles }) => {
   const navigate = useNavigate();
   const { keycloak } = useKeycloak();
+
+  if (!keycloak.authenticated) {
+    navigate("/");
+  }
+
   const roles =
     keycloak.tokenParsed?.resource_access?.[keycloak.clientId]?.roles;
 

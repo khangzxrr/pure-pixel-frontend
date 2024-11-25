@@ -8,17 +8,20 @@ import UseCameraStore from "../../states/UseCameraStore";
 const CameraDetail = () => {
   const nameCamera = UseCameraStore((state) => state.nameCamera);
   const brandCamera = UseCameraStore((state) => state.brandCamera);
+  const idCamera = UseCameraStore((state) => state.idCamera);
+
+  console.log(idCamera);
 
   return (
     <div className="flex flex-col m-2 min-h-screen">
-      <div className="flex flex-col items-center lg:flex-row bg-[#2f3136]  h-auto gap-4 m-[5px]">
+      {/* <div className="flex flex-col items-center lg:flex-row bg-[#2f3136]  h-auto gap-4 m-[5px]">
         <div className="w-full md:w-[400px] h-[400px] bg-[#eee] flex items-center justify-center">
           <img
             src="https://www.transparentpng.com/download/-camera/7mDYcE-nikon-camera-transparent-background-photography.png"
             alt="Nikon D3500"
             className="max-w-full max-h-full object-contain"
           />
-        </div>
+        </div>  
         <div className="flex flex-col gap-2 w-full md:w-[500px] p-4">
           <div className="font-bold text-2xl">{nameCamera}</div>
           <div className="font-normal text-sm">
@@ -67,7 +70,7 @@ const CameraDetail = () => {
         <div className="w-full md:w-[600px] flex items-center justify-center">
           <CameraUseChart />
         </div>
-      </div>
+      </div> */}
       <div>
         <CameraPhoto nameCamera={nameCamera} />
       </div>

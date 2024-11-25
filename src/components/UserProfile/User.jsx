@@ -19,7 +19,9 @@ const User = () => {
   const handleRegister = () => keycloak.register();
 
   const handleLogout = () => {
-    keycloak.logout();
+    keycloak.logout({
+      redirectUri: "https://purepixel.io.vn/",
+    });
   };
 
   return (

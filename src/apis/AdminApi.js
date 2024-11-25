@@ -25,6 +25,12 @@ const getUserById = async (id) => {
   return response.data;
 };
 
-const AdminApi = { getDashboard, getUserManager, getUserById };
+const updateUser = async (id, updateBody) => {
+  const url = `user/${id}`;
+  const response = await http.patch(url, updateBody);
+  return response.data;
+};
+
+const AdminApi = { getDashboard, getUserManager, getUserById, updateUser };
 
 export default AdminApi;
