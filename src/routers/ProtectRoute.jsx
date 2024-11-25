@@ -8,15 +8,18 @@ const ProtectRoute = ({ children, checkRoles }) => {
   const { keycloak } = useKeycloak();
   const roles =
     keycloak.tokenParsed?.resource_access?.[keycloak.clientId]?.roles;
-  
-  if (!keycloak?.authenticated) {
-    keycloak.login();
 
-    return;
-  }
+  let hasRole = false;
 
-  for (let role of roles) {
-    if (checkRoles.includes(role)) {
+  if (roles) {
+    for (let role of roles) {
+      if (checkRoles.includes(role)) {
+        hasRole = true;
+        break;
+      }
+    }
+
+    if (hasRole) {
       return <>{children}</>;
     }
   }
