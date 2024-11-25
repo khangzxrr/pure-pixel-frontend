@@ -16,7 +16,7 @@ import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
 import { Blurhash } from "react-blurhash";
 import { motion } from "framer-motion";
 import { useParentSize } from "@cutting/use-get-parent-size";
-import UserService from "../../services/Keycloak";
+
 import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
 import { ConfigProvider, Modal } from "antd";
 import { useKeycloak } from "@react-keycloak/web";
@@ -71,7 +71,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const { id } = useParams();
   const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
   const setNamePhotographer = UsePhotographerFilterStore(
-    (state) => state.setNamePhotographer
+    (state) => state.setNamePhotographer,
   );
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
@@ -88,10 +88,10 @@ export default function DetailedPhotoView({ onClose, photo }) {
       ? photo
       : {
           id,
-        }
+        },
   );
 
-  // window.history.replaceState({}, null, `/photo/${currentPhoto.id}`);
+  window.history.replaceState({}, null, `/photo/${currentPhoto.id}`);
 
   const [isOriginalPhotoLoaded, setIsOriginalPhotoLoaded] = useState(false);
   const [isThumbnailPhotoLoaded, setIsThumbnailPhotoLoaded] = useState(false);
