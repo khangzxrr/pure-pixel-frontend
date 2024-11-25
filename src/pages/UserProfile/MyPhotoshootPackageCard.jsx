@@ -15,7 +15,6 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
     setIsUpdatePhotoshootPackageModal,
     setSelectedUpdatePhotoshootPackage,
   } = useModalStore();
-  console.log("packageDetail", packageDetail);
   const queryClient = useQueryClient();
   const deletePhotoshootPackage = useMutation({
     mutationFn: async (data) => {
@@ -57,7 +56,6 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
           <div className="flex items-center gap-1">
             <Popconfirm
               onConfirm={(e) => {
-                console.log("delete clicked");
                 e.preventDefault();
                 e.stopPropagation();
                 deletePhotoshootPackageMutate();
@@ -65,7 +63,6 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
               onCancel={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log("cancel delete");
               }}
               disabled={isPending} // Ensure this is "disabled" not "disable"
               title="Bạn có chắc chắn muốn xóa gói này không?"

@@ -13,12 +13,9 @@ const getTransaction = async ({
   orderByAmount,
   orderByCreatedAt,
 }) => {
-  // const response = await http.get(
-  //     "/wallet/transaction?limit=10&page=0&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
-  //   );
   const response = await http.get(
     `/wallet/transaction?limit=${limit}&page=${page}&${
-      type ? "type=" + type : ""
+      type === "" ? "" : "type=" + type
     }&${
       status ? "status=" + status : ""
     }&orderByPaymentMethod=asc&orderByAmount=${orderByAmount}&orderByType=desc&orderByCreatedAt=${orderByCreatedAt}`

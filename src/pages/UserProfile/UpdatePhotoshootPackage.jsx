@@ -16,16 +16,18 @@ import {
 } from "@ant-design/icons";
 import { NumericFormat } from "react-number-format";
 import useModalStore from "../../states/UseModalStore";
+import ShowcasesField from "./Component/ShowcasesField";
 
 const { Dragger } = Upload;
 
 export default function UpdatePhotoshootPackage({ onClose }) {
-  const { setIsUpdatePhotoshootPackageModal, selectedUpdatePhotoshootPackage } =
-    useModalStore();
-  console.log(
-    "selectedUpdatePhotoshootPackage",
-    selectedUpdatePhotoshootPackage
-  );
+  const {
+    setIsUpdatePhotoshootPackageModal,
+    selectedUpdatePhotoshootPackage,
+    deleteShowcasesList,
+    setDeleteShowcasesList,
+  } = useModalStore();
+
   const {
     data: photoshootPackage,
     isLoading,
@@ -42,7 +44,6 @@ export default function UpdatePhotoshootPackage({ onClose }) {
       ),
     keepPreviousData: true,
   });
-  console.log("photoshootPackage", photoshootPackage);
 
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
@@ -54,7 +55,6 @@ export default function UpdatePhotoshootPackage({ onClose }) {
   const [showcasesUrl, setShowcasesUrl] = useState(
     photoshootPackage ? photoshootPackage.showcase : []
   );
-
   const queryClient = useQueryClient();
   const {
     handleSubmit,
@@ -82,30 +82,43 @@ export default function UpdatePhotoshootPackage({ onClose }) {
       });
       setThumbnailUrl(photoshootPackage.thumbnail || "");
       setShowcasesUrl(photoshootPackage.showcases || []);
+      setShowcases([]);
+      setDisabled(false);
     }
   }, [photoshootPackage, reset]);
-  console.log(showcasesUrl, showcases);
 
   const updatePhotoshootPackage = useMutation({
     mutationFn: async (data) => {
       // Await inside mutation function
-      return await PhotoshootPackageApi.updatePhotoshootPackage(data);
+      return await PhotoshootPackageApi.updatePhotoshootPackage({
+        packageId: selectedUpdatePhotoshootPackage,
+        data: data,
+      });
     },
-    onSuccess: () => {
+
+    onError: (error) => {
+      console.log(error);
       notificationApi(
-        "success",
-        "Sửa gói chụp thành công",
-        "Gói chụp ảnh của bạn đã được sửa thành công. Vui lòng kiểm tra lại"
+        "error",
+        "Cập nhật gói chụp thất bại",
+        "Không thể cập nhật gói của bạn, vui lòng thử lại."
       );
       setDisabled(false);
-      setThumbnail(null);
-      setShowcases([]);
-      setThumbnailUrl();
-      setShowcasesUrl([]);
-      reset();
-      onClose();
-      queryClient.invalidateQueries("findAllPhotoshootPackages");
-      queryClient.invalidateQueries("package-detail-by-photographer");
+    },
+  });
+  const addPhotoshootPackageShowcase = useMutation({
+    mutationFn: async ({ photoshootPackageId, newShowcasePhoto }) =>
+      PhotoshootPackageApi.addPhotoshootPackageShowcase(photoshootPackageId, {
+        newShowcasePhoto: newShowcasePhoto,
+      }),
+  });
+  const deleteShowcasePhoto = useMutation({
+    mutationFn: async ({ showcaseId, photoshootPackageId }) => {
+      // Await inside mutation function
+      return await PhotoshootPackageApi.deletePhotoshootPackageShowcase(
+        showcaseId,
+        photoshootPackageId
+      );
     },
     onError: (error) => {
       console.log(error);
@@ -117,9 +130,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
       setDisabled(false);
     },
   });
-
   const onThumbnailChange = async (info) => {
-    console.log(info, info.file.originFileObj);
     try {
       const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(
         info.file.originFileObj
@@ -131,71 +142,91 @@ export default function UpdatePhotoshootPackage({ onClose }) {
     }
   };
 
-  const onShowcasesChange = async (info) => {
-    try {
-      const newFile = info.file;
-      console.log(newFile.status);
-      // Add the new file to the current showcases list
-      if (newFile.status !== "uploading") {
-        setShowcases((prevShowcases) => {
-          const updatedShowcases = [...prevShowcases, newFile];
-          return updatedShowcases;
-        });
-
-        // Generate the URL for the new file and add it to the current showcasesUrl
-        const newUrl = await PhotoService.convertArrayBufferToObjectUrl(
-          newFile.originFileObj
-        );
-        console.log(newUrl);
-        setShowcasesUrl((prevUrls) =>
-          Array.from(new Set([...prevUrls, { photoUrl: newUrl }]))
-        );
-      } else {
-        return;
-      }
-    } catch (error) {
-      console.error("Error in onShowcasesChange:", error);
-    }
-  };
-  const deletePhotoFromShowcases = (index) => {
-    // Remove the image from showcases
-    const updatedShowcases = showcases.filter((_, i) => i !== index);
-    setShowcases(updatedShowcases);
-
-    // Remove the URL from showcasesUrl
-    const updatedShowcasesUrl = showcasesUrl.filter((_, i) => i !== index);
-    setShowcasesUrl(updatedShowcasesUrl);
-  };
   const onSubmit = async (data) => {
-    setDisabled(true);
+    console.log(
+      "selectedUpdatePhotoshootPackage",
+      selectedUpdatePhotoshootPackage
+    );
 
-    if (!thumbnail) {
+    setDisabled(true); // Disable the form to prevent multiple submissions
+
+    let allSuccess = true; // Flag to track if all API calls are successful
+
+    // Delete showcases
+    if (deleteShowcasesList.length > 0) {
+      for (const showcaseId of deleteShowcasesList) {
+        try {
+          await deleteShowcasePhoto.mutateAsync({
+            showcaseId: showcaseId,
+            photoshootPackageId: selectedUpdatePhotoshootPackage,
+          });
+        } catch (error) {
+          console.error("Error deleting showcase:", error);
+          allSuccess = false; // Mark as failed
+        }
+      }
+    }
+
+    // Add new showcases
+    if (showcases.length > 0) {
+      for (const showcase of showcases) {
+        try {
+          console.log("Adding showcase:", showcase);
+
+          await addPhotoshootPackageShowcase.mutateAsync({
+            photoshootPackageId: selectedUpdatePhotoshootPackage,
+            newShowcasePhoto: showcase,
+          });
+        } catch (error) {
+          console.error("Error adding showcase:", error);
+          allSuccess = false; // Mark as failed
+        }
+      }
+    }
+
+    // Check if showcasesUrl is valid
+    if (!showcasesUrl || showcasesUrl.length === 0) {
       notificationApi(
         "error",
-        "Hình ảnh không hợp lệ",
-        "Vui lòng chọn ảnh bìa."
+        "Thiếu ảnh cho bộ sưu tập",
+        "Bắt buộc phải có ít nhất 1 và nhiều nhất 20 ảnh cho 1 bộ sưu tập."
       );
       setDisabled(false);
       return;
     }
 
-    if (!showcases || showcases.length === 0) {
-      notificationApi(
-        "error",
-        "Hình ảnh không hợp lệ",
-        "Vui lòng chọn ảnh cho bộ sưu tập."
-      );
-      setDisabled(false);
-      return;
-    }
-
+    // Update photoshoot package
     try {
-      await updatePhotoshootPackage.mutate({ thumbnail, showcases, ...data });
+      await updatePhotoshootPackage.mutateAsync({ thumbnail, ...data });
     } catch (error) {
-      console.log(error);
+      console.error("Error updating photoshoot package:", error);
+      allSuccess = false; // Mark as failed
+    }
+
+    // Close the modal only if all operations are successful
+    if (allSuccess) {
+      onClose();
+      notificationApi(
+        "success",
+        "Cập nhật thành công",
+        "Gói chụp ảnh của bạn đã được cập nhật thành công!"
+      );
+      setDisabled(false);
+      setThumbnail(null);
+      setShowcases([]);
+      setThumbnailUrl();
+      setShowcasesUrl([]);
+
+      queryClient.invalidateQueries("package-detail-by-photographer");
+      reset();
+    } else {
+      notificationApi(
+        "error",
+        "Cập nhật thất bại",
+        "Một số thao tác đã thất bại. Vui lòng kiểm tra lại."
+      );
     }
   };
-  console.log("watch", watch("price"), showcasesUrl, showcases);
 
   return (
     <form
@@ -342,7 +373,6 @@ export default function UpdatePhotoshootPackage({ onClose }) {
                           {...field}
                           onChange={(e) => {
                             field.onChange(e);
-                            setSubtitle(e.target.value);
                           }}
                           ref={(input) => {
                             if (input) {
@@ -381,7 +411,6 @@ export default function UpdatePhotoshootPackage({ onClose }) {
                         {...field}
                         onChange={(e) => {
                           field.onChange(e);
-                          setDescription(e.target.value);
                         }}
                         className={`w-full text-[#d7d7d8] bg-transparent hover:bg-transparent focus:bg-transparent mb-4 p-2  lg:text-base text-xs focus:ring-0 focus:outline-none border-[1px] rounded-lg  placeholder:text-[#d7d7d8]  ${
                           errors.description
@@ -412,61 +441,14 @@ export default function UpdatePhotoshootPackage({ onClose }) {
           </div>
         </div>
       </div>
-      {/* handle add showcase for photoshoot package */}
-      <div className="h-2/5 grid grid-cols-5 md:grid-cols-7 grid-rows-5 md:grid-rows-3 gap-2 mt-4 bg-[#43474E] p-3 overflow-y-auto custom-scrollbar">
-        <div className="col-span-1 h-full flex flex-col items-center justify-center">
-          <Tooltip title="Chọn ảnh cho bộ sưu tập, tối đa 20 ảnh">
-            <Upload
-              multiple={true}
-              accept=".jpg,.jpeg,.png,.gif,.webp"
-              name="showcases"
-              showUploadList={false}
-              onChange={onShowcasesChange}
-              disabled={showcases.length >= 20}
-            >
-              <div className="flex flex-col items-center justify-center p-5 px-9 bg-[#d7d7d8] hover:bg-[#c0c0c0] rounded-md cursor-pointer transition-colors duration-300">
-                <UploadOutlined className="text-3xl mb-1" />
-                <p className="text-xs text-center">Chọn ảnh cho</p>
-                <p className="text-xs text-center">bộ sưu tập</p>
-              </div>
-            </Upload>
-          </Tooltip>
-        </div>
-        {/* Show case list */}
-        {showcasesUrl &&
-          showcasesUrl.length > 0 &&
-          showcasesUrl.map((showcase, index) => (
-            <div
-              key={`showcase-${index}`}
-              className="col-span-1  h-full py-2 px-1 relative group"
-            >
-              <img
-                src={showcase.photoUrl}
-                alt={`Showcase ${index + 1}`}
-                className="w-full h-full object-cover rounded-md"
-              />
-              <button
-                type="button" // Prevent the button from acting as a submit button
-                onClick={(e) => {
-                  e.preventDefault(); // Prevent default form submission
-                  deletePhotoFromShowcases(index);
-                }}
-                className="absolute top-3 right-2 hover:bg-opacity-70 bg-white text-red-500 hover:text-red-600 text-xl px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <DeleteOutlined className="w-7 h-7" />
-              </button>
-            </div>
-          ))}
-
-        {/* Add placeholder cells to ensure grid structure */}
-        {showcasesUrl &&
-          [...Array(21 - showcasesUrl.length - 1)].map((_, index) => (
-            <div
-              key={`placeholder-${index}`}
-              className="col-span-1  h-full bg-[#767676] rounded-md"
-            />
-          ))}
-      </div>
+      <ShowcasesField
+        photoshootPackageId={selectedUpdatePhotoshootPackage}
+        showcases={showcases}
+        setShowcases={setShowcases}
+        showcasesUrl={showcasesUrl}
+        setShowcasesUrl={setShowcasesUrl}
+        setDeleteShowcasesList={setDeleteShowcasesList}
+      />
     </form>
   );
 }

@@ -18,100 +18,7 @@ export default function PhotoCard({ photo }) {
   } = useUploadPhotoStore();
   const { notificationApi } = useNotification();
   //handle exception from api response
-  const handleException = (file, e) => {
-    console.log("handleException", e);
-    // switch (e && e.response.data.message) {
-    //   case "RunOutPhotoQuotaException":
-    //     notificationApi(
-    //       "error",
-    //       "Tải ảnh lên thất bại",
-    //       "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
-    //       "",
-    //       0,
-    //       "upload-photo-dragger-error"
-    //     );
-    //     break;
 
-    //   case "FailToPerformOnDuplicatedPhotoException":
-    //     notificationApi(
-    //       "error",
-    //       "Tải ảnh lên thất bại",
-    //       "Ảnh bạn tải lên đã tồn tại trong hệ thống, vui lòng kiểm tra lại",
-    //       "",
-    //       0,
-    //       "upload-photo-dragger-error"
-    //     );
-    //     break;
-
-    //   case "FileIsNotValidException":
-    //     notificationApi(
-    //       "error",
-    //       "Tải ảnh lên thất bại",
-    //       "Tệp tải lên không hợp lệ, vui lòng chọn tệp hình ảnh hợp lệ",
-    //       "",
-    //       0,
-    //       "upload-photo-dragger-error"
-    //     );
-    //     break;
-
-    //   case "ExifNotFoundException":
-    //     notificationApi(
-    //       "error",
-    //       "Tải ảnh lên thất bại",
-    //       "Không tìm thấy dữ liệu EXIF trong ảnh, vui lòng chọn ảnh có dữ liệu EXIF",
-    //       "",
-    //       0,
-    //       "upload-photo-dragger-error"
-    //     );
-    //     break;
-
-    //   case "MissingMakeExifException":
-    //     notificationApi(
-    //       "error",
-    //       "Tải ảnh lên thất bại",
-    //       "Dữ liệu EXIF thiếu thông tin nhà sản xuất (Make), vui lòng kiểm tra lại",
-    //       "",
-    //       0,
-    //       "upload-photo-dragger-error"
-    //     );
-    //     break;
-
-    //   case "MissingModelExifException":
-    //     notificationApi(
-    //       "error",
-    //       "Tải ảnh lên thất bại",
-    //       "Dữ liệu EXIF thiếu thông tin mẫu máy (Model), vui lòng kiểm tra lại",
-    //       "",
-    //       0,
-    //       "upload-photo-dragger-error"
-    //     );
-    //     break;
-
-    //   case "UploadPhotoFailedException":
-    //     notificationApi(
-    //       "error",
-    //       "Tải ảnh lên thất bại",
-    //       "Đã xảy ra lỗi khi tải ảnh lên, vui lòng thử lại",
-    //       "",
-    //       0,
-    //       "upload-photo-dragger-error"
-    //     );
-    //     break;
-
-    //   default:
-    //     notificationApi(
-    //       "error",
-    //       "Lỗi không xác định",
-    //       "Đã xảy ra lỗi không xác định, vui lòng thử lại",
-    //       "",
-    //       0,
-    //       "upload-photo-dragger-error"
-    //     );
-    //     break;
-    // }
-
-    // updatePhotoPropertyByUid(file.uid, "status", "error");
-  };
   const [isDeleting, setIsDeleting] = useState(false);
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
@@ -174,7 +81,7 @@ export default function PhotoCard({ photo }) {
       );
     },
     onError: (e) => {
-      console.log("uploadPhoto error", e);
+      console.log("uploadPhoto error", e.response);
       // handleException(photo.file, e);
     },
   });
@@ -201,7 +108,6 @@ export default function PhotoCard({ photo }) {
       // updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
     } catch (e) {
       console.log("tryUploadPhoto error", e);
-      handleException(file, e);
     }
   };
   const reUploadPhoto = () => {
