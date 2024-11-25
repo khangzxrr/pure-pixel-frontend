@@ -62,7 +62,7 @@ export default function TableTransactilonList() {
             {record.status === "SUCCESS" && record.amount !== 0 ? (
               record.type === "IMAGE_SELL" || record.type === "DEPOSIT" ? (
                 <span className="text-green-400">
-                  +{formatCurrency(record.amount)}
+                  +{formatCurrency(record.amount - record.fee)}
                 </span>
               ) : (
                 <span className="text-red-400">
