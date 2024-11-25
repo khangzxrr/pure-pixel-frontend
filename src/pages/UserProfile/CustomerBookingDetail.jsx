@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
 import { message, Tooltip } from "antd";
 import formatPrice from "../../utils/FormatPriceUtils";
@@ -15,11 +15,44 @@ import { notificationApi } from "../../Notification/Notification";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import ReviewBooking from "./Component/ReviewBooking";
 import calculateDateDifference from "../../utils/calculateDateDifference";
+import useNotificationStore from "../../states/UseNotificationStore";
 
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+
+  const queryClient = useQueryClient();
+
+  const { socket } = useNotificationStore();
+
+  useEffect(() => {
+    async function notificationBookingDetailEventHandler(data) {
+      console.log(data);
+
+      if (data?.referenceType === "BOOKING") {
+        await queryClient.invalidateQueries({
+          queryKey: ["customer-booking-detail"],
+        });
+
+        await queryClient.invalidateQueries({
+          queryKey: ["customer-booking-bill-items"],
+        });
+      }
+    }
+
+    if (socket?.connected) {
+      console.log(`listen to notification event in CustomerBookingDetail`);
+      socket.on("notification-event", notificationBookingDetailEventHandler);
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("notification-event", notificationBookingDetailEventHandler);
+        console.log(`remove`);
+      }
+    };
+  }, [socket]);
 
   const { data: bookingDetail, isPending } = useQuery({
     queryKey: ["customer-booking-detail", bookingId],
@@ -30,6 +63,7 @@ const CustomerBookingDetail = () => {
     queryKey: ["customer-booking-bill-items", bookingId],
     queryFn: () => CustomerBookingApi.getBillItems(bookingId),
   });
+
   const downloadPhoto = useMutation({
     mutationFn: (bookingId) => CustomerBookingApi.downloadAllPhoto(bookingId),
     onSuccess: async (data) => {
@@ -52,14 +86,14 @@ const CustomerBookingDetail = () => {
         notificationApi(
           "success",
           "Tải ảnh thành công",
-          "Tất cả ảnh đã được tải về thành công."
+          "Tất cả ảnh đã được tải về thành công.",
         );
       } catch (error) {
         console.error("Error downloading file:", error);
         notificationApi(
           "error",
           "Lỗi khi tải ảnh",
-          "Lỗi khi tải ảnh, vui lòng thử lại sau."
+          "Lỗi khi tải ảnh, vui lòng thử lại sau.",
         );
       } finally {
         setIsDownloading(false);
@@ -70,7 +104,7 @@ const CustomerBookingDetail = () => {
       notificationApi(
         "error",
         "Lỗi khi tải ảnh",
-        "Lỗi khi tải ảnh, vui lòng thử lại sau.   "
+        "Lỗi khi tải ảnh, vui lòng thử lại sau.   ",
       );
       setIsDownloading(false);
     },
@@ -78,7 +112,7 @@ const CustomerBookingDetail = () => {
 
   // Track the current index of the selected photo
   const currentIndex = bookingDetail?.photos?.findIndex(
-    (photo) => photo?.id === selectedPhoto?.id
+    (photo) => photo?.id === selectedPhoto?.id,
   );
   // Function to go to the previous photo
   const handlePreviousPhoto = () => {
@@ -148,7 +182,7 @@ const CustomerBookingDetail = () => {
   console.log(bookingDetail.originalPhotoshootPackage.user.id);
 
   const userReview = bookingDetail.reviews.find(
-    (review) => review.userId === bookingDetail.user.id
+    (review) => review.userId === bookingDetail.user.id,
   );
   console.log(bookingDetail.user.id, bookingDetail.reviews, userReview);
   return (
@@ -173,8 +207,8 @@ const CustomerBookingDetail = () => {
                     bookingDetail.status === "ACCEPTED"
                       ? "text-blue-500"
                       : bookingDetail.status === "SUCCESSED"
-                      ? "text-green-500"
-                      : "text-yellow-500"
+                        ? "text-green-500"
+                        : "text-yellow-500"
                   } font-normal text-sm`}
                 >
                   {bookingDetail.status === "ACCEPTED" ? (

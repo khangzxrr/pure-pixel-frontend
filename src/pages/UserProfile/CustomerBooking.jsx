@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ConfigProvider, Pagination, Select, Tooltip } from "antd"; // Make sure Tooltip is imported
 import { Calendar, MessageCircleMore } from "lucide-react";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
@@ -10,6 +10,7 @@ import { FiCameraOff } from "react-icons/fi";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import { customTheme } from "../../components/Booking/BookingRequestList";
 import calculateDateDifference from "../../utils/calculateDateDifference";
+import useNotificationStore from "../../states/UseNotificationStore";
 
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
@@ -37,8 +38,36 @@ export default function CustomerBooking() {
   const [page, setPage] = useState(1);
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
 
+  const { socket } = useNotificationStore();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    async function notificationEventHandler(data) {
+      console.log(data);
+
+      if (data?.referenceType === "BOOKING") {
+        console.log(`invalidate customer booking!`);
+        await queryClient.invalidateQueries({
+          queryKey: ["get-all-customer-bookings"],
+        });
+      }
+    }
+
+    if (socket?.connected) {
+      console.log(`listen to notification event in CustomerBooking`);
+      socket.on("notification-event", notificationEventHandler);
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("notification-event", notificationEventHandler);
+      }
+    };
+  }, [socket]);
+
   const isSelectedStatus = (value) => {
-    console.log("value", value, status);
+    // console.log("value", value, status);
     return status === value;
   };
   const handlePageClick = (pageNumber) => {
@@ -55,7 +84,6 @@ export default function CustomerBooking() {
         status,
         orderByCreatedAt,
       ),
-    keepPreviousData: true,
   });
 
   return (

@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import { PhotographerBookingApi } from "../../apis/PhotographerBookingApi";
 import BookingCard from "./BookingRequestState/BookingCard";
 import { ConfigProvider, Pagination, Select } from "antd";
 import { FiCameraOff } from "react-icons/fi";
+import useNotificationStore from "../../states/UseNotificationStore";
 
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
@@ -46,6 +47,10 @@ const BookingRequestList = () => {
   const [status, setStatus] = useState("");
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
 
+  const { socket } = useNotificationStore();
+
+  const queryClient = useQueryClient();
+
   const isSelectedStatus = (value) => status === value;
 
   const handlePageClick = (pageNumber) => {
@@ -54,6 +59,30 @@ const BookingRequestList = () => {
     }
   };
 
+  useEffect(() => {
+    async function notificationEventHandler(data) {
+      console.log(data);
+
+      if (data?.referenceType === "BOOKING") {
+        console.log(`invalidate photographer booking!`);
+        await queryClient.invalidateQueries({
+          queryKey: ["get-all-photographer-booking"],
+        });
+      }
+    }
+
+    if (socket?.connected) {
+      console.log(`listen to notification event in CustomerBooking`);
+      socket.on("notification-event", notificationEventHandler);
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("notification-event", notificationEventHandler);
+      }
+    };
+  }, [socket]);
+
   const { isPending, data } = useQuery({
     queryKey: ["get-all-photographer-booking", status, page, orderByCreatedAt],
     queryFn: () =>
@@ -61,7 +90,7 @@ const BookingRequestList = () => {
         limit,
         page - 1,
         status,
-        orderByCreatedAt
+        orderByCreatedAt,
       ),
   });
 
