@@ -211,11 +211,11 @@ export default function UploadBookingPhoto({ bookingDetail }) {
                 <p className="mt-1 font-normal">Tải thêm ảnh</p>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full w-full">
-                <p className="text-2xl text-white font-semibold">
+              <div className="flex flex-col m-20 my-56 items-center justify-center h-full w-full">
+                <p className="text-3xl text-white font-semibold">
                   Nhấp hoặc kéo tệp vào khu vực này để tải lên
                 </p>
-                <p className="text-white font-extralight">
+                <p className="text-lg text-white font-extralight">
                   Hỗ trợ tải lên một hoặc nhiều tệp. Nghiêm cấm tải lên dữ liệu
                   công ty hoặc các tệp bị cấm khác.
                 </p>

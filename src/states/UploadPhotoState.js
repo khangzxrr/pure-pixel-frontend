@@ -107,6 +107,7 @@ const useUploadPhotoStore = create(
       }),
     addPhoto: (uid, payload) =>
       set((state) => {
+        console.log("addPhoto", payload);
         const index = state.photoArray.length;
 
         state.uidHashmap[uid] = index;

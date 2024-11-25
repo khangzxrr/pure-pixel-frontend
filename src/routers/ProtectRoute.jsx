@@ -1,7 +1,5 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import React, { useEffect } from "react";
-import UserService from "../services/Keycloak";
-import ErrorPage from "../pages/ErrorPage";
+import { useNavigate } from "react-router-dom";
+import React from "react";
 import { useKeycloak } from "@react-keycloak/web";
 
 //checkRoles bay gio co the nhan 1 mang cac role
@@ -10,17 +8,20 @@ const ProtectRoute = ({ children, checkRoles }) => {
   const { keycloak } = useKeycloak();
   const roles =
     keycloak.tokenParsed?.resource_access?.[keycloak.clientId]?.roles;
+  
+  if (!keycloak?.authenticated) {
+    keycloak.login();
 
-  useEffect(() => {
-    for (let role of roles) {
-      if (checkRoles.includes(role)) {
-        return;
-      }
+    return;
+  }
+
+  for (let role of roles) {
+    if (checkRoles.includes(role)) {
+      return <>{children}</>;
     }
-    navigate("/", { replace: true });
-  }, [roles, checkRoles]);
+  }
 
-  return <>{children}</>;
+  navigate("/");
 };
 
 export default ProtectRoute;

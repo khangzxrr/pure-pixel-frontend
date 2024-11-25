@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useColumnFilters from "../ComTable/utils";
-import { ConfigProvider, Pagination, Typography } from "antd";
+import { ConfigProvider, Pagination, Tooltip } from "antd";
 import ComDateConverter from "../ComDateConverter/ComDateConverter";
 import ComTable from "../ComTable/ComTable";
 import ComStatusWalletConverter from "./../ComStatusConverter/ComStatusWalletConverter";
@@ -9,8 +9,9 @@ import { WalletApi } from "../../apis/Wallet";
 import { WalletOutlined } from "@ant-design/icons";
 import TableSkeleton from "../Skeleton/TableSkeleton";
 import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter";
-import calculateDateDifference from "../../utils/calculateDateDifference";
 import ComNoteWalletConverter from "../ComStatusConverter/ComNoteWalletConventer";
+import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
+
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -24,16 +25,37 @@ export default function TableTransactilonList() {
   const limit = 10;
   const [page, setPage] = useState(1);
   const [orderByAmount, setOrderByAmount] = useState("asc");
-  const [orderByCreatedAt, setOrderByCreatedAt] = useState("asc");
+  const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
   const [type, setType] = useState("");
   const columns = [
     {
-      title: "Số tiền",
-      width: "10%",
+      title: (
+        <div className="flex justify-between">
+          <button
+            onClick={() =>
+              orderByAmount === "asc"
+                ? setOrderByAmount("desc")
+                : setOrderByAmount("asc")
+            }
+          >
+            {orderByAmount === "asc" ? (
+              <Tooltip title="Sắp xếp giảm dần">
+                Số tiền
+                <CaretDownOutlined />
+              </Tooltip>
+            ) : (
+              <Tooltip title="Sắp xếp tăng dần">
+                Số tiền
+                <CaretUpOutlined />
+              </Tooltip>
+            )}
+          </button>
+        </div>
+      ),
+      width: "15%",
       fixed: "left",
       dataIndex: "amount",
       key: "amount",
-      sorter: (a, b) => a.amount - b.amount,
       render: (_, record) => (
         <div>
           <h1>
@@ -131,12 +153,32 @@ export default function TableTransactilonList() {
     },
 
     {
-      title: "Thời gian cập nhật",
+      title: (
+        <button
+          onClick={() =>
+            orderByCreatedAt === "desc"
+              ? setOrderByCreatedAt("asc")
+              : setOrderByCreatedAt("desc")
+          }
+        >
+          {orderByCreatedAt === "desc" ? (
+            <Tooltip title="Sắp xếp giảm dần">
+              Ngày cập nhật
+              <CaretDownOutlined />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Sắp xếp tăng dần">
+              Ngày cập nhật
+              <CaretUpOutlined />
+            </Tooltip>
+          )}
+        </button>
+      ),
       width: "15%",
       dataIndex: "updatedAt",
       key: "updatedAt",
       render: (updatedAt, record) => (
-        <div>{calculateDateDifference(updatedAt)}</div>
+        <ComDateConverter>{updatedAt}</ComDateConverter>
       ),
     },
   ];
@@ -147,7 +189,7 @@ export default function TableTransactilonList() {
     isFetching,
     isError,
   } = useQuery({
-    queryKey: ["transactionList", page], // Unique query key for caching
+    queryKey: ["transactionList", page, orderByAmount, orderByCreatedAt], // Unique query key for caching
     queryFn: () => {
       return WalletApi.getTransaction({
         limit,
