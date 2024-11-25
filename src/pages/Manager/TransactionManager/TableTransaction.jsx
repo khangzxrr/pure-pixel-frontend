@@ -84,7 +84,14 @@ export const TableTransaction = forwardRef((props, ref) => {
       key: "amount",
       sorter: (a, b) => a.amount - b.amount,
       ...getColumnPriceRangeProps("amount", "Giá Tiền"),
-      render: (_, record) => <div>{formatCurrency(record.amount)}</div>,
+      render: (_, record) => (
+        <div>
+          {record.type === "IMAGE_SELL"
+            ? ` ${formatCurrency(record.fee)}/`
+            : ""}
+          {formatCurrency(record.amount)}
+        </div>
+      ),
     },
     {
       title: "Ngày đăng",

@@ -16,6 +16,7 @@ import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/Com
 import ComModal from "../../../components/ComModal/ComModal";
 import DetailUpgrede from "./DetailUpgrede";
 import EditUpgrede from './EditBlog';
+import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
   function formatCurrency(number) {
     // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
     if (typeof number === "number") {
@@ -38,6 +39,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
     getColumnSearchProps,
     getColumnPriceRangeProps,
     getUniqueValues,
+    getColumnApprox,
     getColumnFilterProps,
   } = useColumnFilters();
   const columns = [
@@ -55,7 +57,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
       title: "Hình ảnh",
       dataIndex: "thumbnail",
       key: "thumbnail",
-      width: 50,
+      width: 80,
       render: (_, record) => (
         <>
           <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
@@ -98,6 +100,43 @@ export const TableServicePackage = forwardRef((props, ref) => {
       ),
     },
     {
+      title: "Người sở hữu",
+      width: 120,
+      dataIndex: "user.name",
+      key: "user.name",
+      sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
+      ...getColumnSearchProps("user.name", "Người báo cáo"),
+      render: (_, record) => (
+        <div className=" gap-2 items-center ">
+          {record?.user?.avatar && (
+            <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
+              <Image
+                wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
+                src={record?.user?.avatar}
+                alt={record?.user?.avatar}
+                preview={{ mask: "Xem ảnh" }}
+              />
+            </div>
+          )}
+          <p>{record?.user?.name}</p>
+        </div>
+      ),
+    },
+    {
+      title: "Ngày tạo",
+      width: 120,
+      dataIndex: "createdAt",
+      key: "createdAt",
+      sorter: (a, b) => new Date(a?.createdAt) - new Date(b?.createdAt),
+      ...getColumnApprox("createdAt"),
+      render: (_, render) => (
+        <div>
+          {/* {render?.contract?.signingDate} */}
+          <ComDateConverter time>{render?.createdAt}</ComDateConverter>
+        </div>
+      ),
+    },
+    {
       title: "Thao tác",
       key: "operation",
       fixed: "right",
@@ -125,7 +164,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
               );
             }}
             // extraMenuItems={extraMenuItems}
-            excludeDefaultItems={["details","edit"]}
+            excludeDefaultItems={["details", "edit"]}
           />
         </div>
       ),
