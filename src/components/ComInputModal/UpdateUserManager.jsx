@@ -7,12 +7,10 @@ import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
 import AdminApi from "../../apis/AdminApi";
 import UpdateUserDetail from "./UpdateUserDetail";
 const UpdateUserManager = ({ onClose, account }) => {
-  const [isLoadingButton, setIsLoadingButton] = useState(false);
   const userId = account?.id;
 
-  console.log(userId);
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["user-detail-manager"],
+    queryKey: ["user-detail-manager", userId],
     queryFn: () => AdminApi.getUserById(userId),
   });
 
@@ -22,7 +20,9 @@ const UpdateUserManager = ({ onClose, account }) => {
         <LoadingSpinner />
       </div>
     );
-  return <UpdateUserDetail userDetail={data} onClose={onClose} />;
+
+  const accountData = data;
+  return <UpdateUserDetail userDetail={accountData} onClose={onClose} />;
 };
 
 export default UpdateUserManager;

@@ -94,12 +94,8 @@ const AccountManagerPage = () => {
     ),
   }));
   const handleOpenUpdateModal = (account) => {
-    setSelectedAccount(account);
     setIsOpenUpdateModal(true);
-    console.log(`invalidate query `);
-    queryClient.invalidateQueries({
-      queryKey: ["user-detail-manager"],
-    });
+    setSelectedAccount(account);
   };
 
   const handleCloseUpdateModal = () => {
