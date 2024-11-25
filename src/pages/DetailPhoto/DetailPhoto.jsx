@@ -81,8 +81,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const { keycloak } = useKeycloak();
   const queryClient = useQueryClient();
 
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const [currentPhoto, setCurrentPhoto] = useState(
     photo
       ? photo
