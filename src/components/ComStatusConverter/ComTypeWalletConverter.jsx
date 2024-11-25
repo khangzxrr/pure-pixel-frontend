@@ -10,7 +10,7 @@ function ComTypeWalletConverter({ children }) {
       case "IMAGE_BUY":
         return <p className="">Mua ảnh</p>;
       case "IMAGE_SELL":
-        return <p className="">Bán ảnh</p>;
+        return <p className="">Bán ảnh (10%)</p>;
       case "WITHDRAWAL":
         return <p className="">Rút tiền</p>;
       default:
