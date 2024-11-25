@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
 import { useQuery } from "@tanstack/react-query";
 import { ConfigProvider, Pagination, Select, Tooltip } from "antd"; // Make sure Tooltip is imported
@@ -10,6 +10,7 @@ import { FiCameraOff } from "react-icons/fi";
 import ChatButton from "../../components/ChatButton/ChatButton";
 import { customTheme } from "../../components/Booking/BookingRequestList";
 import calculateDateDifference from "../../utils/calculateDateDifference";
+import useNotificationStore from "../../states/UseNotificationStore";
 
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
@@ -19,14 +20,10 @@ const statuses = [
   { label: "Đã hủy", value: "DENIED", color: "#DC3545" }, // Red
 ];
 const getStatusName = (status) => {
-  console.log("status", status);
-
   const statusInfo = statuses.find((s) => s.value === status);
   return statusInfo ? statusInfo.label : "Chưa xác định";
 };
 const getTextColor = (status) => {
-  console.log("getTextColor", status);
-
   const statusInfo = statuses.find((s) => s.value === status);
   return statusInfo ? statusInfo.color : "#6C757D";
 };
@@ -36,9 +33,9 @@ export default function CustomerBooking() {
   const limit = 8;
   const [page, setPage] = useState(1);
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
-
+  const { initSocket, joinNotification, leaveNotification } =
+    useNotificationStore();
   const isSelectedStatus = (value) => {
-    console.log("value", value, status);
     return status === value;
   };
   const handlePageClick = (pageNumber) => {
@@ -53,11 +50,24 @@ export default function CustomerBooking() {
         limit,
         page - 1,
         status,
-        orderByCreatedAt,
+        orderByCreatedAt
       ),
     keepPreviousData: true,
   });
+  useEffect(() => {
+    initSocket();
+    joinNotification((data) => {
+      console.log("bookingNoti", data);
 
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-customer-bookings"],
+      });
+    });
+
+    return () => {
+      leaveNotification();
+    };
+  }, []);
   return (
     <div className="flex flex-col gap-2 p-4">
       <div className="flex flex-col gap-2">
@@ -127,7 +137,6 @@ export default function CustomerBooking() {
                     booking.status === "ACCEPTED" ||
                     booking.status === "SUCCESSED"
                   ) {
-                    console.log("navigatebooking");
                     navigate(`/profile/customer-booking/${booking.id}`);
                   }
                 }}

@@ -216,7 +216,6 @@ export default function UpdatePhotoshootPackage({ onClose }) {
       setShowcases([]);
       setThumbnailUrl();
       setShowcasesUrl([]);
-
       queryClient.invalidateQueries("package-detail-by-photographer");
       reset();
     } else {

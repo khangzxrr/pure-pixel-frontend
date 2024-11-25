@@ -59,7 +59,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
     const validPage = Math.max(0, Math.min(pageParam, 9999));
     const response = await NotificationApi.getAllNotifactions(
       validLimit,
-      validPage,
+      validPage
     );
     return response;
   };
