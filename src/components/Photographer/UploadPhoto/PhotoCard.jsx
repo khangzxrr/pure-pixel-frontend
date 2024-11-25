@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNotification } from "../../../Notification/Notification";
 import "./UploadPhoto.css";
+
 export default function PhotoCard({ photo }) {
   const {
     setSelectedPhotoByUid,
@@ -13,8 +14,11 @@ export default function PhotoCard({ photo }) {
     removePhotoById,
     updatePhotoPropertyByUid,
     selectedPhoto,
+    setPhotoUploadResponse,
   } = useUploadPhotoStore();
   const { notificationApi } = useNotification();
+  //handle exception from api response
+
   const [isDeleting, setIsDeleting] = useState(false);
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
@@ -50,13 +54,65 @@ export default function PhotoCard({ photo }) {
   const handleSelect = () => {
     setSelectedPhotoByUid(photo.file.uid);
   };
+
+  const timeout = (promise, ms) => {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject(new Error("Request timed out"));
+      }, ms);
+
+      promise
+        .then((response) => {
+          clearTimeout(timer);
+          resolve(response);
+        })
+        .catch((err) => {
+          clearTimeout(timer);
+          reject(err);
+        });
+    });
+  };
+  const uploadPhoto = useMutation({
+    mutationFn: ({ file, onUploadProgress }) => {
+      console.log("uploadPhoto", file);
+      return timeout(
+        PhotoApi.uploadPhoto(file, onUploadProgress),
+        3000 // 5-minute timeout
+      );
+    },
+    onError: (e) => {
+      console.log("uploadPhoto error", e.response);
+      // handleException(photo.file, e);
+    },
+  });
+  const {
+    mutateAsync: tryUploadPhotoMutate,
+    isPending: tryUploadPhotoPending,
+  } = uploadPhoto; // Destructure the return value of the hook
+  const tryUploadPhoto = async ({ file }) => {
+    console.log("tryUploadPhoto", file);
+    try {
+      const response = await tryUploadPhotoMutate({
+        file,
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded / progressEvent.total) * 90
+          );
+
+          updatePhotoPropertyByUid(photo.file.uid, "percent", percentCompleted);
+        },
+      });
+      console.log("response", response);
+      // setPhotoUploadResponse(photo.file.uid, response);
+      // updatePhotoPropertyByUid(photo.file.uid, "status", "done");
+      // updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
+    } catch (e) {
+      console.log("tryUploadPhoto error", e);
+    }
+  };
   const reUploadPhoto = () => {
-    notificationApi(
-      "info",
-      "Đang thử lại tải ảnh",
-      "Tính năng chưa có, vui lòng thử lại"
-    );
-    console.log("reupload");
+    console.log("file", photo.file);
+    tryUploadPhoto({ file: photo.file });
   };
   return (
     <div className="relative grid grid-rows-2 p-2">
@@ -114,20 +170,24 @@ export default function PhotoCard({ photo }) {
         <div
           className={`absolute inset-0 grid place-items-center bg-gray-300 bg-opacity-80  z-10 rounded-lg`}
         >
-          <Tooltip
-            title="Thử lại"
-            color="blue"
-            onClick={(e) => {
-              e.preventDefault(); // Prevent default behavior (if applicable)
-              e.stopPropagation(); // Prevent event from propagating to parent elements
-              reUploadPhoto();
-            }}
-          >
-            <div className="flex flex-col items-center cursor-pointer text-blue-500 hover:opacity-80">
-              <UndoOutlined className="text-4xl text-blue-500" />
-              <p className="text-blue-500 mt-2">Thử lại</p>
-            </div>
-          </Tooltip>
+          {tryUploadPhotoPending ? (
+            "loading.."
+          ) : (
+            <Tooltip
+              title="Thử lại"
+              color="blue"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent default behavior (if applicable)
+                e.stopPropagation(); // Prevent event from propagating to parent elements
+                reUploadPhoto();
+              }}
+            >
+              <div className="flex flex-col items-center cursor-pointer text-blue-500 hover:opacity-80">
+                <UndoOutlined className="text-4xl text-blue-500" />
+                <p className="text-blue-500 mt-2">Thử lại</p>
+              </div>
+            </Tooltip>
+          )}
         </div>
       )}
       {photo.watermark && (

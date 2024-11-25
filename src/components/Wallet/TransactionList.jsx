@@ -263,7 +263,10 @@ export default function TransactionList() {
             </tr>
           </thead>
           {isLoading ? (
-            <TableSkeleton />
+            <div>
+              loading
+              {/* <TableSkeleton /> */}
+            </div>
           ) : (
             <tbody className="bg-[#36393f]">
               {transaction && transaction.objects.length > 0 ? (

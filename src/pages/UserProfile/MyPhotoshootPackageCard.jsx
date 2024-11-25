@@ -6,7 +6,7 @@ import {
   DeleteOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import { Tooltip } from "antd";
+import { Popconfirm, Tooltip } from "antd";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useModalStore from "../../states/UseModalStore";
@@ -15,7 +15,6 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
     setIsUpdatePhotoshootPackageModal,
     setSelectedUpdatePhotoshootPackage,
   } = useModalStore();
-  console.log("packageDetail", packageDetail);
   const queryClient = useQueryClient();
   const deletePhotoshootPackage = useMutation({
     mutationFn: async (data) => {
@@ -55,34 +54,47 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
         <div className=" text-2xl flex flex-row justify-between">
           <p>{packageDetail.title}</p>
           <div className="flex items-center gap-1">
-            <Tooltip title="Xóa gói" color="red" placement="top">
-              <div
-                className="text-lg hover:opacity-80 px-2 py-1 rounded-lg"
-                disable={isPending}
-                onClick={(e) => {
-                  e.preventDefault(); // Prevent default behavior (if applicable)
-                  e.stopPropagation(); // Prevent event from propagating to parent elements
-                  // Your onClick logic for the Pencil icon here
-                  console.log("delete  clicked");
-                  deletePhotoshootPackageMutate();
-                }}
-              >
-                {isPending ? (
+            <Popconfirm
+              onConfirm={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                deletePhotoshootPackageMutate();
+              }}
+              onCancel={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              disabled={isPending} // Ensure this is "disabled" not "disable"
+              title="Bạn có chắc chắn muốn xóa gói này không?"
+              okText={
+                isPending ? (
                   <LoadingOutlined className="text-red-500 hover:text-red-600" />
                 ) : (
+                  "Có"
+                )
+              }
+              cancelText="Không"
+              placement="bottom"
+            >
+              <Tooltip title="Xóa gói" color="red" placement="top">
+                <div
+                  className="text-lg hover:opacity-80 px-2 py-1 rounded-lg"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
                   <DeleteOutlined className="text-red-500 hover:text-red-600" />
-                )}
-              </div>
-            </Tooltip>
+                </div>
+              </Tooltip>
+            </Popconfirm>
 
             <Tooltip title="Cập nhật gói" color="blue" placement="top">
               <div
                 className="text-lg hover:opacity-80 px-2 py-1 rounded-lg"
                 onClick={(e) => {
-                  e.preventDefault(); // Prevent default behavior (if applicable)
-                  e.stopPropagation(); // Prevent event from propagating to parent elements
-                  // Your onClick logic for the Pencil icon here
-                  console.log("Pencil clicked");
+                  e.preventDefault();
+                  e.stopPropagation();
                   setIsUpdatePhotoshootPackageModal(true);
                   setSelectedUpdatePhotoshootPackage(packageDetail.id);
                 }}

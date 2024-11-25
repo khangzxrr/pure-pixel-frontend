@@ -49,6 +49,18 @@ const useModalStore = create(
     selectedUpdatePhotoshootPackage: {}, // Object to store the currently selected photoshoot package details
     setSelectedUpdatePhotoshootPackage: (packageItem) =>
       set({ selectedUpdatePhotoshootPackage: packageItem }),
+    deleteShowcasesList: [],
+    setDeleteShowcasesList: (id) =>
+      set((state) => {
+        const updatedList = [...state.deleteShowcasesList, id];
+        console.log("Updated deleteShowcasesList:", updatedList);
+        return { deleteShowcasesList: updatedList };
+      }),
+    clearDeleteShowcasesList: () =>
+      set(() => {
+        console.log("Clearing deleteShowcasesList");
+        return { deleteShowcasesList: [] };
+      }),
   }))
 );
 

@@ -1,4 +1,4 @@
-import http from "./../configs/Http";
+import http, { timeoutHttpClient } from "./../configs/Http";
 
 // const getPublicPhotos = async (limit, page, categoryName) => {
 
@@ -80,14 +80,16 @@ const getPhotoTags = async ({ top }) => {
   const response = await http.get(`/photo-tag?top=${top}`);
   return response.data;
 };
-
+// Send the PATCH request to update the user's profile
 const uploadPhoto = async (file, onUploadProgress) => {
   //using the RAW axios instead of modified one, or you will get CORS
   //
+  const customHttp = timeoutHttpClient(300000);
+
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await http.post(`photo/upload`, formData, {
+  const response = await customHttp.post(`photo/upload`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
