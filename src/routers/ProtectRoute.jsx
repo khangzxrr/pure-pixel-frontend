@@ -17,7 +17,6 @@ const ProtectRoute = ({ children, checkRoles }) => {
         return;
       }
     }
-
     navigate("/", { replace: true });
   }, [roles, checkRoles]);
 
