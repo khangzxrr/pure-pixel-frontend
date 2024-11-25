@@ -43,15 +43,15 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
               <div>{photoshootPackage.user.name}</div>
             </div>
             <div className="flex items-center gap-3">
-              <button className="px-2 py-1 text-[12px]  rounded-full border hover:bg-[#4f545c]">
+              {/* <button className="px-2 py-1 text-[12px]  rounded-full border hover:bg-[#4f545c]">
                 Theo dõi
-              </button>
+              </button> */}
               <ChatButton userId={photoshootPackage.user.id} />
             </div>
           </div>
           <div className="flex justify-between items-start">
             <div className="text-xl font-semibold">Gói chụp hình cá nhân</div>
-            <Share2 className="w-5 h-5 hover:cursor-pointer" />
+            {/* <Share2 className="w-5 h-5 hover:cursor-pointer" /> */}
           </div>
           <div className="font-normal">
             {formatPrice(photoshootPackage.price)}

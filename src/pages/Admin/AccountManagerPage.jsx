@@ -8,7 +8,11 @@ import {
   Pagination,
   Table,
 } from "antd";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { SlOptions } from "react-icons/sl";
 import { FaEdit } from "react-icons/fa";
@@ -24,6 +28,7 @@ const AccountManagerPage = () => {
     queryFn: () => AdminApi.getUserManager(itemsPerPage, page - 1),
     keepPreviousData: true,
   });
+  const queryClient = useQueryClient();
 
   //   if (isLoading) {
   //     return <div>Loading...</div>;
@@ -59,13 +64,13 @@ const AccountManagerPage = () => {
   ];
 
   const filteredUserList = userList?.filter(
-    (user) => !user.roles?.includes("purepixel-admin")
+    (user) => !user.name?.includes("admin")
   );
 
   const dataUsersTable = filteredUserList?.map((user) => ({
     id: user.id,
     name: user.name,
-    email: user.email,
+    email: user.mail,
     phone: user.phonenumber,
     address: user.location,
     // role: user.roles
@@ -91,11 +96,18 @@ const AccountManagerPage = () => {
   const handleOpenUpdateModal = (account) => {
     setSelectedAccount(account);
     setIsOpenUpdateModal(true);
+    console.log(`invalidate query `);
+    queryClient.invalidateQueries({
+      queryKey: ["user-detail-manager"],
+    });
   };
 
   const handleCloseUpdateModal = () => {
     setIsOpenUpdateModal(false);
     setSelectedAccount(null);
+    queryClient.invalidateQueries({
+      queryKey: ["user-detail-manager"],
+    });
   };
   const handlePageClick = (pageNumber) => {
     if (pageNumber !== page) {
