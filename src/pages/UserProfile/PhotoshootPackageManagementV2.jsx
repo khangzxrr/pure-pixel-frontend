@@ -20,6 +20,7 @@ const PhotoshootPackageManagementV2 = () => {
     isUpdatePhotoshootPackageModal,
     setIsUpdatePhotoshootPackageModal,
     setSelectedUpdatePhotoshootPackage,
+    clearDeleteShowcasesList,
   } = useModalStore();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -82,6 +83,7 @@ const PhotoshootPackageManagementV2 = () => {
         onCancel={() => {
           setIsUpdatePhotoshootPackageModal(false);
           setSelectedUpdatePhotoshootPackage("");
+          clearDeleteShowcasesList();
         }} // Close the modal on cancel
         footer={null}
         width={1000} // Set the width of the modal
@@ -92,6 +94,7 @@ const PhotoshootPackageManagementV2 = () => {
           onClose={() => {
             setIsUpdatePhotoshootPackageModal(false);
             setSelectedUpdatePhotoshootPackage("");
+            clearDeleteShowcasesList();
           }}
         />
       </Modal>
