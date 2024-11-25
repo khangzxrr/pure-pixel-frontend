@@ -1,27 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { FaAngleDown } from "react-icons/fa6";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { notificationApi } from "../../Notification/Notification";
+import AdminApi from "./../../apis/AdminApi";
 const UpdateUserDetail = ({ userDetail, onClose }) => {
+  const queryClient = useQueryClient();
   const [isLoadingButton, setIsLoadingButton] = useState(false);
-  const [name, setName] = useState(userDetail?.name || "");
-  const [phone, setPhone] = useState(userDetail?.phonenumber || "");
-  const [location, setLocation] = useState(userDetail?.location || "");
-  const [email, setEmail] = useState(userDetail?.mail || "");
-  const [isActive, setIsActive] = useState(userDetail?.enabled || false);
-  const [role, setRole] = useState(
-    userDetail?.roles?.includes("photographer")
-      ? "Nhiếp ảnh gia"
-      : userDetail?.roles?.includes("purepixel-admin")
-      ? "Quản trị viên"
-      : userDetail?.roles?.includes("customer")
-      ? "Khách hàng"
-      : userDetail?.roles?.includes("manager")
-      ? "Quản lý"
-      : "Không xác định"
-  );
-  const [quote, setQuote] = useState(userDetail?.quote || "");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
+  const [email, setEmail] = useState("");
+  const [isActive, setIsActive] = useState(false);
+  const [role, setRole] = useState("Không xác định");
+  const [quote, setQuote] = useState("");
+
+  // Đồng bộ state với userDetail
+  useEffect(() => {
+    setName(userDetail?.name || "");
+    setPhone(userDetail?.phonenumber || "");
+    setLocation(userDetail?.location || "");
+    setEmail(userDetail?.mail || "");
+    setIsActive(userDetail?.enabled || false);
+    setRole(
+      userDetail?.roles?.includes("photographer")
+        ? "nhiếp ảnh gia"
+        : userDetail?.roles?.includes("purepixel-admin")
+        ? "quản trị viên"
+        : userDetail?.roles?.includes("customer")
+        ? "khách hàng"
+        : userDetail?.roles?.includes("manager")
+        ? "quản lý"
+        : "không xác định"
+    );
+    setQuote(userDetail?.quote || "");
+  }, [userDetail]);
+
   console.log(userDetail);
 
   const updateUser = useMutation({
@@ -30,13 +45,27 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
 
   const handleUpdateUser = () => {
     setIsLoadingButton(true);
+
+    // Map giá trị từ giao diện người dùng sang giá trị API
+    const roleApiValue = {
+      "quản lý": "manager",
+      "nhiếp ảnh gia": "photographer",
+      "khách hàng": "customer",
+      "quản trị viên": "purepixel-admin",
+    }[role]; // Nếu không tìm thấy sẽ trả về undefined
+
+    if (!roleApiValue) {
+      notificationApi("error", "Cập nhật thất bại", "Quyền không hợp lệ.");
+      setIsLoadingButton(false);
+      return;
+    }
     const updateBody = {
       name: name,
       mail: email,
       phonenumber: phone,
       quote: quote,
       location: location,
-      role: role,
+      role: roleApiValue,
       enabled: isActive,
     };
 
@@ -49,14 +78,19 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
         );
         queryClient.invalidateQueries({ queryKey: ["users-manager"] });
         setIsLoadingButton(false);
+        onClose();
       },
       onError: (error) => {
-        notificationApi("error", "Cập nhật thất bại", error.message);
-        setIsLoadingButton(false);
+        notificationApi(
+          "error",
+          "Cập nhật thất bại",
+          "Cần phải điền đầy đủ thông tin"
+        );
         queryClient.invalidateQueries({ queryKey: ["users-manager"] });
+        setIsLoadingButton(false);
+        onClose();
       },
     });
-    onClose();
   };
 
   return (
@@ -130,15 +164,15 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
             <div className="py-1">
               <MenuItem>
                 <div
-                  onClick={() => setRole("Quản lí")}
+                  onClick={() => setRole("quản lý")}
                   className="block px-4 py-2 text-sm text-[#eee] hover:cursor-pointer data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                 >
-                  Quản lí
+                  Quản lý
                 </div>
               </MenuItem>
               <MenuItem>
                 <div
-                  onClick={() => setRole("Nhiếp ảnh gia")}
+                  onClick={() => setRole("nhiếp ảnh gia")}
                   className="block px-4 py-2 text-sm text-[#eee] hover:cursor-pointer data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                 >
                   Nhiếp ảnh gia
@@ -146,7 +180,7 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
               </MenuItem>
               <MenuItem>
                 <div
-                  onClick={() => setRole("Khách hàng")}
+                  onClick={() => setRole("khách hàng")}
                   className="block px-4 py-2 text-sm text-[#eee] hover:cursor-pointer data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                 >
                   Khách hàng

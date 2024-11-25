@@ -290,7 +290,7 @@ const MyPhotoP = () => {
                     {photo.title?.length > 20
                       ? `${photo.title.substring(0, 10)}...`
                       : photo.title || "Không xác định"}
-                    {/* <div>{photo.category?.name || "Không xác định"}</div> */}
+                    <div>{photo.visibility === "PUBLIC" ? "Công khai" : "Riêng tư"} </div>
                   </div>
                 </div>
               </div>
