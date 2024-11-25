@@ -7,6 +7,7 @@ import PhotographerApi from "../../apis/PhotographerApi";
 import { useKeycloak } from "@react-keycloak/web";
 import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
 import FollowApi from "../../apis/FollowApi";
+import { MdPersonOff } from "react-icons/md";
 
 const ListPhotographers = () => {
   const { keycloak } = useKeycloak();
@@ -76,14 +77,21 @@ const ListPhotographers = () => {
           </div>
         )}
         {isError && <div>{error.message}</div>}
-        {!isLoading &&
-          !isError &&
+        {!isLoading && !isError && photographers.length > 0 ? (
           photographers.map((photographer) => (
             <PhotographerCard
               //  key={photographer.id}
               photographer={photographer}
             />
-          ))}
+          ))
+        ) : (
+          <div className="col-span-4 flex items-center justify-center h-[500px]">
+            <div className="flex flex-col items-center text-gray-400">
+              <MdPersonOff className="text-6xl" />
+              Không tìm thấy nhiếp ảnh gia khả dụng!
+            </div>
+          </div>
+        )}
       </InfiniteScroll>
     </div>
   );

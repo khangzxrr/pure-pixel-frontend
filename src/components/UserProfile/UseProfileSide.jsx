@@ -36,12 +36,12 @@ const UserProfileSideItems = [
     icon: <BiMoneyWithdraw />, // Icon ảnh
     link: "/profile/photos-bought",
   },
-  {
-    id: "MyBookmark",
-    title: "Ảnh đã đánh dấu",
-    icon: <FaBookmark />,
-    link: "/profile/bookmark", // Icon ảnh
-  },
+  // {
+  //   id: "MyBookmark",
+  //   title: "Ảnh đã đánh dấu",
+  //   icon: <FaBookmark />,
+  //   link: "/profile/bookmark", // Icon ảnh
+  // },
   {
     id: "photo",
     link: "/profile/photo-selling",
