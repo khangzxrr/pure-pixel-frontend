@@ -42,7 +42,20 @@ const AccountManagerPage = () => {
 
   const columns = [
     { title: "ID", dataIndex: "id" },
-    { title: "Tên", dataIndex: "name" },
+    {
+      title: "Tên",
+      dataIndex: "name",
+      render: (text, record) => (
+        <div className="flex items-center gap-3">
+          <img
+            src={record.avatar || "https://via.placeholder.com/40"} // URL avatar, thêm ảnh mặc định nếu không có
+            alt="Avatar"
+            className="w-9 h-9 rounded-full object-cover bg-[#eee]"
+          />
+          <span>{text}</span>
+        </div>
+      ),
+    },
     { title: "Email", dataIndex: "email" },
     { title: "Số điện thoại", dataIndex: "phone" },
     { title: "Địa chỉ", dataIndex: "address" },
@@ -70,6 +83,7 @@ const AccountManagerPage = () => {
   const dataUsersTable = filteredUserList?.map((user) => ({
     id: user.id,
     name: user.name,
+    avatar: user.avatar,
     email: user.mail,
     phone: user.phonenumber,
     address: user.location,
