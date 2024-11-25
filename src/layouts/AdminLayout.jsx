@@ -19,6 +19,7 @@ import {
   DocumentDuplicateIcon,
   FolderIcon,
   HomeIcon,
+  UserCircleIcon,
   UsersIcon,
   VideoCameraIcon,
   XMarkIcon,
@@ -37,6 +38,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Affix } from "antd";
 import { useKeycloak } from "@react-keycloak/web";
 import { PackageIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import UserProfileApi from "../apis/UserProfile";
 
 const navigation = [
   {
@@ -104,6 +107,12 @@ const navigation = [
     icon: BanknotesIcon,
     current: false,
   },
+  {
+    name: "Tài khoản ",
+    href: "/admin/account",
+    icon: UserCircleIcon,
+    current: false,
+  },
 ];
 
 const userNavigation = [{ name: "Đăng xuất", href: "/" }];
@@ -120,6 +129,16 @@ export default function AdminLayout({ children }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const { keycloak } = useKeycloak();
   const handleLogout = () => keycloak.logout();
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["admin-me"],
+    queryFn: () => UserProfileApi.getMyProfile(),
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   useEffect(() => {
     setActiveCategory(currentPath);
     window.scrollTo(0, 0);
@@ -161,8 +180,8 @@ export default function AdminLayout({ children }) {
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-4 pb-4 ring-1 ring-white/10">
                 <div className="flex h-16 shrink-0 items-center">
                   <img
-                    alt="Your Company"
-                    src="/purepixel.png"
+                    alt="./purepixel-icon.png"
+                    src="./purepixel-icon.png"
                     className="h-8 w-auto"
                   />
                 </div>
@@ -399,7 +418,7 @@ export default function AdminLayout({ children }) {
                       <span className="sr-only">Open user menu</span>
                       <img
                         alt=""
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src={data?.avatar}
                         className="h-8 w-8 rounded-full bg-gray-50"
                       />
                       <span className="hidden lg:flex lg:items-center">
@@ -407,7 +426,7 @@ export default function AdminLayout({ children }) {
                           aria-hidden="true"
                           className="ml-4 text-sm font-semibold leading-6 text-white"
                         >
-                          Tom Cook
+                          {data?.name}
                         </span>
                         <ChevronDownIcon
                           aria-hidden="true"

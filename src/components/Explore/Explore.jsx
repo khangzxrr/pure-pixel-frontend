@@ -51,7 +51,7 @@ const Explore = () => {
     cacheTime: 300000,
   });
 
-  const role = data?.roles;
+  const role = user?.resource_access?.purepixel?.roles;
 
   const handleScroll = () => {
     const scrollTop = document.getElementById("inspiration").scrollTop;

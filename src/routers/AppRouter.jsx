@@ -61,6 +61,7 @@ import ServicePackageManager from "./../pages/Manager/ServicePackage/ServicePack
 import CameraManager from "../pages/Manager/Camera/CameraManager";
 import TransactionWithdrawalManager from "../pages/Manager/TransactionWithdrawalManager/TransactionWithdrawalManager";
 import StatiticsPage from "../pages/Admin/StatiticsPage";
+import AccountManagerPage from "../pages/Admin/AccountManagerPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -170,7 +171,7 @@ export const AppRouter = createBrowserRouter([
           {
             path: "upload",
             element: (
-              <ProtectRoute checkRole={"photographer"}>
+              <ProtectRoute checkRoles={["photographer"]}>
                 <Upload />
               </ProtectRoute>
             ),
@@ -412,6 +413,10 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/admin/withdrawal-processing",
             element: <TransactionWithdrawalManager />,
+          },
+          {
+            path: "/admin/account",
+            element: <AccountManagerPage />,
           },
         ],
       },

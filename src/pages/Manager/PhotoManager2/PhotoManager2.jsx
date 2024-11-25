@@ -69,9 +69,9 @@ const PhotoManager2 = () => {
   };
   const handleCloseUpdateModal = () => {
     setIsModalUpdateOpen(false);
+    setSelectedPhoto(null);
   };
   const photosList = data?.objects;
-  console.log("photosList", photosList);
 
   const totalPages = data?.totalPage || 1;
   const columns = [
