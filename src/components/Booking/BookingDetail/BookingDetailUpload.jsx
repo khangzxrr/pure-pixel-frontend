@@ -101,18 +101,19 @@ export default function UploadBookingPhoto({ bookingDetail }) {
 
           updatePhotoPropertyByUid(file.uid, "percent", percentCompleted);
           if (percentCompleted === 100) {
-            updatePhotoPropertyByUid(file.uid, "status", "done");
-            notificationApi(
-              "success",
-              "Tải ảnh thành công",
-              "Ảnh đã được tải lên thành công",
-              "",
-              0,
-              "upload-photo-dragger",
-            );
           }
         },
       });
+
+      updatePhotoPropertyByUid(file.uid, "status", "done");
+      notificationApi(
+        "success",
+        "Tải ảnh thành công",
+        "Ảnh đã được tải lên thành công",
+        "",
+        0,
+        "upload-photo-dragger",
+      );
 
       setPhotoUploadResponse(file.uid, {
         id: response.id,
