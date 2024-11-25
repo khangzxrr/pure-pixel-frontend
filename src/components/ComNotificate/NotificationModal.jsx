@@ -42,10 +42,23 @@ const NotificationModal = ({ isOpen, onClose }) => {
   }, [keycloak.tokenParsed]);
 
   useEffect(() => {
-    function showNotification(data) {
+    async function showNotification(data) {
       showUpNotification(data);
-      queryClient.invalidateQueries({
+
+      await queryClient.invalidateQueries({
         queryKey: ["notifications"],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["get-all-customer-bookings"],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["customer-booking-detail"],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["customer-booking-bill-items"],
       });
     }
     if (!socket) return;
