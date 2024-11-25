@@ -47,10 +47,6 @@ const BookingRequestList = () => {
   const [status, setStatus] = useState("");
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
 
-  const { socket } = useNotificationStore();
-
-  const queryClient = useQueryClient();
-
   const isSelectedStatus = (value) => status === value;
 
   const handlePageClick = (pageNumber) => {
@@ -58,30 +54,6 @@ const BookingRequestList = () => {
       setPage(pageNumber);
     }
   };
-
-  useEffect(() => {
-    async function notificationEventHandler(data) {
-      console.log(data);
-
-      if (data?.referenceType === "BOOKING") {
-        console.log(`invalidate photographer booking!`);
-        await queryClient.invalidateQueries({
-          queryKey: ["get-all-photographer-booking"],
-        });
-      }
-    }
-
-    if (socket?.connected) {
-      console.log(`listen to notification event in CustomerBooking`);
-      socket.on("notification-event", notificationEventHandler);
-    }
-
-    return () => {
-      if (socket) {
-        socket.off("notification-event", notificationEventHandler);
-      }
-    };
-  }, [socket]);
 
   const { isPending, data } = useQuery({
     queryKey: ["get-all-photographer-booking", status, page, orderByCreatedAt],

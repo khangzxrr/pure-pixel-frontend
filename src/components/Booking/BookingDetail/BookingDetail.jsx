@@ -6,12 +6,9 @@ import BookingDetailInfo from "./BookingDetailInfo";
 import BookingDetailUpload from "./BookingDetailUpload";
 import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import useNotificationStore from "../../../states/UseNotificationStore";
 
 const BookingDetail = () => {
   const { bookingId } = useParams();
-  const queryClient = useQueryClient();
-  const { socket } = useNotificationStore();
 
   const {
     setSelectedPhotoByUid,
@@ -23,30 +20,6 @@ const BookingDetail = () => {
     setPreviousSelectedPhoto,
     setNextSelectedPhoto,
   } = useBookingPhotoStore();
-
-  useEffect(() => {
-    async function notificationEventHandler(data) {
-      console.log(data);
-
-      if (data?.referenceType === "BOOKING") {
-        console.log(`invalidate customer booking!`);
-        await queryClient.invalidateQueries({
-          queryKey: ["get-all-customer-bookings"],
-        });
-      }
-    }
-
-    if (socket?.connected) {
-      console.log(`listen to notification event in CustomerBooking`);
-      socket.on("notification-event", notificationEventHandler);
-    }
-
-    return () => {
-      if (socket) {
-        socket.off("notification-event", notificationEventHandler);
-      }
-    };
-  }, [socket]);
 
   const { isPending, data: bookingDetail } = useQuery({
     queryKey: ["booking-detail", bookingId],
