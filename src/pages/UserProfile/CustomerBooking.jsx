@@ -20,14 +20,10 @@ const statuses = [
   { label: "Đã hủy", value: "DENIED", color: "#DC3545" }, // Red
 ];
 const getStatusName = (status) => {
-  console.log("status", status);
-
   const statusInfo = statuses.find((s) => s.value === status);
   return statusInfo ? statusInfo.label : "Chưa xác định";
 };
 const getTextColor = (status) => {
-  console.log("getTextColor", status);
-
   const statusInfo = statuses.find((s) => s.value === status);
   return statusInfo ? statusInfo.color : "#6C757D";
 };
@@ -67,7 +63,6 @@ export default function CustomerBooking() {
   }, [socket]);
 
   const isSelectedStatus = (value) => {
-    // console.log("value", value, status);
     return status === value;
   };
   const handlePageClick = (pageNumber) => {
@@ -82,10 +77,23 @@ export default function CustomerBooking() {
         limit,
         page - 1,
         status,
-        orderByCreatedAt,
+        orderByCreatedAt
       ),
   });
+  useEffect(() => {
+    initSocket();
+    joinNotification((data) => {
+      console.log("bookingNoti", data);
 
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-customer-bookings"],
+      });
+    });
+
+    return () => {
+      leaveNotification();
+    };
+  }, []);
   return (
     <div className="flex flex-col gap-2 p-4">
       <div className="flex flex-col gap-2">
@@ -155,7 +163,6 @@ export default function CustomerBooking() {
                     booking.status === "ACCEPTED" ||
                     booking.status === "SUCCESSED"
                   ) {
-                    console.log("navigatebooking");
                     navigate(`/profile/customer-booking/${booking.id}`);
                   }
                 }}

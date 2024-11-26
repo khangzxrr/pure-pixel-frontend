@@ -46,11 +46,11 @@ export default function UpgradePaymentModal() {
           mockQrCode: data.mockQrCode, // Update or add new properties
         });
       } else {
-        notificationApi(
-          "success",
-          "Nâng cấp gói thành công",
-          "Vui lòng kiểm tra lại giao lịch của bạn"
-        );
+        // notificationApi(
+        //   "success",
+        //   "Nâng cấp gói thành công",
+        //   "Vui lòng kiểm tra lại giao lịch của bạn"
+        // );
         //call keycloak update token method, with -1 minValidity it will update immediately
         keycloak.updateToken(-1).then(() => {});
         startFireworks();
@@ -107,24 +107,25 @@ export default function UpgradePaymentModal() {
 
   // Polling logic: refetch the query every 3 seconds when the modal is open
   useEffect(() => {
-    let interval;
+    // let interval;
     // Polling logic
-    if (isUpgradePaymentModal && transactionDetail) {
-      interval = setInterval(() => {
-        refetch();
-      }, 3000);
-    }
+    // if (isUpgradePaymentModal && transactionDetail) {
+    //   interval = setInterval(() => {
+    //     refetch();
+    //   }, 3000);
+    // }
 
     // Success and expiration logic
     if (isUpgradePaymentModal && transactionDetail) {
+      console.log("transactionUpgrade", transactionDetail);
       if (transactionDetail.status === "SUCCESS") {
         keycloak.updateToken(-1).then(() => {});
         startFireworks();
-        notificationApi(
-          "success",
-          "Nâng cấp gói thành công",
-          "Vui lòng kiểm tra lại giao lịch của bạn"
-        );
+        // notificationApi(
+        //   "success",
+        //   "Nâng cấp gói thành công",
+        //   "Vui lòng kiểm tra lại giao lịch của bạn"
+        // );
         setTimeout(() => {
           stopFireworks();
           setIsUpgradePaymentModal(false);
@@ -149,7 +150,7 @@ export default function UpgradePaymentModal() {
     }
 
     // Cleanup function to stop polling when modal closes or component unmounts
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, [isUpgradePaymentModal, transactionDetail, selectedUpgradePackage]);
 
   return (

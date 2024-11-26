@@ -26,7 +26,7 @@ const { Dragger } = Upload;
 
 export default function CustomUpload() {
   const [isWatermarkAll, setIsWatermarkAll] = useState(true);
-
+  const [disableUpload, setDisableUpload] = useState(false);
   const {
     addPhoto,
     setSelectedPhotoByUid,
@@ -38,7 +38,6 @@ export default function CustomUpload() {
     clearState,
   } = useUploadPhotoStore();
 
-  const userData = UserService.getTokenParsed()?.preferred_username;
   const navigate = useNavigate();
   const { notificationApi } = useNotification();
 
@@ -329,6 +328,7 @@ export default function CustomUpload() {
   };
 
   const SubmitUpload = async () => {
+    setDisableUpload(true);
     // Loop over each photo and update them individually
     const updatePromises = photoArray.map(async (photo) => {
       const photoToUpdate = {
@@ -358,10 +358,11 @@ export default function CustomUpload() {
     try {
       // Wait for all update and watermark operations to complete
       await Promise.all(updatePromises);
-
+      setDisableUpload(false);
       // navigate("/my-photo/photo/all");
     } catch (error) {
       // Handle errors if any of the updates fail
+      setDisableUpload(false);
       console.error("Error updating photos:", error);
       message.error("Có lỗi xảy ra trong quá trình cập nhật!");
     }
@@ -417,18 +418,23 @@ export default function CustomUpload() {
             className={`w-full row-span-3 ${
               photoArray.length > 0 ? "" : "hidden"
             } ${
-              photoArray.some((photo) => photo.status === "uploading")
+              photoArray.some((photo) => photo.status === "uploading") ||
+              disableUpload
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-[#56bc8a] hover:bg-[#68c397] cursor-pointer"
             } transition duration-150 flex justify-center items-center`}
             onClick={() => {
-              if (!photoArray.some((photo) => photo.status === "uploading")) {
+              if (
+                !photoArray.some((photo) => photo.status === "uploading") ||
+                disableUpload
+              ) {
                 SubmitUpload();
               }
             }}
           >
             <div className="w-full lg:text-6xl md:text-4xl sm:text-4xl text-4xl text-white flex justify-center items-center">
-              {photoArray.some((photo) => photo.status === "uploading") ? (
+              {photoArray.some((photo) => photo.status === "uploading") ||
+              disableUpload ? (
                 <LoadingOutlined
                   style={{
                     fontSize: 48,
