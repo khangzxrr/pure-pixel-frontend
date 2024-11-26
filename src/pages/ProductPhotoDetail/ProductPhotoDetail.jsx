@@ -103,9 +103,9 @@ const ProductPhotoDetail = () => {
             purchasedImageUrl: null,
           };
         });
-console.log('====================================');
-console.log(3333,userData.sub);
-console.log();
+        console.log("====================================");
+        console.log(3333, userData.sub);
+        console.log();
         // Kiểm tra xem người dùng đã mua pricetag nào
         if (userData) {
           const userId = userData.sub;
@@ -247,9 +247,15 @@ console.log();
             );
             setQrCodeUrl(response.mockQrCode);
             setPaymentStatus("PENDING");
+            setTimeout(() => {
+              navigate(`/profile/photos-bought`);
+            }, 1000);
           } else if (paymentMethod === "WALLET") {
             modal?.handleClose();
-            message.success("Thanh toán bằng ví thành công!");
+            // message.success("Thanh toán bằng ví thành công!");
+            setTimeout(() => {
+              navigate(`/profile/photos-bought`);
+            }, 1000);
 
             // Cập nhật trạng thái pricetag
             setPricetagStatus((prevStatus) => {
