@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ConfigProvider, Pagination, Select, Tooltip } from "antd"; // Make sure Tooltip is imported
 import { Calendar, MessageCircleMore } from "lucide-react";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
@@ -33,8 +33,35 @@ export default function CustomerBooking() {
   const limit = 8;
   const [page, setPage] = useState(1);
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
-  const { initSocket, joinNotification, leaveNotification } =
-    useNotificationStore();
+
+  const { socket } = useNotificationStore();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    async function notificationEventHandler(data) {
+      console.log(data);
+
+      if (data?.referenceType === "BOOKING") {
+        console.log(`invalidate customer booking!`);
+        await queryClient.invalidateQueries({
+          queryKey: ["get-all-customer-bookings"],
+        });
+      }
+    }
+
+    if (socket?.connected) {
+      console.log(`listen to notification event in CustomerBooking`);
+      socket.on("notification-event", notificationEventHandler);
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("notification-event", notificationEventHandler);
+      }
+    };
+  }, [socket]);
+
   const isSelectedStatus = (value) => {
     return status === value;
   };
@@ -52,7 +79,6 @@ export default function CustomerBooking() {
         status,
         orderByCreatedAt
       ),
-    keepPreviousData: true,
   });
   useEffect(() => {
     initSocket();

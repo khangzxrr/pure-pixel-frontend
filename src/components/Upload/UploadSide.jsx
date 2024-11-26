@@ -13,6 +13,7 @@ const UploadSide = () => {
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
+
   const handleLogout = () => keycloak.logout();
   const handleClick = (id, title, icon, quote) =>
     setActiveItem(id, title, icon, quote);

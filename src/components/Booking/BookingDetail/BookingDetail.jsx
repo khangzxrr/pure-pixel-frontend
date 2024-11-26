@@ -9,7 +9,6 @@ import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 
 const BookingDetail = () => {
   const { bookingId } = useParams();
-  const queryClient = useQueryClient();
 
   const {
     setSelectedPhotoByUid,
@@ -21,6 +20,7 @@ const BookingDetail = () => {
     setPreviousSelectedPhoto,
     setNextSelectedPhoto,
   } = useBookingPhotoStore();
+
   const { isPending, data: bookingDetail } = useQuery({
     queryKey: ["booking-detail", bookingId],
     queryFn: () => PhotographerBookingApi.findById(bookingId),

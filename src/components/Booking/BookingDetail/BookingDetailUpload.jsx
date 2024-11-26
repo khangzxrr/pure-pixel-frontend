@@ -42,7 +42,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
     switch (e.response.data.message) {
       case "RunOutPhotoQuotaException":
         message.error(
-          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
         );
         break;
 
@@ -65,15 +65,6 @@ export default function UploadBookingPhoto({ bookingDetail }) {
     const isLt150M = file.size / 1024 / 1024 < 150;
     if (!isLt150M) {
       message.error("Ảnh phải nhỏ hơn 150");
-
-      return false;
-    }
-
-    const exif = await PhotoService.getExifData(file);
-    const isValidExif = PhotoService.validateExifData(exif);
-
-    if (!isValidExif) {
-      // message.error("Ảnh bạn chọn không tồn tại exif hợp lệ");
 
       return false;
     }
@@ -105,23 +96,24 @@ export default function UploadBookingPhoto({ bookingDetail }) {
         file,
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
-            (progressEvent.loaded / progressEvent.total) * 100
+            (progressEvent.loaded / progressEvent.total) * 100,
           );
 
           updatePhotoPropertyByUid(file.uid, "percent", percentCompleted);
           if (percentCompleted === 100) {
-            updatePhotoPropertyByUid(file.uid, "status", "done");
-            notificationApi(
-              "success",
-              "Tải ảnh thành công",
-              "Ảnh đã được tải lên thành công",
-              "",
-              0,
-              "upload-photo-dragger"
-            );
           }
         },
       });
+
+      updatePhotoPropertyByUid(file.uid, "status", "done");
+      notificationApi(
+        "success",
+        "Tải ảnh thành công",
+        "Ảnh đã được tải lên thành công",
+        "",
+        0,
+        "upload-photo-dragger",
+      );
 
       setPhotoUploadResponse(file.uid, {
         id: response.id,
@@ -155,7 +147,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
           message.error(
-            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
           );
           break;
 

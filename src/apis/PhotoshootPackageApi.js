@@ -1,4 +1,5 @@
 import http, { timeoutHttpClient } from "../configs/Http";
+const customHttp = timeoutHttpClient(300000);
 
 const getPackagesByPhotographerId = async (photographerId, limit, page) => {
   const response = await http.get(
@@ -35,7 +36,7 @@ const photographerFindById = async (id) => {
 
   return response.data;
 };
-const createPhotoshootPackage = async (data, timeout = 300000) => {
+const createPhotoshootPackage = async (data) => {
   const formData = new FormData();
 
   if (data?.title) {
@@ -65,7 +66,6 @@ const createPhotoshootPackage = async (data, timeout = 300000) => {
   }
 
   // Create a timeout-specific Axios instance
-  const customHttp = timeoutHttpClient(timeout);
 
   // Send the POST request to create the photoshoot package
   const response = await customHttp.post(
@@ -112,7 +112,6 @@ const updatePhotoshootPackage = async ({ packageId, data }) => {
   //   });
   // }
 
-  const customHttp = timeoutHttpClient(300000);
   // Send the PATCH request to update the user's profile
   const response = await customHttp.patch(
     `/photographer/photoshoot-package/${packageId}`,
@@ -143,7 +142,6 @@ const addPhotoshootPackageShowcase = async (photoshootPackageId, data) => {
 
     const formData = new FormData();
     formData.append("showcase", newShowcasePhoto);
-    const customHttp = timeoutHttpClient(300000);
 
     const response = await customHttp.post(
       `/photographer/photoshoot-package-showcase/photoshoot-package/${photoshootPackageId}`,

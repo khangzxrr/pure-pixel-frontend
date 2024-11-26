@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import UserApi from "../apis/UserApi";
 import UseCameraStore from "../states/UseCameraStore";
 import { RiLogoutBoxLine } from "react-icons/ri";
+import UserService from "../services/Keycloak";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -30,7 +31,7 @@ const SidebarLayout = ({
     cacheTime: 300000,
   });
 
-  const role = data?.roles;
+  const role = userData?.resource_access?.purepixel?.roles;
   const isUploadRoute = location.pathname === "/upload/public" ? true : false;
 
   const brandCamera = UseCameraStore((state) => state.brandCamera);

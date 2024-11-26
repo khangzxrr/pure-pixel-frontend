@@ -71,14 +71,14 @@ const UserProfile = () => {
               style={{ overflow: "hidden" }} // Hides the overflowed part of the image
               animate={{ height: containerHeight }} // Dynamically change height on scroll
               transition={{ duration: 0.01, ease: "easeInOut" }} // Smooth transition
-              className="w-full"
+              className="w-full "
             >
               {/* Button positioned absolutely */}
 
               <img
                 src={userData?.cover} // Use coverPhoto from userData
                 alt="Cover"
-                className="w-full h-auto" // Image maintains its full width and natural height
+                className="w-full h-auto " // Image maintains its full width and natural height
               />
             </motion.div>
           </div>
@@ -158,6 +158,7 @@ const UserProfile = () => {
           {/* <ProfileLayout /> */}
         </div>
       )}
+      
       {isLoading && (
         <div>
           <LoadingProfile />{" "}

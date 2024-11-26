@@ -36,7 +36,10 @@ const Explore = () => {
   }, [user]);
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-  const handleLogout = () => keycloak.logout();
+  const handleLogout = () =>
+    keycloak.logout({
+      redirectUri: "https://purepixel.io.vn",
+    });
 
   const isInspirationActive = activeItem === 1;
   const isPhotographerListActive = activeItem === 4;
@@ -51,7 +54,7 @@ const Explore = () => {
     cacheTime: 300000,
   });
 
-  const role = data?.roles;
+  const role = user?.resource_access?.purepixel?.roles;
 
   const handleScroll = () => {
     const scrollTop = document.getElementById("inspiration").scrollTop;

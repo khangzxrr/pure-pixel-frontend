@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { PhotographerBookingApi } from "../../apis/PhotographerBookingApi";
 import BookingCard from "./BookingRequestState/BookingCard";

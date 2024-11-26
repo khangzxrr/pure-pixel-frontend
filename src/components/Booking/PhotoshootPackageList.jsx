@@ -12,7 +12,7 @@ const PhotoshootPackageList = () => {
   const itemsPerPage = 12;
 
   const { isPending, isError, data, error } = useQuery({
-    queryKey: ["findAllPhotoshootPackages", page],
+    queryKey: ["findAllPhotoshootPackages-list", page],
     queryFn: () => PhotoshootPackageApi.findAll(itemsPerPage, page - 1),
     keepPreviousData: true,
   });

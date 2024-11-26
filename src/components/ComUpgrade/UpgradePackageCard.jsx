@@ -6,7 +6,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useKeycloak } from "@react-keycloak/web";
 import useModalStore from "../../states/UseModalStore";
 import UserService from "../../services/Keycloak";
-import UpdatePackageDropdown from "./UpdatePackageDropdown";
 
 const UpgradePackageCard = ({
   packageItem,

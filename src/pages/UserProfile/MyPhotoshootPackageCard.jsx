@@ -52,7 +52,9 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
       </div>
       <div className="flex flex-col gap-1 px-2">
         <div className=" text-2xl flex flex-row justify-between">
-          <p>{packageDetail.title}</p>
+          <p className="line-clamp-1  ">
+            {packageDetail.title}
+          </p>
           <div className="flex items-center gap-1">
             <Popconfirm
               onConfirm={(e) => {

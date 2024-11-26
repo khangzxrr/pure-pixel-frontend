@@ -5,6 +5,7 @@ import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
 
 import useNotificationStore from "../../states/UseNotificationStore";
 import { notificationApi } from "../../Notification/Notification";
+import { useKeycloak } from "@react-keycloak/web";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   const [showModal, setShowModal] = useState(false);
@@ -12,8 +13,9 @@ const NotificationModal = ({ isOpen, onClose }) => {
 
   const queryClient = useQueryClient();
 
-  const { initSocket, joinNotification, leaveNotification } =
-    useNotificationStore();
+  const { initSocket, socket } = useNotificationStore();
+
+  const { keycloak } = useKeycloak();
 
   const showUpNotification = (data) => {
     notificationApi("info", data.title, data.content);
@@ -34,19 +36,46 @@ const NotificationModal = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   useEffect(() => {
-    initSocket();
-    joinNotification((data) => {
+    if (keycloak?.tokenParsed?.sub) {
+      initSocket(keycloak.token);
+    }
+  }, [keycloak.tokenParsed]);
+
+  useEffect(() => {
+    async function showNotification(data) {
       showUpNotification(data);
 
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: ["notifications"],
       });
-    });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["get-all-customer-bookings"],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["customer-booking-detail"],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["customer-booking-bill-items"],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["get-all-photographer-booking"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["getTransactionById"],
+      });
+    }
+    if (!socket) return;
+
+    socket.on("notification-event", showNotification);
 
     return () => {
-      leaveNotification();
+      socket.off("notification-event", showNotification);
     };
-  }, []);
+  }, [socket]);
 
   const handleClickOutside = (e) => {
     if (e.target.id === "modal-overlay") {

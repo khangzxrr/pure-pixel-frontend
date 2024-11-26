@@ -74,9 +74,9 @@ const CameraPhoto = ({ nameCamera }) => {
     500: 1,
   };
 
-  const handleOnClick = (photoId) => {
+  const handleOnClick = (photo) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
-    setSelectedImage(photoId);
+    setSelectedImage(photo);
   };
 
   return (
@@ -95,9 +95,10 @@ const CameraPhoto = ({ nameCamera }) => {
       </ComModal>
       {selectedImage && (
         <DetailedPhotoView
-          idImg={selectedImage}
+          idImg={selectedImage.id}
+          photo={selectedImage}
           onClose={() => {
-            navigate(`/camera/${cameraId}`);
+            navigate(`/explore/camera-model/${cameraId}`);
             setSelectedImage(null);
           }}
           listImg={photoList}
@@ -146,7 +147,7 @@ const CameraPhoto = ({ nameCamera }) => {
                       src={photo.signedUrl.thumbnail}
                       alt={`Photo ${photo.id}`}
                       className="w-full h-auto object-cover"
-                      onClick={() => handleOnClick(photo.id)}
+                      onClick={() => handleOnClick(photo)}
                     />
                     {/* <BlurhashImage
                       src={photo.signedUrl.thumbnail}

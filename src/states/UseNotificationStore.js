@@ -11,39 +11,33 @@ const useNotificationStore = create(
       set((state) => ({ isNotificationOpen: !state.isNotificationOpen })),
     closeNotificationModal: () => set({ isNotificationOpen: false }),
 
-    initSocket: () => {
+    initSocket: (token) => {
       const socket = io(`${import.meta.env.VITE_AXIOS_BASE_URL}/notification`, {
         autoConnect: true,
         extraHeaders: {
-          Authorization: `bearer ${UserService.getToken()}`,
+          Authorization: `bearer ${token}`,
         },
       });
 
-      socket.on("connect", () => {});
+      socket.on("connect", () => {
+        socket.emit("join-notification-room");
+      });
+
+      socket.on("disconnect", () => {});
 
       set({ socket });
     },
 
-    joinNotification: (callback) => {
-      const socket = get().socket;
-
-      if (socket) {
-        socket.on("notification-event", (data) => {
-          callback(data);
-        });
-        socket.emit("join-notification-room");
-      }
-    },
-    leaveNotification: () => {
-      const socket = get().socket;
-
-      if (socket) {
-        socket.off("notification-event");
-        socket.disconnect();
-        //clean up
-        set({ socket: undefined });
-      }
-    },
+    // leaveNotification: () => {
+    //   const socket = get().socket;
+    //
+    //   if (socket) {
+    //     socket.off("notification-event");
+    //     socket.disconnect();
+    //     //clean up
+    //     set({ socket: undefined });
+    //   }
+    // },
   })),
 );
 

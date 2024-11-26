@@ -36,12 +36,12 @@ const UserProfileSideItems = [
     icon: <BiMoneyWithdraw />, // Icon ảnh
     link: "/profile/photos-bought",
   },
-  {
-    id: "MyBookmark",
-    title: "Ảnh đã đánh dấu",
-    icon: <FaBookmark />,
-    link: "/profile/bookmark", // Icon ảnh
-  },
+  // {
+  //   id: "MyBookmark",
+  //   title: "Ảnh đã đánh dấu",
+  //   icon: <FaBookmark />,
+  //   link: "/profile/bookmark", // Icon ảnh
+  // },
   {
     id: "photo",
     link: "/profile/photo-selling",
@@ -87,7 +87,10 @@ const UseProfileSide = () => {
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-  const handleLogout = () => keycloak.logout();
+  const handleLogout = () =>
+    keycloak.logout({
+      redirectUri: "https://purepixel.io.vn",
+    });
   // Kiểm tra nếu người dùng có vai trò "photographer"
   // const isPhotographer = roles?.includes("photographer");
   // Lọc các item theo vai trò của người dùng
@@ -98,7 +101,7 @@ const UseProfileSide = () => {
   }, [roles]);
 
   const filteredSideItems = UserProfileSideItems.filter(
-    (item) => isPhotographer || !item.author
+    (item) => isPhotographer || !item.author,
   );
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["me"],

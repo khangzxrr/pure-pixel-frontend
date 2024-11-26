@@ -35,6 +35,9 @@ const UseCameraStore = create((set) => ({
 
   listTopCameraByBrand: [],
   setListTopCameraByBrand: (list) => set({ listTopCameraByBrand: list }),
+
+  idCamera: null,
+  setIdCamera: (id) => set({ idCamera: id }),
 }));
 
 export default UseCameraStore;
