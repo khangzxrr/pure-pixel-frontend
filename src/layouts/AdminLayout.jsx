@@ -40,25 +40,22 @@ import { useKeycloak } from "@react-keycloak/web";
 import { PackageIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import UserProfileApi from "../apis/UserProfile";
+import UserService from "../services/Keycloak";
+const user = UserService.getTokenParsed();
+const roles = user?.resource_access?.purepixel?.roles || []; // Lấy danh sách vai trò
+console.log(roles);
 
 const navigation = [
-  {
-    name: "Dashboard",
-    href: "/admin/Dashboard",
-    icon: HomeIcon,
-    current: false,
-  },
-  // {
-  //   name: "Team",
-  //   icon: UsersIcon,
-  //   current: false,
-  //   children: [
-  //     { name: "GraphQL API", href: "/admin/API" },
-  //     { name: "iOS App", href: "/admin/App" },
-  //     { name: "Android App", href: "/admin/Android", current: true },
-  //     { name: "New Customer Portal", href: "/admin/Portal" },
-  //   ],
-  // },
+  ...(!roles.includes("manager")
+    ? [
+        {
+          name: "Dashboard",
+          href: "/admin/Dashboard",
+          icon: HomeIcon,
+          current: false,
+        },
+      ]
+    : []),
   {
     name: "Gói nâng cấp",
     href: "/admin/upgrade",
@@ -129,10 +126,7 @@ export default function AdminLayout({ children }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const { keycloak } = useKeycloak();
 
-  const handleLogout = () =>
-    keycloak.logout({
-      redirectUri: "https://purepixel.io.vn",
-    });
+  const handleLogout = () => keycloak.logout();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin-me"],
@@ -143,10 +137,10 @@ export default function AdminLayout({ children }) {
     return <div>Loading...</div>;
   }
 
-  useEffect(() => {
-    setActiveCategory(currentPath);
-    window.scrollTo(0, 0);
-  }, [currentPath]);
+  // useEffect(() => {
+  //   setActiveCategory(currentPath);
+  //   window.scrollTo(0, 0);
+  // }, [currentPath]);
   return (
     <>
       <div>
@@ -202,7 +196,7 @@ export default function AdminLayout({ children }) {
                                   item.href === activeCategory
                                     ? "bg-gray-50 text-black"
                                     : "hover:bg-gray-50  hover:text-black text-white",
-                                  "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 ",
+                                  "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 "
                                 )}
                               >
                                 <div className="flex gap-2">
@@ -220,7 +214,7 @@ export default function AdminLayout({ children }) {
                                     item.href === activeCategory
                                       ? "bg-gray-50 text-black"
                                       : "hover:bg-gray-50 hover:text-black text-white",
-                                    "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700",
+                                    "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700"
                                   )}
                                 >
                                   <ChevronRightIcon
@@ -246,7 +240,7 @@ export default function AdminLayout({ children }) {
                                           subItem.href === activeCategory
                                             ? "bg-gray-50 "
                                             : "hover:bg-gray-50 hover:text-black text-white",
-                                          "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 ",
+                                          "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 "
                                         )}
                                       >
                                         {subItem.name}
@@ -304,7 +298,7 @@ export default function AdminLayout({ children }) {
                               item.href === activeCategory
                                 ? "bg-gray-50 text-black"
                                 : "hover:bg-gray-50  hover:text-black text-white",
-                              "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 ",
+                              "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 "
                             )}
                           >
                             <div className="flex gap-2">
@@ -322,7 +316,7 @@ export default function AdminLayout({ children }) {
                                 item.href === activeCategory
                                   ? "bg-gray-50 text-black"
                                   : "hover:bg-gray-50 hover:text-black text-white",
-                                "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700",
+                                "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700"
                               )}
                             >
                               <ChevronRightIcon
@@ -345,7 +339,7 @@ export default function AdminLayout({ children }) {
                                       subItem.href === activeCategory
                                         ? "bg-gray-50 "
                                         : "hover:bg-gray-50 hover:text-black text-white",
-                                      "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 my-2",
+                                      "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 my-2"
                                     )}
                                   >
                                     {subItem.name}

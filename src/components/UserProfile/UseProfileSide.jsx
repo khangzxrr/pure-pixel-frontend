@@ -87,10 +87,7 @@ const UseProfileSide = () => {
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-  const handleLogout = () =>
-    keycloak.logout({
-      redirectUri: "https://purepixel.io.vn",
-    });
+  const handleLogout = () => keycloak.logout();
   // Kiểm tra nếu người dùng có vai trò "photographer"
   // const isPhotographer = roles?.includes("photographer");
   // Lọc các item theo vai trò của người dùng
@@ -101,7 +98,7 @@ const UseProfileSide = () => {
   }, [roles]);
 
   const filteredSideItems = UserProfileSideItems.filter(
-    (item) => isPhotographer || !item.author,
+    (item) => isPhotographer || !item.author
   );
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["me"],
