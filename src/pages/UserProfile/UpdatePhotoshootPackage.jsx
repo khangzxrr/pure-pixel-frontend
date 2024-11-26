@@ -153,7 +153,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
     let allSuccess = true; // Flag to track if all API calls are successful
 
     // Delete showcases
-    if (deleteShowcasesList.length > 0) {
+    if (deleteShowcasesList && deleteShowcasesList.length > 0) {
       for (const showcaseId of deleteShowcasesList) {
         try {
           await deleteShowcasePhoto.mutateAsync({
@@ -168,7 +168,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
     }
 
     // Add new showcases
-    if (showcases.length > 0) {
+    if (showcases && showcases.length > 0) {
       for (const showcase of showcases) {
         try {
           console.log("Adding showcase:", showcase);

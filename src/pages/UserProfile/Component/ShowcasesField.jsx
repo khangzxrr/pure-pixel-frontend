@@ -11,12 +11,13 @@ export default function ShowcasesField({
   setShowcasesUrl,
   setDeleteShowcasesList,
 }) {
+  console.log("ShowcasesField", showcases, showcasesUrl);
   const onShowcasesChange = async (info) => {
     try {
       const newFile = info.file;
 
       // Check if the length of showcasesUrl exceeds the limit of 20
-      if (showcasesUrl.length >= 20) {
+      if (showcasesUrl && showcasesUrl.length >= 20) {
         notificationApi(
           "warning",
           "Đã đạt giới hạn ảnh cho bộ sưu tập",
@@ -111,16 +112,18 @@ export default function ShowcasesField({
         ))}
 
       {/* Placeholder cells */}
-      {[
-        ...Array(
-          21 - (showcasesUrl.length < 21 ? showcasesUrl.length : 20) - 1
-        ),
-      ].map((_, index) => (
-        <div
-          key={`placeholder-${index}`}
-          className="col-span-1  h-full bg-[#767676] rounded-md"
-        />
-      ))}
+      {showcasesUrl &&
+        showcasesUrl.length < 20 &&
+        [
+          ...Array(
+            21 - (showcasesUrl.length < 21 ? showcasesUrl.length : 20) - 1
+          ),
+        ].map((_, index) => (
+          <div
+            key={`placeholder-${index}`}
+            className="col-span-1 h-full bg-[#767676] rounded-md"
+          />
+        ))}
     </div>
   );
 }
