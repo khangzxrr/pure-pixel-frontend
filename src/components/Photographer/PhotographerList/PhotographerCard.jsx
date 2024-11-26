@@ -42,7 +42,7 @@ const PhotographerCard = ({ photographer, maxQuoteLength = 30 }) => {
     queryFn: () =>
       PhotoApi.getPublicPhotos(
         4,
-        1,
+        0,
         null,
         null,
         null,
