@@ -18,6 +18,10 @@ jobs:
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
           cd /home/deploy/pure-pixel-frontend
+          
+          git checkout main
+          git pull
+
           yarn install
           yarn build
           
