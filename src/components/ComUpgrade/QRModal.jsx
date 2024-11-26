@@ -53,7 +53,12 @@ export default function QRModal() {
   useEffect(() => {
     if (isUpgradePackageQRModal && transactionDetail?.status === "SUCCESS") {
       //call keycloak update token method, with -1 minValidity it will update immediately
-      keycloak.updateToken(-1).then(() => {});
+      keycloak.updateToken(-1).then((refreshed) => {
+        // if (!refreshed) {
+        //   window.location.href = "/profile/wallet";
+        // }
+      });
+
       startFireworks();
       setTimeout(() => {
         stopFireworks();
@@ -61,7 +66,9 @@ export default function QRModal() {
         setIsUpgraded(true);
         queryClient.invalidateQueries("upgrade-package-list");
         queryClient.invalidateQueries("getTransactionById");
-        navigate("/profile/wallet");
+
+        window.location.href = "/profile/wallet";
+        // navigate("/profile/wallet");
       }, 3000);
     }
     if (transactionDetail?.status === "EXPIRED") {
@@ -69,7 +76,7 @@ export default function QRModal() {
       notificationApi(
         "error",
         "Mã QR hết hiệu lực",
-        "Mã QR hết hiệu lực, bạn vui lòng thử lại sau"
+        "Mã QR hết hiệu lực, bạn vui lòng thử lại sau",
       );
     }
   }, [

@@ -16,10 +16,8 @@ const Camera = () => {
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
 
-  const handleLogout = () => {
-    navigate("/");
-    keycloak.logout();
-  };
+  const handleLogout = () => keycloak.logout();
+
   return (
     <SidebarLayout
       isSidebarOpen={isSidebarOpen}

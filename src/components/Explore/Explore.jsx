@@ -27,19 +27,18 @@ const Explore = () => {
   const { keycloak } = useKeycloak();
 
   const user = UserService.getTokenParsed();
-  console.log(user);
 
   useEffect(() => {
-    if (user?.resource_access?.purepixel?.roles[0] === "purepixel-admin") {
+    const roles = user?.resource_access?.purepixel?.roles || [];
+    if (
+      roles.some((role) => role === "purepixel-admin" || role === "manager")
+    ) {
       navigate("/admin");
     }
-  }, [user]);
+  }, [user, navigate]);
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-  const handleLogout = () =>
-    keycloak.logout({
-      redirectUri: "https://purepixel.io.vn",
-    });
+  const handleLogout = () => keycloak.logout();
 
   const isInspirationActive = activeItem === 1;
   const isPhotographerListActive = activeItem === 4;

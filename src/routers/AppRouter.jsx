@@ -369,9 +369,11 @@ export const AppRouter = createBrowserRouter([
       {
         path: "/admin",
         element: (
-          <AdminLayout>
-            <Outlet />
-          </AdminLayout>
+          <ProtectRoute checkRoles={["manager", "purepixel-admin"]}>
+            <AdminLayout>
+              <Outlet />
+            </AdminLayout>
+          </ProtectRoute>
         ),
         children: [
           {
