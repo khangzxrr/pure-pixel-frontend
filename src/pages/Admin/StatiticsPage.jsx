@@ -6,11 +6,21 @@ import TopPhotoSelling from "../../components/ComAdmin/TopPhotoSelling";
 import AdminApi from "../../apis/AdminApi";
 import { useQuery } from "@tanstack/react-query";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
+import UserService from "../../services/Keycloak";
+import { useNavigate } from "react-router-dom";
 
 const StatiticsPage = () => {
+  const navigate = useNavigate();
+  const user = UserService.getTokenParsed();
   const toDate = new Date();
   const fromDate = new Date(toDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
+  useEffect(() => {
+    const roles = user?.resource_access?.purepixel?.roles || [];
+    if (roles.some((role) => role === "manager")) {
+      navigate("/admin/upgrade");
+    }
+  }, [user, navigate]);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["dashboard"],
     queryFn: () =>
@@ -32,7 +42,7 @@ const StatiticsPage = () => {
   const photoTotalByDateList = dataDashboard?.map(
     (item) => item.data.totalPhoto
   );
-  console.log(photoTotalByDateList);
+  // console.log(photoTotalByDateList);
 
   const listRevenuePhotoSelling = dataDashboard?.map(
     (item) => item.data.revenueFromSellingPhoto
