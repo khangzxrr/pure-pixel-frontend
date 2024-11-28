@@ -14,8 +14,9 @@ const useNotificationStore = create(
     initSocket: (token) => {
       const socket = io(`${import.meta.env.VITE_AXIOS_BASE_URL}/notification`, {
         autoConnect: true,
-        extraHeaders: {
-          Authorization: `bearer ${token}`,
+        transports: ["websocket"],
+        auth: {
+          token: `bearer ${token}`,
         },
       });
 

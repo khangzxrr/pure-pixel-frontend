@@ -23,7 +23,7 @@ const getPublicPhotos = async (
   photographerId,
   cameraId,
   bookmarked,
-  tags // Thêm tags vào danh sách tham số
+  tags, // Thêm tags vào danh sách tham số
 ) => {
   // Tạo một đối tượng chứa các tham số cơ bản
   const params = {
@@ -82,17 +82,14 @@ const getPhotoTags = async ({ top }) => {
 };
 // Send the PATCH request to update the user's profile
 const uploadPhoto = async (file, onUploadProgress) => {
-  //using the RAW axios instead of modified one, or you will get CORS
-  //
-  const customHttp = timeoutHttpClient(300000);
-
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await customHttp.post(`photo/upload`, formData, {
+  const response = await http.post(`photo/v2/upload`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
+    timeout: 30000,
     onUploadProgress,
   });
 
@@ -130,7 +127,7 @@ const getPhotoById = async (id) => {
 
 const getNextPublicById = async (id) => {
   const response = await http.get(
-    `photo/public/next?cursor=${id}&forward=true`
+    `photo/public/next?cursor=${id}&forward=true`,
   );
 
   return response.data;
@@ -138,7 +135,7 @@ const getNextPublicById = async (id) => {
 
 const getPreviousPublicById = async (id) => {
   const response = await http.get(
-    `photo/public/next?cursor=${id}&forward=false`
+    `photo/public/next?cursor=${id}&forward=false`,
   );
 
   return response.data;
