@@ -12,6 +12,12 @@ const useModalStore = create(
     isUpdateOpenMapModal: false,
     setIsUpdateOpenMapModal: (value) => set({ isUpdateOpenMapModal: value }),
 
+    // State and setter for "Delete Photo Confirm" modal visibility
+    isDeletePhotoConfirmModal: false,
+    setIsDeletePhotoConfirmModal: (value) =>
+      set({ isDeletePhotoConfirmModal: value }),
+    deletePhotoId: "",
+    setDeletePhotoId: (id) => set({ deletePhotoId: id }),
     // State and setter for "Upgrade Package QR" modal visibility
     isUpgradePackageQRModal: false,
     setIsUpgradePackageQRModal: (value) =>
@@ -53,12 +59,10 @@ const useModalStore = create(
     setDeleteShowcasesList: (id) =>
       set((state) => {
         const updatedList = [...state.deleteShowcasesList, id];
-        console.log("Updated deleteShowcasesList:", updatedList);
         return { deleteShowcasesList: updatedList };
       }),
     clearDeleteShowcasesList: () =>
       set(() => {
-        console.log("Clearing deleteShowcasesList");
         return { deleteShowcasesList: [] };
       }),
   }))

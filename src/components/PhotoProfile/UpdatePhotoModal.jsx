@@ -107,8 +107,6 @@ export default function UpdatePhotoModal() {
   } = useForm({
     resolver: yupResolver(updatePhotoInputSchema),
     defaultValues: getDefaultPhoto(selectedUpdatePhoto),
-    mode: "onChange",
-    reValidateMode: "onSubmit",
   });
 
   const handleFinish = async (data) => {
@@ -191,11 +189,6 @@ export default function UpdatePhotoModal() {
             fontSize: 14,
             optionSelectedFontWeight: 400,
             optionSelectedColor: "black",
-          },
-          Modal: {
-            contentBg: "#2f3136",
-            headerBg: "#2f3136",
-            titleColor: "white",
           },
         },
       }}
@@ -343,7 +336,6 @@ export default function UpdatePhotoModal() {
                         options={[
                           { label: "Công khai", value: "PUBLIC" },
                           { label: "Riêng tư", value: "PRIVATE" },
-                          { label: "Liên kết riêng tư", value: "SHARE_LINK" },
                         ]}
                         className="photo-privacy-select w-full m-2 lg:text-sm text-xs"
                         style={{ backgroundColor: "#292b2f" }}

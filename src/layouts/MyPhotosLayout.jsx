@@ -8,15 +8,86 @@ import { MdNoPhotography } from "react-icons/md";
 import UpdatePhotoModal from "../components/PhotoProfile/UpdatePhotoModal";
 import useModalStore from "../states/UseModalStore";
 import UpdateMapModal from "../components/PhotoProfile/UpdateMapModal";
+import { ConfigProvider, Modal } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNotification } from "../Notification/Notification";
+import PhotoApi from "../apis/PhotoApi";
 const MyPhotosLayout = () => {
-  const { isUpdatePhotoModal, isUpdateOpenMapModal } = useModalStore();
+  const {
+    isUpdatePhotoModal,
+    isUpdateOpenMapModal,
+    isDeletePhotoConfirmModal,
+    setIsDeletePhotoConfirmModal,
+    deletePhotoId,
+    setDeletePhotoId,
+  } = useModalStore();
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
+  const deletePhoto = useMutation({
+    mutationFn: (id) => PhotoApi.deletePhoto(id),
+  });
 
+  const queryClient = useQueryClient();
+  const { notificationApi } = useNotification();
+  const handleDeletePhoto = async () => {
+    try {
+      await deletePhoto.mutateAsync(deletePhotoId, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["my-photo"] });
+          notificationApi("success", "Xóa ảnh thành công", "Ảnh đã được xóa.");
+        },
+        onError: () => {
+          notificationApi(
+            "error",
+            "Chưa thể xóa ảnh",
+            "Xóa ảnh thất bại, vui lòng thử lại",
+            "",
+            0,
+            "delete-photo-error"
+          );
+        },
+      });
+      setDeletePhotoId("");
+      setIsDeletePhotoConfirmModal(false);
+    } catch (error) {
+      message.error("Chưa thể xóa ảnh");
+      setIsDeletePhotoConfirmModal(false);
+    }
+  };
   return (
     <div className="flex flex-col gap-1 p-1">
-      {isUpdatePhotoModal && !isUpdateOpenMapModal && <UpdatePhotoModal />}{" "}
-      {!isUpdatePhotoModal && isUpdateOpenMapModal && <UpdateMapModal />}{" "}
+      <ConfigProvider
+        theme={{
+          components: {
+            Modal: {
+              contentBg: "#2f3136",
+              headerBg: "#2f3136",
+              titleColor: "white",
+            },
+          },
+        }}
+      >
+        {isUpdatePhotoModal && !isUpdateOpenMapModal && <UpdatePhotoModal />}{" "}
+        {!isUpdatePhotoModal && isUpdateOpenMapModal && <UpdateMapModal />}{" "}
+        {isDeletePhotoConfirmModal && (
+          <Modal
+            visible={isDeletePhotoConfirmModal}
+            onOk={handleDeletePhoto}
+            onCancel={() => setIsDeletePhotoConfirmModal(false)}
+            okText="Xóa"
+            cancelText="Hủy"
+            width={400}
+            centered={true}
+            bodyStyle={{ padding: 0 }}
+            className="custom-close-icon "
+          >
+            <p className="text-white text-xl font-semibold">
+              Bạn có chắc muốn xóa ảnh này không?
+            </p>
+          </Modal>
+        )}
+      </ConfigProvider>
+
       {/* Render Modal conditionally */}
       <div className="p-[24px]  bg-[#292b2f]">
         <PhotoProfile userData={userData} />

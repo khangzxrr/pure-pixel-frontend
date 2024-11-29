@@ -1,4 +1,5 @@
 import http, { timeoutHttpClient } from "../configs/Http";
+import PhotoService from "../services/PhotoService";
 const customHttp = timeoutHttpClient(300000);
 
 const getPackagesByPhotographerId = async (photographerId, limit, page) => {
@@ -103,15 +104,29 @@ const updatePhotoshootPackage = async ({ packageId, data }) => {
   }
 
   if (data?.thumbnail) {
-    formData.append("thumbnail", data.thumbnail);
+    console.log("Thumbnail is valid:", data.thumbnail.size);
+    const thumbnailUrl = await PhotoService.convertArrayBufferToObjectUrl(
+      data.thumbnail
+    );
+    if (data.thumbnail instanceof File || data.thumbnail instanceof Blob) {
+      console.log("Thumbnail is a valid file or blob", thumbnailUrl);
+      formData.append("thumbnail", data.thumbnail);
+    } else {
+      console.error(
+        "Thumbnail is neither a valid file, blob, nor base64 string"
+      );
+    }
   }
 
-  // if (data?.showcases?.length > 0) {
-  //   data.showcases.forEach((showcase, index) => {
-  //     formData.append(`showcases[${index}]`, showcase.originFileObj);
-  //   });
-  // }
-
+  // Debugging FormData
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+  console.log(
+    "thumbnailCheck",
+    data.thumbnail,
+    PhotoService.convertArrayBufferToObjectUrl(data.thumbnail)
+  );
   // Send the PATCH request to update the user's profile
   const response = await customHttp.patch(
     `/photographer/photoshoot-package/${packageId}`,
@@ -120,7 +135,6 @@ const updatePhotoshootPackage = async ({ packageId, data }) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-      // onUploadProgress,
     }
   );
 
