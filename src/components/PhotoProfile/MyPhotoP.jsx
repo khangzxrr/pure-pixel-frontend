@@ -284,6 +284,9 @@ const MyPhotoP = () => {
                     originalPhotoUrl: photo.signedUrl.url,
                     thumbnailPhotoUrl: photo.signedUrl.thumbnail,
                   }}
+                  photoListLength={data.objects.length}
+                  page={page}
+                  setPage={setPage}
                 />
                 <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-center py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-md">
                   <div className="flex justify-between px-1">

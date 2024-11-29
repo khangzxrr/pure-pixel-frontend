@@ -12,7 +12,10 @@ const CameraSide = () => {
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-  const handleLogout = () => keycloak.logout();
+  const handleLogout = () =>
+    keycloak.logout({
+      redirectUri: "https://purepixel.io.vn",
+    });
   const handleClick = (id, title, icon, quote) =>
     setActiveItem(id, title, icon, quote);
   return (

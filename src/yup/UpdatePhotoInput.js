@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 export const updatePhotoInputSchema = yup.object().shape({
   title: yup.string().required("Yêu cầu nhập tiêu đề"),
-  description: yup.string().required("Yêu cầu nhập mô tả"),
+  description: yup.string().max(1000, "Mô tả của bạn quá dài"),
   categoryIds: yup.array().of(yup.string()).optional(), // Make photoType optional
   photoTags: yup.array().of(yup.string()).optional(), // Make photoTags optional
   location: yup.string().optional(), // Optional if location is not required

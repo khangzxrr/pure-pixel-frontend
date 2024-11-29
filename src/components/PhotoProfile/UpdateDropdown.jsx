@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dropdown, message } from "antd";
+import { Dropdown, Popconfirm, message } from "antd";
 import { BiDollar, BiDotsVerticalRounded } from "react-icons/bi";
 import { IoPencilOutline } from "react-icons/io5";
 import { CgRemove } from "react-icons/cg";
@@ -10,10 +10,14 @@ import useModalStore from "../../states/UseModalStore";
 import { useModalState } from "../../hooks/useModalState";
 import PhotoManagementModal from "../PhotoManagementModal/PhotoManagementModal";
 
-const UpdateDropdown = ({ photo }) => {
+const UpdateDropdown = ({ photo, photoListLength, page, setPage }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const { setIsUpdatePhotoModal, setSelectedPhoto, isUpdatePhotoModal } =
-    useModalStore();
+  const {
+    setIsUpdatePhotoModal,
+    setSelectedPhoto,
+    setIsDeletePhotoConfirmModal,
+    setDeletePhotoId,
+  } = useModalStore();
   const queryClient = useQueryClient();
   const { notificationApi } = useNotification();
 
@@ -26,6 +30,9 @@ const UpdateDropdown = ({ photo }) => {
     try {
       await deletePhoto.mutateAsync(photo.id, {
         onSuccess: () => {
+          if (photoListLength === 1) {
+            setPage(page - 1);
+          }
           queryClient.invalidateQueries({ queryKey: ["my-photo"] });
           notificationApi("success", "Xóa ảnh thành công", "Ảnh đã được xóa.");
         },
@@ -51,7 +58,6 @@ const UpdateDropdown = ({ photo }) => {
       icon: <IoPencilOutline />,
       label: <p className="text-blue-500">Chỉnh sửa</p>,
       onClick: () => {
-        // Add edit functionality here
         setIsUpdatePhotoModal(true);
         setSelectedPhoto({ ...photo, isChangeGPS: false });
       },
@@ -61,18 +67,18 @@ const UpdateDropdown = ({ photo }) => {
       icon: <BiDollar />,
       label: <p className="text-blue-500">Đăng bán ảnh</p>,
       onClick: () => {
-        // Add edit functionality here
-        modal.handleOpen()
-        // setIsUpdatePhotoModal(true);
-        // setSelectedPhoto({ ...photo, isChangeGPS: false });
+        modal.handleOpen();
       },
     },
     {
       key: "2",
       icon: <CgRemove />,
-      label: "Xóa ảnh",
+      label: <span className="text-red-500">Xóa ảnh</span>,
       danger: true,
-      onClick: handleDeletePhoto,
+      onClick: () => {
+        setDeletePhotoId(photo.id);
+        setIsDeletePhotoConfirmModal(true);
+      },
     },
   ];
 

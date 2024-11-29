@@ -133,9 +133,15 @@ const useUploadPhotoStore = create(
 
         // Regenerate uidHashmap and photoIdHashmap with new indices
         const newUidHashmap = {};
+        const newPhotoIdHashmap = {};
 
         updatedPhotoArray.forEach((photo, idx) => {
-          newUidHashmap[photo.file.uid] = idx;
+          const photoId = photo?.response?.id;
+          const photoUid = photo?.file?.uid;
+          if (photoId) {
+            newPhotoIdHashmap[photoId] = idx;
+          }
+          newUidHashmap[photoUid] = idx;
         });
 
         // Set selectedPhoto as the first element in the newUidHashmap
@@ -146,6 +152,7 @@ const useUploadPhotoStore = create(
         return {
           photoArray: updatedPhotoArray,
           uidHashmap: newUidHashmap,
+          photoIdHashmap: newPhotoIdHashmap,
           selectedPhoto: newSelectedPhoto,
         };
       }),
@@ -155,21 +162,24 @@ const useUploadPhotoStore = create(
         const index = state.photoIdHashmap[photoId];
 
         if (index === -1) return state; // Exit if photoId not found
-
+        console.log("removePhotoById", index, photoId);
         const uid = state.photoArray[index].file.uid;
 
         // Remove photo from photoArray
         const updatedPhotoArray = state.photoArray.filter(
           (_, idx) => idx !== index
         );
-
         // Regenerate uidHashmap and photoIdHashmap with new indices
         const newUidHashmap = {};
         const newPhotoIdHashmap = {};
 
         updatedPhotoArray.forEach((photo, idx) => {
-          newUidHashmap[photo.file.uid] = idx;
-          newPhotoIdHashmap[photo.response.id] = idx;
+          const photoId = photo?.response?.id;
+          const photoUid = photo?.file?.uid;
+          if (photoId) {
+            newPhotoIdHashmap[photoId] = idx;
+          }
+          newUidHashmap[photoUid] = idx;
         });
 
         // Set selectedPhoto as the first element in the newUidHashmap

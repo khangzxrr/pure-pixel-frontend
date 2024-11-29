@@ -103,6 +103,7 @@ const ProductPhotoDetail = () => {
             purchasedImageUrl: null,
           };
         });
+
         console.log("====================================");
         console.log(3333, userData.sub);
         console.log();

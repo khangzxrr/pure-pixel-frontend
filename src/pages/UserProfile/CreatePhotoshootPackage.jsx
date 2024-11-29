@@ -7,6 +7,7 @@ import { PhotoshootPackageYup } from "../../yup/PhotoshootPackageYup";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import PhotoService from "../../services/PhotoService";
 import { useNotification } from "../../Notification/Notification";
+import ImgCrop from "antd-img-crop";
 
 import {
   LoadingOutlined,
@@ -78,12 +79,17 @@ export default function CreatePhotoshootPackage({
     isPending: isCreatePhotoshootPending,
   } = createPhotoShootPackage;
   const onThumbnailChange = async (info) => {
-    console.log(info, info.file.originFileObj);
+    console.log("image crop", info.file.originFileObj.size, thumbnail.size);
+    return false;
+  };
+  const beforeUpload = async (file) => {
     try {
-      const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(
-        info.file.originFileObj
-      );
-      setThumbnail(info.file.originFileObj);
+      // Get the cropped image from the info object
+      // Convert the cropped image to a URL for preview
+      const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(file);
+
+      // Update states with the cropped image
+      setThumbnail(file);
       setThumbnailUrl(reviewUrl);
     } catch (error) {
       console.log(error);
@@ -165,6 +171,7 @@ export default function CreatePhotoshootPackage({
               name="thumbnail"
               listType="picture-card"
               showUploadList={false}
+              beforeUpload={beforeUpload} // Add this line
               onChange={onThumbnailChange}
               accept=".jpg,.jpeg,.png,.gif,.webp"
               style={{

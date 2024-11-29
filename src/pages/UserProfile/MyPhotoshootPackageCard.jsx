@@ -43,7 +43,7 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
     deletePhotoshootPackage;
   return (
     <div className="flex flex-col gap-2 rounded-lg bg-[#36393f] group hover:cursor-pointer">
-      <div className="h-[150px] overflow-hidden rounded-t-lg">
+      <div className="h-[200px] overflow-hidden rounded-t-lg">
         <img
           src={packageDetail.thumbnail}
           alt="demo"

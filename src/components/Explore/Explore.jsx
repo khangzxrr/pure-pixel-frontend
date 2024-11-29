@@ -38,7 +38,10 @@ const Explore = () => {
   }, [user, navigate]);
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-  const handleLogout = () => keycloak.logout();
+  const handleLogout = () =>
+    keycloak.logout({
+      redirectUri: "https://purepixel.io.vn",
+    });
 
   const isInspirationActive = activeItem === 1;
   const isPhotographerListActive = activeItem === 4;

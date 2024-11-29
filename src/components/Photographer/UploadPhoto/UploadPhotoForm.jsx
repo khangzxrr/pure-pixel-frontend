@@ -295,7 +295,6 @@ export default function UploadPhotoForm({ selectedPhoto }) {
                     options={[
                       { label: "Công khai", value: "PUBLIC" },
                       { label: "Riêng tư", value: "PRIVATE" },
-                      { label: "Liên kết riêng tư", value: "SHARE_LINK" },
                     ]}
                     className={`photo-privacy-select w-full m-2 ${
                       errors.visibility ? "border-red-500" : "border-[#4c4e52]"

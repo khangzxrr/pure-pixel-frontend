@@ -17,9 +17,7 @@ const User = () => {
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-
   const handleLogout = () => keycloak.logout();
-
   return (
     <SidebarLayout
       isSidebarOpen={isSidebarOpen}
