@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PhotoshootPackageCard from "../../components/Booking/BookingPackageCard";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ConfigProvider, Modal } from "antd";
 import CreatePhotoshootPackage from "./CreatePhotoshootPackage";
@@ -17,7 +17,6 @@ import UpdatePhotoshootPackage from "./UpdatePhotoshootPackage";
 const PhotoshootPackageManagementV2 = () => {
   const modal = useModalState();
   const {
-    isUpdatePhotoshootPackageModal,
     setIsUpdatePhotoshootPackageModal,
     setSelectedUpdatePhotoshootPackage,
     clearDeleteShowcasesList,
@@ -77,27 +76,14 @@ const PhotoshootPackageManagementV2 = () => {
       >
         <CreatePhotoshootPackage onClose={modal?.handleClose} />
       </Modal>
-      <Modal
-        title="Sửa gói chụp"
-        visible={isUpdatePhotoshootPackageModal} // Use state from Zustand store
-        onCancel={() => {
+
+      <UpdatePhotoshootPackage
+        onClose={() => {
           setIsUpdatePhotoshootPackageModal(false);
           setSelectedUpdatePhotoshootPackage("");
           clearDeleteShowcasesList();
-        }} // Close the modal on cancel
-        footer={null}
-        width={1000} // Set the width of the modal
-        centered={true}
-        className="custom-close-icon"
-      >
-        <UpdatePhotoshootPackage
-          onClose={() => {
-            setIsUpdatePhotoshootPackageModal(false);
-            setSelectedUpdatePhotoshootPackage("");
-            clearDeleteShowcasesList();
-          }}
-        />
-      </Modal>
+        }}
+      />
       <div className="min-h-screen p-4">
         <div className="flex justify-between pb-2">
           <div>
@@ -135,7 +121,7 @@ const PhotoshootPackageManagementV2 = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {listPhotoshootPackages.map((packageDetail) => (
             <div
               onClick={() =>

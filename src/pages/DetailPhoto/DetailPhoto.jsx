@@ -24,6 +24,7 @@ import { FaRegHeart } from "react-icons/fa6";
 import UseUserProfileStore from "../../states/UseUserProfileStore";
 import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
+import TextWithShowMore from "./components/TextWithShowMore";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -420,7 +421,9 @@ export default function DetailedPhotoView({ onClose, photo }) {
             </div>
 
             <div className="my-2">{currentPhoto.title}</div>
-            <div className="my-2">{currentPhoto.description}</div>
+            <div className="my-2 font-normal">
+              <TextWithShowMore description={currentPhoto.description} />
+            </div>
 
             {/* <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div> */}
 

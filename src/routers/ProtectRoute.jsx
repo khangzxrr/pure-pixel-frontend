@@ -16,7 +16,6 @@ const ProtectRoute = ({ children, checkRoles }) => {
     // Lấy vai trò của người dùng từ token
     const roles =
       keycloak.tokenParsed?.resource_access?.[keycloak.clientId]?.roles;
-    console.log(roles);
 
     // Nếu không có vai trò hoặc không có vai trò phù hợp
     if (!roles || !checkRoles.some((role) => roles.includes(role))) {

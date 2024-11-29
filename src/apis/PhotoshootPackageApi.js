@@ -1,4 +1,6 @@
 import http, { timeoutHttpClient } from "../configs/Http";
+import PhotoService from "../services/PhotoService";
+const customHttp = timeoutHttpClient(300000);
 
 const getPackagesByPhotographerId = async (photographerId, limit, page) => {
   const response = await http.get(
@@ -35,7 +37,7 @@ const photographerFindById = async (id) => {
 
   return response.data;
 };
-const createPhotoshootPackage = async (data, timeout = 300000) => {
+const createPhotoshootPackage = async (data) => {
   const formData = new FormData();
 
   if (data?.title) {
@@ -65,7 +67,6 @@ const createPhotoshootPackage = async (data, timeout = 300000) => {
   }
 
   // Create a timeout-specific Axios instance
-  const customHttp = timeoutHttpClient(timeout);
 
   // Send the POST request to create the photoshoot package
   const response = await customHttp.post(
@@ -103,16 +104,29 @@ const updatePhotoshootPackage = async ({ packageId, data }) => {
   }
 
   if (data?.thumbnail) {
-    formData.append("thumbnail", data.thumbnail);
+    console.log("Thumbnail is valid:", data.thumbnail.size);
+    const thumbnailUrl = await PhotoService.convertArrayBufferToObjectUrl(
+      data.thumbnail
+    );
+    if (data.thumbnail instanceof File || data.thumbnail instanceof Blob) {
+      console.log("Thumbnail is a valid file or blob", thumbnailUrl);
+      formData.append("thumbnail", data.thumbnail);
+    } else {
+      console.error(
+        "Thumbnail is neither a valid file, blob, nor base64 string"
+      );
+    }
   }
 
-  // if (data?.showcases?.length > 0) {
-  //   data.showcases.forEach((showcase, index) => {
-  //     formData.append(`showcases[${index}]`, showcase.originFileObj);
-  //   });
-  // }
-
-  const customHttp = timeoutHttpClient(300000);
+  // Debugging FormData
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+  console.log(
+    "thumbnailCheck",
+    data.thumbnail,
+    PhotoService.convertArrayBufferToObjectUrl(data.thumbnail)
+  );
   // Send the PATCH request to update the user's profile
   const response = await customHttp.patch(
     `/photographer/photoshoot-package/${packageId}`,
@@ -121,7 +135,6 @@ const updatePhotoshootPackage = async ({ packageId, data }) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-      // onUploadProgress,
     }
   );
 
@@ -143,7 +156,6 @@ const addPhotoshootPackageShowcase = async (photoshootPackageId, data) => {
 
     const formData = new FormData();
     formData.append("showcase", newShowcasePhoto);
-    const customHttp = timeoutHttpClient(300000);
 
     const response = await customHttp.post(
       `/photographer/photoshoot-package-showcase/photoshoot-package/${photoshootPackageId}`,

@@ -1,4 +1,4 @@
-import http from "../configs/Http";
+import http, { timeoutHttpClient } from "../configs/Http";
 
 const findAllBooking = async (limit, page, status, orderByCreatedAt) => {
   const response = await http.get(
@@ -42,10 +42,12 @@ const deleteBookingPhoto = async (bookingId, photoId) => {
   return response.data;
 };
 const upload = async (id, file) => {
+  const customHttp = timeoutHttpClient(300000);
+
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await http.put(
+  const response = await customHttp.put(
     `/photographer/booking/${id}/upload`,
     formData,
     {

@@ -23,22 +23,25 @@ export default function PhotoCard({ photo }) {
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
   });
-
+  const { mutateAsync: deletePhotoMutate, isPending: isPendingDeletePhoto } =
+    deletePhoto;
   const handleRemove = async (photo) => {
-    if (isDeleting) return;
-    if (photo.response) {
+    console.log("photo", isPendingDeletePhoto, photo);
+    const photoId = photo.response?.id;
+    if (isPendingDeletePhoto) return;
+    if (photoId && photo.status !== "error") {
       console.log("deletephoto", photo);
-      setIsDeleting(true);
       removePhotoById(photo.response.id);
 
       try {
-        await deletePhoto.mutateAsync(
+        await deletePhotoMutate(
           { id: photo.response.id },
           {
-            onSuccess: () => {
-              setIsDeleting(false);
-            },
+            // onSuccess: () => {
+            //   setIsDeleting(false);
+            // },
             onError: (error) => {
+              console.log("deletePhotoMutateError", error);
               message.error("Chưa thể xóa ảnh");
             },
           }

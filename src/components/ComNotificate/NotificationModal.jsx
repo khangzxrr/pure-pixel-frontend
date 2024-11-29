@@ -60,6 +60,12 @@ const NotificationModal = ({ isOpen, onClose }) => {
       await queryClient.invalidateQueries({
         queryKey: ["customer-booking-bill-items"],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ["get-all-photographer-booking"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["getTransactionById"],
+      });
     }
     if (!socket) return;
 
@@ -81,7 +87,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
     const validPage = Math.max(0, Math.min(pageParam, 9999));
     const response = await NotificationApi.getAllNotifactions(
       validLimit,
-      validPage,
+      validPage
     );
     return response;
   };
