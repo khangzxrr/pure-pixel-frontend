@@ -166,7 +166,7 @@ const ProductPhotoDetail = () => {
 
             if (status === "SUCCESS") {
               setPaymentStatus("SUCCESS");
-              message.success("Thanh toán thành công!");
+              // message.success("Thanh toán thành công!");
               clearInterval(intervalId);
               queryClient.invalidateQueries({ queryKey: ["photo-bought"] });
               // Cập nhật trạng thái pricetag
@@ -247,9 +247,7 @@ const ProductPhotoDetail = () => {
             );
             setQrCodeUrl(response.mockQrCode);
             setPaymentStatus("PENDING");
-            setTimeout(() => {
-              navigate(`/profile/photos-bought`);
-            }, 1000);
+
           } else if (paymentMethod === "WALLET") {
             modal?.handleClose();
             // message.success("Thanh toán bằng ví thành công!");
@@ -272,6 +270,7 @@ const ProductPhotoDetail = () => {
         })
         .catch((error) => {
           console.error("Lỗi khi mua ngay:", error);
+          console.error("Lỗi khi mua ngay:", error?.data?.message);
           switch (error?.data?.message) {
             case "ExistSuccessedPhotoBuyException":
               message.error("Bạn đã mua hình ảnh này rồi");
@@ -289,6 +288,9 @@ const ProductPhotoDetail = () => {
               break;
             case "CannotBuyOwnedPhotoException":
               message.error("Bạn không thể mua ảnh của chính mình");
+              break;
+            case "NotEnoughBalanceException":
+              message.error("Số dư của bạn không đủ.Vui lòng nạp thêm tiền");
               break;
             default:
               message.error("Đã có lỗi vui lòng thử lại");
