@@ -343,7 +343,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
           </div>
 
           {/* Right side - Details */}
-          <div className="w-full md:w-96 p-6 bg-zinc-900 overflow-y-auto scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
+          <div className="w-full md:w-96 p-6 bg-zinc-900 custom-scrollbar">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center space-x-3">
                 <img
@@ -455,13 +455,13 @@ export default function DetailedPhotoView({ onClose, photo }) {
 
                 <span>{currentPhoto?._count?.comments}</span>
               </button>
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <Icon className="mr-2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                   <circle cx="12" cy="12" r="3" />
                 </Icon>
                 <span>{currentPhoto?.viewCount}</span>
-              </div>
+              </div> */}
               <button
                 className="hover:text-green-500"
                 onClick={popupShare.handleOpen}
@@ -489,14 +489,14 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     transition
                     className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                   >
-                    <MenuItem>
+                    {/* <MenuItem>
                       <button
                         onClick={() => {}}
                         className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
                       >
                         Lưu bài viết
                       </button>
-                    </MenuItem>
+                    </MenuItem> */}
 
                     <MenuItem>
                       <button
@@ -514,7 +514,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     transition
                     className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                   >
-                    <MenuItem>
+                    {/* <MenuItem>
                       <button
                         onClick={() => {
                           handleLoginWarning();
@@ -523,7 +523,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                       >
                         Lưu bài viết
                       </button>
-                    </MenuItem>
+                    </MenuItem> */}
 
                     <MenuItem>
                       <button

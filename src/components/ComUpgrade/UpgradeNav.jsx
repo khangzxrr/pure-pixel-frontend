@@ -17,10 +17,9 @@ const UpgradeNav = () => {
     cacheTime: 300000,
   });
 
-  const handleLogout = () =>
-    keycloak.logout({
-      redirectUri: "https://purepixel.io.vn",
-    });
+
+  const handleLogout = () => keycloak.logout();
+
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
 

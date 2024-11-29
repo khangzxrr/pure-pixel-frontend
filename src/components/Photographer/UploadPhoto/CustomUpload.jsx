@@ -4,14 +4,7 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
-import {
-  message,
-  Upload,
-  Tooltip,
-  Switch,
-  Progress,
-  ConfigProvider,
-} from "antd";
+import { message, Upload, Tooltip, Switch } from "antd";
 import { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
@@ -19,7 +12,7 @@ import ScrollingBar from "./ScrollingBar";
 import { useNavigate } from "react-router-dom";
 import "./UploadPhoto.css";
 import PhotoService from "../../../services/PhotoService";
-import UserService from "../../../services/Keycloak";
+
 import { useNotification } from "../../../Notification/Notification";
 import "./UploadPhoto.css";
 const { Dragger } = Upload;
@@ -31,7 +24,6 @@ export default function CustomUpload() {
     addPhoto,
     setSelectedPhotoByUid,
     photoArray,
-    removePhotoByUid,
     updatePhotoPropertyByUid,
     toggleWatermark,
     setPhotoUploadResponse,
@@ -60,7 +52,7 @@ export default function CustomUpload() {
       notificationApi(
         "success",
         "Đăng tải ảnh thành công",
-        "Ảnh của bạn đã được đăng tải thành công"
+        "Ảnh của bạn đã được đăng tải thành công",
       );
     },
   });
@@ -80,7 +72,7 @@ export default function CustomUpload() {
           "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
           "",
           0,
-          "upload-photo-dragger-error"
+          "upload-photo-dragger-error",
         );
         break;
 
@@ -91,7 +83,7 @@ export default function CustomUpload() {
           "Ảnh bạn tải lên đã tồn tại trong hệ thống, vui lòng kiểm tra lại",
           "",
           0,
-          "upload-photo-dragger-error"
+          "upload-photo-dragger-error",
         );
         break;
 
@@ -102,7 +94,7 @@ export default function CustomUpload() {
           "Tệp tải lên không hợp lệ, vui lòng chọn tệp hình ảnh hợp lệ",
           "",
           0,
-          "upload-photo-dragger-error"
+          "upload-photo-dragger-error",
         );
         break;
 
@@ -113,7 +105,7 @@ export default function CustomUpload() {
           "Không tìm thấy dữ liệu EXIF trong ảnh, vui lòng chọn ảnh có dữ liệu EXIF",
           "",
           0,
-          "upload-photo-dragger-error"
+          "upload-photo-dragger-error",
         );
         break;
 
@@ -124,7 +116,7 @@ export default function CustomUpload() {
           "Dữ liệu EXIF thiếu thông tin nhà sản xuất (Make), vui lòng kiểm tra lại",
           "",
           0,
-          "upload-photo-dragger-error"
+          "upload-photo-dragger-error",
         );
         break;
 
@@ -135,7 +127,7 @@ export default function CustomUpload() {
           "Dữ liệu EXIF thiếu thông tin mẫu máy (Model), vui lòng kiểm tra lại",
           "",
           0,
-          "upload-photo-dragger-error"
+          "upload-photo-dragger-error",
         );
         break;
 
@@ -146,7 +138,7 @@ export default function CustomUpload() {
           "Đã xảy ra lỗi khi tải ảnh lên, vui lòng thử lại",
           "",
           0,
-          "upload-photo-dragger-error"
+          "upload-photo-dragger-error",
         );
         break;
 
@@ -157,7 +149,7 @@ export default function CustomUpload() {
           "Đã xảy ra lỗi không xác định, vui lòng thử lại",
           "",
           0,
-          "upload-photo-dragger-error"
+          "upload-photo-dragger-error",
         );
         break;
     }
@@ -181,7 +173,7 @@ export default function CustomUpload() {
         "Chỉ hỗ trợ đuôi ảnh jpeg, jpg",
         "",
         0,
-        "upload-photo-dragger-error"
+        "upload-photo-dragger-error",
       );
 
       return false;
@@ -194,7 +186,7 @@ export default function CustomUpload() {
         "Ảnh phải nhỏ hơn 150MB",
         "",
         0,
-        "upload-photo-dragger-error"
+        "upload-photo-dragger-error",
       );
 
       return false;
@@ -207,7 +199,7 @@ export default function CustomUpload() {
         "Ảnh bạn chọn không phải ảnh gốc hợp lệ",
         "",
         0,
-        "upload-photo-dragger-error"
+        "upload-photo-dragger-error",
       );
       return false;
     }
@@ -266,7 +258,7 @@ export default function CustomUpload() {
         file,
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
-            (progressEvent.loaded / progressEvent.total) * 90
+            (progressEvent.loaded / progressEvent.total) * 90,
           );
 
           updatePhotoPropertyByUid(file.uid, "percent", percentCompleted);
@@ -304,7 +296,7 @@ export default function CustomUpload() {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
           message.error(
-            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
           );
           break;
 

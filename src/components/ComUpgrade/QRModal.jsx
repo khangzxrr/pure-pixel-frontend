@@ -52,17 +52,34 @@ export default function QRModal() {
   // Stop polling and close modal when transaction is successful
   useEffect(() => {
     if (isUpgradePackageQRModal && transactionDetail?.status === "SUCCESS") {
+      // while(keycloak.)
       //call keycloak update token method, with -1 minValidity it will update immediately
-      keycloak.updateToken(-1).then(() => {});
-      startFireworks();
-      setTimeout(() => {
-        stopFireworks();
-        setIsUpgradePackageQRModal(false);
-        setIsUpgraded(true);
-        queryClient.invalidateQueries("upgrade-package-list");
-        queryClient.invalidateQueries("getTransactionById");
-        navigate("/profile/wallet");
-      }, 3000);
+      const updateTokenInterval = setInterval(() => {
+        if (
+          !keycloak.tokenParsed?.resource_access?.[
+            keycloak.clientId
+          ]?.roles.includes("photographer")
+        ) {
+          keycloak.updateToken(-1).then((refreshed) => {
+            // if (!refreshed) {
+            //   window.location.href = "/profile/wallet";
+            // }
+          });
+        } else {
+          clearInterval(updateTokenInterval);
+          startFireworks();
+          setTimeout(() => {
+            stopFireworks();
+            setIsUpgradePackageQRModal(false);
+            setIsUpgraded(true);
+            queryClient.invalidateQueries("upgrade-package-list");
+            queryClient.invalidateQueries("getTransactionById");
+
+            window.location.href = "/profile/wallet";
+            // navigate("/profile/wallet");
+          }, 1000);
+        }
+      }, 1000);
     }
     if (transactionDetail?.status === "EXPIRED") {
       setIsUpgradePackageQRModal(false);

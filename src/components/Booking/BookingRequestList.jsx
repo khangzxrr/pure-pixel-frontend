@@ -63,7 +63,7 @@ const BookingRequestList = () => {
         limit,
         page - 1,
         status,
-        orderByCreatedAt
+        orderByCreatedAt,
       ),
   });
   useEffect(() => {

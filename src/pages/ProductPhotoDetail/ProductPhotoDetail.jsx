@@ -103,9 +103,10 @@ const ProductPhotoDetail = () => {
             purchasedImageUrl: null,
           };
         });
-console.log('====================================');
-console.log(3333,userData.sub);
-console.log();
+
+        console.log("====================================");
+        console.log(3333, userData.sub);
+        console.log();
         // Kiểm tra xem người dùng đã mua pricetag nào
         if (userData) {
           const userId = userData.sub;
@@ -166,7 +167,7 @@ console.log();
 
             if (status === "SUCCESS") {
               setPaymentStatus("SUCCESS");
-              message.success("Thanh toán thành công!");
+              // message.success("Thanh toán thành công!");
               clearInterval(intervalId);
               queryClient.invalidateQueries({ queryKey: ["photo-bought"] });
               // Cập nhật trạng thái pricetag
@@ -247,9 +248,13 @@ console.log();
             );
             setQrCodeUrl(response.mockQrCode);
             setPaymentStatus("PENDING");
+
           } else if (paymentMethod === "WALLET") {
             modal?.handleClose();
-            message.success("Thanh toán bằng ví thành công!");
+            // message.success("Thanh toán bằng ví thành công!");
+            setTimeout(() => {
+              navigate(`/profile/photos-bought`);
+            }, 1000);
 
             // Cập nhật trạng thái pricetag
             setPricetagStatus((prevStatus) => {
@@ -266,6 +271,7 @@ console.log();
         })
         .catch((error) => {
           console.error("Lỗi khi mua ngay:", error);
+          console.error("Lỗi khi mua ngay:", error?.data?.message);
           switch (error?.data?.message) {
             case "ExistSuccessedPhotoBuyException":
               message.error("Bạn đã mua hình ảnh này rồi");
@@ -283,6 +289,9 @@ console.log();
               break;
             case "CannotBuyOwnedPhotoException":
               message.error("Bạn không thể mua ảnh của chính mình");
+              break;
+            case "NotEnoughBalanceException":
+              message.error("Số dư của bạn không đủ.Vui lòng nạp thêm tiền");
               break;
             default:
               message.error("Đã có lỗi vui lòng thử lại");
