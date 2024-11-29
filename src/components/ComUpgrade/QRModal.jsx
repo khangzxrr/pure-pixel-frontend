@@ -52,31 +52,41 @@ export default function QRModal() {
   // Stop polling and close modal when transaction is successful
   useEffect(() => {
     if (isUpgradePackageQRModal && transactionDetail?.status === "SUCCESS") {
+      // while(keycloak.)
       //call keycloak update token method, with -1 minValidity it will update immediately
-      keycloak.updateToken(-1).then((refreshed) => {
-        // if (!refreshed) {
-        //   window.location.href = "/profile/wallet";
-        // }
-      });
+      const updateTokenInterval = setInterval(() => {
+        if (
+          !keycloak.tokenParsed?.resource_access?.[
+            keycloak.clientId
+          ]?.roles.includes("photographer")
+        ) {
+          keycloak.updateToken(-1).then((refreshed) => {
+            // if (!refreshed) {
+            //   window.location.href = "/profile/wallet";
+            // }
+          });
+        } else {
+          clearInterval(updateTokenInterval);
+          startFireworks();
+          setTimeout(() => {
+            stopFireworks();
+            setIsUpgradePackageQRModal(false);
+            setIsUpgraded(true);
+            queryClient.invalidateQueries("upgrade-package-list");
+            queryClient.invalidateQueries("getTransactionById");
 
-      startFireworks();
-      setTimeout(() => {
-        stopFireworks();
-        setIsUpgradePackageQRModal(false);
-        setIsUpgraded(true);
-        queryClient.invalidateQueries("upgrade-package-list");
-        queryClient.invalidateQueries("getTransactionById");
-
-        window.location.href = "/profile/wallet";
-        // navigate("/profile/wallet");
-      }, 3000);
+            window.location.href = "/profile/wallet";
+            // navigate("/profile/wallet");
+          }, 1000);
+        }
+      }, 1000);
     }
     if (transactionDetail?.status === "EXPIRED") {
       setIsUpgradePackageQRModal(false);
       notificationApi(
         "error",
         "Mã QR hết hiệu lực",
-        "Mã QR hết hiệu lực, bạn vui lòng thử lại sau",
+        "Mã QR hết hiệu lực, bạn vui lòng thử lại sau"
       );
     }
   }, [
