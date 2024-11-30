@@ -24,6 +24,8 @@ export default function SideDepositForm({
   const [QRCode, setQRCode] = useState();
   const [transactionId, setTransactionId] = useState();
   const [isQRCodeVisible, setIsQRCodeVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // Error message state
+
   const selectDepositList = [
     10000, 20000, 50000, 70000, 100000, 200000, 500000, 1000000,
   ];
@@ -33,7 +35,16 @@ export default function SideDepositForm({
     const isNumeric = /^\d*$/.test(value);
 
     if (isNumeric) {
-      setDeposit(value);
+      const numericValue = parseInt(value);
+
+      // Check if the value is between 10000 and 1000000
+      if (numericValue < 10000 || numericValue > 1000000) {
+        setErrorMessage("Số tiền phải từ 10,000 đến 1,000,000 VND.");
+      } else {
+        setErrorMessage(""); // Clear error message if value is valid
+      }
+
+      setDeposit(numericValue);
       setFormattedDeposit(formatNumber(value));
     }
   };
@@ -42,15 +53,19 @@ export default function SideDepositForm({
     setDeposit(item);
     setFormattedDeposit(formatNumber(item));
     setSelectDeposit(index);
+    setErrorMessage(""); // Clear error message when selecting predefined values
   };
+
   // Fetch transaction details based on selected transaction ID
   const { data: transactionDetail, refetch } = useQuery({
     queryKey: ["getTransactionById", transactionId],
     queryFn: () => TransactionApi.getTransactionById(transactionId),
     enabled: !!transactionId, // Only fetch if ID is available
   });
+
   const confirm = (e) => {
-    if (deposit < 10000) {
+    if (deposit < 10000 || deposit > 1000000) {
+      setErrorMessage("Số tiền phải từ 10,000 đến 1,000,000 VND.");
       return;
     } else {
       createDeposit.mutate(deposit);
@@ -64,6 +79,7 @@ export default function SideDepositForm({
   const closeNav = () => {
     setIsNavVisible(false);
   };
+
   const createDeposit = useMutation({
     mutationFn: (amount) => WalletApi.createDeposit({ amount: amount }),
     onSuccess: (data) => {
@@ -73,8 +89,8 @@ export default function SideDepositForm({
       setTransactionId(data.transactionId);
       setQRCode(data.testQRCode);
       setIsQRCodeVisible(true);
-      setDeposit("");
-      setSelectDeposit("");
+      setDeposit(0);
+      setSelectDeposit(0);
     },
     onProgress: () => {
       console.log("Loading...");
@@ -96,7 +112,7 @@ export default function SideDepositForm({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [sideNavRef]);
-  console.log("SideDepositForm", createDeposit.isLoading, QRCode);
+
   useEffect(() => {
     let interval;
 
@@ -117,7 +133,7 @@ export default function SideDepositForm({
         );
         setTimeout(() => {
           setIsNavVisible(false);
-          setDeposit("");
+          setDeposit(0);
           setSelectDeposit("");
           setQRCode(null);
           setTransactionId(null);
@@ -139,6 +155,7 @@ export default function SideDepositForm({
     // Cleanup function to stop polling when modal closes or component unmounts
     return () => clearInterval(interval);
   }, [isNavVisible, transactionDetail]);
+
   return (
     <div
       ref={sideNavRef}
@@ -181,6 +198,9 @@ export default function SideDepositForm({
                 {formatNumber(item)}
               </button>
             ))}
+            {errorMessage && (
+              <p className="text-red-500 mt-2">{errorMessage}</p> // Display error message
+            )}
             <div className="w-11/12 mt-4 flex justify-end">
               <Popconfirm
                 title="Xác nhận nạp tiền?"
@@ -222,15 +242,11 @@ export default function SideDepositForm({
               )}
               {transactionDetail && transactionDetail?.status === "SUCCESS" && (
                 <div className="p-4 text-center text-green-500 text-lg">
-                  {" "}
-                  {/* Reduced to text-lg */}
                   Thanh toán thành công!
                 </div>
-              )}{" "}
+              )}
               {transactionDetail && transactionDetail.status === "EXPIRED" && (
                 <div className="p-4 text-center text-red-500 text-lg">
-                  {" "}
-                  {/* Reduced to text-lg */}
                   Mã QR quá hạn, vui lòng thử lại.
                 </div>
               )}

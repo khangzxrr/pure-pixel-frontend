@@ -23,8 +23,8 @@ export default function UploadPhoto() {
   console.log("photoData", photoData, selectedPhoto);
 
   return (
-    <div className="">
-      <div className="flex flex-col h-[97vh]">
+    <div className="mt-5">
+      <div className="flex flex-col h-[99vh]">
         <div className="flex flex-col w-full h-full">
           <div className={`flex ${photoArray.length > 0 ? "" : "h-1/2"}`}>
             <CustomUpload />
