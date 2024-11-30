@@ -167,35 +167,42 @@ export default function CreatePhotoshootPackage({
       <div className="h-3/5 rounded-lg  gap-5 ">
         <div className="grid grid-cols-1 md:grid-cols-2  bg-[#43474E] rounded-lg">
           <div className="m-2 rounded-none md:rounded-l-lg flex items-center justify-center">
-            <Dragger
-              name="thumbnail"
-              listType="picture-card"
-              showUploadList={false}
-              beforeUpload={beforeUpload} // Add this line
-              onChange={onThumbnailChange}
-              accept=".jpg,.jpeg,.png,.gif,.webp"
-              style={{
-                backgroundColor: "#34373e",
-                // border: "none",
-              }}
+            <ImgCrop
+              aspect={1 / 1}
+              modalTitle="Chỉnh sửa ảnh bìa"
+              modalWidth={1000}
+              showGrid={true}
             >
-              {/* <button type="button">Đổi ảnh bìa</button> */}
-              {!thumbnailUrl ? (
-                <div className=" h-[50vh] my-auto flex items-center justify-center hover:opacity-80 bg-transparent">
-                  <p className="text-white text-2xl">
-                    Nhấp hoặc kéo tệp vào khu vực này để tải lên{" "}
-                  </p>
-                </div>
-              ) : (
-                <div className="w-full h-[40vh] overflow-hidden flex my-auto">
-                  <img
-                    src={thumbnailUrl}
-                    className="w-full object-cover"
-                    alt="Thumbnail"
-                  />
-                </div>
-              )}
-            </Dragger>
+              <Dragger
+                name="thumbnail"
+                listType="picture-card"
+                showUploadList={false}
+                beforeUpload={beforeUpload} // Add this line
+                onChange={onThumbnailChange}
+                accept=".jpg,.jpeg,.png,.gif,.webp"
+                style={{
+                  backgroundColor: "#34373e",
+                  // border: "none",
+                }}
+              >
+                {/* <button type="button">Đổi ảnh bìa</button> */}
+                {!thumbnailUrl ? (
+                  <div className=" h-[50vh] my-auto flex items-center justify-center hover:opacity-80 bg-transparent">
+                    <p className="text-white text-2xl">
+                      Nhấp hoặc kéo tệp vào khu vực này để tải lên{" "}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="w-full h-[40vh] overflow-hidden flex my-auto">
+                    <img
+                      src={thumbnailUrl}
+                      className="w-full object-cover"
+                      alt="Thumbnail"
+                    />
+                  </div>
+                )}
+              </Dragger>
+            </ImgCrop>
           </div>
 
           <div className="flex flex-col gap-3 py-4 px-6 h-full">

@@ -48,7 +48,6 @@ const NotificationModal = ({ isOpen, onClose }) => {
       await queryClient.invalidateQueries({
         queryKey: ["notifications"],
       });
-
       await queryClient.invalidateQueries({
         queryKey: ["get-all-customer-bookings"],
       });
