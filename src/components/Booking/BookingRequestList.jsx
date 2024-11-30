@@ -46,8 +46,6 @@ const BookingRequestList = () => {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("");
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
-  const { initSocket, joinNotification, leaveNotification } =
-    useNotificationStore();
   const isSelectedStatus = (value) => status === value;
 
   const handlePageClick = (pageNumber) => {
@@ -63,22 +61,9 @@ const BookingRequestList = () => {
         limit,
         page - 1,
         status,
-        orderByCreatedAt,
+        orderByCreatedAt
       ),
   });
-  useEffect(() => {
-    initSocket();
-    joinNotification((data) => {
-      console.log("bookingNoti", data);
-      queryClient.invalidateQueries({
-        queryKey: ["get-all-photographer-booking"],
-      });
-    });
-
-    return () => {
-      leaveNotification();
-    };
-  }, []);
   return (
     <div className="flex flex-col gap-2 p-4">
       <div className="flex flex-col gap-2">
