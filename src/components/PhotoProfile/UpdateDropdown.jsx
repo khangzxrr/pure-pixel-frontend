@@ -18,39 +18,8 @@ const UpdateDropdown = ({ photo, photoListLength, page, setPage }) => {
     setIsDeletePhotoConfirmModal,
     setDeletePhotoId,
   } = useModalStore();
-  const queryClient = useQueryClient();
-  const { notificationApi } = useNotification();
 
   const modal = useModalState();
-  const deletePhoto = useMutation({
-    mutationFn: (id) => PhotoApi.deletePhoto(id),
-  });
-
-  const handleDeletePhoto = async () => {
-    try {
-      await deletePhoto.mutateAsync(photo.id, {
-        onSuccess: () => {
-          if (photoListLength === 1) {
-            setPage(page - 1);
-          }
-          queryClient.invalidateQueries({ queryKey: ["my-photo"] });
-          notificationApi("success", "Xóa ảnh thành công", "Ảnh đã được xóa.");
-        },
-        onError: () => {
-          notificationApi(
-            "error",
-            "Chưa thể xóa ảnh",
-            "Xóa ảnh thất bại, vui lòng thử lại",
-            "",
-            0,
-            "delete-photo-error"
-          );
-        },
-      });
-    } catch (error) {
-      message.error("Chưa thể xóa ảnh");
-    }
-  };
 
   const items = [
     {

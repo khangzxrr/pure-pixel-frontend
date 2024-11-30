@@ -111,11 +111,14 @@ export default function UpdatePhotoModal() {
 
   const handleFinish = async (data) => {
     // Call the onSubmit function with form data
-    if (data.isChangeGPS) {
-      updatePhotos.mutate(data);
-    } else {
+    if (!data.isChangeGPS) {
       const { gps, ...dataWithoutgps } = data;
       updatePhotos.mutate(dataWithoutgps);
+    } else if (!data.description) {
+      const { description, ...dataWithoutdescription } = data;
+      updatePhotos.mutate(dataWithoutdescription);
+    } else {
+      updatePhotos.mutate(data);
     }
     console.log("Updated photo data:", data);
   };

@@ -34,34 +34,6 @@ export default function CustomerBooking() {
   const [page, setPage] = useState(1);
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
 
-  const { socket } = useNotificationStore();
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    async function notificationEventHandler(data) {
-      console.log(data);
-
-      if (data?.referenceType === "BOOKING") {
-        console.log(`invalidate customer booking!`);
-        await queryClient.invalidateQueries({
-          queryKey: ["get-all-customer-bookings"],
-        });
-      }
-    }
-
-    if (socket?.connected) {
-      console.log(`listen to notification event in CustomerBooking`);
-      socket.on("notification-event", notificationEventHandler);
-    }
-
-    return () => {
-      if (socket) {
-        socket.off("notification-event", notificationEventHandler);
-      }
-    };
-  }, [socket]);
-
   const isSelectedStatus = (value) => {
     return status === value;
   };
@@ -80,20 +52,7 @@ export default function CustomerBooking() {
         orderByCreatedAt
       ),
   });
-  useEffect(() => {
-    initSocket();
-    joinNotification((data) => {
-      console.log("bookingNoti", data);
 
-      queryClient.invalidateQueries({
-        queryKey: ["get-all-customer-bookings"],
-      });
-    });
-
-    return () => {
-      leaveNotification();
-    };
-  }, []);
   return (
     <div className="flex flex-col gap-2 p-4">
       <div className="flex flex-col gap-2">
