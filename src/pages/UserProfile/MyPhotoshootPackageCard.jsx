@@ -43,7 +43,7 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
     deletePhotoshootPackage;
   return (
     <div className="flex flex-col gap-2 rounded-lg bg-[#36393f] group hover:cursor-pointer">
-      <div className="h-[200px] overflow-hidden rounded-t-lg">
+      <div className="h-[250px] overflow-hidden rounded-t-lg">
         <img
           src={packageDetail.thumbnail}
           alt="demo"
@@ -52,9 +52,7 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
       </div>
       <div className="flex flex-col gap-1 px-2">
         <div className=" text-2xl flex flex-row justify-between">
-          <p className="line-clamp-1  ">
-            {packageDetail.title}
-          </p>
+          <p className="line-clamp-1  ">{packageDetail.title}</p>
           <div className="flex items-center gap-1">
             <Popconfirm
               onConfirm={(e) => {
