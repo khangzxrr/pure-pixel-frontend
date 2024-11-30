@@ -15,6 +15,7 @@ export default function PhotoCard({ photo }) {
     updatePhotoPropertyByUid,
     selectedPhoto,
     setPhotoUploadResponse,
+    addPhoto,
   } = useUploadPhotoStore();
   const { notificationApi } = useNotification();
   //handle exception from api response
@@ -47,6 +48,10 @@ export default function PhotoCard({ photo }) {
           }
         );
       } catch (error) {
+        addPhoto(photo.file.uid, {
+          ...photo,
+          status: "done",
+        });
         message.error("Chưa thể xóa ảnh");
       }
     } else {
@@ -169,7 +174,7 @@ export default function PhotoCard({ photo }) {
           </p>
         </div>
       )}
-      {photo.status === "error" && (
+      {photo.status !== "uploading" && photo.status !== "done" && (
         <div
           className={`absolute inset-0 grid place-items-center bg-gray-300 bg-opacity-80  z-10 rounded-lg`}
         >
@@ -188,6 +193,7 @@ export default function PhotoCard({ photo }) {
               <div className="flex flex-col items-center cursor-pointer text-blue-500 hover:opacity-80">
                 <UndoOutlined className="text-4xl text-blue-500" />
                 <p className="text-blue-500 mt-2">Thử lại</p>
+                <p>{photo.status}</p>
               </div>
             </Tooltip>
           )}

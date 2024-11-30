@@ -74,6 +74,8 @@ export default function CustomUpload() {
           0,
           "upload-photo-dragger-error"
         );
+        updatePhotoPropertyByUid(file.uid, "status", "outQuota");
+
         break;
 
       case "FailToPerformOnDuplicatedPhotoException":
@@ -85,6 +87,8 @@ export default function CustomUpload() {
           0,
           "upload-photo-dragger-error"
         );
+        updatePhotoPropertyByUid(file.uid, "status", "duplicated");
+
         break;
 
       case "FileIsNotValidException":
@@ -96,6 +100,8 @@ export default function CustomUpload() {
           0,
           "upload-photo-dragger-error"
         );
+        updatePhotoPropertyByUid(file.uid, "status", "invalid");
+
         break;
 
       case "ExifNotFoundException":
@@ -107,6 +113,8 @@ export default function CustomUpload() {
           0,
           "upload-photo-dragger-error"
         );
+        updatePhotoPropertyByUid(file.uid, "status", "invalid");
+
         break;
 
       case "MissingMakeExifException":
@@ -118,6 +126,8 @@ export default function CustomUpload() {
           0,
           "upload-photo-dragger-error"
         );
+        updatePhotoPropertyByUid(file.uid, "status", "invalid");
+
         break;
 
       case "MissingModelExifException":
@@ -129,6 +139,8 @@ export default function CustomUpload() {
           0,
           "upload-photo-dragger-error"
         );
+        updatePhotoPropertyByUid(file.uid, "status", "invalid");
+
         break;
 
       case "UploadPhotoFailedException":
@@ -140,6 +152,8 @@ export default function CustomUpload() {
           0,
           "upload-photo-dragger-error"
         );
+        updatePhotoPropertyByUid(file.uid, "status", "failed");
+
         break;
 
       default:
@@ -151,11 +165,11 @@ export default function CustomUpload() {
           0,
           "upload-photo-dragger-error"
         );
+        updatePhotoPropertyByUid(file.uid, "status", "failed");
+
         break;
     }
     console.log("handleException", file.uid);
-
-    updatePhotoPropertyByUid(file.uid, "status", "error");
   };
 
   const beforeUpload = async (file) => {
@@ -203,29 +217,29 @@ export default function CustomUpload() {
       );
       return false;
     }
-    // if (!exif.Model) {
-    //   notificationApi(
-    //     "error",
-    //     "Tải ảnh lên thất bại",
-    //     "Ảnh bạn chọn thiếu thông tin loại máy chụp (Model)",
-    //     "",
-    //     0,
-    //     "upload-photo-dragger-error"
-    //   );
-    //   return false;
-    // }
+    if (!exif.Model) {
+      notificationApi(
+        "error",
+        "Tải ảnh lên thất bại",
+        "Ảnh bạn chọn thiếu thông tin loại máy chụp (Model)",
+        "",
+        0,
+        "upload-photo-dragger-error"
+      );
+      return false;
+    }
 
-    // if (!exif.Make) {
-    //   notificationApi(
-    //     "error",
-    //     "Tải ảnh lên thất bại",
-    //     "Ảnh bạn chọn thiếu thông tin nhà sản xuất (Make)",
-    //     "",
-    //     0,
-    //     "upload-photo-dragger-error"
-    //   );
-    //   return false;
-    // }
+    if (!exif.Make) {
+      notificationApi(
+        "error",
+        "Tải ảnh lên thất bại",
+        "Ảnh bạn chọn thiếu thông tin nhà sản xuất (Make)",
+        "",
+        0,
+        "upload-photo-dragger-error"
+      );
+      return false;
+    }
     try {
       const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(file);
 
