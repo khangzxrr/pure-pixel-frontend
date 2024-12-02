@@ -26,17 +26,17 @@ const CameraDetail = () => {
 
   return (
     <div className="flex flex-col m-2 min-h-screen">
-      <div className="flex flex-col items-center lg:flex-row bg-[#2f3136]  h-auto gap-4 m-[5px]">
-        <div className="w-full md:w-[400px] h-[400px] bg-[#eee] flex items-center justify-center">
+      <div className="flex flex-col  lg:flex-row bg-[#2f3136]  h-auto gap-4 m-[5px]">
+        <div className="w-full md:w-[200px] bg-[#eee] flex items-center justify-center">
           <img
             src={cameraData.thumbnail}
             alt="Nikon D3500"
             className="max-w-full max-h-full object-contain"
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-[500px] p-4">
+        <div className="flex flex-col justify-start h-full gap-2 w-full  p-4">
           <div className="font-bold text-2xl">{cameraData.name}</div>
-          <div className="font-normal text-sm">
+          {/* <div className="font-normal text-sm">
             Được xếp hạng thứ <span className="font-bold">#12</span> trên 233
             máy ảnh{" "}
             <a
@@ -48,8 +48,9 @@ const CameraDetail = () => {
               {cameraData.name}
             </a>{" "}
             10524 ảnh tải lên từ 125 người dùng vào hôm qua.
-          </div>
-          <div className="flex flex-col gap-2">
+          </div> */}
+          <div className="font-normal ">{cameraData.description}</div>
+          {/* <div className="flex flex-col gap-2">
             <div className="font-bold text-lg">Thông số kĩ thuật</div>
             <div className="flex gap-10 border-b-[1px] border-[#565b63] pb-2">
               <div className="min-w-[150px] text-sm">Loại máy ảnh:</div>
@@ -77,11 +78,11 @@ const CameraDetail = () => {
               <div className="min-w-[150px] text-sm">Vành ống kính:</div>
               <div className="font-normal text-sm">Nikon F</div>
             </div>
-          </div>
+          </div> */}
         </div>
-        <div className="w-full md:w-[600px] flex items-center justify-center">
+        {/* <div className="w-full md:w-[600px] flex items-center justify-center">
           <CameraUseChart cameraData={cameraData} />
-        </div>
+        </div> */}
       </div>
       <div>
         <CameraPhoto nameCamera={cameraData.name} />

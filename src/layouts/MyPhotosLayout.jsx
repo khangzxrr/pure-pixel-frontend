@@ -23,6 +23,8 @@ const MyPhotosLayout = () => {
   } = useModalStore();
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
+  console.log(userData);
+
   const deletePhoto = useMutation({
     mutationFn: (id) => PhotoApi.deletePhoto(id),
   });
