@@ -212,6 +212,10 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const handleCloseLoginWarning = () => {
     setIsOpenLoginModal(false);
   };
+
+  console.log('====================================');
+  console.log(123, error);
+  console.log('====================================');
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
@@ -249,9 +253,9 @@ export default function DetailedPhotoView({ onClose, photo }) {
             <LoginWarningModal onCloseLogin={handleCloseLoginWarning} />
           </Modal>
         </ConfigProvider>
-        <div className="flex flex-col md:flex-row bg-black text-white md:h-screen w-screen">
+        <div className="flex flex-col md:flex-row bg-black text-white md:h-screen  w-screen">
           {/* Left side - Image */}
-          <div className="flex-1 md:relative h-screen">
+          <div className="flex-1 md:relative md:h-screen h-[50vh]">
             {onClose ? (
               <button
                 onClick={onClose}
@@ -282,7 +286,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
             </button>
             <div
               ref={ref}
-              className="z-0 flex justify-center items-center h-screen relative"
+              className="z-0 flex justify-center items-center md:h-screen h-[50vh] relative"
             >
               {currentPhoto?.blurHash && (
                 <Blurhash
@@ -302,7 +306,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
                 transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
-                className="h-full max-h-screen absolute w-auto"
+                className="h-auto max-h-screen absolute w-auto"
                 lazy="lazy"
               />
               <img
@@ -323,7 +327,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                   previousPhotoData?.objects.length === 0 ? "none" : null,
               }}
               onClick={() => handlePreviousButtonOnClick()}
-              className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
+              className="absolute md:top-1/2 top-[27%] left-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
             >
               <Icon>
                 <path d="M15 18l-6-6 6-6" />
@@ -334,7 +338,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                 display: nextPhotoData?.objects.length === 0 ? "none" : null,
               }}
               onClick={() => handleNextButtonOnClick()}
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
+              className="absolute md:top-1/2 top-[27%] right-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
             >
               <Icon>
                 <path d="M9 18l6-6-6-6" />

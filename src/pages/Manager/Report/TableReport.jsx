@@ -14,12 +14,23 @@ import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButo
 import { useNotification } from "../../../Notification/Notification";
 import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
 import ComModal from "../../../components/ComModal/ComModal";
-import DetailUpgrede from "./DetailUpgrede";
+import DetailReport from "./DetailReport";
 import EditUpgrede from "./EditReport";
 import ComReportTypeConverter from "../../../components/ComReportTypeConverter/ComReportTypeConverter";
 import ComReportStatusConverter from "../../../components/ComReportStatusConverter/ComReportStatusConverter";
 import ComReportConverter from "../../../components/ComReportConverter/ComReportConverter";
 import ComDateConverter from "./../../../components/ComDateConverter/ComDateConverter";
+import ComFilters from "../../../components/ComFilters/ComFilters";
+import {
+  AlertCircle,
+  BarChart,
+  BarChart2,
+  BarChart3,
+  CheckCircle,
+  Clock,
+} from "lucide-react";
+import { FaSearch } from "react-icons/fa";
+import ComReportConverterUser from "../../../components/ComReportConverter/ComReportConverterUser";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -37,7 +48,12 @@ export const TableReport = forwardRef((props, ref) => {
   const modalDetail = useModalState();
   const modalEdit = useModalState();
   const { notificationApi } = useNotification();
-
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
+  const [filters, setFilters] = useState({});
+  const [sorter, setSorter] = useState(null);
   const {
     getColumnSearchProps,
     getColumnPriceRangeProps,
@@ -51,7 +67,7 @@ export const TableReport = forwardRef((props, ref) => {
       width: 120,
       // fixed: "left",
       dataIndex: "user.name",
-      key: "user.name",
+      key: "user",
       sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
       ...getColumnSearchProps("user.name", "Người báo cáo"),
       render: (_, record) => (
@@ -71,12 +87,12 @@ export const TableReport = forwardRef((props, ref) => {
       ),
     },
     {
-      title: "Ngày báo cáo",
+      title: "Thời gian báo cáo",
       width: 120,
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a, b) => new Date(a?.createdAt) - new Date(b?.createdAt),
-      ...getColumnApprox("createdAt"),
+      // ...getColumnApprox("createdAt"),
       render: (_, render) => (
         <div>
           {/* {render?.contract?.signingDate} */}
@@ -145,7 +161,18 @@ export const TableReport = forwardRef((props, ref) => {
         </div>
       ),
     },
-
+    {
+      title: "Người báo bị cáo",
+      width: 120,
+      // fixed: "left",
+      dataIndex: "userReport",
+      key: "userReport",
+      render: (_, record) => (
+        <div>
+          <ComReportConverterUser>{record}</ComReportConverterUser>
+        </div>
+      ),
+    },
     {
       title: "Thao tác",
       key: "operation",
@@ -176,7 +203,7 @@ export const TableReport = forwardRef((props, ref) => {
             extraMenuItems={
               record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
             }
-            excludeDefaultItems={["edit", "delete", "details"]}
+            excludeDefaultItems={["edit", "delete"]}
           />
         </div>
       ),
@@ -200,7 +227,7 @@ export const TableReport = forwardRef((props, ref) => {
                 console.log("11111", e);
                 notificationApi("success", "Thành công", "Đã mở lại báo cáo");
 
-                reloadData();
+                reloadData(pagination, filters, sorter);
               })
               .catch((error) => {
                 notificationApi("error", "Không thành công", "Lỗi");
@@ -229,7 +256,7 @@ export const TableReport = forwardRef((props, ref) => {
                 console.log("11111", e);
                 notificationApi("success", "Thành công", "Đã đóng báo cáo");
 
-                reloadData();
+                reloadData(pagination, filters, sorter);
               })
               .catch((error) => {
                 notificationApi("error", "Không thành công", "Lỗi");
@@ -248,9 +275,26 @@ export const TableReport = forwardRef((props, ref) => {
     notificationApi("error", "Lỗi", "Lỗi");
   };
 
-  const reloadData = () => {
+  const reloadData = (pagination, filters, sorter) => {
     table.handleOpenLoading();
-    getData("/manager/report?limit=9999&page=0")
+    const params = {
+      limit: pagination.pageSize,
+      page: pagination.current - 1, // API của bạn có thể bắt đầu từ 0
+      ...filters, // Thêm các filter vào
+      ...(sorter
+        ? {
+            sortBy: sorter.field, // Tên trường bạn muốn sắp xếp theo
+            sortOrder: sorter.order === "ascend" ? "ASC" : "DESC",
+          }
+        : {}),
+    };
+
+    console.log("====================================");
+    console.log(123, params);
+    console.log(123, );
+
+    console.log("====================================");
+    getData(`/manager/report?${new URLSearchParams(params)}`)
       .then((e) => {
         setData(e?.data?.objects);
         console.log("====================================");
@@ -261,26 +305,60 @@ export const TableReport = forwardRef((props, ref) => {
       .catch((error) => {
         console.error("Error fetching items:", error);
         if (error?.status === 401) {
-          reloadData();
+          reloadData(pagination, filters, sorter);
         }
       });
   };
   useEffect(() => {
     setTimeout(() => {
-      reloadData();
+      reloadData(pagination, filters, sorter);
     }, 500);
   }, []);
 
+    const handleSearch = () => {
+ 
+    };
   console.log("====================================");
   console.log(data);
   console.log("====================================");
   return (
     <div>
+      {/* <div className="flex justify-end">
+        <ComFilters
+          filterSections={filterSections}
+          displayOptions={displayOptions}
+        />
+      </div> */}
+
+      <div className="flex items-center rounded-lg bg-[#202225] min-w-min mb-4">
+        <input
+          // value={inputValue}
+          // onChange={handleInputChange}
+          // onKeyDown={handleKeyDown}
+          type="text"
+          placeholder={`Tìm kiếm ...`}
+          className="font-normal text-sm px-2 py-2 w-full pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
+        />
+        <div className=" ">
+          <button
+            className=" py-3 px-4 text-white"
+            onClick={handleSearch}
+          >
+            <FaSearch />
+          </button>
+        </div>
+      </div>
       <ComTable
         y={"65vh"}
         columns={columns}
         dataSource={data}
         loading={table.loading}
+        pagination={pagination}
+        onChange={(pagination, filters, sorter) => {
+          setFilters(filters);
+          setSorter(sorter);
+          reloadData(pagination, filters, sorter);
+        }}
       />
 
       <ComModal
@@ -288,7 +366,7 @@ export const TableReport = forwardRef((props, ref) => {
         onClose={modalDetail?.handleClose}
         width={800}
       >
-        <DetailUpgrede selectedUpgrede={selectedData} />
+        <DetailReport selected={selectedData} />
       </ComModal>
       <ComModal
         isOpen={modalEdit?.isModalOpen}
