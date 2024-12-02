@@ -46,7 +46,9 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
               {/* <button className="px-2 py-1 text-[12px]  rounded-full border hover:bg-[#4f545c]">
                 Theo dõi
               </button> */}
-              <ChatButton userId={photoshootPackage.user.id} />
+              {photoshootPackage.user.id !== userData?.sub && (
+                <ChatButton userId={photoshootPackage.user.id} />
+              )}
             </div>
           </div>
           <div className="flex justify-between items-start">

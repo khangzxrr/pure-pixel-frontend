@@ -70,9 +70,15 @@ const updateUserProfile = async (data) => {
   return response.data;
 };
 
+const getCurrentUpgradedPackage = async () => {
+  const response = await http.get("/me/current-upgrade-package");
+  return response.data;
+};
+
 const UserProfileApi = {
   getMyProfile,
   updateUserProfile,
+  getCurrentUpgradedPackage,
 };
 
 export default UserProfileApi;

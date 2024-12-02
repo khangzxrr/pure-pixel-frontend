@@ -30,7 +30,7 @@ const CameraPopular = () => {
             <div className="flex flex-col gap-2 items-center justify-center w-full p-2 group">
               <div className="w-[120px] h-[120px] overflow-hidden rounded-md bg-[#eee]">
                 <img
-                  src="https://purepixel-default.b-cdn.net/default-camera.jpg"
+                  src={item.thumbnail}
                   alt=""
                   className="object-contain w-full h-full"
                 />
