@@ -133,16 +133,16 @@ export default function AdminLayout({ children }) {
     queryKey: ["admin-me"],
     queryFn: () => UserProfileApi.getMyProfile(),
   });
+  useEffect(() => {
+    setActiveCategory(currentPath);
+    window.scrollTo(0, 0);
+  }, [currentPath]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
 
-  // useEffect(() => {
-  //   setActiveCategory(currentPath);
-  //   window.scrollTo(0, 0);
-  // }, [currentPath]);
   return (
     <>
       <div>

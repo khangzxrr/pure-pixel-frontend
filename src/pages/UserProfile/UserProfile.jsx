@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import ProfileLayout from "../../layouts/ProfileLayout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import UserProfileApi from "../../apis/UserProfile";
 import { HiOutlineLocationMarker } from "react-icons/hi";
@@ -16,9 +16,11 @@ import UpdateProfileModal from "../../components/ProfileDetail/UpdateProfileModa
 import { IoPencil } from "react-icons/io5";
 import useModalStore from "../../states/UseModalStore";
 import { Tooltip } from "antd";
+import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
 
 const UserProfile = () => {
   const { setIsUpdateProfileModalVisible } = useModalStore();
+  const navigate = useNavigate();
 
   const { userId } = useParams();
   const userDataKeyCloak = UserService.getTokenParsed();
@@ -61,6 +63,8 @@ const UserProfile = () => {
   const currentUpgradedPackageName =
     currentUpgradedPackage?.upgradePackageHistory?.name;
 
+  const expiredAt = FormatDateTime(currentUpgradedPackage.expiredAt);
+
   function formatNumber(num) {
     if (num >= 1000000) {
       // For numbers greater than or equal to 1 million
@@ -80,25 +84,25 @@ const UserProfile = () => {
     <div className="mx-auto">
       {/* Cover Photo with Parallax Effect */}
       {userData && (
-        <div>
-          <div className="relative">
-            <motion.div
+        <div className="relative">
+          <div className="">
+            {/* <motion.div
               style={{ overflow: "hidden" }} // Hides the overflowed part of the image
               animate={{ height: containerHeight }} // Dynamically change height on scroll
               transition={{ duration: 0.01, ease: "easeInOut" }} // Smooth transition
               className="w-full "
-            >
-              {/* Button positioned absolutely */}
+            > */}
+            {/* Button positioned absolutely */}
 
-              <img
-                src={userData?.cover} // Use coverPhoto from userData
-                alt="Cover"
-                className="w-full h-auto " // Image maintains its full width and natural height
-              />
-            </motion.div>
+            <img
+              src={userData?.cover} // Use coverPhoto from userData
+              alt="Cover"
+              className="w-full h-screen  object-cover" // Image maintains its full width and natural height
+            />
+            {/* </motion.div> */}
           </div>
 
-          <div className="flex justify-between -mt-16 relative z-10">
+          <div className="flex justify-between w-full   absolute top-48 left-0 right-0 backdrop-blur bg-black/50 p-4 ">
             <div className="w-1/4"></div>
             <div className="w-1/2 flex flex-col items-center text-[#e0e0e0] font-normal">
               <img
@@ -120,8 +124,14 @@ const UserProfile = () => {
                 )}
               </p>
               {currentUpgradedPackageName && (
-                <div className="text-[#202225] font-bold my-1 text-center px-4 py-1 bg-yellow-500 rounded-full">
-                  {currentUpgradedPackageName}
+                <div
+                  onClick={() => navigate("/upgrade")}
+                  className="hover:cursor-pointer text-[#202225] font-bold my-1 flex flex-col items-center justify-center px-4 py-1 bg-yellow-500 rounded-full"
+                >
+                  <div>Đã nâng cấp gói: {currentUpgradedPackageName}</div>
+                  <div className="text-[16px] font-normal">
+                    Ngày hết hạn: {expiredAt}
+                  </div>
                 </div>
               )}
 

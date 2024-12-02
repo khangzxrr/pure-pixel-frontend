@@ -1,14 +1,9 @@
-import {
-  LoadingOutlined,
-  PlusCircleOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
-import { message, Upload, Tooltip, Switch } from "antd";
-import { useNavigate } from "react-router-dom";
+import { message, Upload } from "antd";
 
 import PhotoService from "../../../services/PhotoService";
-import UserService from "../../../services/Keycloak";
+
 import { useNotification } from "../../../Notification/Notification";
 import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
 import PhotoShootApi from "../../../apis/PhotoShootApi";
@@ -27,7 +22,6 @@ export default function UploadBookingPhoto({ bookingDetail }) {
     setPhotoUploadResponse,
   } = useBookingPhotoStore();
 
-  const navigate = useNavigate();
   const { notificationApi } = useNotification();
   const enableUpdate = bookingDetail.status === "ACCEPTED";
 

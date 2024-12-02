@@ -40,14 +40,24 @@ export default function PhotoManagementModal({ close, id, data }) {
     });
   }, []);
 
+  // const handlePriceChange = (index, value) => {
+  //   const newSizes = sizes.map((size, i) => ({
+  //     ...size,
+  //     price: i === index ? value : size.price,
+  //   }));
+  //   setSizes(newSizes);
+  // };
   const handlePriceChange = (index, value) => {
+    const parsedValue = value.replace(/[^0-9]/g, ""); // Xóa tất cả ký tự không phải số
+    // sizes[index].price = parsedValue;
+
     const newSizes = sizes.map((size, i) => ({
       ...size,
-      price: i === index ? value : size.price,
+      price: i === index ? parsedValue : size.price,
     }));
     setSizes(newSizes);
+    // Cập nhật lại state hoặc làm gì đó với giá trị mới
   };
-
   const handleSubmit = () => {
     const newErrors = {};
     // if (!photoInfo.title.trim()) {
@@ -110,6 +120,11 @@ export default function PhotoManagementModal({ close, id, data }) {
   console.log("====================================");
   console.log(data);
   console.log("====================================");
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("vi-VN").format(amount);
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[60] ">
       <div className="bg-[#2b2d31] rounded-lg max-w-6xl w-full  overflow-hidden ">
@@ -211,22 +226,26 @@ export default function PhotoManagementModal({ close, id, data }) {
 
                       {isExpanded &&
                         extraDetails.map(([key, value], index) => (
-                          <div
-                            className="flex justify-between items-start"
-                            key={index}
-                          >
-                            <span className="text-gray-400">{key}:</span>
+                          <>
+                            {typeof value === "string" && value && (
+                              <div
+                                className="flex justify-between items-start"
+                                key={index}
+                              >
+                                <span className="text-gray-400">{key}:</span>
 
-                            <span
-                              className="text-gray-100 ml-4"
-                              style={{
-                                wordBreak: "break-all",
-                                overflowWrap: "break-word",
-                              }}
-                            >
-                              {value}
-                            </span>
-                          </div>
+                                <span
+                                  className="text-gray-100 ml-4"
+                                  style={{
+                                    wordBreak: "break-all",
+                                    overflowWrap: "break-word",
+                                  }}
+                                >
+                                  {value}
+                                </span>
+                              </div>
+                            )}
+                          </>
                         ))}
 
                       <button
@@ -282,8 +301,9 @@ export default function PhotoManagementModal({ close, id, data }) {
                           {size.height} X {size.width}
                         </span>
                         <input
-                          type="number"
-                          value={size.price}
+                          type="text"
+                          // value={size.price}
+                          value={formatCurrency(size.price || 0)}
                           onChange={(e) => {
                             e.stopPropagation();
                             handlePriceChange(index, e.target.value);

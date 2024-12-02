@@ -350,36 +350,33 @@ const CustomerBookingDetail = () => {
         </div>
         <div className="flex overflow-x-scroll custom-scrollbar w-full bg-[#36393f]">
           {bookingDetail.photos &&
-            bookingDetail.photos
-              .slice()
-              .reverse()
-              .map((photo, index) => (
-                <div key={index} className="relative p-2 flex-shrink-0">
-                  <img
-                    src={photo?.signedUrl.url}
-                    className={`w-[150px] h-[150px] object-cover rounded-md cursor-pointer ${
-                      photo?.id === selectedPhoto?.id
-                        ? "border-4 border-white transition duration-300"
-                        : ""
-                    }`}
-                    alt="Ban Thao"
-                    onClick={() => setSelectedPhoto(photo)}
-                  />
-                  {bookingDetail.status === "SUCCESSED" && (
-                    <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
-                      <Tooltip title="Tải ảnh này về" color="blue">
-                        <DownloadOutlined
-                          className="text-white text-xl cursor-pointer hover:text-red-500"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the parent onClick
-                            handleDownload(photo);
-                          }}
-                        />
-                      </Tooltip>
-                    </div>
-                  )}
-                </div>
-              ))}
+            bookingDetail.photos.map((photo, index) => (
+              <div key={index} className="relative p-2 flex-shrink-0">
+                <img
+                  src={photo?.signedUrl.url}
+                  className={`w-[150px] h-[150px] object-cover rounded-md cursor-pointer ${
+                    photo?.id === selectedPhoto?.id
+                      ? "border-4 border-white transition duration-300"
+                      : ""
+                  }`}
+                  alt="Ban Thao"
+                  onClick={() => setSelectedPhoto(photo)}
+                />
+                {bookingDetail.status === "SUCCESSED" && (
+                  <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+                    <Tooltip title="Tải ảnh này về" color="blue">
+                      <DownloadOutlined
+                        className="text-white text-xl cursor-pointer hover:text-red-500"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering the parent onClick
+                          handleDownload(photo);
+                        }}
+                      />
+                    </Tooltip>
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
       </div>
     </div>
