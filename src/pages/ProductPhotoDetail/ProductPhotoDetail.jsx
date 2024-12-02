@@ -209,8 +209,11 @@ const ProductPhotoDetail = () => {
 
   const allDetails = Object?.entries(data?.exif || {});
   const mainDetails = allDetails?.slice(0, 4);
-  const extraDetails = allDetails.slice(4);
-
+  const extraDetails = allDetails?.slice(4);
+console.log('====================================');
+console.log(444, mainDetails);
+console.log(123, extraDetails);
+console.log('====================================');
   const photoSelling =
     data.photoSellings && data.photoSellings.length > 0
       ? data.photoSellings[0]
@@ -526,21 +529,25 @@ const ProductPhotoDetail = () => {
                 {/* Hiển thị thông số còn lại khi mở rộng */}
                 {isExpanded &&
                   extraDetails.map(([key, value], index) => (
-                    <div
-                      className="flex justify-between items-start border-b border-[#ffffff3d]"
-                      key={index}
-                    >
-                      <span className="font-semibold mr-2">{key}:</span>
-                      <span
-                        className="font-light"
-                        style={{
-                          wordBreak: "break-all",
-                          overflowWrap: "break-word",
-                        }}
-                      >
-                        {value}
-                      </span>
-                    </div>
+                    <>
+                      {typeof value === 'string' && value  && (
+                        <div
+                          className="flex justify-between items-start border-b border-[#ffffff3d]"
+                          key={index}
+                        >
+                          <span className="font-semibold mr-2">{key}:</span>
+                          <span
+                            className="font-light"
+                            style={{
+                              wordBreak: "break-all",
+                              overflowWrap: "break-word",
+                            }}
+                          >
+                            {value}
+                          </span>
+                        </div>
+                      )}
+                    </>
                   ))}
               </div>
               {/* Nút Xem thêm/Ẩn bớt */}

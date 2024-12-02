@@ -7,7 +7,7 @@ const TextWithShowMore = ({ description }) => {
     setShowFullText(!showFullText);
   };
 
-  const isLongText = description.length > 100;
+  const isLongText = description?.length > 100;
 
   return (
     <div
@@ -15,7 +15,7 @@ const TextWithShowMore = ({ description }) => {
       onClick={showFullText ? toggleShowMore : ""}
     >
       {isLongText && !showFullText
-        ? description.slice(0, 100) + "..." // Show first 100 characters
+        ? description?.slice(0, 100) + "..." // Show first 100 characters
         : description}
 
       {isLongText && (

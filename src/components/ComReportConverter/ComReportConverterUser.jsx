@@ -1,7 +1,7 @@
 import { Image } from "antd";
 import React from "react";
 
-function ComReportConverter({ children }) {
+function ComReportConverterUser({ children }) {
   const convert = (data) => {
     switch (data?.reportType) {
       case "PHOTO":
@@ -10,19 +10,19 @@ function ComReportConverter({ children }) {
             <div className=" flex items-center justify-center overflow-hidden">
               <Image
                 wrapperClassName=" w-20 h-20object-cover object-center flex items-center justify-center "
-                src={data?.referencedPhoto?.signedUrl?.thumbnail}
-                alt={data?.referencedPhoto?.signedUrl?.thumbnail}
+                src={data?.referencedPhoto?.photographer?.avatar}
+                alt={data?.referencedPhoto?.photographer?.avatar}
                 preview={{ mask: "Xem ảnh" }}
               />
             </div>
-              {/* <p>ID:{data?.referencedPhoto?.id}</p> */}
+            <p>{data?.referencedPhoto?.photographer?.name}</p>
           </>
         );
       case "USER":
         return (
-          <>
-            <div className="flex gap-2 items-center justify-center  ">
-              {/* {data?.referencedUser?.avatar && (
+         <>
+            <div className="flex gap-2 items-center justify-center">
+              {data?.referencedUser?.avatar && (
                 <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
                   <Image
                     wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
@@ -31,11 +31,11 @@ function ComReportConverter({ children }) {
                     preview={{ mask: "Xem ảnh" }}
                   />
                 </div>
-              )} */}
+              )}
               {/* <p>ID:{data?.referencedUser?.id}</p> */}
             </div>
-            <div>Tài khoản:{data?.referencedUser?.name}</div>
-          </>
+              <p>{data?.referencedUser?.name}</p>
+         </>
         );
       case "BOOKING":
         return "BOOKING";
@@ -47,10 +47,10 @@ function ComReportConverter({ children }) {
         return " "; // Giá trị mặc định nếu không khớp
     }
   };
-  const translated = convert(children);
 
+  const translated = convert(children);
 
   return <>{translated}</>;
 }
 
-export default ComReportConverter;
+export default ComReportConverterUser;
