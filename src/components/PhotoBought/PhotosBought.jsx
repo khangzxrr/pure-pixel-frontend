@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import { ConfigProvider, Pagination } from "antd";
 import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
+import { MdImageNotSupported } from "react-icons/md";
 
 const PhotosBought = () => {
   const { keycloak } = useKeycloak();
@@ -55,6 +56,12 @@ const PhotosBought = () => {
                 </div>
               </div>
             )}
+            {data?.objects?.length === 0 && !isLoading && (
+              <div className="col-span-1 md:col-span-2 lg:col-span-3 gap-2 flex flex-col items-center justify-center h-[500px] text-gray-400">
+                <MdImageNotSupported className="text-8xl" />
+                <div className="text-lg">Không có ảnh khả dụng</div>
+              </div>
+            )}
             {data?.objects?.map((photo) => (
               <div
                 className="group relative w-full h-[300px] overflow-hidden rounded-lg"
@@ -93,7 +100,7 @@ const PhotosBought = () => {
               </div>
             ))}
           </div>
-          {totalPages > 0 && (
+          {totalPages > 1 && (
             <Pagination
               current={page}
               total={totalPages * itemsPerPage}

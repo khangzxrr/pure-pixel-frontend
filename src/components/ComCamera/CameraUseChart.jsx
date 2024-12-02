@@ -31,13 +31,13 @@ const getRandomData = (numPoints) => {
   return data;
 };
 
-const CameraUseChart = () => {
+const CameraUseChart = ({ cameraData }) => {
   // Dữ liệu của biểu đồ
   const data = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
       {
-        label: "Nikon D3500",
+        label: `${cameraData.name}`,
         data: getRandomData(7), // Gọi hàm để tạo dữ liệu ngẫu nhiên cho 7 điểm
         borderColor: "#eee",
         backgroundColor: "#2f3135",
@@ -63,7 +63,7 @@ const CameraUseChart = () => {
       },
       title: {
         display: true,
-        text: "Sử dụng máy ảnh D3500 trong năm nay",
+        text: `Sử dụng ${cameraData.name} trong năm nay`,
         color: "#eee", // Đặt màu chữ cho tiêu đề
         font: {
           size: 16, // Kích thước chữ cho tiêu đề

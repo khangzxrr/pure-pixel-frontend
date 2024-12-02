@@ -8,6 +8,7 @@ import UpgradeToPtg from "./UpgradeToPtg";
 import { FaImages } from "react-icons/fa6";
 import ViewFollowingsModal from "./ViewFollowingsModal";
 import ViewFollowersModal from "./ViewFollowersModal";
+import UserProfileApi from "../../apis/UserProfile";
 
 const PhotoProfile = ({ userData }) => {
   const [showFollowersModal, setFollowersShowModal] = React.useState(false);
@@ -18,6 +19,26 @@ const PhotoProfile = ({ userData }) => {
     staleTime: 60000,
     cacheTime: 300000,
   });
+
+  const {
+    data: currentUpgradedPackage,
+    isLoading: isCurrentUpgradedPackageLoading,
+    isError: isCurrentUpgradedPackageError,
+    error: currentUpgradedPackageError,
+  } = useQuery({
+    queryKey: ["currentUpgradedPackage"],
+    queryFn: () => UserProfileApi.getCurrentUpgradedPackage(),
+    staleTime: 60000,
+    cacheTime: 300000,
+  });
+
+  if (isCurrentUpgradedPackageLoading) return <div>Loading...</div>;
+  if (isCurrentUpgradedPackageError) return <div>Error: {error.message}</div>;
+  const currentUpgradedPackageName =
+    currentUpgradedPackage?.upgradePackageHistory?.name;
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
   const PhotoTotal = data?._count?.photos;
   const FollowingsCount = data?._count?.followings;
@@ -60,8 +81,9 @@ const PhotoProfile = ({ userData }) => {
             />
           </div>
           <div className="flex flex-col  gap-2 p-1">
-            <div className="font-bold text-4xl">
+            <div className="font-bold text-4xl flex items-center gap-2">
               {data?.name || "Không xác định"}
+              <div></div>
             </div>
             <div className="pl-1 font-normal">
               {userData?.email || "Không xác định"}
@@ -89,7 +111,11 @@ const PhotoProfile = ({ userData }) => {
           {userData?.resource_access?.purepixel?.roles.includes(
             "photographer"
           ) ? (
-            <StorageBar used={quotaUsed} total={quotaTotal} />
+            <StorageBar
+              used={quotaUsed}
+              total={quotaTotal}
+              nameCurrentPackage={currentUpgradedPackageName}
+            />
           ) : (
             <div>
               <UpgradeToPtg />

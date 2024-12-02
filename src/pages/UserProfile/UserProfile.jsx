@@ -28,6 +28,16 @@ const UserProfile = () => {
     queryFn: () => UserProfileApi.getMyProfile(userId),
   });
 
+  const {
+    data: currentUpgradedPackage,
+    isLoading: isCurrentUpgradedPackageLoading,
+    isError: isCurrentUpgradedPackageError,
+    error: currentUpgradedPackageError,
+  } = useQuery({
+    queryKey: ["current-upgraded-package"],
+    queryFn: () => UserProfileApi.getCurrentUpgradedPackage(),
+  });
+
   const openModal = () => {
     setIsUpdateProfileModalVisible(true);
   };
@@ -45,6 +55,11 @@ const UserProfile = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (isCurrentUpgradedPackageLoading) return <LoadingProfile />;
+  if (isCurrentUpgradedPackageError) return <div>Error: {error.message}</div>;
+  const currentUpgradedPackageName =
+    currentUpgradedPackage?.upgradePackageHistory?.name;
 
   function formatNumber(num) {
     if (num >= 1000000) {
@@ -104,6 +119,12 @@ const UserProfile = () => {
                   ""
                 )}
               </p>
+              {currentUpgradedPackageName && (
+                <div className="text-[#202225] font-bold my-1 text-center px-4 py-1 bg-yellow-500 rounded-full">
+                  {currentUpgradedPackageName}
+                </div>
+              )}
+
               <p className="mt-2 text-center">
                 {userData?.quote} {/* Use bio from userData */}
               </p>
@@ -158,7 +179,7 @@ const UserProfile = () => {
           {/* <ProfileLayout /> */}
         </div>
       )}
-      
+
       {isLoading && (
         <div>
           <LoadingProfile />{" "}

@@ -38,10 +38,11 @@ const Explore = () => {
   }, [user, navigate]);
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
-  const handleLogout = () =>
-    keycloak.logout({
-      redirectUri: "https://purepixel.io.vn",
-    });
+  const handleLogout = () => keycloak.logout();
+  // const handleLogout = () =>
+  //   keycloak.logout({
+  //     redirectUri: "https://purepixel.io.vn",
+  //   });
 
   const isInspirationActive = activeItem === 1;
   const isPhotographerListActive = activeItem === 4;
@@ -124,7 +125,7 @@ const Explore = () => {
                   </div>
                   {isPhotographer && (
                     <div className="absolute -bottom-1 left-5 text-[10px] px-1   bg-yellow-500 rounded-lg  text-[#202225]">
-                      PRO
+                      NAG
                     </div>
                   )}
                 </div>
