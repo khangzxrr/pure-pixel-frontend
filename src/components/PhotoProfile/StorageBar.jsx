@@ -1,6 +1,6 @@
 import React from "react";
 
-const StorageBar = ({ used, total, nameCurrentPackage }) => {
+const StorageBar = ({ used, total, nameCurrentPackage, expiredAt }) => {
   const usedGB = used / 1024 ** 3;
   const totalGB = total / 1024 ** 3;
   const percentage = totalGB > 0 ? (usedGB / totalGB) * 100 : 0;
@@ -10,8 +10,9 @@ const StorageBar = ({ used, total, nameCurrentPackage }) => {
   return (
     <div className=" md:w-[19.5vw] w-[60vw]  font-normal rounded-lg border-[2px] border-[#eee]">
       {nameCurrentPackage && (
-        <div className="font-bold text-xl flex justify-center py-[2px] bg-[#eee] text-[#202225]">
-          Gói {nameCurrentPackage || null}
+        <div className="font-bold text-xl flex flex-col items-center justify-center py-[2px] bg-[#eee] text-[#202225]">
+          <div>Gói {nameCurrentPackage || null}</div>
+          <div className="text-[16px] font-normal">Hết hạn: {expiredAt}</div>
         </div>
       )}
       <div className="flex flex-col p-4">
