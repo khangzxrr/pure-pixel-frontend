@@ -3,7 +3,7 @@ import UpgradeToPtgLayout from "./../../layouts/UpgradeToPtgLayout";
 
 const UpgradeToPtgPage = () => {
   return (
-    <div className="relative min-h-screen bg-[url('https://picsum.photos/3840/2160')] bg-cover bg-center">
+    <div className="relative min-h-screen">
       {/* Black overlay */}
       <div className="absolute inset-0 bg-black opacity-30"></div>
 

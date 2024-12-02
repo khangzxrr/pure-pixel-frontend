@@ -97,7 +97,7 @@ const SidebarLayout = ({
                   </div>
                   {isPhotographer && (
                     <div className="absolute -bottom-1 left-5 text-[10px] px-1   bg-yellow-500 rounded-lg  text-[#202225]">
-                      PRO
+                      NAG
                     </div>
                   )}
                 </div>

@@ -4,26 +4,38 @@ import CameraChart from "./CameraChart";
 import CameraUseChart from "./CameraUseChart";
 import CameraPhoto from "./CameraPhoto";
 import UseCameraStore from "../../states/UseCameraStore";
+import CameraApi from "../../apis/CameraApi";
+import { useQuery } from "@tanstack/react-query";
 
 const CameraDetail = () => {
+  const { cameraId } = useParams();
   const nameCamera = UseCameraStore((state) => state.nameCamera);
   const brandCamera = UseCameraStore((state) => state.brandCamera);
   const idCamera = UseCameraStore((state) => state.idCamera);
 
-  console.log(idCamera);
+  console.log(cameraId);
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["camera-detail", cameraId],
+    queryFn: () => CameraApi.getCameraById(cameraId),
+  });
+  if (isLoading) return <p>Đang tải...</p>;
+  if (isError) return <p>Lỗi: {error.message}</p>;
+
+  const cameraData = data;
 
   return (
     <div className="flex flex-col m-2 min-h-screen">
-      {/* <div className="flex flex-col items-center lg:flex-row bg-[#2f3136]  h-auto gap-4 m-[5px]">
+      <div className="flex flex-col items-center lg:flex-row bg-[#2f3136]  h-auto gap-4 m-[5px]">
         <div className="w-full md:w-[400px] h-[400px] bg-[#eee] flex items-center justify-center">
           <img
-            src="https://www.transparentpng.com/download/-camera/7mDYcE-nikon-camera-transparent-background-photography.png"
+            src={cameraData.thumbnail}
             alt="Nikon D3500"
             className="max-w-full max-h-full object-contain"
           />
-        </div>  
+        </div>
         <div className="flex flex-col gap-2 w-full md:w-[500px] p-4">
-          <div className="font-bold text-2xl">{nameCamera}</div>
+          <div className="font-bold text-2xl">{cameraData.name}</div>
           <div className="font-normal text-sm">
             Được xếp hạng thứ <span className="font-bold">#12</span> trên 233
             máy ảnh{" "}
@@ -33,7 +45,7 @@ const CameraDetail = () => {
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline underline-offset-2"
             >
-              {brandCamera}
+              {cameraData.name}
             </a>{" "}
             10524 ảnh tải lên từ 125 người dùng vào hôm qua.
           </div>
@@ -68,11 +80,11 @@ const CameraDetail = () => {
           </div>
         </div>
         <div className="w-full md:w-[600px] flex items-center justify-center">
-          <CameraUseChart />
+          <CameraUseChart cameraData={cameraData} />
         </div>
-      </div> */}
+      </div>
       <div>
-        <CameraPhoto nameCamera={nameCamera} />
+        <CameraPhoto nameCamera={cameraData.name} />
       </div>
     </div>
   );
