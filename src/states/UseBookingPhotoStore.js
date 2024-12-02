@@ -128,9 +128,9 @@ const useBookingPhotoStore = create(
       set((state) => {
         const index = state.photoArray.length;
 
+        //TODO: bao sua loi moi khi upload anh moi
+        state.photoArray.unshift(payload);
         state.uidHashmap[uid] = index;
-
-        state.photoArray.push(payload);
 
         return {
           photoArray: state.photoArray,
@@ -171,7 +171,7 @@ const useBookingPhotoStore = create(
 
         // Remove photo from photoArray
         const updatedPhotoArray = state.photoArray.filter(
-          (_, idx) => idx !== index
+          (_, idx) => idx !== index,
         );
 
         // Regenerate uidHashmap and photoIdHashmap with new indices
@@ -207,7 +207,7 @@ const useBookingPhotoStore = create(
 
         // Remove photo from photoArray
         const updatedPhotoArray = state.photoArray.filter(
-          (_, idx) => idx !== index
+          (_, idx) => idx !== index,
         );
 
         // Regenerate uidHashmap and photoIdHashmap with new indices
@@ -253,7 +253,7 @@ const useBookingPhotoStore = create(
     deleteImageById: (id) =>
       set((state) => {
         const updatedPhotoArray = state.photoArray.filter(
-          (image) => image.id !== id
+          (image) => image.id !== id,
         );
         const isDeletedSelected = state.selectedPhoto.id === id;
 
@@ -310,7 +310,7 @@ const useBookingPhotoStore = create(
         return { selectedPhoto: nextUid };
       });
     },
-  }))
+  })),
 );
 
 export default useBookingPhotoStore;

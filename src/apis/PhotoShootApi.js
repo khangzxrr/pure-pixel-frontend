@@ -11,7 +11,7 @@ const getBookingByCustomer = async (limit, page) => {
 };
 const handleRequestByPhotographer = async (bookingId, type) => {
   const response = await http.post(
-    `/photographer/booking/${bookingId}/${type}`
+    `/photographer/booking/${bookingId}/${type}`,
   );
   return response.data;
 };
@@ -31,14 +31,14 @@ const uploadBookingPhoto = async (bookingId, file, onUploadProgress) => {
   const formData = new FormData();
   formData.append("file", file);
   const response = await http.put(
-    `/photographer/booking/${bookingId}/upload`,
+    `/photographer/booking/${bookingId}/upload/v2`,
     formData,
     {
       headers: {
         "Content-Type": "multipart/form-data",
       },
       onUploadProgress,
-    }
+    },
   );
 
   return response.data;

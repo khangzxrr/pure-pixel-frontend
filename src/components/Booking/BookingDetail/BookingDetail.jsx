@@ -29,16 +29,17 @@ const BookingDetail = () => {
   useEffect(() => {
     clearState();
     if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
-      bookingDetail.photos.forEach((photo) => {
+      for (let photo of bookingDetail.photos) {
         addPhotoWithId(photo.id, {
           id: photo.id,
           uid: photo.id,
           reviewUrl: photo.signedUrl.url,
+          thumbnailUrl: photo.signedUrl.thumbnail,
           visibility: photo.visibility,
           status: "done",
         });
         setSelectedPhotoByUid(photo.id);
-      });
+      }
     }
   }, [bookingDetail, bookingId]);
 

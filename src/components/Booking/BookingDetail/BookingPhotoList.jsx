@@ -47,10 +47,10 @@ export default function BookingPhotoList({ enableUpdate }) {
                 "Ảnh xóa không thành công, vui lòng thử lại",
                 "",
                 0,
-                "delele-booking-photo-error"
+                "delele-booking-photo-error",
               );
             },
-          }
+          },
         );
       } catch (error) {
         notificationApi(
@@ -59,7 +59,7 @@ export default function BookingPhotoList({ enableUpdate }) {
           "Ảnh xóa không thành công, vui lòng thử lại",
           "",
           0,
-          "delele-booking-photo-error"
+          "delele-booking-photo-error",
         );
       }
     } else {
@@ -69,7 +69,7 @@ export default function BookingPhotoList({ enableUpdate }) {
 
   return (
     <div className="flex overflow-x-scroll custom-scrollbar w-full">
-      {photoArray.toReversed().map((photo, index) => (
+      {photoArray.map((photo, index) => (
         <div key={index} className="relative p-2 flex-shrink-0">
           <img
             src={photo?.reviewUrl}
