@@ -1,4 +1,3 @@
-import { useKeycloak } from "@react-keycloak/web";
 import React, { useState } from "react";
 import UserService from "../../services/Keycloak";
 import PhotoProfile from "../PhotoProfile/PhotoProfile";
@@ -9,9 +8,9 @@ import UseUserOtherStore from "../../states/UseUserOtherStore";
 import { ConfigProvider, Pagination } from "antd";
 import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
 import { MdImageNotSupported } from "react-icons/md";
+import UserProfileApi from "../../apis/UserProfile";
 
 const PhotosBought = () => {
-  const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
@@ -24,7 +23,19 @@ const PhotosBought = () => {
     keepPreviousData: true,
   });
   const totalPages = data?.totalPage || 1;
-  console.log(data);
+
+  const {
+    data: myProfile,
+    isLoading: isLoadingMyProfile,
+    isError: isErrorMyProfile,
+  } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => UserProfileApi.getMyProfile(),
+  });
+
+  if (isLoading || isLoadingMyProfile) {
+    return <LoadingSpinner />;
+  }
   const handlePageClick = (pageNumber) => {
     if (pageNumber !== page) {
       setPage(pageNumber);
@@ -44,8 +55,13 @@ const PhotosBought = () => {
       }}
     >
       <div className="flex flex-col gap-1 p-1">
-        <div className="p-[24px]  bg-[#292b2f]">
-          <PhotoProfile userData={userData} />
+        <div
+          className={`relative p-[24px] bg-[url('${myProfile?.cover}')] bg-cover bg-center`}
+        >
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+          <div className="relative">
+            <PhotoProfile userData={userData} />
+          </div>
         </div>
         <div className="flex flex-col gap-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
