@@ -37,7 +37,7 @@ const PhotosUser = () => {
       null,
       null,
       null,
-      null,
+      false,
       null,
       null,
       photographerId,
