@@ -32,8 +32,8 @@ const PhotoshootPackageDetail = () => {
         userData={userData}
         onLogin={handleLogin}
       />
-      <BookingPackageReviewList photoshootPackage={photoshootPackage} />
       <BookingPackageShowCaseList photoshootPackage={photoshootPackage} />
+      <BookingPackageReviewList photoshootPackage={photoshootPackage} />
     </div>
   );
 };
