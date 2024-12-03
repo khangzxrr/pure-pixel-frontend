@@ -1,4 +1,3 @@
-import { useKeycloak } from "@react-keycloak/web";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,19 +10,23 @@ import { ConfigProvider, Pagination } from "antd";
 import UseSellingPhotoStore from "../../states/UseSellingPhotoStore";
 
 const SellingPhotoList = () => {
-  const { keycloak } = useKeycloak();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const itemsPerPage = 9; // Tổng số ảnh
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
+
+  const { page, setPage } = UseSellingPhotoStore();
+
   const [selectedImage, setSelectedImage] = useState(null);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const selling = true;
   const searchResult = UseSellingPhotoStore((state) => state.searchResult);
-
+  const searchByPhotoTitle = UseSellingPhotoStore(
+    (state) => state.searchByPhotoTitle
+  );
   const { data, isLoading, isError, error, isFetching } = useQuery({
-    queryKey: ["public-photos-selling", page, searchResult],
+    queryKey: ["public-photos-selling", page, searchResult, searchByPhotoTitle],
     queryFn: () =>
       PhotoApi.getPublicPhotos(
         itemsPerPage,
@@ -34,13 +37,14 @@ const SellingPhotoList = () => {
         null,
         selling,
         searchResult,
-        null,
+        searchByPhotoTitle,
         null,
         null
       ),
     keepPreviousData: true,
   });
   const totalPages = data?.totalPage || 1;
+
   const handlePageClick = (pageNumber) => {
     if (pageNumber !== page) {
       setPage(pageNumber);
@@ -56,8 +60,6 @@ const SellingPhotoList = () => {
     setSelectedImage(id);
   };
 
-  console.log("data", data);
-
   return (
     <ConfigProvider
       theme={{
@@ -72,8 +74,8 @@ const SellingPhotoList = () => {
       }}
     >
       <div className="h-screen">
-        <div className="flex flex-col">
-          {totalPages > 0 && (
+        <div className="flex flex-col py-2">
+          {totalPages > 1 && (
             <Pagination
               current={page}
               total={totalPages * itemsPerPage}
@@ -121,22 +123,8 @@ const SellingPhotoList = () => {
                     <div className="absolute bottom-0 left-0 w-full rounded-b-lg bg-black bg-opacity-50 text-white text-center py-2 transition-opacity duration-300 backdrop-blur-md">
                       <div className="flex justify-between px-1 ">
                         <div className="flex items-center gap-2">
-                          <div className="size-6 overflow-hidden rounded-full">
-                            <img
-                              src={photo.photographer.avatar}
-                              alt=""
-                              className="size-full object-cover"
-                            />
-                          </div>
-                          <div
-                            onClick={() => {
-                              navigate(`/user/${photo.photographer.id}`);
-                              setNameUserOther(photo.photographer.name);
-                              setUserOtherId(photo.photographer.id);
-                            }}
-                            className="truncate max-w-[200px] hover:underline underline-offset-2 hover:cursor-pointer"
-                          >
-                            {photo.photographer.name || "Không xác định"}
+                          <div className="truncate lg:max-w-[300px] max-w-[200px]">
+                            {photo.title || "Không xác định"}
                           </div>
                         </div>
 
@@ -150,6 +138,25 @@ const SellingPhotoList = () => {
                             </span>
                           )}
                         </div>
+                      </div>
+                    </div>
+                    <div className="absolute flex items-center gap-2 p-2 top-0 left-0 w-full bg-black backdrop-blur bg-opacity-60 text-white rounded-t-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="size-7 overflow-hidden rounded-full">
+                        <img
+                          src={photo.photographer.avatar}
+                          alt=""
+                          className="size-full object-cover bg-[#eee]"
+                        />
+                      </div>
+                      <div
+                        onClick={() => {
+                          navigate(`/user/${photo.photographer.id}`);
+                          setNameUserOther(photo.photographer.name);
+                          setUserOtherId(photo.photographer.id);
+                        }}
+                        className=" truncate max-w-[200px] hover:underline underline-offset-2 hover:cursor-pointer"
+                      >
+                        {photo.photographer.name}
                       </div>
                     </div>
                   </div>
