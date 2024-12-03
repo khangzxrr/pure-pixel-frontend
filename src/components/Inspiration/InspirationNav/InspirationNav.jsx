@@ -41,9 +41,9 @@ const InspirationNav = ({
   // Hàm thay đổi danh mục tìm kiếm
   const handleChangeSearchCategory = (name, param, quote, icon) => {
     setSearchCategory(name, param, quote, icon);
-    setInputValue(""); // Xóa nội dung ô nhập liệu
-    setSearchByPhotoTitle(""); // Đặt lại kết quả tìm kiếm theo tên ảnh
-    setSearchResult(""); // Đặt lại kết quả tìm kiếm theo tên nhiếp ảnh gia
+    setInputValue("");
+    setSearchByPhotoTitle("");
+    setSearchResult("");
   };
 
   const handleInputChange = (event) => {

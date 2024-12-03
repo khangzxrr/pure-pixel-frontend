@@ -52,7 +52,9 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
             </div>
           </div>
           <div className="flex justify-between items-start">
-            <div className="text-xl font-semibold">Gói chụp hình cá nhân</div>
+            <div className="text-xl font-semibold">
+              {photoshootPackage.title}
+            </div>
             {/* <Share2 className="w-5 h-5 hover:cursor-pointer" /> */}
           </div>
           <div className="font-normal">
@@ -68,12 +70,14 @@ const PhotoshootPackageInfo = ({ photoshootPackage, userData, onLogin }) => {
             {photoshootPackage.description}
           </div>
           {userData ? (
-            <button
-              onClick={showModal}
-              className="bg-[#eee] text-center p-2 text-[#202225] rounded-lg hover:bg-[#b3b3b3] transition duration-300"
-            >
-              Đặt lịch
-            </button>
+            userData?.sub !== photoshootPackage.user.id ? (
+              <button
+                onClick={showModal}
+                className="bg-[#eee] text-center p-2 text-[#202225] rounded-lg hover:bg-[#b3b3b3] transition duration-300"
+              >
+                Đặt lịch
+              </button>
+            ) : null
           ) : (
             <button
               onClick={onLogin}
