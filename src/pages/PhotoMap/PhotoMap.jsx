@@ -10,10 +10,15 @@ import { useModalState } from "../../hooks/useModalState";
 import DetailedPhotoView from "../DetailPhoto/DetailPhoto";
 import { Spin, Tooltip } from "antd";
 import { notificationApi } from "../../Notification/Notification";
+import { FaDotCircle } from "react-icons/fa";
+import PhotoListByMap from "./components/PhotoListByMap";
+import usePhotoMapStore from "../../states/UsePhotoMapStore";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN; // Set your mapbox token here
+
 function getZoomValue(zoom) {
   switch (true) {
+    case zoom >= 17:
     case zoom >= 14:
       return 50; // Smallest value for highest zoom
     case zoom > 12:
@@ -32,19 +37,26 @@ function getZoomValue(zoom) {
 }
 
 export default function PhotoMap() {
-  const [selectedLocate, setSelectedLocate] = useState(null); // Use Zustand store
-  const [currentLocate, setCurrentLocate] = useState(null); // Use Zustand store
-  const [limit, setLimit] = useState(10); // Set limit to 10
-  const [page, setPage] = useState(0); // Set page to 0
+  const {
+    addMultiplePhotosToList,
+    setPhotoList,
+    selectedPhoto,
+    setSelectedPhoto,
+    photoList,
+  } = usePhotoMapStore(); // Use Zustand store
+  const [isAddNewPhotoList, setIsAddNewPhotoList] = useState(false);
+  const [selectedPhotoRatio, setSelectedPhotoRatio] = useState(0);
+  const [currentLocate, setCurrentLocate] = useState(null);
+  const limit = 10; // Set limit to 10
+  const [page, setPage] = useState(1); // Set page to 0
   const [viewState, setViewState] = useState({
-    latitude: 16.406507897299164,
-    longitude: 107.44773411517099,
+    latitude: 10.844706068296105,
+    longitude: 106.79257343412127,
     zoom: 10,
   });
   const navigate = useNavigate(); // Initialize useNavigate
   const queryClient = useQueryClient(); // Initialize the QueryClient
   const popupDetail = useModalState();
-  console.log("zoom value", getZoomValue(viewState.zoom));
   const [isLoadingCurrentLocation, setIsLoadingCurrentLocation] =
     useState(false);
   const {
@@ -56,7 +68,7 @@ export default function PhotoMap() {
     queryKey: ["photo-by-coordinates", limit, page],
     queryFn: () =>
       MapBoxApi.getPhotoListByCoorddinate(
-        page,
+        page - 1,
         limit,
         viewState.longitude,
         viewState.latitude,
@@ -68,15 +80,8 @@ export default function PhotoMap() {
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
-      console.log(
-        "Data:",
-        data,
-        data.features[0].properties.full_address,
-        selectedLocate
-      );
-
-      setSelectedLocate({
-        ...selectedLocate,
+      setSelectedPhoto({
+        ...sel,
         address: data.features[0].properties.full_address,
       });
     },
@@ -87,31 +92,15 @@ export default function PhotoMap() {
   // Function to handle map click and get coordinates
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat; // Extract longitude and latitude
-    console.log("Longitude:", lng, "Latitude:", lat); // Log the coordinates
-    setViewState({ longitude: lng, latitude: lat, zoom: 13 });
-    // setSelectedLocate({
-    //   // Set the selectedLocate to the new coordinates
-    //   id: 0,
-    //   latitude: lat,
-    //   longitude: lng,
-    //   title: `Selected Location`,
-    //   photo_url:
-    //     "https://transcode-v2.app.engoo.com/image/fetch/f_auto,c_lfill,h_128,dpr_3/https://assets.app.engoo.com/images/46KeGlDhxPjBnsp2yMivAh.png", // Placeholder image
-    // });
+    setViewState({ longitude: lng, latitude: lat });
   };
   const handleSelectPhoto = (photo) => {
-    console.log("Selected Photo:", photo); // Log the selected photo
-
-    setSelectedLocate({
-      id: photo.id,
-      photo_id: photo.id,
-      photographer_id: photo.photographer.id,
-      title: photo.title,
-      photo_url: photo.signedUrl.thumbnail,
+    setSelectedPhoto(photo);
+    setViewState((prev) => ({
+      ...prev,
       latitude: photo.exif.latitude,
       longitude: photo.exif.longitude,
-    });
-
+    }));
     searchByCoordinate.mutate({
       longitude: photo.exif.longitude,
       latitude: photo.exif.latitude,
@@ -120,72 +109,87 @@ export default function PhotoMap() {
 
   const handleMapMove = (event) => {
     setViewState(event.viewState);
-
-    console.log("Current Zoom Level:", event); // Log the current zoom level
   };
 
   const handleMapMoveEnd = (event) => {
+    setPage(1);
     queryClient.invalidateQueries(["photo-by-coordinates"]);
-
-    console.log("map move end", event); // Log the current zoom level
   };
-  function setToCurrentLocation() {
+  const getCurrentPosition = () => {
     setIsLoadingCurrentLocation(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
-          setViewState((prev) => ({
-            ...prev,
-            latitude,
-            longitude,
-            zoom: 13,
-          }));
-          queryClient.invalidateQueries(["photo-by-coordinates"]);
+          setCurrentLocate(position.coords);
           setIsLoadingCurrentLocation(false);
         },
         (error) => {
           console.error("Error getting current location:", error);
           setIsLoadingCurrentLocation(false);
-          notificationApi(
-            "error",
-            "Lỗi",
-            "Không thể xác định vị trí hiện tại của bạn",
-            "",
-            0,
-            "get-current-location-error"
-          );
         }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
       setIsLoadingCurrentLocation(false);
       notificationApi(
-        "error",
-        "Lỗi",
-        "Trình duyệt không hỗ trợ xác định vị trí hiện tại",
+        "info",
+        "Thông báo",
+        "Vui lòng cho phép vị trí để có trải nghiệm tốt hơn",
         "",
         0,
-        "get-current-location-error"
+        "get-current-location-noti"
       );
     }
-  }
-  useEffect(() => {
-    if (selectedLocate) {
-      console.log("Selected Location:", photos?.exif, photos);
-
+  };
+  const backToCurrentLocate = () => {
+    if (currentLocate) {
       setViewState((prev) => ({
         ...prev,
-        latitude: selectedLocate.latitude,
-        longitude: selectedLocate.longitude,
+        latitude: currentLocate.latitude,
+        longitude: currentLocate.longitude,
         zoom: 13,
       }));
+      queryClient.invalidateQueries(["photo-by-coordinates"]);
+    } else {
+      notificationApi(
+        "info",
+        "Thông báo",
+        "Vui lòng cho phép vị trí để có trải nghiệm tốt hơn",
+        "",
+        0,
+        "get-current-location-noti"
+      );
     }
-  }, [selectedLocate]);
+  };
+  //Take the width and height of an image
+  const handleImageLoad = (event) => {
+    const { width, height } = event.target; // Get width and height from the loaded image
+    setSelectedPhotoRatio(height / width);
+  };
   // Get user's current location
   useEffect(() => {
-    setToCurrentLocation();
+    getCurrentPosition();
+    if (currentLocate) {
+      setViewState((prev) => ({
+        ...prev,
+        latitude: currentLocate.latitude,
+        longitude: currentLocate.longitude,
+        zoom: 13,
+      }));
+      setIsLoadingCurrentLocation(false);
+    }
   }, []);
+  useEffect(() => {
+    console.log("photos", photos);
+
+    if (isAddNewPhotoList && photos) {
+      addMultiplePhotosToList(photos.objects);
+      setIsAddNewPhotoList(false);
+    } else if (photos) {
+      setPhotoList(photos.objects);
+    }
+  }, [photos]);
+  console.table(photoList);
   return (
     <div className="relative w-full h-screen">
       {/* <ComModal
@@ -194,14 +198,14 @@ export default function PhotoMap() {
           // className={"bg-black"}
         >
           <ComSharePhoto
-            photoId={selectedLocate?.id}
-            userId={selectedLocate?.photographer_id}
+            photoId={selectedPhoto?.id}
+            userId={selectedPhoto?.photographer_id}
             onClose={popupDetail.handleClose}
           />
         </ComModal> */}
-      {popupDetail.isModalOpen && selectedLocate && (
+      {popupDetail.isModalOpen && selectedPhoto && (
         <DetailedPhotoView
-          photo={selectedLocate}
+          photo={selectedPhoto}
           onClose={() => popupDetail.handleClose()}
           listImg={photos?.objects.length > 0 ? photos.objects : []}
         />
@@ -226,13 +230,17 @@ export default function PhotoMap() {
             >
               <div
                 className="marker-btn"
-                onClick={() => handleSelectPhoto(photo)}
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default behavior (if applicable)
+                  e.stopPropagation(); // Prevent event from propagating to parent elements
+                  handleSelectPhoto(photo);
+                }}
                 style={{ cursor: "pointer" }}
               >
                 <IoLocationSharp
                   fontSize={39}
                   color={
-                    selectedLocate && selectedLocate.id === photo.id
+                    selectedPhoto && selectedPhoto.id === photo.id
                       ? "blue"
                       : "red"
                   }
@@ -240,53 +248,83 @@ export default function PhotoMap() {
               </div>
             </Marker>
           ))}
+        {currentLocate && (
+          <Marker
+            latitude={currentLocate.latitude}
+            longitude={currentLocate.longitude}
+            anchor="bottom"
+          >
+            <div className="marker-btn cursor-pointer shadow-lg">
+              <FaDotCircle
+                fontSize={
+                  viewState.zoom < 6
+                    ? 15
+                    : viewState.zoom < 12
+                    ? 20
+                    : viewState.zoom < 18
+                    ? 30
+                    : 39
+                }
+                color="#13b9f0"
+              />
+            </div>
+
+            <Popup
+              latitude={currentLocate.latitude}
+              longitude={currentLocate.longitude}
+              closeButton={false} // Optionally hide close button
+              closeOnClick={false} // Optionally keep it open when clicking outside
+              anchor="top" // Position the popup above the marker
+            >
+              <div className="text-[#13b9f0] -m-2 font-semibold">
+                <h3>Vị trí của bạn</h3>
+              </div>
+            </Popup>
+          </Marker>
+        )}
       </Map>
 
-      <div className="absolute w-full h-1/6 bottom-9 bg-white flex items-center justify-center p-4 shadow-lg bg-opacity-80">
-        <div className="flex flex-row w-full items-center">
-          {photos &&
-            photos.objects.length > 0 &&
-            photos.objects.map((photo) => (
-              <div
-                key={photo.id}
-                className={`flex h-24 w-full m-2 cursor-pointer text-black rounded-md ${
-                  photo.id === selectedLocate?.id
-                    ? "border-4 border-gray-400 transition duration-300"
-                    : ""
-                }`}
-                onClick={() => handleSelectPhoto(photo)}
-              >
-                <img
-                  className="h-full w-full rounded-sm"
-                  src={photo.signedUrl.thumbnail}
-                  alt={photo.title}
-                />
-              </div>
-            ))}
-        </div>
+      <div className="absolute w-full h-1/6 bottom-9 bg-[#36393f] flex items-center justify-center p-2 shadow-lg bg-opacity-80">
+        <PhotoListByMap
+          page={page}
+          setPage={setPage}
+          totalPage={photos?.totalPage}
+          totalRecords={photos?.totalRecords}
+          selectedPhoto={selectedPhoto}
+          setIsAddNewPhotoList={setIsAddNewPhotoList}
+          handleSelectPhoto={handleSelectPhoto}
+        />
       </div>
 
-      {selectedLocate ? (
-        <div className="absolute w-1/6 h-fit top-1/4 right-3 bg-white flex items-center justify-center p-2 shadow-lg bg-opacity-80 ">
+      {selectedPhoto && selectedPhoto.id ? (
+        <div
+          className={`absolute ${
+            selectedPhotoRatio > 1
+              ? "w-1/3 md:w-1/5 h-fit"
+              : "w-1/2 md:w-1/4 h-fit"
+          } top-20 right-3 bg-[#36393f] text-[#eee] flex items-center justify-center p-4 shadow-lg bg-opacity-80 rounded-lg`}
+        >
           <div className="flex flex-row items-center">
             <div
-              className="flex flex-col h-full m-2 cursor-pointer text-gray-600"
+              className="flex flex-col h-full cursor-pointer"
               onClick={() => {
-                console.log("Selected Location:", selectedLocate.id);
                 popupDetail.handleOpen();
               }}
             >
               <p className="font-normal text-base">
-                {selectedLocate?.title?.length > 20
-                  ? `${selectedLocate.title.substring(0, 17)}...`
-                  : selectedLocate?.title}
+                {!selectedPhotoRatio && selectedPhoto?.title?.length > 20
+                  ? `${selectedPhoto.title.substring(0, 17)}...`
+                  : selectedPhoto?.title}
               </p>
-              <p className="font-normal text-sm">{selectedLocate.address}</p>
+              <p className="font-normal text-sm mb-4">
+                {selectedPhoto.address}
+              </p>
               <div className="h-full w-full flex">
                 <img
                   className="h-full w-full"
-                  src={selectedLocate.photo_url}
-                  alt={selectedLocate.title}
+                  onLoad={handleImageLoad}
+                  src={selectedPhoto.photo_url}
+                  alt={selectedPhoto.title}
                 />
               </div>
             </div>
@@ -296,16 +334,15 @@ export default function PhotoMap() {
       <Tooltip
         title={
           isLoadingCurrentLocation
-            ? "Đang trở về vị trí hiện tại"
+            ? "Đang lấy vị trí hiện tại"
             : "Nhấn để về vị trí hiện tại"
         }
         color="red"
         placement="left"
       >
-        {" "}
         <div
           className="absolute top-4 right-3 bg-white flex items-center justify-center p-2 shadow-md rounded-lg cursor-pointer"
-          onClick={() => setToCurrentLocation()}
+          onClick={() => backToCurrentLocate()}
         >
           <div className="flex flex-row h-full text-gray-600">
             {isLoadingCurrentLocation ? (
@@ -315,7 +352,7 @@ export default function PhotoMap() {
             )}{" "}
             <a className="font-normal text-base">
               {isLoadingCurrentLocation
-                ? "Đang về vị trí hiện tại"
+                ? "Đang lấy vị trí hiện tại"
                 : "Trở về Vị trí hiện tại"}
             </a>
           </div>
