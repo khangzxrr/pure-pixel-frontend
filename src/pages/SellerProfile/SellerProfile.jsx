@@ -89,12 +89,12 @@ const SellerProfile = () => {
                 <p className="text-gray-400">{dataUser?.mail}</p>
               </div>
             </div>
-            <div className="flex space-x-4">
+            {/* <div className="flex space-x-4">
               <Share2 className="w-6 h-6" />
               <MessageCircle className="w-6 h-6" />
               <User className="w-6 h-6" />
               <MoreHorizontal className="w-6 h-6" />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
