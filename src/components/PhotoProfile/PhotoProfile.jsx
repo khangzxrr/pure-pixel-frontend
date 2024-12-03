@@ -10,6 +10,7 @@ import ViewFollowingsModal from "./ViewFollowingsModal";
 import ViewFollowersModal from "./ViewFollowersModal";
 import UserProfileApi from "../../apis/UserProfile";
 import { FormatDateTime } from "./../../utils/FormatDateTimeUtils";
+import calculateRemainingTime from "./../../utils/calculateRemainingTime";
 
 const PhotoProfile = ({ userData }) => {
   const [showFollowersModal, setFollowersShowModal] = React.useState(false);
@@ -39,6 +40,9 @@ const PhotoProfile = ({ userData }) => {
     currentUpgradedPackage?.upgradePackageHistory?.name;
 
   const expiredAt = FormatDateTime(currentUpgradedPackage.expiredAt);
+  const remainingDays = calculateRemainingTime(
+    currentUpgradedPackage.expiredAt
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
@@ -119,6 +123,7 @@ const PhotoProfile = ({ userData }) => {
               total={quotaTotal}
               nameCurrentPackage={currentUpgradedPackageName}
               expiredAt={expiredAt}
+              remainingDays={remainingDays}
             />
           ) : (
             <div>

@@ -70,7 +70,7 @@ const MyPhotoFilter = () => {
       </span>
       <div className="flex flex-col  items-center gap-2 px-2 rounded-r-md p-4">
         <div className="flex flex-col  gap-2">
-          {/* <div>
+          <div>
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-[#eee] ">
@@ -97,18 +97,10 @@ const MyPhotoFilter = () => {
                       </div>
                     </MenuItem>
                   ))}
-                  <MenuItem className="hover:cursor-pointer">
-                    <div
-                      onClick={() => handleFilterMyPhotoDate("", "")}
-                      className="block px-4 py-2 text-sm text-red-500 data-[focus]:bg-red-500 data-[focus]:text-[#eee] transition-colors duration-200 ease-in-out"
-                    >
-                      Xoá bộ lọc
-                    </div>
-                  </MenuItem>
                 </div>
               </MenuItems>
             </Menu>
-          </div> */}
+          </div>
           <div>
             <Menu as="div" className="relative inline-block text-left">
               <div>

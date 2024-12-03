@@ -17,6 +17,10 @@ import { IoPencil } from "react-icons/io5";
 import useModalStore from "../../states/UseModalStore";
 import { Tooltip } from "antd";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
+import calculateRemainingTime from "../../utils/calculateRemainingTime";
+import { FaShareAlt } from "react-icons/fa";
+import { BiShareAlt } from "react-icons/bi";
+import { notificationApi } from "../../Notification/Notification";
 
 const UserProfile = () => {
   const { setIsUpdateProfileModalVisible } = useModalStore();
@@ -29,6 +33,8 @@ const UserProfile = () => {
     queryKey: ["user-profile", userId],
     queryFn: () => UserProfileApi.getMyProfile(userId),
   });
+
+  console.log("userData", userData);
 
   const {
     data: currentUpgradedPackage,
@@ -64,6 +70,9 @@ const UserProfile = () => {
     currentUpgradedPackage?.upgradePackageHistory?.name;
 
   const expiredAt = FormatDateTime(currentUpgradedPackage.expiredAt);
+  const remainingDays = calculateRemainingTime(
+    currentUpgradedPackage.expiredAt
+  );
 
   function formatNumber(num) {
     if (num >= 1000000) {
@@ -79,6 +88,27 @@ const UserProfile = () => {
     }
     return num?.toString(); // Return the number as a string if it's less than 1000
   }
+
+  const handleShareProfile = (userId) => {
+    const customLink = `${window.location.origin}/user/${userId}`;
+    navigator.clipboard
+      .writeText(customLink)
+      .then(() => {
+        notificationApi(
+          "success",
+          "Sao chép thành công",
+          "Đã sao chép đường dẫn hồ sơ cá nhân của bạn!"
+        );
+      })
+      .catch((error) => {
+        notificationApi(
+          "error",
+          "Sao chép không thành công",
+          "Đã xảy ra lỗi khi sao chép link!"
+        );
+        console.error("Error copying link: ", error);
+      });
+  };
 
   return (
     <div className="mx-auto">
@@ -104,7 +134,7 @@ const UserProfile = () => {
 
           <div className="flex justify-between w-full   absolute top-48 left-0 right-0 backdrop-blur bg-black/50 p-4 ">
             <div className="w-1/4"></div>
-            <div className="w-1/2 flex flex-col items-center text-[#e0e0e0] font-normal">
+            <div className="w-1/2 flex flex-col items-center gap-2 text-[#e0e0e0] font-normal">
               <img
                 src={userData?.avatar} // Use profilePicture from userData
                 alt="Profile"
@@ -126,11 +156,15 @@ const UserProfile = () => {
               {currentUpgradedPackageName && (
                 <div
                   onClick={() => navigate("/upgrade")}
-                  className="hover:cursor-pointer text-[#202225] font-bold my-1 flex flex-col items-center justify-center px-4 py-1 bg-yellow-500 rounded-full"
+                  className="hover:cursor-pointer text-[#202225] font-bold my-1 flex flex-col items-center justify-center px-4 py-2 bg-yellow-500 rounded-lg"
                 >
-                  <div>Đã nâng cấp gói: {currentUpgradedPackageName}</div>
-                  <div className="text-[16px] font-normal">
-                    Ngày hết hạn: {expiredAt}
+                  <div>Nhiếp ảnh gia gói: {currentUpgradedPackageName}</div>
+                  <div className="text-[14px] font-normal">
+                    Ngày hết hạn: <span className="font-bold">{expiredAt}</span>
+                  </div>
+                  <div className="text-[14px] font-normal">
+                    Còn lại:{" "}
+                    <span className="font-bold">{remainingDays} ngày</span>
                   </div>
                 </div>
               )}
@@ -142,7 +176,7 @@ const UserProfile = () => {
                 <a href={`mailto:${userData.mail}`}> {userData.mail}</a>
               )}
               {userData.phonenumber && <p> {userData.phonenumber}</p>}
-              <div className="flex flex-col items-center gap-3 mt-3 bg-black text-white rounded-xl px-10 py-4">
+              <div className="flex flex-col items-center gap-3 text-white rounded-xl px-10 py-4">
                 <div className="flex gap-5">
                   <div className="flex items-center gap-1">
                     <div className="font-bold">
@@ -162,6 +196,12 @@ const UserProfile = () => {
                     </div>
                     <div>đang theo dõi</div>
                   </div>
+                  <div
+                    onClick={() => handleShareProfile(userData.id)}
+                    className="flex items-center p-2 hover:bg-[#eee] hover:text-[#202225] transition duration-200 rounded-full hover:cursor-pointer"
+                  >
+                    <BiShareAlt className="text-2xl" />
+                  </div>
                 </div>
                 {/* <div className="flex gap-10">
                   <FaFacebook className="w-6 h-6 hover:cursor-pointer" />
@@ -170,6 +210,7 @@ const UserProfile = () => {
                 </div> */}
               </div>
             </div>
+
             <div className="w-1/4 flex justify-end mt-16 p-3 text-[#e0e0e0]">
               <Tooltip title="Update Profile">
                 <div
