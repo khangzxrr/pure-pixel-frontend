@@ -10,13 +10,14 @@ import useModalStore from "../../states/UseModalStore";
 import { useModalState } from "../../hooks/useModalState";
 import PhotoManagementModal from "../PhotoManagementModal/PhotoManagementModal";
 
-const UpdateDropdown = ({ photo, photoListLength, page, setPage }) => {
+const UpdateDropdown = ({ photo, totalRecord, page, setPage }) => {
   const [isHovered, setIsHovered] = useState(false);
   const {
     setIsUpdatePhotoModal,
     setSelectedPhoto,
     setIsDeletePhotoConfirmModal,
     setDeletePhotoId,
+    setNumberOfRecord,
   } = useModalStore();
 
   const modal = useModalState();
@@ -47,6 +48,8 @@ const UpdateDropdown = ({ photo, photoListLength, page, setPage }) => {
       onClick: () => {
         setDeletePhotoId(photo.id);
         setIsDeletePhotoConfirmModal(true);
+        setNumberOfRecord(totalRecord);
+        console.log(totalRecord);
       },
     },
   ];

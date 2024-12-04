@@ -184,10 +184,17 @@ const deletePhotoshootPackageShowcase = async (
   );
   return response.data;
 };
-const getAllPhotoshootPackages = async (limit, page) => {
+const getAllPhotoshootPackages = async (
+  limit,
+  page,
+  orderByCreateAt
+  // orderByBookingCount
+) => {
   const params = {
     limit,
     page,
+    orderByCreateAt,
+    // orderByBookingCount,
   };
   const queryString = new URLSearchParams(params).toString();
   const url = `photographer/photoshoot-package?${queryString}`;

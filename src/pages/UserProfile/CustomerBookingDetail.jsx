@@ -75,7 +75,16 @@ const CustomerBookingDetail = () => {
         // Create a temporary <a> element to trigger the download
         const link = document.createElement("a");
         link.href = href;
-        link.download = "all_photos.zip"; // Default filename for the ZIP file
+
+        // Fallback to 'download.zip' if any of the required values are missing
+        if (
+          !bookingDetail.photoshootPackageHistory?.title ||
+          !bookingDetail.originalPhotoshootPackage?.user?.name
+        ) {
+          link.download = "Thư mục ảnh chụp của tôi.zip";
+        } else {
+          link.download = `${bookingDetail.photoshootPackageHistory?.title}-${bookingDetail.originalPhotoshootPackage?.user?.name}(Thợ chụp).zip`;
+        }
         document.body.appendChild(link);
         link.click();
 
@@ -86,14 +95,14 @@ const CustomerBookingDetail = () => {
         notificationApi(
           "success",
           "Tải ảnh thành công",
-          "Tất cả ảnh đã được tải về thành công.",
+          "Tất cả ảnh đã được tải về thành công."
         );
       } catch (error) {
         console.error("Error downloading file:", error);
         notificationApi(
           "error",
           "Lỗi khi tải ảnh",
-          "Lỗi khi tải ảnh, vui lòng thử lại sau.",
+          "Lỗi khi tải ảnh, vui lòng thử lại sau."
         );
       } finally {
         setIsDownloading(false);
@@ -104,7 +113,7 @@ const CustomerBookingDetail = () => {
       notificationApi(
         "error",
         "Lỗi khi tải ảnh",
-        "Lỗi khi tải ảnh, vui lòng thử lại sau.   ",
+        "Lỗi khi tải ảnh, vui lòng thử lại sau.   "
       );
       setIsDownloading(false);
     },
@@ -112,7 +121,7 @@ const CustomerBookingDetail = () => {
 
   // Track the current index of the selected photo
   const currentIndex = bookingDetail?.photos?.findIndex(
-    (photo) => photo?.id === selectedPhoto?.id,
+    (photo) => photo?.id === selectedPhoto?.id
   );
   // Function to go to the previous photo
   const handlePreviousPhoto = () => {
@@ -182,7 +191,7 @@ const CustomerBookingDetail = () => {
   console.log(bookingDetail.originalPhotoshootPackage.user.id);
 
   const userReview = bookingDetail.reviews.find(
-    (review) => review.userId === bookingDetail.user.id,
+    (review) => review.userId === bookingDetail.user.id
   );
   console.log(bookingDetail.user.id, bookingDetail.reviews, userReview);
   return (
@@ -207,8 +216,8 @@ const CustomerBookingDetail = () => {
                     bookingDetail.status === "ACCEPTED"
                       ? "text-blue-500"
                       : bookingDetail.status === "SUCCESSED"
-                        ? "text-green-500"
-                        : "text-yellow-500"
+                      ? "text-green-500"
+                      : "text-yellow-500"
                   } font-normal text-sm`}
                 >
                   {bookingDetail.status === "ACCEPTED" ? (

@@ -82,7 +82,7 @@ export default function UpgradePaymentModal() {
           message = "Không thể chuyển thành gói nâng cấp hiện tại.";
           break;
         default:
-          message = "Đã xảy ra lỗi không xác định.";
+          message = "Đã xảy ra lỗi, vui lòng thử lại sau.";
           break;
       }
       console.error("Error message:", message);

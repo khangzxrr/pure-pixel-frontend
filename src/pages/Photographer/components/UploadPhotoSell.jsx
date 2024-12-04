@@ -7,16 +7,18 @@ import { useMutation } from "@tanstack/react-query";
 import { message, Upload, Tooltip, Switch } from "antd";
 import { useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
-import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import ScrollingBar from "./ScrollingBar";
+// import ScrollingBar from "./ScrollingBar";
+
 import { useNavigate } from "react-router-dom";
-import "./UploadPhoto.css";
+// import "./UploadPhoto.css";
 import PhotoService from "../../../services/PhotoService";
 
 import { useNotification } from "../../../Notification/Notification";
+import useSellPhotoStore from "../../../states/UseSellPhotoState";
+import PhotoSellList from "./PhotoSellList";
 const { Dragger } = Upload;
 
-export default function CustomUpload() {
+export default function UploadPhotoSell() {
   const [isWatermarkAll, setIsWatermarkAll] = useState(true);
   const [disableUpload, setDisableUpload] = useState(false);
   const {
@@ -27,7 +29,7 @@ export default function CustomUpload() {
     toggleWatermark,
     setPhotoUploadResponse,
     clearState,
-  } = useUploadPhotoStore();
+  } = useSellPhotoStore();
 
   const navigate = useNavigate();
   const { notificationApi } = useNotification();
@@ -407,7 +409,7 @@ export default function CustomUpload() {
             </Tooltip>
           </div>
           <div className="row-span-7">
-            <ScrollingBar />
+            <PhotoSellList />
           </div>
         </div>
 

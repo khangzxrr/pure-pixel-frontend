@@ -11,13 +11,8 @@ const PhotoListByMap = ({
   setIsAddNewPhotoList,
   handleSelectPhoto,
 }) => {
-  const {
-    photoList,
-    selectedPhoto,
-    setSelectedPhoto,
-    setNextSelectedPhoto,
-    setPreviousSelectedPhoto,
-  } = usePhotoMapStore();
+  const { photoList, selectedPhoto, setPreviousSelectedPhoto } =
+    usePhotoMapStore();
 
   // Use a ref object instead of an array for photoRefs
   const photoRefs = useRef({}); // Use an object to map photo.id to the ref
@@ -40,23 +35,42 @@ const PhotoListByMap = ({
   // Handle Next Photo (Update selected photo and scroll)
   const handleNextPhoto = () => {
     console.log("Next Photo", selectedPhoto, photoList);
-    const selectedIndex = photoList.findIndex(
-      (photo) => photo.id === selectedPhoto.id
-    );
+    const selectedIndex =
+      photoList.findIndex((photo) => photo.id === selectedPhoto?.id) ?? -1;
 
     // Check if selectedPhoto is the second-to-last element in photoList
     if (selectedIndex === photoList.length - 2 && page < totalPage) {
       setPage(page + 1);
       setIsAddNewPhotoList(true);
     }
-    setNextSelectedPhoto();
+    if (photoList.length > 0 && selectedPhoto) {
+      const currentIndex = photoList.findIndex(
+        (p) => p.id === selectedPhoto.id
+      );
+      const nextIndex = (currentIndex + 1) % photoList.length;
+
+      // setSelectedPhoto(photoList[nextIndex]);
+      handleSelectPhoto(photoList[nextIndex]);
+    }
+    if (photoList.length > 0 && !selectedPhoto) {
+      handleSelectPhoto(photoList[0]);
+    }
   };
 
   // Handle Previous Photo (Update selected photo and sc  roll)
   const handlePreviousPhoto = () => {
-    setPreviousSelectedPhoto();
+    if (photoList.length > 0 && selectedPhoto) {
+      const currentIndex = photoList.findIndex(
+        (p) => p.id === selectedPhoto.id
+      );
+      const prevIndex =
+        (currentIndex - 1 + photoList.length) % photoList.length;
+      handleSelectPhoto(photoList[prevIndex]);
+    }
+    if (photoList.length > 0 && !selectedPhoto) {
+      handleSelectPhoto(photoList[0]);
+    }
   };
-
   return (
     <div className="flex flex-row w-full items-center">
       {/* Previous Button */}

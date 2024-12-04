@@ -33,7 +33,6 @@ import CameraDetail from "../components/ComCamera/CameraDetail";
 import CameraByBrand from "../components/ComCamera/CameraByBrand";
 import SellerProfile from "../pages/SellerProfile/SellerProfile";
 import ProductPhotoDetail from "../pages/ProductPhotoDetail/ProductPhotoDetail";
-import SellUpload from "../components/Upload/SellUpload";
 import NewfeedPage from "../pages/NewFeed/NewfeedPage";
 import UserProfileV2 from "../pages/UserProfile/UserProfileV2";
 import UserOther from "../components/UserOther/UserOther";
@@ -62,6 +61,7 @@ import CameraManager from "../pages/Manager/Camera/CameraManager";
 import TransactionWithdrawalManager from "../pages/Manager/TransactionWithdrawalManager/TransactionWithdrawalManager";
 import StatiticsPage from "../pages/Admin/StatiticsPage";
 import AccountManagerPage from "../pages/Admin/AccountManagerPage";
+import SellPhoto from "../pages/Photographer/SellPhoto";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -190,7 +190,7 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "sell",
-                element: <SellUpload />,
+                element: <SellPhoto />,
               },
             ],
           },

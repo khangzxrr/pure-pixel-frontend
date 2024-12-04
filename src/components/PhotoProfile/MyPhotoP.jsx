@@ -19,12 +19,10 @@ import { motion } from "framer-motion";
 import UpdateDropdown from "./UpdateDropdown";
 import { thumbnail } from "exifr";
 
-const MyPhotoP = () => {
+const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
   const { inputValue, setInputValue, setSearchResult } = UseMyPhotoFilter();
   const filterByPhotoDate = UseMyPhotoFilter(
     (state) => state.filterByPhotoDate
@@ -284,7 +282,7 @@ const MyPhotoP = () => {
                     originalPhotoUrl: photo.signedUrl.url,
                     thumbnailPhotoUrl: photo.signedUrl.thumbnail,
                   }}
-                  photoListLength={data.objects.length}
+                  totalRecord={data?.totalRecord}
                   page={page}
                   setPage={setPage}
                 />
@@ -293,7 +291,9 @@ const MyPhotoP = () => {
                     {photo.title?.length > 20
                       ? `${photo.title.substring(0, 10)}...`
                       : photo.title || "Không xác định"}
-                    <div>{photo.visibility === "PUBLIC" ? "Công khai" : "Riêng tư"} </div>
+                    <div>
+                      {photo.visibility === "PUBLIC" ? "Công khai" : "Riêng tư"}{" "}
+                    </div>
                   </div>
                 </div>
               </div>

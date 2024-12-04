@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PhotoProfile from "../components/PhotoProfile/PhotoProfile";
 import MyPhotoP from "../components/PhotoProfile/MyPhotoP";
 import UserService from "../services/Keycloak";
@@ -20,7 +20,11 @@ const MyPhotosLayout = () => {
     setIsDeletePhotoConfirmModal,
     deletePhotoId,
     setDeletePhotoId,
+    numberOfRecord,
   } = useModalStore();
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6;
+
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
   console.log(userData);
@@ -28,15 +32,21 @@ const MyPhotosLayout = () => {
   const deletePhoto = useMutation({
     mutationFn: (id) => PhotoApi.deletePhoto(id),
   });
-
   const queryClient = useQueryClient();
   const { notificationApi } = useNotification();
   const handleDeletePhoto = async () => {
     try {
       await deletePhoto.mutateAsync(deletePhotoId, {
-        onSuccess: () => {
+        onSuccess: (data) => {
           queryClient.invalidateQueries({ queryKey: ["my-photo"] });
           notificationApi("success", "Xóa ảnh thành công", "Ảnh đã được xóa.");
+
+          const updatedNumberOfRecord = numberOfRecord - 1;
+          console.log(page);
+          if (Math.ceil(updatedNumberOfRecord / itemsPerPage) < page) {
+            console.log(`move to previous page ${page - 1}`);
+            setPage(page - 1);
+          }
         },
         onError: () => {
           notificationApi(
@@ -49,13 +59,14 @@ const MyPhotosLayout = () => {
           );
         },
       });
-      setDeletePhotoId("");
-      setIsDeletePhotoConfirmModal(false);
+      setDeletePhotoId(""); // Clear the delete photo id after successful delete
+      setIsDeletePhotoConfirmModal(false); // Close the confirmation modal
     } catch (error) {
       message.error("Chưa thể xóa ảnh");
-      setIsDeletePhotoConfirmModal(false);
+      setIsDeletePhotoConfirmModal(false); // Close the confirmation modal in case of error
     }
   };
+
   return (
     <div className="flex flex-col gap-1 p-1">
       <ConfigProvider
@@ -98,7 +109,7 @@ const MyPhotosLayout = () => {
         {userData?.resource_access?.purepixel?.roles.includes(
           "photographer"
         ) ? (
-          <MyPhotoP />
+          <MyPhotoP page={page} setPage={setPage} itemsPerPage={itemsPerPage} />
         ) : (
           <div className="flex flex-col items-center justify-center h-[500px] ">
             <MdNoPhotography className="text-[100px] text-[#8b8d91]" />

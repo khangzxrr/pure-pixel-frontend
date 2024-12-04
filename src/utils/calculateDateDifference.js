@@ -2,9 +2,8 @@ export default function calculateDateDifference(inputDate) {
   const currentDate = new Date();
   const givenDate = new Date(inputDate);
   const differenceInMs = inputDate ? currentDate - givenDate : -1;
-
   if (differenceInMs < 0) {
-    return "Không xác định";
+    return "Vừa xong";
   }
   console.log("differenceInMs", differenceInMs);
   const differenceInHours = differenceInMs / (1000 * 60 * 60);
