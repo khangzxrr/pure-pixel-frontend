@@ -45,7 +45,6 @@ const user = UserService.getTokenParsed();
 const roles = user?.resource_access?.purepixel?.roles || []; // Lấy danh sách vai trò
 console.log(roles);
 
-
 const navigation = [
   ...(!roles.includes("manager")
     ? [
@@ -142,7 +141,6 @@ export default function AdminLayout({ children }) {
     return <div>Loading...</div>;
   }
 
-
   return (
     <>
       <div>
@@ -198,7 +196,7 @@ export default function AdminLayout({ children }) {
                                   item.href === activeCategory
                                     ? "bg-gray-50 text-black"
                                     : "hover:bg-gray-50  hover:text-black text-white",
-                                  "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 ",
+                                  "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 "
                                 )}
                               >
                                 <div className="flex gap-2">
@@ -216,7 +214,7 @@ export default function AdminLayout({ children }) {
                                     item.href === activeCategory
                                       ? "bg-gray-50 text-black"
                                       : "hover:bg-gray-50 hover:text-black text-white",
-                                    "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700",
+                                    "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700"
                                   )}
                                 >
                                   <ChevronRightIcon
@@ -242,7 +240,7 @@ export default function AdminLayout({ children }) {
                                           subItem.href === activeCategory
                                             ? "bg-gray-50 "
                                             : "hover:bg-gray-50 hover:text-black text-white",
-                                          "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 ",
+                                          "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 "
                                         )}
                                       >
                                         {subItem.name}
@@ -300,7 +298,7 @@ export default function AdminLayout({ children }) {
                               item.href === activeCategory
                                 ? "bg-gray-50 text-black"
                                 : "hover:bg-gray-50  hover:text-black text-white",
-                              "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 ",
+                              "block  rounded-md py-2 pl-10 pr-2 text-sm font-semibold leading-6 "
                             )}
                           >
                             <div className="flex gap-2">
@@ -318,7 +316,7 @@ export default function AdminLayout({ children }) {
                                 item.href === activeCategory
                                   ? "bg-gray-50 text-black"
                                   : "hover:bg-gray-50 hover:text-black text-white",
-                                "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700",
+                                "group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm font-semibold leading-6 text-gray-700"
                               )}
                             >
                               <ChevronRightIcon
@@ -341,7 +339,7 @@ export default function AdminLayout({ children }) {
                                       subItem.href === activeCategory
                                         ? "bg-gray-50 "
                                         : "hover:bg-gray-50 hover:text-black text-white",
-                                      "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 my-2",
+                                      "block rounded-md py-2 pl-9 pr-2 text-sm leading-6 my-2"
                                     )}
                                   >
                                     {subItem.name}
@@ -443,7 +441,6 @@ export default function AdminLayout({ children }) {
                           <button
                             href={item.href}
                             onClick={() => {
-                              navigate(`/`);
                               handleLogout();
                             }}
                             className="block w-full px-3 py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"

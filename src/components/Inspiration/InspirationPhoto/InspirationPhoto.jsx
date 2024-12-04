@@ -44,6 +44,9 @@ const InspirationPhoto = () => {
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const searchByTags = UseCategoryStore((state) => state.searchByTags);
+  const filterByIsFollowed = UseCategoryStore(
+    (state) => state.filterByIsFollowed
+  );
   const popupShare = useModalState();
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
@@ -51,7 +54,7 @@ const InspirationPhoto = () => {
     const categoryName = selectedPhotoCategory.name;
     const orderByCreatedAt = filterByPhotoDate.param;
     const orderByUpVote = filterByUpVote.param;
-
+    const isFollowed = filterByIsFollowed.param;
     const watermark = isWatermarkChecked;
     const selling = false;
     const photographerName = searchResult;
@@ -65,7 +68,12 @@ const InspirationPhoto = () => {
       watermark,
       selling,
       photographerName,
-      title
+      title,
+      null,
+      null,
+      null,
+      null,
+      isFollowed
     );
     return response;
   };
@@ -81,6 +89,7 @@ const InspirationPhoto = () => {
         isForSaleChecked,
         searchResult,
         searchByPhotoTitle,
+        filterByIsFollowed,
       ],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {
@@ -107,6 +116,13 @@ const InspirationPhoto = () => {
     setSelectedImage(photo);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center mt-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
   return (
     <>
       <ComModal
@@ -135,11 +151,6 @@ const InspirationPhoto = () => {
 
       <div className="min-h-screen">
         <div>
-          {isLoading && (
-            <div className="flex justify-center mt-4">
-              <LoadingSpinner />
-            </div>
-          )}
           {isError && (
             <div className="text-center text-red-500">Lỗi: {error.message}</div>
           )}

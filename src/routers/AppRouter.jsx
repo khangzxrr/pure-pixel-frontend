@@ -61,7 +61,11 @@ import CameraManager from "../pages/Manager/Camera/CameraManager";
 import TransactionWithdrawalManager from "../pages/Manager/TransactionWithdrawalManager/TransactionWithdrawalManager";
 import StatiticsPage from "../pages/Admin/StatiticsPage";
 import AccountManagerPage from "../pages/Admin/AccountManagerPage";
+
+import PrivateExceptionPage from "../layouts/PrivateExceptionPage";
+
 import SellPhoto from "../pages/Photographer/SellPhoto";
+
 
 export const AppRouter = createBrowserRouter([
   {
@@ -443,5 +447,9 @@ export const AppRouter = createBrowserRouter([
         element: <DetailedBlog />,
       },
     ],
+  },
+  {
+    path: "/private-exception",
+    element: <PrivateExceptionPage />,
   },
 ]);

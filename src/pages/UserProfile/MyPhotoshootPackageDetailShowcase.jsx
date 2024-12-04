@@ -13,7 +13,7 @@ const MyPhotoshootPackageDetailShowcase = ({ showcases }) => {
               <img
                 src={showcase.photoUrl}
                 alt=""
-                className="size-full object-cover"
+                className="size-full object-cover hover:scale-125 transition-all duration-300 ease-in-out"
               />
             </div>
           ))}

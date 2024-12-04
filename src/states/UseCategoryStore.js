@@ -46,6 +46,9 @@ const UseCategoryStore = create((set) => ({
   setSearchByPhotoTitle: (result) => set({ searchByPhotoTitle: result }),
   setSearchCategory: (name, param, quote, icon) =>
     set({ searchCategory: { name, param, quote, icon } }),
+  filterByIsFollowed: { name: "", param: "" },
+  setFilterByIsFollowed: (name, param) =>
+    set({ filterByIsFollowed: { name, param } }),
 }));
 
 export default UseCategoryStore;

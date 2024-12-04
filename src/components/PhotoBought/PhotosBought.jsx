@@ -56,7 +56,8 @@ const PhotosBought = () => {
     >
       <div className="flex flex-col gap-1 p-1">
         <div
-          className={`relative p-[24px] bg-[url('${myProfile?.cover}')] bg-cover bg-center`}
+          className={`relative p-[24px] bg-cover bg-center`}
+          style={{ backgroundImage: `url(${myProfile?.cover})` }}
         >
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
           <div className="relative">

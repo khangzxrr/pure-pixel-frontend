@@ -36,8 +36,8 @@ const MyPhotoshootPackageDetailInfo = ({ photoshootPackage }) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <div>Mô tả:</div>
+          <div className="flex flex-col gap-1 font-normal">
+            <div className="font-semibold">Mô tả:</div>
             {photoshootPackage.description}
           </div>
         </div>
