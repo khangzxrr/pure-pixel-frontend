@@ -20,12 +20,15 @@ export default function DetailUpgrede({ selectedUpgrede, onClose, tableRef }) {
 
   useEffect(() => {
     setValue("minOrderMonth", selectedUpgrede.minOrderMonth);
-    setValue("maxPhotoQuota", 123123123);
+    // setValue("maxPhotoQuota", 123123123);
   }, [selectedUpgrede]);
 
   const methods = useForm({
     resolver: yupResolver(Upgrade),
-    values: selectedUpgrede,
+    values: {
+      ...selectedUpgrede,
+      maxPhotoQuota: selectedUpgrede.maxPhotoQuota / 1073741824,
+    },
   });
   const {
     handleSubmit,
@@ -55,6 +58,7 @@ export default function DetailUpgrede({ selectedUpgrede, onClose, tableRef }) {
       putData("/manager/upgrade-package", selectedUpgrede.id, {
         ...data,
         status: "ENABLED",
+        maxPhotoQuota: selectedUpgrede.maxPhotoQuota * 1073741824,
       })
         .then((e) => {
           notificationApi("success", "Thành công", "Đã cập nhật thành công");

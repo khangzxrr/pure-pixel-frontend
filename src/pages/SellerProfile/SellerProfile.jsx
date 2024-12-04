@@ -9,10 +9,11 @@ import {
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import PhotographerApi from "../../apis/PhotographerApi";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ConfigProvider, Pagination } from "antd";
 import UserProfileApi from "../../apis/UserProfile";
 import { FaSearch } from "react-icons/fa";
+import DropdownSeller from "./DropdownSeller";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -44,6 +45,16 @@ const SellerProfile = () => {
       ),
     keepPreviousData: true,
   });
+
+  const queryClient = useQueryClient();
+  const callData = () => {
+
+    console.log(12321321);
+    
+    queryClient.invalidateQueries({
+      queryKey: ["my-photo-selling"],
+    });
+  };
 
   const {
     data: myProfile,
@@ -157,28 +168,36 @@ const SellerProfile = () => {
             {myPhotosSelling.map((product) => (
               <div
                 key={product.id}
-                onClick={() => {
-                  navigate(`/profile/product-photo/${product.id}`);
-                }}
-                className="rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer"
+                className="relative group hover:cursor-pointer"
               >
-                <img
-                  src={product.signedUrl.thumbnail}
-                  alt={product?.photoSellings[0]?.description}
-                  className="w-full h-[300px] object-cover pointer-events-none"
-                  draggable="false" // Ngăn người dùng kéo ảnh
-                />
-                <div className="flex items-center justify-between absolute bottom-0 left-0 right-0 backdrop-blur-md bg-black/50 p-2">
-                  <h3 className="text-lg text-[#eee] font-semibold mb-2 truncate md:max-w-[300px] max-w-[200px]">
-                    {product.title}
-                    {/* {product.photoSellings[0].description} */}
-                  </h3>
-                  <p className="text-[#eee]">
-                    Giá:{" "}
-                    {formatCurrency(
-                      product?.photoSellings[0]?.pricetags[0]?.price
-                    )}
-                  </p>
+                <div
+                  onClick={() => {
+                    navigate(`/profile/product-photo/${product.id}`);
+                  }}
+                  className="rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-100 hover:shadow-lg cursor-pointer"
+                >
+                  <img
+                    src={product.signedUrl.thumbnail}
+                    alt={product?.photoSellings[0]?.description}
+                    className="w-full h-[300px] object-cover pointer-events-none"
+                    draggable="false" // Ngăn người dùng kéo ảnh
+                  />
+                  <div className="p-4">
+                    <div className="flex justify-between">
+                      <h3 className="text-lg font-semibold mb-2">
+                        {product.title}
+                      </h3>
+                    </div>
+                    <p className="text-gray-300">
+                      Giá:{" "}
+                      {formatCurrency(
+                        product?.photoSellings[0]?.pricetags[0]?.price
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className=" ">
+                  <DropdownSeller photo={product} callData={callData} />
                 </div>
               </div>
             ))}

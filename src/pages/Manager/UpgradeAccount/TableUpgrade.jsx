@@ -69,7 +69,8 @@ export const TableUpgrade = forwardRef((props, ref) => {
       dataIndex: "maxPhotoQuota",
       key: "maxPhotoQuota",
       sorter: (a, b) => a.maxPhotoQuota - b.maxPhotoQuota,
-      ...getColumnSearchProps("maxPhotoQuota", "Dung lượng"),
+      // ...getColumnSearchProps("maxPhotoQuota", "Dung lượng"),
+      render: (descriptions) => <div>{descriptions / 1073741824}GB</div>,
     },
     {
       title: "Số lượng gói dịch vụ tối đa",
