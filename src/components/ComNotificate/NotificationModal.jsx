@@ -100,6 +100,8 @@ const NotificationModal = ({ isOpen, onClose }) => {
 
   const notificationList = data?.objects;
 
+  console.log(notificationList);
+
   return showModal ? (
     <div
       id="modal-overlay"

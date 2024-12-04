@@ -9,9 +9,10 @@ import UpdatePhotoModal from "../components/PhotoProfile/UpdatePhotoModal";
 import useModalStore from "../states/UseModalStore";
 import UpdateMapModal from "../components/PhotoProfile/UpdateMapModal";
 import { ConfigProvider, Modal } from "antd";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "../Notification/Notification";
 import PhotoApi from "../apis/PhotoApi";
+import UserProfileApi from "../apis/UserProfile";
 const MyPhotosLayout = () => {
   const {
     isUpdatePhotoModal,
@@ -27,7 +28,11 @@ const MyPhotosLayout = () => {
 
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
-  console.log(userData);
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => UserProfileApi.getMyProfile(),
+  });
 
   const deletePhoto = useMutation({
     mutationFn: (id) => PhotoApi.deletePhoto(id),
@@ -66,7 +71,6 @@ const MyPhotosLayout = () => {
       setIsDeletePhotoConfirmModal(false); // Close the confirmation modal in case of error
     }
   };
-
   return (
     <div className="flex flex-col gap-1 p-1">
       <ConfigProvider
@@ -102,8 +106,13 @@ const MyPhotosLayout = () => {
       </ConfigProvider>
 
       {/* Render Modal conditionally */}
-      <div className="p-[24px]  bg-[#292b2f]">
-        <PhotoProfile userData={userData} />
+      <div
+        className={`relative p-[24px] bg-[url('${data?.cover}')] bg-cover bg-center `}
+      >
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div className="relative">
+          <PhotoProfile userData={userData} />
+        </div>
       </div>
       <div>
         {userData?.resource_access?.purepixel?.roles.includes(

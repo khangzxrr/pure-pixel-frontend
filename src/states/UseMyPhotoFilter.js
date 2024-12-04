@@ -7,7 +7,7 @@ const UseMyPhotoFilter = create((set) => ({
   searchResult: "",
   setSearchResult: (result) => set({ searchResult: result }),
 
-  filterByPhotoDate: { name: "", param: "" },
+  filterByPhotoDate: { name: "Mới nhất", param: "desc" },
   setFilterByPhotoDate: (name, param) =>
     set({ filterByPhotoDate: { name, param } }),
 

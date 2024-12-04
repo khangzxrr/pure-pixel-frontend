@@ -28,7 +28,9 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
     (state) => state.filterByPhotoDate
   );
   const searchResult = UseMyPhotoFilter((state) => state.searchResult);
-  const orderByCreatedAt = "desc";
+  const orderByCreatedAt = UseMyPhotoFilter(
+    (state) => state.filterByPhotoDate.param
+  );
   const setFilterByPhotoDate = UseMyPhotoFilter(
     (state) => state.setFilterByPhotoDate
   );
@@ -94,10 +96,11 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
 
   const handleSearch = () => {
     setSearchResult(inputValue);
+    setPage(1);
   };
 
   const handleResetFilter = () => {
-    setFilterByPhotoDate("", "");
+    setFilterByPhotoDate("Mới nhất", "desc");
     setFilterByUpVote("", "");
     setIsWatermarkChecked(false);
     setIsForSaleChecked(false);
@@ -181,10 +184,10 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
           {filterByPhotoDate.param && (
             <div className="flex items-center gap-1 py-1 px-3 font-normal rounded-md border">
               <MdDateRange /> {filterByPhotoDate.name}
-              <IoCloseCircleOutline
+              {/* <IoCloseCircleOutline
                 className="text-xl hover:cursor-pointer hover:text-red-500"
                 onClick={() => setFilterByPhotoDate("", "")}
-              />
+              /> */}
             </div>
           )}
           {filterByUpVote.param && (
@@ -198,7 +201,7 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
           )}
           {(isForSaleChecked ||
             isWatermarkChecked ||
-            filterByPhotoDate.param ||
+            // filterByPhotoDate.param ||
             filterByUpVote.param) && (
             <div
               className="hover:cursor-pointer flex items-center gap-2 font-normal px-3 py-1 rounded-md border border-red-500 text-red-500"

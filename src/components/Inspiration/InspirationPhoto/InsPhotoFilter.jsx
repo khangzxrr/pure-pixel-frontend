@@ -2,6 +2,7 @@ import React from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import UseCategoryStore from "../../../states/UseCategoryStore";
+import { IoCaretDownCircleOutline } from "react-icons/io5";
 const InsPhotoFilter = () => {
   const {
     isWatermarkChecked,
@@ -75,7 +76,7 @@ const InsPhotoFilter = () => {
                 Ngày đăng:
               </span>{" "}
               <div className="text-[16px]">{filterByPhotoDate.name || ""}</div>
-              <IoMdArrowDropdown />
+              <IoCaretDownCircleOutline className="text-lg" />
             </MenuButton>
           </div>
 
@@ -118,7 +119,7 @@ const InsPhotoFilter = () => {
                 Lượt bình chọn:
               </span>{" "}
               <div className="text-[16px]">{filterByUpVote.name || ""}</div>
-              <IoMdArrowDropdown />
+              <IoCaretDownCircleOutline className="text-lg" />
             </MenuButton>
           </div>
 
