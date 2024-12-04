@@ -19,17 +19,20 @@ import "dayjs/locale/vi";
 import "./BookingDetail.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import PhotoShootApi from "../../../apis/PhotoShootApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import { notificationApi } from "../../../Notification/Notification";
 import ReviewBooking from "../../../pages/UserProfile/Component/ReviewBooking";
 import calculateDateDifference from "../../../utils/calculateDateDifference";
+import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
 
 const { RangePicker } = DatePicker; // Destructure RangePicker from DatePicker
 dayjs.locale("vi");
 
 const BookingDetailInfo = ({ bookingDetail }) => {
+  const { bookingId } = useParams();
   const [isEdit, setIsEdit] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const enableUpdate = bookingDetail.status === "ACCEPTED";
@@ -83,7 +86,65 @@ const BookingDetailInfo = ({ bookingDetail }) => {
       description: data.description,
     });
   };
+  const downloadPhoto = useMutation({
+    mutationFn: (bookingId) => CustomerBookingApi.downloadAllPhoto(bookingId),
+    onSuccess: async (data) => {
+      console.log(data);
+      try {
+        // Create a URL for the Blob
+        const href = URL.createObjectURL(data);
 
+        // Create a temporary <a> element to trigger the download
+        const link = document.createElement("a");
+        link.href = href;
+
+        // Fallback to 'download.zip' if any of the required values are missing
+        if (
+          !bookingDetail.photoshootPackageHistory.title ||
+          !bookingDetail.user.name
+        ) {
+          link.download = "Thư mục ảnh chụp khách.zip";
+        } else {
+          link.download = `${bookingDetail.photoshootPackageHistory.title}-${bookingDetail.user.name}(Khách).zip`;
+        }
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
+
+        notificationApi(
+          "success",
+          "Tải ảnh thành công",
+          "Tất cả ảnh đã được tải về thành công."
+        );
+      } catch (error) {
+        console.error("Error downloading file:", error);
+        notificationApi(
+          "error",
+          "Lỗi khi tải ảnh",
+          "Lỗi khi tải ảnh, vui lòng thử lại sau."
+        );
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    onError: (error) => {
+      console.error("Error:", error);
+      notificationApi(
+        "error",
+        "Lỗi khi tải ảnh",
+        "Lỗi khi tải ảnh, vui lòng thử lại sau.   "
+      );
+      setIsDownloading(false);
+    },
+  });
+  //Download all Photo
+  const downloadAllPhoto = () => {
+    setIsDownloading(true);
+    downloadPhoto.mutate(bookingId); // bookingId is passed to mutationFn
+  };
   return (
     <div className="flex flex-col gap-1  w-full">
       <div className="flex flex-col gap-2 m-2 bg-[#2d2f34] rounded-lg">
@@ -108,11 +169,26 @@ const BookingDetailInfo = ({ bookingDetail }) => {
                   : "text-yellow-500"
               } font-normal text-sm text-blue-500`}
             >
-              {bookingDetail.status === "ACCEPTED"
-                ? "Đang thực hiện"
-                : bookingDetail.status === "SUCCESSED"
-                ? "Đã hoàn thành"
-                : "Chờ xác nhận"}{" "}
+              {bookingDetail.status === "ACCEPTED" ? (
+                "Đang thực hiện"
+              ) : bookingDetail.status === "SUCCESSED" ? (
+                isDownloading ? (
+                  <p className="flex items-center gap-1 text-yellow-500">
+                    Ảnh đang được tải về...
+                  </p>
+                ) : (
+                  <Tooltip title="Nhấn để tải tất cả ảnh về" color="green">
+                    <p
+                      onClick={downloadAllPhoto} // Trigger the mutation function
+                      className="flex items-center gap-1 cursor-pointer bg-green-500 text-[#fff] px-2 py-1 rounded-md hover:opacity-80"
+                    >
+                      <span>Nhấn để tải ảnh</span>
+                    </p>
+                  </Tooltip>
+                )
+              ) : (
+                "Chờ xác nhận"
+              )}{" "}
             </div>
           </div>
           <div className="underline underline-offset-2">

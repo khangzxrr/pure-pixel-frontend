@@ -43,6 +43,7 @@ export default function BookingModal({ photoPackage, onClose }) {
         "Vui lòng kiểm tra trạng thái trong mục lịch hẹn của bạn."
       );
       navigate("/profile/customer-booking");
+      onClose(); // Close the modal
     },
     onError: (error) => {
       let errorMessage = "Đã có lỗi xảy ra";
@@ -88,7 +89,6 @@ export default function BookingModal({ photoPackage, onClose }) {
     } else {
       console.log("Date range is not properly selected.");
     }
-    onClose(); // Close the modal
   };
 
   const handleCancel = () => {

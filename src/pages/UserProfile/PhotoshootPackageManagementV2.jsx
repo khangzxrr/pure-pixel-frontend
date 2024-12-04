@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import PhotoshootPackageCard from "../../components/Booking/BookingPackageCard";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ConfigProvider, Modal } from "antd";
 import CreatePhotoshootPackage from "./CreatePhotoshootPackage";
 import { useModalState } from "../../hooks/useModalState";
 import ComButton from "../../components/ComButton/ComButton";
 import MyPhotoshootPackageCard from "./MyPhotoshootPackageCard";
-import upgradePackageApi from "../../apis/upgradePackageApi";
-import UserProfile from "./UserProfile";
 import UserProfileApi from "../../apis/UserProfile";
 import useModalStore from "../../states/UseModalStore";
 import UpdatePhotoshootPackage from "./UpdatePhotoshootPackage";
@@ -24,6 +21,8 @@ const PhotoshootPackageManagementV2 = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const itemsPerPage = 8;
+  const [orderByCreateAt, setOrderByCreateAt] = useState("desc");
+  const [orderByBookingCount, setOrderByBookingCount] = useState("desc");
   const { data: currentPackage } = useQuery({
     queryKey: "me",
     queryFn: async () => await UserProfileApi.getMyProfile(),
@@ -31,11 +30,22 @@ const PhotoshootPackageManagementV2 = () => {
   console.log(currentPackage && currentPackage);
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["findAllPhotoshootPackages", page],
+    queryKey: [
+      "findAllPhotoshootPackages",
+      page,
+      orderByCreateAt,
+      orderByBookingCount,
+    ],
     queryFn: () =>
-      PhotoshootPackageApi.getAllPhotoshootPackages(itemsPerPage, page - 1),
+      PhotoshootPackageApi.getAllPhotoshootPackages(
+        itemsPerPage,
+        page - 1,
+        orderByCreateAt,
+        orderByBookingCount
+      ),
     keepPreviousData: true,
   });
+  console.table(data?.objects);
   const usedPackage = (data && data.totalRecord) || 0;
   const listPhotoshootPackages = data?.objects || [];
   const maxPackageCount = currentPackage

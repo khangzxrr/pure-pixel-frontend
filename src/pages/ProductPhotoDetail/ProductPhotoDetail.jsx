@@ -16,6 +16,7 @@ import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore"
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import UseUserProfileStore from "../../states/UseUserProfileStore";
 import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
+import { notificationApi } from "../../Notification/Notification";
 function calculateTimeFromNow(dateString) {
   const startDate = new Date(dateString);
   const now = new Date();
@@ -210,10 +211,10 @@ const ProductPhotoDetail = () => {
   const allDetails = Object?.entries(data?.exif || {});
   const mainDetails = allDetails?.slice(0, 4);
   const extraDetails = allDetails?.slice(4);
-console.log('====================================');
-console.log(444, mainDetails);
-console.log(123, extraDetails);
-console.log('====================================');
+  console.log("====================================");
+  console.log(444, mainDetails);
+  console.log(123, extraDetails);
+  console.log("====================================");
   const photoSelling =
     data.photoSellings && data.photoSellings.length > 0
       ? data.photoSellings[0]
@@ -251,7 +252,6 @@ console.log('====================================');
             );
             setQrCodeUrl(response.mockQrCode);
             setPaymentStatus("PENDING");
-
           } else if (paymentMethod === "WALLET") {
             modal?.handleClose();
             // message.success("Thanh toán bằng ví thành công!");
@@ -275,9 +275,10 @@ console.log('====================================');
         .catch((error) => {
           console.error("Lỗi khi mua ngay:", error);
           console.error("Lỗi khi mua ngay:", error?.data?.message);
+          let message = "";
           switch (error?.data?.message) {
             case "ExistSuccessedPhotoBuyException":
-              message.error("Bạn đã mua hình ảnh này rồi");
+              message = "Bạn đã mua hình ảnh này rồi";
               // Cập nhật trạng thái pricetag
               setPricetagStatus((prevStatus) => {
                 const newStatus = { ...prevStatus };
@@ -291,15 +292,16 @@ console.log('====================================');
               setPurchasedImageUrl(data.signedUrl.url);
               break;
             case "CannotBuyOwnedPhotoException":
-              message.error("Bạn không thể mua ảnh của chính mình");
+              message = "Bạn không thể mua ảnh của chính mình";
               break;
             case "NotEnoughBalanceException":
-              message.error("Số dư của bạn không đủ.Vui lòng nạp thêm tiền");
+              message = "Số dư của bạn không đủ.Vui lòng nạp thêm tiền";
               break;
             default:
-              message.error("Đã có lỗi vui lòng thử lại");
+              message = "Đã có lỗi vui lòng thử lại";
               break;
           }
+          notificationApi("error", "Mua ảnh thất bại", message);
         });
     } else {
       console.error("Thiếu thông tin để mua hàng.");
@@ -530,7 +532,7 @@ console.log('====================================');
                 {isExpanded &&
                   extraDetails.map(([key, value], index) => (
                     <>
-                      {typeof value === 'string' && value  && (
+                      {typeof value === "string" && value && (
                         <div
                           className="flex justify-between items-start border-b border-[#ffffff3d]"
                           key={index}
