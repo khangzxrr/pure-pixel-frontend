@@ -142,14 +142,21 @@ export default function PhotoMap() {
     }
   };
   const backToCurrentLocate = () => {
+    // console.log("currentLocate", currentLocate, viewState);
+    if (
+      currentLocate.latitude === viewState.latitude &&
+      currentLocate.longitude === viewState.longitude
+    )
+      return;
     if (currentLocate) {
+      queryClient.invalidateQueries(["photo-by-coordinates"]);
       setViewState((prev) => ({
         ...prev,
         latitude: currentLocate.latitude,
         longitude: currentLocate.longitude,
         zoom: 13,
       }));
-      queryClient.invalidateQueries(["photo-by-coordinates"]);
+      setPage(1);
     } else {
       notificationApi(
         "info",
@@ -161,6 +168,8 @@ export default function PhotoMap() {
       );
     }
   };
+  console.log("currentLocate", currentLocate, viewState);
+
   //Take the width and height of an image
   const handleImageLoad = (event) => {
     const { width, height } = event.target; // Get width and height from the loaded image
@@ -255,18 +264,7 @@ export default function PhotoMap() {
             anchor="bottom"
           >
             <div className="marker-btn cursor-pointer shadow-lg">
-              <FaDotCircle
-                fontSize={
-                  viewState.zoom < 6
-                    ? 15
-                    : viewState.zoom < 12
-                    ? 20
-                    : viewState.zoom < 18
-                    ? 30
-                    : 39
-                }
-                color="#13b9f0"
-              />
+              <FaDotCircle fontSize={viewState.zoom * 2} color="#13b9f0" />
             </div>
 
             <Popup
@@ -276,7 +274,7 @@ export default function PhotoMap() {
               closeOnClick={false} // Optionally keep it open when clicking outside
               anchor="top" // Position the popup above the marker
             >
-              <div className="text-[#13b9f0] -m-2 font-semibold">
+              <div className="text-[#7cc2d9] -m-2 font-semibold">
                 <h3>Vị trí của bạn</h3>
               </div>
             </Popup>
