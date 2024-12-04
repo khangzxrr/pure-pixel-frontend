@@ -18,6 +18,8 @@ const useModalStore = create(
       set({ isDeletePhotoConfirmModal: value }),
     deletePhotoId: "",
     setDeletePhotoId: (id) => set({ deletePhotoId: id }),
+    numberOfRecord: 0,
+    setNumberOfRecord: (num) => set({ numberOfRecord: num }),
     // State and setter for "Upgrade Package QR" modal visibility
     isUpgradePackageQRModal: false,
     setIsUpgradePackageQRModal: (value) =>
