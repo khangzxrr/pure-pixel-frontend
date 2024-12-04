@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import DropdownSeller from "./DropdownSeller";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -23,7 +24,7 @@ const SellerProfile = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const callData = () => {
     if (id) {
       getData(`/photographer/${id}/profile`)
         .then((data) => {
@@ -32,7 +33,9 @@ const SellerProfile = () => {
         .catch((error) => {
           console.log(error);
         });
-      getData(`photo/public?limit=10&page=0&photographerId=${id}&selling=true`)
+      getData(
+        `photo/public?limit=1000&page=0&photographerId=${id}&selling=true`
+      )
         .then((data) => {
           setProducts(data?.data?.objects);
           console.log(1234, data);
@@ -50,7 +53,7 @@ const SellerProfile = () => {
           console.log(error);
         });
       getData(
-        `photographer/me/photo?limit=10&page=0&selling=true&orderByUpdatedAt=desc`
+        `photographer/me/photo?limit=1000&page=0&selling=true&orderByUpdatedAt=desc`
       )
         .then((data) => {
           setProducts(data?.data?.objects);
@@ -60,6 +63,10 @@ const SellerProfile = () => {
           console.log(error);
         });
     }
+  };
+
+  useEffect(() => {
+    callData();
   }, [id]);
   return (
     <div className=" min-h-screen">
@@ -105,28 +112,36 @@ const SellerProfile = () => {
           {products.map((product) => (
             <div
               key={product.id}
-              onClick={() => {
-                navigate(`/profile/product-photo/${product.id}`);
-              }}
-              className="rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg cursor-pointer"
+              className="relative group hover:cursor-pointer"
             >
-              <img
-                src={product.signedUrl.thumbnail}
-                alt={product?.photoSellings[0]?.description}
-                className="w-full h-[300px] object-cover pointer-events-none"
-                draggable="false" // Ngăn người dùng kéo ảnh
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2">
-                  {product.title}
-                  {/* {product.photoSellings[0].description} */}
-                </h3>
-                <p className="text-gray-300">
-                  Giá:{" "}
-                  {formatCurrency(
-                    product?.photoSellings[0]?.pricetags[0]?.price
-                  )}
-                </p>
+              <div
+                onClick={() => {
+                  navigate(`/profile/product-photo/${product.id}`);
+                }}
+                className="rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-100 hover:shadow-lg cursor-pointer"
+              >
+                <img
+                  src={product.signedUrl.thumbnail}
+                  alt={product?.photoSellings[0]?.description}
+                  className="w-full h-[300px] object-cover pointer-events-none"
+                  draggable="false" // Ngăn người dùng kéo ảnh
+                />
+                <div className="p-4">
+                  <div className="flex justify-between">
+                    <h3 className="text-lg font-semibold mb-2">
+                      {product.title}
+                    </h3>
+                  </div>
+                  <p className="text-gray-300">
+                    Giá:{" "}
+                    {formatCurrency(
+                      product?.photoSellings[0]?.pricetags[0]?.price
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className=" ">
+                <DropdownSeller photo={product} callData={callData} />
               </div>
             </div>
           ))}

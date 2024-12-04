@@ -7,7 +7,7 @@ import ComInput from "./../../../components/ComInput/ComInput";
 import ComSelect from "../../../components/ComInput/ComSelect";
 import { MonyNumber } from "./../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
-import {  putData } from "../../../apis/api";
+import { putData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
 import ComTextArea from "../../../components/ComInput/ComTextArea";
 
@@ -20,12 +20,15 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
 
   useEffect(() => {
     setValue("minOrderMonth", selectedUpgrede.minOrderMonth);
-    setValue("maxPhotoQuota", 123123123);
+    setValue("maxPhotoQuota", selectedUpgrede.maxPhotoQuota / 1073741824);
   }, [selectedUpgrede]);
 
   const methods = useForm({
     resolver: yupResolver(Upgrade),
-    values: selectedUpgrede,
+    values: {
+      ...selectedUpgrede,
+      maxPhotoQuota: selectedUpgrede.maxPhotoQuota / 1073741824,
+    },
   });
   const {
     handleSubmit,
@@ -54,6 +57,8 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
     if (change !== null) {
       putData("/manager/upgrade-package", selectedUpgrede.id, {
         ...data,
+        maxPhotoQuota: data.maxPhotoQuota * 1073741824,
+
         status: "ENABLED",
       })
         .then((e) => {
@@ -150,8 +155,8 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
                   <div className="mt-2.5">
                     <ComInput
                       type={"numbers"}
-                      label={"maxPhotoQuota"}
-                      placeholder={"Vui lòng nhập maxPhotoQuota"}
+                      label={"Dung lượng upload tối da(GB)"}
+                      placeholder={"Vui lòng nhập dung lượng upload tối da"}
                       {...register("maxPhotoQuota")}
                       required
                     />
