@@ -49,6 +49,14 @@ const ListPhotographers = () => {
       .flatMap((page) => page.objects)
       .filter((photographer) => photographer.id !== userId) || [];
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center col-span-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
     <div id="" className="flex flex-col px-2 py-1 h-screen">
       {/* <div className="text-center my-2">
@@ -71,11 +79,6 @@ const ListPhotographers = () => {
         scrollableTarget="inspiration"
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  gap-6 py-3 "
       >
-        {isLoading && (
-          <div className="flex justify-center col-span-4">
-            <LoadingSpinner />
-          </div>
-        )}
         {isError && <div>{error.message}</div>}
         {!isLoading && !isError && photographers.length > 0 ? (
           photographers.map((photographer) => (

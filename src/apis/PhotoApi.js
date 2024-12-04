@@ -23,7 +23,8 @@ const getPublicPhotos = async (
   photographerId,
   cameraId,
   bookmarked,
-  tags, // Thêm tags vào danh sách tham số
+  tags,
+  isFollowed
 ) => {
   // Tạo một đối tượng chứa các tham số cơ bản
   const params = {
@@ -61,7 +62,9 @@ const getPublicPhotos = async (
   if (bookmarked !== undefined && bookmarked !== null) {
     params.bookmarked = bookmarked;
   }
-
+  if (isFollowed !== undefined && isFollowed !== null && isFollowed !== "") {
+    params.isFollowed = isFollowed;
+  }
   // Tạo instance URLSearchParams
   const queryString = new URLSearchParams(params);
 
@@ -127,7 +130,7 @@ const getPhotoById = async (id) => {
 
 const getNextPublicById = async (id) => {
   const response = await http.get(
-    `photo/public/next?cursor=${id}&forward=true`,
+    `photo/public/next?cursor=${id}&forward=true`
   );
 
   return response.data;
@@ -135,7 +138,7 @@ const getNextPublicById = async (id) => {
 
 const getPreviousPublicById = async (id) => {
   const response = await http.get(
-    `photo/public/next?cursor=${id}&forward=false`,
+    `photo/public/next?cursor=${id}&forward=false`
   );
 
   return response.data;

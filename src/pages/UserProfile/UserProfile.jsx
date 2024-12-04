@@ -34,8 +34,6 @@ const UserProfile = () => {
     queryFn: () => UserProfileApi.getMyProfile(userId),
   });
 
-  console.log("userData", userData);
-
   const {
     data: currentUpgradedPackage,
     isLoading: isCurrentUpgradedPackageLoading,
@@ -153,7 +151,7 @@ const UserProfile = () => {
                   ""
                 )}
               </p>
-              {currentUpgradedPackageName && (
+              {currentUpgradedPackageName ? (
                 <div
                   onClick={() => navigate("/upgrade")}
                   className="hover:cursor-pointer text-[#202225] font-bold my-1 flex flex-col items-center justify-center px-4 py-2 bg-yellow-500 rounded-lg"
@@ -166,6 +164,13 @@ const UserProfile = () => {
                     Còn lại:{" "}
                     <span className="font-bold">{remainingDays} ngày</span>
                   </div>
+                </div>
+              ) : (
+                <div
+                  onClick={() => navigate("/upgrade")}
+                  className="px-4 py-2 bg-[#eee] text-[#202225] rounded-lg hover:cursor-pointer hover:bg-[#a8a8a8] transition duration-200"
+                >
+                  <div className="font-bold">Nâng cấp thành nhiếp ảnh gia</div>
                 </div>
               )}
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
-import { IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowUp, IoIosCamera } from "react-icons/io";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import UserApi from "../apis/UserApi";
@@ -96,8 +96,8 @@ const SidebarLayout = ({
                     {data?.name}
                   </div>
                   {isPhotographer && (
-                    <div className="absolute -bottom-1 left-5 text-[10px] px-1   bg-yellow-500 rounded-lg  text-[#202225]">
-                      NAG
+                    <div className="absolute -bottom-[2px] left-6 text-[10px] p-[2px]   bg-yellow-500 rounded-full  text-[#202225]">
+                      <IoIosCamera className="text-[14px]" />
                     </div>
                   )}
                 </div>

@@ -100,11 +100,18 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const [isOriginalPhotoLoaded, setIsOriginalPhotoLoaded] = useState(false);
   const [isThumbnailPhotoLoaded, setIsThumbnailPhotoLoaded] = useState(false);
 
-  const { data, isPending, error } = useQuery({
+  const { data, isPending, error, isError, isLoading } = useQuery({
     queryKey: ["getPhotoDetail", currentPhoto.id],
     queryFn: () => PhotoApi.getPhotoById(currentPhoto.id),
     enabled: !!currentPhoto?.id,
+    retry: 1,
   });
+
+  useEffect(() => {
+    if (error && error.response?.data?.message.includes("PrivatedException")) {
+      navigate("/private-exception");
+    }
+  }, [isError, error]);
 
   const { data: previousPhotoData } = useQuery({
     queryKey: ["getPreviousPhoto", currentPhoto.id],
@@ -218,11 +225,8 @@ export default function DetailedPhotoView({ onClose, photo }) {
     setIsOpenLoginModal(false);
   };
 
-  console.log('====================================');
-  console.log(123, error);
-  console.log('====================================');
   return (
-    <>
+    <div className={isPending ? "hidden" : "block"}>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
         <ComModal
           isOpen={popupShare.isModalOpen}
@@ -568,6 +572,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
           reportType={"PHOTO"}
         />
       )}
-    </>
+    </div>
   );
 }

@@ -104,7 +104,10 @@ const MyPhotosLayout = () => {
 
       {/* Render Modal conditionally */}
       <div
-        className={`relative p-[24px] bg-[url('${data?.cover}')] bg-cover bg-center `}
+        className={`relative p-[24px]  bg-cover bg-center `}
+        style={{
+          backgroundImage: `url('${data?.cover}')`,
+        }}
       >
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
         <div className="relative">
