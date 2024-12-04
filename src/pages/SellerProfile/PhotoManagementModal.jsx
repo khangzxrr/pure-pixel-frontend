@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { getData, postData } from "../../apis/api";
+import { getData, postData, putData } from "../../apis/api";
 import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function PhotoManagementModal({ close, id, data }) {
+export default function PhotoManagementModal({ close, id, data, callData }) {
   const queryClient = useQueryClient();
   const [photoInfo, setPhotoInfo] = useState({
     title: data.title || " ",
@@ -31,15 +31,30 @@ export default function PhotoManagementModal({ close, id, data }) {
   useEffect(() => {
     getData(`/photo/${id}/available-resolution`).then((resolutions) => {
       const sizeArray = resolutions.data || resolutions;
-      const updatedSizes = sizeArray.map((item) => ({
-        ...item,
-        selected: false,
-        price: "",
-      }));
+
+      console.log(1111, data?.photoSellings[0].pricetags);
+
+      const updatedSizes = sizeArray.map((item) => {
+        // Kiểm tra xem kích thước của item có trong pricetags hay không
+        const matchedPricetag = data?.photoSellings[0].pricetags.find(
+          (pricetag) =>
+            pricetag.width === item.width && pricetag.height === item.height
+        );
+
+        // Nếu có giá tương ứng, gán giá và set selected = true, nếu không thì để giá rỗng và selected = false
+        return {
+          ...item,
+          price: matchedPricetag ? matchedPricetag.price : "",
+          selected: matchedPricetag ? true : false,
+        };
+      });
       setSizes(updatedSizes);
     });
   }, []);
 
+  console.log("====================================");
+  console.log(1111, data?.photoSellings[0].pricetags);
+  console.log("====================================");
   // const handlePriceChange = (index, value) => {
   //   const newSizes = sizes.map((size, i) => ({
   //     ...size,
@@ -94,7 +109,7 @@ export default function PhotoManagementModal({ close, id, data }) {
       price: parseFloat(size.price),
     }));
 
-    postData(`/photo/${id}/sell`, {
+    putData(`/photo`, `${id}/sell`, {
       title: photoInfo.title,
       description: photoInfo.description,
       pricetags: pricetags,
@@ -103,6 +118,7 @@ export default function PhotoManagementModal({ close, id, data }) {
         console.log("Upload thành công:", response);
         message.success("Đã lưu thông tin thành công!");
         queryClient.invalidateQueries({ queryKey: ["my-photo"] });
+        callData();
         close();
       })
       .catch((error) => {

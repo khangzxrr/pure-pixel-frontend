@@ -11,7 +11,7 @@ import PhotographerNav from "../Photographer/PhotographerList/PhotographerNav";
 import SellingPhotoNav from "../SellingPhoto/SellingPhotoNav";
 import UserApi from "../../apis/UserApi";
 import { useQuery } from "@tanstack/react-query";
-import { IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowUp, IoIosCamera } from "react-icons/io";
 import CameraNav from "../ComCamera/CameraNav";
 import PhotoshootPackageNav from "../Booking/PhotoshootPackageNav";
 import { RiLogoutBoxLine } from "react-icons/ri";
@@ -124,8 +124,8 @@ const Explore = () => {
                     {data?.name}
                   </div>
                   {isPhotographer && (
-                    <div className="absolute -bottom-1 left-5 text-[10px] px-1   bg-yellow-500 rounded-lg  text-[#202225]">
-                      NAG
+                    <div className="absolute -bottom-[2px] left-6 text-[10px] p-[2px]   bg-yellow-500 rounded-full  text-[#202225]">
+                      <IoIosCamera className="text-[14px]" />
                     </div>
                   )}
                 </div>

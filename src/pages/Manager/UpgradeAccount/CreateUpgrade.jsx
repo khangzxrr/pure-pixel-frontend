@@ -50,6 +50,8 @@ export default function CreateUpgrade({ onClose, tableRef }) {
     if (change !== null) {
       postData("/manager/upgrade-package", {
         ...data,
+        maxPhotoQuota: data.maxPhotoQuota * 1073741824,
+
         status: "ENABLED",
       })
         .then((e) => {
@@ -153,7 +155,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                       type={"numbers"}
                       // defaultValue={1000}
                       // min={11}
-                      label={"Dung lượng upload tối da"}
+                      label={"Dung lượng upload tối da(GB)"}
                       placeholder={"Vui lòng nhập dung lượng upload tối da"}
                       {...register("maxPhotoQuota")}
                       required
