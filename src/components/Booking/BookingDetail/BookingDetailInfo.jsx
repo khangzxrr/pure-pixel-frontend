@@ -26,10 +26,12 @@ import ReviewBooking from "../../../pages/UserProfile/Component/ReviewBooking";
 import calculateDateDifference from "../../../utils/calculateDateDifference";
 import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
 import Countdown from "react-countdown";
+import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
 dayjs.locale("vi");
 
 const BookingDetailInfo = ({ bookingDetail }) => {
   const { bookingId } = useParams();
+  const { photoArray } = useBookingPhotoStore();
   const [isEdit, setIsEdit] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const queryClient = useQueryClient();
@@ -65,7 +67,7 @@ const BookingDetailInfo = ({ bookingDetail }) => {
     },
   });
   const handleOnConfirm = () => {
-    if (bookingDetail.photos.length > 0) {
+    if (photoArray.some((photo) => photo.status === "done")) {
       setBookingPaidMutation.mutate();
     } else {
       notificationApi(
@@ -176,7 +178,13 @@ const BookingDetailInfo = ({ bookingDetail }) => {
       // Render a countdown
       return (
         <span>
-          {days} ngày
+          {days > 1
+            ? `Còn ${days} ngày`
+            : hours > 1
+            ? `Còn ${hours} giờ`
+            : minutes > 1
+            ? `Còn ${minutes} phút`
+            : "Sắp hết hạn"}
           {/* -{hours} giờ-{minutes} phút */}
         </span>
       );
@@ -196,8 +204,7 @@ const BookingDetailInfo = ({ bookingDetail }) => {
           {bookingDetail.status === "SUCCESSED" && (
             <div className="font-normal text-center">
               <p className=" p-2 rounded-md bg-[#3f4143]">
-                Các ảnh sẽ tự động xóa vào : {FormatDateTime(expiredAt)} (Còn
-                lại{" "}
+                Các ảnh sẽ tự động xóa vào : {FormatDateTime(expiredAt)} (
                 <span>
                   <Countdown
                     date={Date.now() + countTimeToDownload}

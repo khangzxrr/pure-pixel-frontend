@@ -51,8 +51,7 @@ export default function BookingModal({ photoPackage, onClose }) {
       // Use a switch statement to handle specific error messages
       switch (error.response?.data?.message) {
         case "CannotBookOwnedPhotoshootPackageException":
-          errorMessage =
-            "Bạn không thể đặt lịch cho gói chụp ảnh do mình đã đặt.";
+          errorMessage = "Bạn không thể đặt lịch gói chụp ảnh của chính mình.";
           break;
         case "ExistBookingWithSelectedDateException":
           errorMessage = "Bạn đã có gói chụp cho khoảng thời gian này.";
