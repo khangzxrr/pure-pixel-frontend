@@ -1,5 +1,5 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { message, Upload } from "antd";
 
 import PhotoService from "../../../services/PhotoService";
@@ -8,6 +8,8 @@ import { useNotification } from "../../../Notification/Notification";
 import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
 import PhotoShootApi from "../../../apis/PhotoShootApi";
 import BookingPhotoList from "./BookingPhotoList";
+import UploadBookingPhotoCard from "./UploadBookingPhotoCard";
+import { useEffect, useRef } from "react";
 
 const { Dragger } = Upload;
 
@@ -16,24 +18,22 @@ export default function UploadBookingPhoto({ bookingDetail }) {
     addPhoto,
     setSelectedPhotoByUid,
     photoArray,
+    selectedPhoto,
     // removePhotoByUid,
     updatePhotoPropertyByUid,
     toggleWatermark,
     setPhotoUploadResponse,
   } = useBookingPhotoStore();
-  const queryClient = useQueryClient();
+
   const { notificationApi } = useNotification();
   const enableUpdate = bookingDetail.status === "ACCEPTED";
+  const selectedPhotoRef = useRef({});
 
   //use keycloak to trigger refresh component when new token comes
 
   const uploadBookingPhoto = useMutation({
     mutationFn: ({ bookingId, file, onUploadProgress }) =>
       PhotoShootApi.uploadBookingPhoto(bookingId, file, onUploadProgress),
-
-    onSuccess: (data) => {
-      console.log("response", data);
-    },
   });
 
   const handleException = (file, e) => {
@@ -102,8 +102,8 @@ export default function UploadBookingPhoto({ bookingDetail }) {
           }
         },
       });
-      // queryClient.invalidateQueries("photographer-booking-detail");
 
+      updatePhotoPropertyByUid(file.uid, "status", "done");
       notificationApi(
         "success",
         "Tải ảnh thành công",
@@ -112,6 +112,13 @@ export default function UploadBookingPhoto({ bookingDetail }) {
         0,
         "upload-photo-dragger"
       );
+      console.log("response", response);
+      setPhotoUploadResponse(file.uid, {
+        id: response.id,
+        reviewUrl: response.signedUrl.url,
+      });
+
+      onSuccess();
     } catch (e) {
       console.log(e);
       onError(e);
@@ -155,15 +162,31 @@ export default function UploadBookingPhoto({ bookingDetail }) {
   const itemRender = () => {
     return "";
   };
+  // Scroll to the selected photo whenever it changes
+  useEffect(() => {
+    if (selectedPhoto) {
+      const selectedPhotoElement = document.getElementById(selectedPhoto);
+      if (selectedPhotoElement) {
+        selectedPhotoElement.scrollIntoView({
+          behavior: "smooth", // Smooth scrolling
+          block: "center", // Center the selected photo
+        });
+      }
+    }
+  }, [selectedPhoto]); // Run effect when selected photo changes
 
   return (
-    <div className="w-full h-full grid grid-cols-6">
+    <div
+      className={`w-full bg-[#36393f] h-full flex flex-wrap ${
+        !photoArray.length > 0 && "justify-center"
+      } overflow-y-scroll custom-scrollbar`}
+    >
       <div
         className={`${
-          photoArray.length > 0 ? "col-span-1" : "col-span-6 h-full"
-        } ${
-          !enableUpdate && "hidden"
-        } flex items-center justify-center bg-[#36393f] hover:opacity-90`}
+          photoArray.length > 0
+            ? "w-1/4 lg:w-1/5"
+            : " h-full flex justify-center item-center"
+        } ${!enableUpdate && "hidden"}  p-2 hover:opacity-90`}
       >
         <Dragger
           name="avatar"
@@ -187,7 +210,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
         >
           <div className="flex flex-col items-center justify-center h-full w-full">
             {photoArray.length > 0 ? (
-              <div className="w-full h-full m-6 hover:text-white text-gray-200">
+              <div className="w-full h-full m-4 hover:text-white text-gray-200">
                 <div className=" text-6xl">
                   <UploadOutlined />
                 </div>
@@ -207,15 +230,22 @@ export default function UploadBookingPhoto({ bookingDetail }) {
           </div>
         </Dragger>
       </div>
-      {photoArray.length > 0 && (
-        <div
-          className={`${
-            enableUpdate ? "col-span-5" : "col-span-6"
-          } w-full bg-[#36393f]`}
-        >
-          <BookingPhotoList enableUpdate={enableUpdate} />
-        </div>
-      )}
+
+      {photoArray.length > 0 &&
+        photoArray.map((photo, index) => (
+          <div
+            key={index}
+            id={photo.uid} // Add unique ID
+            className="w-1/4 lg:w-1/5 "
+            ref={photo.uid === selectedPhoto ? selectedPhotoRef : null} // Set ref conditionally for selected photo
+          >
+            <UploadBookingPhotoCard
+              photo={photo}
+              index={index}
+              enableUpdate={enableUpdate}
+            />
+          </div>
+        ))}
     </div>
   );
 }

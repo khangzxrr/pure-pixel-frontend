@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { CustomerBookingApi } from "../../apis/CustomerBookingApi";
@@ -26,6 +26,7 @@ const CustomerBookingDetail = () => {
   const queryClient = useQueryClient();
 
   const { socket } = useNotificationStore();
+  const selectedPhotoRef = useRef({});
 
   useEffect(() => {
     async function notificationBookingDetailEventHandler(data) {
@@ -126,25 +127,20 @@ const CustomerBookingDetail = () => {
   );
   // Function to go to the previous photo
   const handlePreviousPhoto = () => {
-    if (currentIndex < bookingDetail.photos.length - 1) {
-      setSelectedPhoto(bookingDetail.photos[currentIndex + 1]);
-    } else {
-      setSelectedPhoto(bookingDetail.photos[0]);
-    }
-  };
-  // Function to go to the next photo
-  const handleNextPhoto = () => {
     if (currentIndex > 0) {
       setSelectedPhoto(bookingDetail.photos[currentIndex - 1]);
     } else {
       setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
     }
   };
-  useEffect(() => {
-    if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
-      setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
+  // Function to go to the next photo
+  const handleNextPhoto = () => {
+    if (currentIndex < bookingDetail.photos.length - 1) {
+      setSelectedPhoto(bookingDetail.photos[currentIndex + 1]);
+    } else {
+      setSelectedPhoto(bookingDetail.photos[0]);
     }
-  }, [bookingDetail]);
+  };
   //Download single photo
   const handleDownload = async (photo) => {
     if (photo && photo.signedUrl?.url) {
@@ -215,6 +211,30 @@ const CustomerBookingDetail = () => {
     }
   };
 
+  // Scroll logic refactored into a separate function
+  const scrollToPhoto = (photo) => {
+    if (!photo || !photo.id) return;
+    const photoElement = document.getElementById(photo.id);
+    if (photoElement) {
+      photoElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  };
+  useEffect(() => {
+    if (selectedPhoto) {
+      scrollToPhoto(selectedPhoto);
+    }
+  }, [selectedPhoto]);
+
+  // Ensure selectedPhoto is consistently initialized
+  useEffect(() => {
+    if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
+      setSelectedPhoto(bookingDetail.photos[0]);
+    }
+  }, [bookingDetail]);
+  console.log("Booking Detail:", selectedPhoto);
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
   }
@@ -222,6 +242,7 @@ const CustomerBookingDetail = () => {
   const userReview = bookingDetail.reviews.find(
     (review) => review.userId === bookingDetail.user.id
   );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-8 overflow-hidden">
       <div className="md:col-span-3 flex h-[95vh] overflow-y-scroll custom-scrollbar">
@@ -383,11 +404,11 @@ const CustomerBookingDetail = () => {
           )}
         </div>
       </div>
-      <div className="md:col-span-5 flex flex-col h-[95vh]">
+      <div className="md:col-span-5 flex flex-col h-screen">
         <div
           className={`${
             bookingDetail.photos.length === 0 && "hidden"
-          } bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden`}
+          } bg-[#292b2f] p-7 relative flex  justify-center items-center overflow-hidden h-3/5`}
         >
           {bookingDetail.photos.length > 1 && (
             <>
@@ -411,35 +432,44 @@ const CustomerBookingDetail = () => {
             alt="Selected Photo"
           />
         </div>
-        <div className="flex overflow-x-scroll custom-scrollbar w-full bg-[#36393f]">
-          {bookingDetail.photos &&
-            bookingDetail.photos.map((photo, index) => (
-              <div key={index} className="relative p-2 flex-shrink-0">
-                <img
-                  src={photo?.signedUrl.url}
-                  className={`w-[150px] h-[150px] object-cover rounded-md cursor-pointer ${
-                    photo?.id === selectedPhoto?.id
-                      ? "border-4 border-white transition duration-300"
-                      : ""
-                  }`}
-                  alt="Ban Thao"
-                  onClick={() => setSelectedPhoto(photo)}
-                />
-                {bookingDetail.status === "SUCCESSED" && (
-                  <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
-                    <Tooltip title="Tải ảnh này về" color="blue">
-                      <DownloadOutlined
-                        className="text-white text-xl cursor-pointer hover:text-red-500"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering the parent onClick
-                          handleDownload(photo);
-                        }}
-                      />
-                    </Tooltip>
+        <div className="h-2/5">
+          <div className="w-full bg-[#36393f] h-full flex flex-wrap overflow-y-scroll custom-scrollbar">
+            {bookingDetail.photos &&
+              bookingDetail.photos.map((photo, index) => (
+                <div
+                  className="w-1/4 lg:w-1/5 "
+                  ref={photo.id === selectedPhoto?.id ? selectedPhotoRef : null}
+                  key={index}
+                  id={photo.id} // Add unique ID
+                >
+                  <div className="relative p-2">
+                    <img
+                      src={photo?.signedUrl.url}
+                      className={`w-[150px] lg:w-[170px] h-[150px] lg:h-[170px] object-cover rounded-md cursor-pointer ${
+                        photo.id === selectedPhoto?.id
+                          ? "border-4 border-gray-300 transition duration-300"
+                          : ""
+                      }`}
+                      alt="Ban Thao"
+                      onClick={() => setSelectedPhoto(photo)}
+                    />
+                    {bookingDetail.status === "SUCCESSED" && (
+                      <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+                        <Tooltip title="Tải ảnh này về" color="blue">
+                          <DownloadOutlined
+                            className="text-white text-xl cursor-pointer hover:text-red-500"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent triggering the parent onClick
+                              handleDownload(photo);
+                            }}
+                          />
+                        </Tooltip>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </div>

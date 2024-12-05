@@ -277,14 +277,14 @@ const useBookingPhotoStore = create(
         // If the current UID is not found, do nothing
         if (currentIndex === -1) return;
 
-        // Calculate the previous index using circular logic
-        const previousIndex = (currentIndex - 1 + uids.length) % uids.length;
-        const previousUid = uids[previousIndex];
+        // Calculate the next index with wrap-around to the start of the array
+        const nextIndex = (currentIndex + 1) % uids.length;
+        const nextUid = uids[nextIndex];
 
-        console.log("setPrevious", currentIndex, previousIndex, previousUid);
+        console.log("setNext", currentIndex, nextIndex, nextUid);
 
         // Return the new selected UID
-        return { selectedPhoto: previousUid };
+        return { selectedPhoto: nextUid };
       });
     },
 
@@ -300,14 +300,14 @@ const useBookingPhotoStore = create(
         // If the current UID is not found, do nothing
         if (currentIndex === -1) return;
 
-        // Calculate the next index with wrap-around to the start of the array
-        const nextIndex = (currentIndex + 1) % uids.length;
-        const nextUid = uids[nextIndex];
+        // Calculate the previous index using circular logic
+        const previousIndex = (currentIndex - 1 + uids.length) % uids.length;
+        const previousUid = uids[previousIndex];
 
-        console.log("setNext", currentIndex, nextIndex, nextUid);
+        console.log("setPrevious", currentIndex, previousIndex, previousUid);
 
         // Return the new selected UID
-        return { selectedPhoto: nextUid };
+        return { selectedPhoto: previousUid };
       });
     },
   }))

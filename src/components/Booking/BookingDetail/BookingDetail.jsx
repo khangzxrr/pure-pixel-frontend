@@ -38,9 +38,9 @@ const BookingDetail = () => {
           visibility: photo.visibility,
           status: "done",
         });
-        setSelectedPhotoByUid(photo.id);
       }
     }
+    setSelectedPhotoByUid(bookingDetail?.photos[0]?.id);
   }, [bookingDetail, bookingId]);
 
   if (isPending) {
@@ -53,11 +53,11 @@ const BookingDetail = () => {
       <div className="md:col-span-3 flex h-[95vh] overflow-y-scroll custom-scrollbar">
         <BookingDetailInfo bookingDetail={bookingDetail} />
       </div>
-      <div className="md:col-span-5 flex flex-col h-[95vh]">
+      <div className="md:col-span-5 flex flex-col h-screen ">
         <div
           className={`${
             photoArray.length === 0 && "hidden"
-          }  bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden`}
+          }  bg-[#292b2f] p-7 relative flex  justify-center items-center overflow-hidden h-3/5`}
         >
           {photoArray.length > 1 && (
             <>
@@ -77,11 +77,11 @@ const BookingDetail = () => {
           )}
           <img
             src={selectedPhotoData?.reviewUrl}
-            className="h-[444px] shadow-gray-600 shadow-xl drop-shadow-none z-0"
+            className="w-11/12 shadow-gray-600 shadow-xl drop-shadow-none z-0"
             alt="Selected Photo"
           />
         </div>
-        <div className={`${photoArray.length === 0 && "h-full"}`}>
+        <div className={`${photoArray.length === 0 ? "h-full" : "h-2/5 "} `}>
           <BookingDetailUpload bookingDetail={bookingDetail} />
         </div>
       </div>

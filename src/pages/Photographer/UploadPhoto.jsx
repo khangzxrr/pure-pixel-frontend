@@ -55,7 +55,7 @@ export default function UploadPhoto() {
                 )}
                 <img
                   src={photoData?.reviewUrl}
-                  className="h-full shadow-gray-600 shadow-xl drop-shadow-none z-0"
+                  className="w-full shadow-gray-600 shadow-xl drop-shadow-none z-0"
                   alt="Selected Photo"
                 />
               </div>
