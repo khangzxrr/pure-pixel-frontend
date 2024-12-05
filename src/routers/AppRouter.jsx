@@ -63,7 +63,7 @@ import StatiticsPage from "../pages/Admin/StatiticsPage";
 import AccountManagerPage from "../pages/Admin/AccountManagerPage";
 import PrivateExceptionPage from "../layouts/PrivateExceptionPage";
 import SellPhoto from "../pages/Photographer/SellPhoto";
-import ECommerce from "../pages/Admin/Ecommerce";
+import ECommerce from "./../pages/Admin/ECommerce";
 
 export const AppRouter = createBrowserRouter([
   {
