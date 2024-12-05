@@ -11,7 +11,7 @@ const getBookingByCustomer = async (limit, page) => {
 };
 const handleRequestByPhotographer = async (bookingId, type) => {
   const response = await http.post(
-    `/photographer/booking/${bookingId}/${type}`,
+    `/photographer/booking/${bookingId}/${type}`
   );
   return response.data;
 };
@@ -24,10 +24,6 @@ const updateBooking = async (bookingId, data) => {
   return response.data;
 };
 const uploadBookingPhoto = async (bookingId, file, onUploadProgress) => {
-  //FUCK AXIOS
-  //waste me 2 hour just for a fucking upload feature???
-  //using the RAW axios instead of modified one, or you will get CORS
-  //
   const formData = new FormData();
   formData.append("file", file);
   const response = await http.put(
@@ -38,7 +34,7 @@ const uploadBookingPhoto = async (bookingId, file, onUploadProgress) => {
         "Content-Type": "multipart/form-data",
       },
       onUploadProgress,
-    },
+    }
   );
 
   return response.data;

@@ -36,6 +36,7 @@ export default function UpdatePhotoModal() {
     selectedUpdatePhoto,
     updateSelectedUpdatePhotoField,
   } = useModalStore();
+  console.log("selectedUpdatePhoto", selectedUpdatePhoto);
   const [categories, setCategories] = useState([]);
   const [viewState, setViewState] = useState({
     latitude: 10.762622,
@@ -110,17 +111,24 @@ export default function UpdatePhotoModal() {
   });
 
   const handleFinish = async (data) => {
-    // Call the onSubmit function with form data
+    // Clone the data to avoid mutating the original object
+    let updatedData = { ...data };
+
+    // Check if 'isChangeGPS' is false, and if so, remove the 'gps' field
     if (!data.isChangeGPS) {
-      const { gps, ...dataWithoutgps } = data;
-      updatePhotos.mutate(dataWithoutgps);
-    } else if (!data.description) {
-      const { description, ...dataWithoutdescription } = data;
-      updatePhotos.mutate(dataWithoutdescription);
-    } else {
-      updatePhotos.mutate(data);
+      delete updatedData.gps;
     }
-    console.log("Updated photo data:", data);
+
+    // Check if 'description' is falsy (undefined, null, or empty string), and if so, remove the 'description' field
+    if (!data.description) {
+      delete updatedData.description;
+    }
+
+    // Call the updatePhotos mutation with the updated data
+    updatePhotos.mutate(updatedData);
+
+    // Log the updated photo data for debugging
+    console.log("Updated photo data:", updatedData);
   };
 
   const openUpdateMapModal = () => {

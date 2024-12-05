@@ -16,6 +16,7 @@ import ChatButton from "../../components/ChatButton/ChatButton";
 import ReviewBooking from "./Component/ReviewBooking";
 import calculateDateDifference from "../../utils/calculateDateDifference";
 import useNotificationStore from "../../states/UseNotificationStore";
+import Countdown from "react-countdown";
 
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
@@ -185,15 +186,42 @@ const CustomerBookingDetail = () => {
     setIsDownloading(true);
     downloadPhoto.mutate(bookingId); // bookingId is passed to mutationFn
   };
+  const currentDate = new Date(); // Get the current date and time
+  const updatedAt = new Date(bookingDetail ? bookingDetail.updatedAt : 0); // Convert updatedAt to a Date object
+  // Convert updatedAt to a Date object and add 30 days
+  const expiredAt = new Date(
+    bookingDetail ? bookingDetail.updatedAt : Date.now()
+  );
+  expiredAt.setDate(expiredAt.getDate() + 30);
+
+  console.log("Expired At:", expiredAt.toISOString()); // Print the new date in ISO format
+  // Calculate the difference in milliseconds
+  const countTimeToDownload =
+    updatedAt - currentDate + 30 * 24 * 60 * 60 * 1000; // Renderer callback with condition
+  console.log("Time difference in milliseconds:", countTimeToDownload);
+
+  const renderer = ({ days, hours, minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <span className="text-red-500">Gói đã hết hạn tải về</span>;
+    } else {
+      // Render a countdown
+      return (
+        <span>
+          {days} ngày
+          {/* -{hours} giờ-{minutes} phút */}
+        </span>
+      );
+    }
+  };
+
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
   }
-  console.log(bookingDetail.originalPhotoshootPackage.user.id);
 
   const userReview = bookingDetail.reviews.find(
     (review) => review.userId === bookingDetail.user.id
   );
-  console.log(bookingDetail.user.id, bookingDetail.reviews, userReview);
   return (
     <div className="grid grid-cols-1 md:grid-cols-8 overflow-hidden">
       <div className="md:col-span-3 flex h-[95vh] overflow-y-scroll custom-scrollbar">
@@ -206,6 +234,24 @@ const CustomerBookingDetail = () => {
                 className="size-full object-cover rounded-t-lg"
               />
             </div>
+            <div className="m-2">
+              {bookingDetail.status === "SUCCESSED" && (
+                <div className="font-normal text-center">
+                  <p className=" p-2 rounded-md bg-[#3f4143]">
+                    Các ảnh sẽ tự động xóa vào : {FormatDateTime(expiredAt)}{" "}
+                    (Còn lại{" "}
+                    <span>
+                      <Countdown
+                        date={Date.now() + countTimeToDownload}
+                        renderer={renderer}
+                      />
+                    </span>
+                    )
+                  </p>
+                </div>
+              )}
+            </div>
+
             <div className="flex flex-col py-2 px-4 gap-2">
               <div className="flex items-center justify-between">
                 <div className="text-xl font-bold">
@@ -279,6 +325,14 @@ const CustomerBookingDetail = () => {
                       </div>
                     </div>
                   </div>
+                  {bookingDetail.status === "SUCCESSED" && (
+                    <p className="text-green-500">
+                      Hoàn thành vào lúc:{" "}
+                      <span className="list-inside font-normal truncate">
+                        {FormatDateTime(bookingDetail.updatedAt)}
+                      </span>
+                    </p>
+                  )}
                   <div className="text-right font-normal text-sm text-[#a3a3a3]">
                     {calculateDateDifference(bookingDetail.createdAt)}
                   </div>

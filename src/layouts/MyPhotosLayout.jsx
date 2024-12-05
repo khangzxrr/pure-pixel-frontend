@@ -93,7 +93,7 @@ const MyPhotosLayout = () => {
             onCancel={() => setIsDeletePhotoConfirmModal(false)}
             okText="Xóa"
             cancelText="Hủy"
-            width={300}
+            width={500}
             centered={true}
             bodyStyle={{ padding: 0 }}
             className="custom-close-icon "
