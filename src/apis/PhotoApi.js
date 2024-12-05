@@ -62,16 +62,16 @@ const getPublicPhotos = async (
   if (bookmarked !== undefined && bookmarked !== null) {
     params.bookmarked = bookmarked;
   }
+
+  if (tags && tags.length > 0 && tags[0] !== "") {
+    params.tags = tags[0];
+  }
   if (isFollowed !== undefined && isFollowed !== null && isFollowed !== "") {
     params.isFollowed = isFollowed;
   }
+
   // Tạo instance URLSearchParams
   const queryString = new URLSearchParams(params);
-
-  // Xử lý tags (nếu có)
-  if (tags && Array.isArray(tags)) {
-    tags.forEach((tag) => queryString.append("tags", tag));
-  }
 
   const url = `/photo/public?${queryString.toString()}`;
 

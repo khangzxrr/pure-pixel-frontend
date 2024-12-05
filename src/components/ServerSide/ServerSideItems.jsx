@@ -12,13 +12,13 @@ const ServerSideItems = [
       <img src="/purepixel.png" alt="logo" className="w-[30px] object-cover" />
     ),
   },
-  {
-    id: "blog",
-    name: "Trang chủ",
-    link: "/home",
-    authen: true,
-    icon: <MdHomeFilled className="text-4xl" />,
-  },
+  // {
+  //   id: "blog",
+  //   name: "Trang chủ",
+  //   link: "/home",
+  //   authen: true,
+  //   icon: <MdHomeFilled className="text-4xl" />,
+  // },
   {
     id: "explore",
     name: "Khám phá",

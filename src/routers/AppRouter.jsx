@@ -66,7 +66,6 @@ import PrivateExceptionPage from "../layouts/PrivateExceptionPage";
 
 import SellPhoto from "../pages/Photographer/SellPhoto";
 
-
 export const AppRouter = createBrowserRouter([
   {
     path: "/",
@@ -100,6 +99,14 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "inspiration",
                 element: <InspirationPhoto />,
+              },
+              {
+                path: "blog",
+                element: <BlogList />,
+              },
+              {
+                path: "blog/:blogId",
+                element: <DetailedBlog />,
               },
               {
                 path: "shop-profile/:id",

@@ -48,6 +48,7 @@ const PhotoProfile = ({ userData }) => {
   if (isError) return <div>Error: {error.message}</div>;
 
   const PhotoTotal = data?._count?.photos;
+  const PhotoSellCount = data?.sellingPhotoCount;
   const FollowingsCount = data?._count?.followings;
   const FollowersCount = data?._count?.followers;
   const UserAvarta = data?.avatar;
@@ -95,21 +96,32 @@ const PhotoProfile = ({ userData }) => {
             <div className="pl-1 font-normal">
               {userData?.email || "Không xác định"}
             </div>
-            <div className="flex gap-2">
-              <div
-                onClick={handleOpenFollowersModal}
-                className="px-[12px] py-[4px] bg-[#fff3] rounded-full hover:cursor-pointer hover:bg-[#ffffff67] transition duration-200"
-              >
-                {FollowersCount} người theo dõi
+            <div className="flex  gap-2 transition-all duration-200">
+              <div className="flex gap-2">
+                <div
+                  onClick={handleOpenFollowersModal}
+                  className="px-[12px] py-[4px] bg-[#fff3] rounded-full hover:cursor-pointer hover:bg-[#ffffff67] transition duration-200"
+                >
+                  <span className="font-normal">Người theo dõi: </span>
+                  {FollowersCount}
+                </div>
+                <div
+                  onClick={handleOpenFollowingsModal}
+                  className="px-[12px] py-[4px] bg-[#fff3] rounded-full hover:cursor-pointer hover:bg-[#ffffff67] transition duration-200"
+                >
+                  <span className="font-normal">Đang theo dõi: </span>{" "}
+                  {FollowingsCount}
+                </div>
               </div>
-              <div
-                onClick={handleOpenFollowingsModal}
-                className="px-[12px] py-[4px] bg-[#fff3] rounded-full hover:cursor-pointer hover:bg-[#ffffff67] transition duration-200"
-              >
-                {FollowingsCount} đang theo dõi
-              </div>
-              <div className="flex items-center gap-1 px-[12px] py-[4px] bg-[#fff3] rounded-full">
-                {PhotoTotal} <FaImages />
+              <div className="flex gap-2">
+                <div className="flex items-center gap-1 px-[12px] py-[4px] bg-[#fff3] rounded-full">
+                  <span className="font-normal">Tổng số ảnh: </span>
+                  {PhotoTotal}
+                </div>
+                <div className="flex items-center gap-1 px-[12px] py-[4px] bg-[#fff3] rounded-full">
+                  <span className="font-normal">Số ảnh đang bán: </span>{" "}
+                  {PhotoSellCount}
+                </div>
               </div>
             </div>
           </div>
