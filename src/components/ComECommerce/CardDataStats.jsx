@@ -1,6 +1,5 @@
 import React from "react";
-import { FaArrowUp } from "react-icons/fa6";
-import { FiUsers } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const CardDataStats = ({
   icon,
@@ -9,9 +8,14 @@ const CardDataStats = ({
   percent,
   iconPercent,
   colorPercent,
+  link,
 }) => {
+  const navigate = useNavigate();
   return (
-    <div className="bg-[#32353b] text-[#eee] flex flex-col  p-6 rounded-sm">
+    <div
+      onClick={() => navigate(link)}
+      className="bg-[#32353b] text-[#eee] flex flex-col  p-6 rounded-sm hover:scale-105 transition-all duration-200 hover:cursor-pointer"
+    >
       <div className="flex items-center mb-3">
         <div className="p-2 bg-[#44484f] rounded-full ">{icon}</div>
       </div>
