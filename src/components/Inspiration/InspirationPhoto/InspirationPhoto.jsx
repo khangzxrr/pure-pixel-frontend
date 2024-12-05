@@ -48,6 +48,7 @@ const InspirationPhoto = () => {
     (state) => state.filterByIsFollowed
   );
   const popupShare = useModalState();
+
   const fetchPhotos = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
@@ -59,6 +60,9 @@ const InspirationPhoto = () => {
     const selling = false;
     const photographerName = searchResult;
     const title = searchByPhotoTitle;
+    // const tag = Array.isArray(searchByTags) ? searchByTags[0] : searchByTags;
+    const tag = searchByTags;
+
     const response = await PhotoApi.getPublicPhotos(
       validLimit,
       validPage,
@@ -72,7 +76,7 @@ const InspirationPhoto = () => {
       null,
       null,
       null,
-      null,
+      tag,
       isFollowed
     );
     return response;
@@ -90,6 +94,7 @@ const InspirationPhoto = () => {
         searchResult,
         searchByPhotoTitle,
         filterByIsFollowed,
+        searchByTags,
       ],
       queryFn: fetchPhotos,
       getNextPageParam: (lastPage, pages) => {

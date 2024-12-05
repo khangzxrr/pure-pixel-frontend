@@ -44,7 +44,7 @@ const DashboardLayoutF = () => {
       </div>
 
       {/* Main content */}
-      <div className="  w-full overflow-y-auto custom-scrollbar">
+      <div className="relative w-full h-screen overflow-hidden  ">
         <Outlet />
         <div className="">
           <NotificationModal

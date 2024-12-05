@@ -44,6 +44,7 @@ const InspirationNav = ({
     setInputValue("");
     setSearchByPhotoTitle("");
     setSearchResult("");
+    setSearchByTags("");
   };
 
   const handleInputChange = (event) => {
@@ -54,6 +55,8 @@ const InspirationNav = ({
   const handleSearch = () => {
     if (searchCategory.param === "photoName") {
       setSearchByPhotoTitle(inputValue);
+    } else if (searchCategory.param === "photoTags") {
+      setSearchByTags(inputValue);
     } else {
       setSearchResult(inputValue);
     }

@@ -3,7 +3,7 @@ import { FaCameraRetro, FaMoneyBill1 } from "react-icons/fa6";
 import { GiPolarStar } from "react-icons/gi";
 import { BsPersonBoundingBox } from "react-icons/bs";
 import { TbMap2 } from "react-icons/tb";
-import { MdAddAPhoto } from "react-icons/md";
+import { MdAddAPhoto, MdFeed } from "react-icons/md";
 
 const InspirationSideItemF = [
   {
@@ -41,6 +41,13 @@ const InspirationSideItemF = [
     title: "Cửa hàng ảnh",
     icon: <FaMoneyBill1 />,
     link: "/explore/selling",
+    quote: "Những bức ảnh đang được đăng bán",
+  },
+  {
+    id: 9,
+    title: "Blog",
+    icon: <MdFeed />,
+    link: "/explore/blog",
     quote: "Những bức ảnh đang được đăng bán",
   },
   {
