@@ -14,6 +14,7 @@ const CardDataStatsList = () => {
         percent={"26.8"}
         iconPercent={<FaArrowUp />}
         colorPercent={"text-green-500"}
+        link={"total-users"}
       />
       <CardDataStats
         icon={<FiImage className="text-xl" />}
