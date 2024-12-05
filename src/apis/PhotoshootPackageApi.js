@@ -70,7 +70,7 @@ const createPhotoshootPackage = async (data) => {
 
   // Send the POST request to create the photoshoot package
   const response = await customHttp.post(
-    `/photographer/photoshoot-package`,
+    `/photographer/photoshoot-package/v2`,
     formData,
     {
       headers: {

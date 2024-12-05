@@ -63,6 +63,9 @@ const NotificationModal = ({ isOpen, onClose }) => {
         queryKey: ["get-all-photographer-booking"],
       });
       await queryClient.invalidateQueries({
+        queryKey: ["photographer-booking-detail"],
+      });
+      await queryClient.invalidateQueries({
         queryKey: ["getTransactionById"],
       });
     }

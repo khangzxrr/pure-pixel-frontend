@@ -123,7 +123,7 @@ export default function PhotoCard({ photo }) {
     tryUploadPhoto({ file: photo.file });
   };
   return (
-    <div className="relative grid grid-rows-2 p-2">
+    <div className="relative p-2">
       <div className="lg:w-[200px] lg:h-[150px] w-[180px] h-[135px]">
         <img
           src={photo?.reviewUrl}

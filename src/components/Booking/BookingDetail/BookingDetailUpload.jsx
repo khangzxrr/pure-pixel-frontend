@@ -1,5 +1,5 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { message, Upload } from "antd";
 
 import PhotoService from "../../../services/PhotoService";
@@ -21,7 +21,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
     toggleWatermark,
     setPhotoUploadResponse,
   } = useBookingPhotoStore();
-
+  const queryClient = useQueryClient();
   const { notificationApi } = useNotification();
   const enableUpdate = bookingDetail.status === "ACCEPTED";
 
@@ -30,13 +30,17 @@ export default function UploadBookingPhoto({ bookingDetail }) {
   const uploadBookingPhoto = useMutation({
     mutationFn: ({ bookingId, file, onUploadProgress }) =>
       PhotoShootApi.uploadBookingPhoto(bookingId, file, onUploadProgress),
+
+    onSuccess: (data) => {
+      console.log("response", data);
+    },
   });
 
   const handleException = (file, e) => {
     switch (e.response.data.message) {
       case "RunOutPhotoQuotaException":
         message.error(
-          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
         );
         break;
 
@@ -90,7 +94,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
         file,
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
-            (progressEvent.loaded / progressEvent.total) * 100,
+            (progressEvent.loaded / progressEvent.total) * 100
           );
 
           updatePhotoPropertyByUid(file.uid, "percent", percentCompleted);
@@ -98,23 +102,16 @@ export default function UploadBookingPhoto({ bookingDetail }) {
           }
         },
       });
+      // queryClient.invalidateQueries("photographer-booking-detail");
 
-      updatePhotoPropertyByUid(file.uid, "status", "done");
       notificationApi(
         "success",
         "Tải ảnh thành công",
         "Ảnh đã được tải lên thành công",
         "",
         0,
-        "upload-photo-dragger",
+        "upload-photo-dragger"
       );
-
-      setPhotoUploadResponse(file.uid, {
-        id: response.id,
-        reviewUrl: response.signedUrl.url,
-      });
-
-      onSuccess();
     } catch (e) {
       console.log(e);
       onError(e);
@@ -141,7 +138,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
       switch (info.file.error.response.data.message) {
         case "RunOutPhotoQuotaException":
           message.error(
-            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+            "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"
           );
           break;
 

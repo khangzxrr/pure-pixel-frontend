@@ -22,7 +22,7 @@ const BookingDetail = () => {
   } = useBookingPhotoStore();
 
   const { isPending, data: bookingDetail } = useQuery({
-    queryKey: ["booking-detail", bookingId],
+    queryKey: ["photographer-booking-detail", bookingId],
     queryFn: () => PhotographerBookingApi.findById(bookingId),
   });
 

@@ -40,7 +40,7 @@ const BookingCard = ({ booking, status }) => {
     mutationFn: () => PhotographerBookingApi.acceptBooking(booking.id),
     onSuccess: () => {
       queryClient.invalidateQueries("get-all-photographer-booking");
-      queryClient.invalidateQueries("booking-photographer-detail");
+      queryClient.invalidateQueries("photographer-booking-detail");
       notificationApi("success", "Thành công", "Đã chấp nhận lịch hẹn này");
       navigate(`/profile/booking-request/${booking.id}`);
     },
