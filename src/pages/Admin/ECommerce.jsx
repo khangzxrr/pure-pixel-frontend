@@ -1,7 +1,7 @@
 import React from "react";
 import ECommerceLayout from "../../layouts/ECommerceLayout";
 
-const Ecommerce = () => {
+const ECommerce = () => {
   return (
     <div className="p-4">
       <ECommerceLayout />
@@ -9,4 +9,4 @@ const Ecommerce = () => {
   );
 };
 
-export default Ecommerce;
+export default ECommerce;
