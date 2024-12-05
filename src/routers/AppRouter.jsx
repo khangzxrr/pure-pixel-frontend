@@ -61,11 +61,9 @@ import CameraManager from "../pages/Manager/Camera/CameraManager";
 import TransactionWithdrawalManager from "../pages/Manager/TransactionWithdrawalManager/TransactionWithdrawalManager";
 import StatiticsPage from "../pages/Admin/StatiticsPage";
 import AccountManagerPage from "../pages/Admin/AccountManagerPage";
-
 import PrivateExceptionPage from "../layouts/PrivateExceptionPage";
-
 import SellPhoto from "../pages/Photographer/SellPhoto";
-import Ecommerce from "../pages/Admin/Ecommerce";
+import ECommerce from "../pages/Admin/Ecommerce";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -394,7 +392,7 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/admin/Dashboard",
-            element: <Ecommerce />,
+            element: <ECommerce />,
           },
           {
             path: "/admin/upgrade",
