@@ -106,7 +106,6 @@ export default function PhotoCard({ photo }) {
           const percentCompleted = Math.round(
             (progressEvent.loaded / progressEvent.total) * 90
           );
-
           updatePhotoPropertyByUid(photo.file.uid, "percent", percentCompleted);
         },
       });
