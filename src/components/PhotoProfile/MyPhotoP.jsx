@@ -276,7 +276,7 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
                     description: photo.description,
                     visibility: photo.visibility,
                     categories: photo.categories,
-                    photoTags: photo.photoTags,
+                    photoTags: photo.photoTags.map((item) => item.name),
                     exif: photo.exif,
                     gps: {
                       longitute: photo.exif.longitude,

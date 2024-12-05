@@ -25,8 +25,7 @@ import { notificationApi } from "../../../Notification/Notification";
 import ReviewBooking from "../../../pages/UserProfile/Component/ReviewBooking";
 import calculateDateDifference from "../../../utils/calculateDateDifference";
 import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
-
-const { RangePicker } = DatePicker; // Destructure RangePicker from DatePicker
+import Countdown from "react-countdown";
 dayjs.locale("vi");
 
 const BookingDetailInfo = ({ bookingDetail }) => {
@@ -54,9 +53,9 @@ const BookingDetailInfo = ({ bookingDetail }) => {
   const setBookingPaidMutation = useMutation({
     mutationFn: () => PhotographerBookingApi.paidBooking(bookingDetail.id),
     onSuccess: () => {
-      queryClient.invalidateQueries("booking-photographer-detail");
+      queryClient.invalidateQueries("photographer-booking-detail");
       queryClient.invalidateQueries("get-all-photographer-booking");
-      navigate("/profile/booking-request");
+      // navigate("/profile/booking-request");
       notificationApi(
         "success",
         "Thành công",
@@ -66,7 +65,16 @@ const BookingDetailInfo = ({ bookingDetail }) => {
     },
   });
   const handleOnConfirm = () => {
-    setBookingPaidMutation.mutate();
+    if (bookingDetail.photos.length > 0) {
+      setBookingPaidMutation.mutate();
+    } else {
+      notificationApi(
+        "error",
+        "Chưa thể đổi trạng thái",
+        "Vui lòng trả ảnh cho khách để xác nhận thanh toán"
+      );
+    }
+    console.log("bookingDetail", bookingDetail.photos.length);
   };
   const updateBookingDetail = useMutation({
     mutationFn: ({ description, startDate, endDate }) => {
@@ -145,6 +153,35 @@ const BookingDetailInfo = ({ bookingDetail }) => {
     setIsDownloading(true);
     downloadPhoto.mutate(bookingId); // bookingId is passed to mutationFn
   };
+  // Random component
+  const currentDate = new Date(); // Get the current date and time
+  const updatedAt = new Date(bookingDetail ? bookingDetail.updatedAt : 0); // Convert updatedAt to a Date object
+  // Convert updatedAt to a Date object and add 30 days
+  const expiredAt = new Date(
+    bookingDetail ? bookingDetail.updatedAt : Date.now()
+  );
+  expiredAt.setDate(expiredAt.getDate() + 30);
+
+  console.log("Expired At:", expiredAt.toISOString()); // Print the new date in ISO format
+  // Calculate the difference in milliseconds
+  const countTimeToDownload =
+    updatedAt - currentDate + 30 * 24 * 60 * 60 * 1000; // Renderer callback with condition
+  console.log("Time difference in milliseconds:", countTimeToDownload);
+
+  const renderer = ({ days, hours, minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return <span className="text-red-500">Gói đã hết hạn tải về</span>;
+    } else {
+      // Render a countdown
+      return (
+        <span>
+          {days} ngày
+          {/* -{hours} giờ-{minutes} phút */}
+        </span>
+      );
+    }
+  };
   return (
     <div className="flex flex-col gap-1  w-full">
       <div className="flex flex-col gap-2 m-2 bg-[#2d2f34] rounded-lg">
@@ -154,6 +191,23 @@ const BookingDetailInfo = ({ bookingDetail }) => {
             alt=""
             className="size-full object-cover rounded-t-lg"
           />
+        </div>
+        <div className="m-2">
+          {bookingDetail.status === "SUCCESSED" && (
+            <div className="font-normal text-center">
+              <p className=" p-2 rounded-md bg-[#3f4143]">
+                Các ảnh sẽ tự động xóa vào : {FormatDateTime(expiredAt)} (Còn
+                lại{" "}
+                <span>
+                  <Countdown
+                    date={Date.now() + countTimeToDownload}
+                    renderer={renderer}
+                  />
+                </span>
+                )
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex flex-col py-2 px-4 gap-2">
           <div className="flex items-center justify-between">
@@ -246,6 +300,14 @@ const BookingDetailInfo = ({ bookingDetail }) => {
                         {FormatDateTime(bookingDetail.endDate)}
                       </div>
                     </div>
+                    {bookingDetail.status === "SUCCESSED" && (
+                      <p className="text-green-500">
+                        Hoàn thành vào lúc:{" "}
+                        <span className="list-inside font-normal truncate">
+                          {FormatDateTime(bookingDetail.updatedAt)}
+                        </span>
+                      </p>
+                    )}
                   </div>
                 </div>
               ) : (

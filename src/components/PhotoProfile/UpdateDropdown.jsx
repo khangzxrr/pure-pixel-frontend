@@ -44,7 +44,6 @@ const UpdateDropdown = ({ photo, totalRecord, page, setPage }) => {
       key: "2",
       icon: <CgRemove />,
       label: <span className="text-red-500">Xóa ảnh</span>,
-      danger: true,
       onClick: () => {
         setDeletePhotoId(photo.id);
         setIsDeletePhotoConfirmModal(true);
