@@ -65,6 +65,7 @@ import AccountManagerPage from "../pages/Admin/AccountManagerPage";
 import PrivateExceptionPage from "../layouts/PrivateExceptionPage";
 
 import SellPhoto from "../pages/Photographer/SellPhoto";
+import Ecommerce from "../pages/Admin/Ecommerce";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -393,7 +394,7 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/admin/Dashboard",
-            element: <StatiticsPage />,
+            element: <Ecommerce />,
           },
           {
             path: "/admin/upgrade",

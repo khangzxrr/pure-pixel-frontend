@@ -278,12 +278,13 @@ export default function AdminLayout({ children }) {
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#32353b] px-4 pb-4">
-            <div className="flex h-16 shrink-0 items-center justify-center">
+            <div className="flex gap-2 h-16 shrink-0 items-center justify-center">
               <img
                 alt="Your Company"
                 src="/purepixel.png"
-                className="h-8 w-auto"
+                className="h-10 w-auto"
               />
+              <div className=" text-[#eee]">Pure Pixel</div>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -352,19 +353,6 @@ export default function AdminLayout({ children }) {
                       </li>
                     ))}
                   </ul>
-                </li>
-
-                <li className="mt-auto">
-                  <a
-                    href="#"
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
-                  >
-                    <Cog6ToothIcon
-                      aria-hidden="true"
-                      className="h-6 w-6 shrink-0"
-                    />
-                    Settings
-                  </a>
                 </li>
               </ul>
             </nav>
