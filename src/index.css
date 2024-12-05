@@ -172,7 +172,7 @@ code {
 
 .custom-scrollbar2::-webkit-scrollbar-track {
   background: #000000; /* Màu nền của thanh cuộn */
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 .custom-scrollbar2::-webkit-scrollbar-thumb {

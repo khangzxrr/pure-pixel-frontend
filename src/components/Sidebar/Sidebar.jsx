@@ -73,8 +73,8 @@ const Sidebar = ({
         //   />
         // </div>
         <div className=" flex-grow">
-          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
-            {"Khám phá"}
+          <div className="flex px-2 h-[50px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
+            Khám phá
           </div>
         </div>
       )}
@@ -110,7 +110,7 @@ const Sidebar = ({
         </div>
       )}
 
-      <div className="flex flex-col mx-2 gap-1 justify-center ">
+      <div className="flex flex-col custom-scrollbar overflow-x-hidden gap-1  ">
         {sideItems.map((item) => (
           <Link
             to={item.link}
@@ -120,11 +120,11 @@ const Sidebar = ({
               setActiveLink(item.id);
               toggleSidebar();
             }}
-            className={`flex text-[#a3a3a3] items-center gap-3 hover:cursor-pointer hover:bg-gray-500 hover:text-[#eee] rounded-md transition-colors duration-200
+            className={`flex text-[#a3a3a3] items-center gap-3 mx-2 hover:cursor-pointer  hover:text-[#eee] rounded-md transition-colors duration-200
             ${
               activeLink === item.id || activeLink === item.link
                 ? "bg-gray-500 text-[#eee] "
-                : ""
+                : "hover:bg-gray-700"
             }`}
           >
             <div className="flex items-center justify-center w-12 h-12">
@@ -136,14 +136,14 @@ const Sidebar = ({
           </Link>
         ))}
         {isInspirationPage && (
-          <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1 border-y-[1px] border-[#a3a3a3] py-2">
+          <div className="flex flex-col mx-2 text-[#a3a3a3] gap-2 mt-2 mx-1 border-y-[1px] border-[#a3a3a3] py-2">
             <div>Bộ lọc ảnh</div>
             <InsPhotoFilter />
           </div>
         )}
         {isInspirationPage && (
-          <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1">
-            <div className="text-[12px]">TOP 5 THẺ THỊNH HÀNH HIỆN TẠI</div>
+          <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-2">
+            <div className="text-[12px]">CÁC THẺ THỊNH HÀNH HIỆN TẠI</div>
             <div className="flex flex-col gap-2">
               <PhotoTagsTrend />
             </div>

@@ -414,79 +414,81 @@ const ProductPhotoDetail = () => {
                 </div>
               </div>
               <div className="flex">
-                <Menu as="div" className="relative">
-                  <MenuButton className="-m-1.5 flex items-center p-1.5">
-                    <button className="hover:text-gray-400">
-                      <Icon>
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="19" cy="12" r="1" />
-                        <circle cx="5" cy="12" r="1" />
-                      </Icon>
-                    </button>
-                  </MenuButton>
-                  {keycloak.authenticated ? (
-                    <MenuItems
-                      transition
-                      className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none"
-                    >
-                      <MenuItem>
-                        <button
-                          onClick={() => {}}
-                          className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50"
-                        >
-                          Lưu bài viết
-                        </button>
-                      </MenuItem>
+                {data.photographer.id !== userData?.sub ? (
+                  <Menu as="div" className="relative">
+                    <MenuButton className="-m-1.5 flex items-center p-1.5">
+                      <button className="hover:text-gray-400">
+                        <Icon>
+                          <circle cx="12" cy="12" r="1" />
+                          <circle cx="19" cy="12" r="1" />
+                          <circle cx="5" cy="12" r="1" />
+                        </Icon>
+                      </button>
+                    </MenuButton>
+                    {keycloak.authenticated ? (
+                      <MenuItems
+                        transition
+                        className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none"
+                      >
+                        {/* <MenuItem>
+                          <button
+                            onClick={() => {}}
+                            className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50"
+                          >
+                            Lưu bài viết
+                          </button>
+                        </MenuItem> */}
 
-                      <MenuItem>
-                        <button
-                          onClick={() => {
-                            popupReport.handleOpen();
-                          }}
-                          className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 hover:bg-gray-50"
-                        >
-                          Báo cáo bài viết
-                        </button>
-                      </MenuItem>
-                    </MenuItems>
-                  ) : (
-                    <MenuItems
-                      transition
-                      className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none"
-                    >
-                      <MenuItem>
-                        <button
-                          onClick={() => {
-                            handleLoginWarning();
-                          }}
-                          className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50"
-                        >
-                          Lưu bài viết
-                        </button>
-                      </MenuItem>
+                        <MenuItem>
+                          <button
+                            onClick={() => {
+                              popupReport.handleOpen();
+                            }}
+                            className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 hover:bg-gray-50"
+                          >
+                            Báo cáo ảnh
+                          </button>
+                        </MenuItem>
+                      </MenuItems>
+                    ) : (
+                      <MenuItems
+                        transition
+                        className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none"
+                      >
+                        {/* <MenuItem>
+                          <button
+                            onClick={() => {
+                              handleLoginWarning();
+                            }}
+                            className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 hover:bg-gray-50"
+                          >
+                            Lưu bài viết
+                          </button>
+                        </MenuItem> */}
 
-                      <MenuItem>
-                        <button
-                          onClick={() => {
-                            handleLoginWarning();
-                          }}
-                          className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 hover:bg-gray-50"
-                        >
-                          Báo cáo bài viết
-                        </button>
-                      </MenuItem>
-                    </MenuItems>
-                  )}
+                        <MenuItem>
+                          <button
+                            onClick={() => {
+                              handleLoginWarning();
+                            }}
+                            className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 hover:bg-gray-50"
+                          >
+                            Báo cáo ảnh
+                          </button>
+                        </MenuItem>
+                      </MenuItems>
+                    )}
 
-                  {popupReport.isModalOpen && (
-                    <ComReport
-                      onclose={popupReport.handleClose}
-                      tile="Báo cáo ảnh bán"
-                      id={data?.id}
-                      reportType={"PHOTO"}
-                    />
-                  )}
-                </Menu>
+                    {popupReport.isModalOpen && (
+                      <ComReport
+                        onclose={popupReport.handleClose}
+                        tile="Báo cáo ảnh bán"
+                        id={data?.id}
+                        reportType={"PHOTO"}
+                      />
+                    )}
+                  </Menu>
+                ) : null}
               </div>
             </div>
 

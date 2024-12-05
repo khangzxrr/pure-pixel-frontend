@@ -12,7 +12,8 @@ const blogPosts = [
     date: "May 15, 2023",
     readTime: "5 min read",
     category: "Design",
-    image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
+    image:
+      "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
   },
   {
     id: 2,
@@ -23,7 +24,8 @@ const blogPosts = [
     date: "June 2, 2023",
     readTime: "8 min read",
     category: "Development",
-    image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
+    image:
+      "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
   },
   {
     id: 3,
@@ -34,7 +36,8 @@ const blogPosts = [
     date: "June 10, 2023",
     readTime: "6 min read",
     category: "Technology",
-    image: "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
+    image:
+      "https://images2.thanhnien.vn/528068263637045248/2024/1/25/e093e9cfc9027d6a142358d24d2ee350-65a11ac2af785880-17061562929701875684912.jpg",
   },
 ];
 
@@ -83,7 +86,7 @@ export default function BlogList() {
               </div>
               <div className="px-6 py-4 bg-[#202225] border-t border-gray-600">
                 <Link
-                  to="/blog/123"
+                  to="/explore/blog/123"
                   className="text-[#57afdd] font-semibold flex items-center hover:text-[#eeeeee] transition-colors duration-300"
                 >
                   Read More

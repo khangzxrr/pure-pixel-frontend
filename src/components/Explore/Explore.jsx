@@ -17,6 +17,7 @@ import PhotoshootPackageNav from "../Booking/PhotoshootPackageNav";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { Skeleton } from "antd";
 import "./Explore.css";
+import BlogNav from "../Blog/BlogNav";
 const Explore = () => {
   const navigate = useNavigate();
   const { activeTitle, activeIcon, activeQuote, activeItem } =
@@ -49,6 +50,7 @@ const Explore = () => {
   const isSellingListActive = activeItem === 6;
   const isCameraActive = activeItem === 5;
   const isPhotoshootPackActive = activeItem === 8;
+  const isBlogActive = activeItem === 9;
 
   const { data, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["me"],
@@ -90,7 +92,7 @@ const Explore = () => {
           } lg:overflow-visible absolute lg:relative z-20 h-screen`}
         >
           {/* <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"> */}
-          <div className="flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar">
+          <div className="flex-grow ">
             <InspirationSideComp />
           </div>
           <div className="sticky bottom-0 bg-[#2a2d31] p-[12.5px]">
@@ -205,6 +207,9 @@ const Explore = () => {
                   activeTitle={activeTitle}
                   activeIcon={activeIcon}
                 />
+              )}
+              {isBlogActive && (
+                <BlogNav activeTitle={activeTitle} activeIcon={activeIcon} />
               )}
             </div>
             <Outlet />
