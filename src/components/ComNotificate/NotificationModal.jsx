@@ -45,6 +45,10 @@ const NotificationModal = ({ isOpen, onClose }) => {
     async function showNotification(data) {
       showUpNotification(data);
 
+      if (data.referenceType === "BAN") {
+        keycloak.logout();
+      }
+
       await queryClient.invalidateQueries({
         queryKey: ["notifications"],
       });
@@ -89,7 +93,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
     const validPage = Math.max(0, Math.min(pageParam, 9999));
     const response = await NotificationApi.getAllNotifactions(
       validLimit,
-      validPage
+      validPage,
     );
     return response;
   };
