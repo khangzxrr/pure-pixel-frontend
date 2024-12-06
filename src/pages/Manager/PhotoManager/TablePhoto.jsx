@@ -309,7 +309,6 @@ export const TablePhoto = forwardRef((props, ref) => {
         dataSource={data}
         loading={table.loading}
       />
-
       <ComModal
         isOpen={modalDetail?.isModalOpen}
         onClose={modalDetail?.handleClose}

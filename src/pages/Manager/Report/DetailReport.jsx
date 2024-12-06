@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
 import ComButton from "../../../components/ComButton/ComButton";
+import { patchData, postData } from "../../../apis/api";
+import { useNotification } from "../../../Notification/Notification";
 const reportDetails = {
   id: "REP12345",
   type: "content",
@@ -30,10 +32,38 @@ const reportDetails = {
   status: "pending",
   reasons: ["Hate speech", "Misinformation", "Harassment"],
 };
-export default function DetailReport({ selected }) {
+export default function DetailReport({ selected, tableRef, onClose }) {
+  const { notificationApi } = useNotification();
+
   console.log("====================================");
   console.log(selected);
   console.log("====================================");
+
+  const banUser = () => {
+    postData(`/user/${selected?.referencedUser?.id}/ban`)
+      .then((data) => {
+        console.log(data);
+        patchData(`manager/report`, `${selected.id}`, {
+          reportStatus: "CLOSED",
+        })
+          .then((e) => {
+            console.log("11111", e);
+            notificationApi("success", "Thành công", "Đã đóng báo cáo");
+            tableRef();
+            onClose();
+          })
+          .catch((error) => {
+            notificationApi("error", "Không thành công", "Lỗi");
+            console.log("error", error);
+          });
+      })
+      .catch((error) => {
+        notificationApi("error", "Không thành công", "Lỗi khóa tài khoản");
+
+        console.log(error);
+      });
+  };
+
   return (
     <div className=" text-gray-800 p-6   max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 flex items-center">
@@ -105,9 +135,10 @@ export default function DetailReport({ selected }) {
                   </div>
 
                   {/* Ảnh đại diện */}
-                  <div className="absolute ">
-                    <Image
-                      wrapperClassName="w-32 h-32 object-cover rounded-full border-4 border-white"
+                  <div className="absolute  ">
+                    <img
+                      wrapperClassName="w-32 max-h-32 object-cover rounded-full border-4 border-white"
+                      className="w-32 h-32 object-cover rounded-full border-4 border-white"
                       src={selected?.referencedPhoto?.photographer?.avatar} // Nếu không có avatar, dùng ảnh mặc định
                       alt={selected?.referencedPhoto?.photographer?.name}
                       preview={{ mask: "Xem ảnh" }}
@@ -124,7 +155,7 @@ export default function DetailReport({ selected }) {
                 </div>
 
                 <p className="p-4 font-semibold">
-                  Tên bài viết :{selected?.referencedPhoto.title}
+                  Tên bài viết :{selected?.referencedPhoto?.title}
                 </p>
                 <img
                   src={selected?.referencedPhoto?.signedUrl?.url}
@@ -204,25 +235,43 @@ export default function DetailReport({ selected }) {
         <div className="flex m-1 gap-3">
           {selected.reportStatus === "OPEN" ? (
             <>
-              <ComButton
-                onClick={() => {
-                  // update("ComPleted");
-                }}
-              >
-                {selected?.reportType === "PHOTO"
-                  ? "Hình ảnh hợp lệ"
-                  : "Tài khoản hợp lệ"}
-              </ComButton>
-              <ComButton
-                className={" bg-red-600 "}
-                onClick={() => {
-                  // update("Cancelled");
-                }}
-              >
-                {selected?.reportType === "PHOTO"
-                  ? "Khóa bài viết"
-                  : "Khóa tài khoản"}
-              </ComButton>
+              {selected?.reportType === "PHOTO" ? (
+                <ComButton
+                  onClick={() => {
+                    // update("ComPleted");
+                  }}
+                >
+                  Hình ảnh hợp lệ
+                </ComButton>
+              ) : (
+                <ComButton
+                  onClick={() => {
+                    // update("ComPleted");
+                  }}
+                >
+                  Tài khoản hợp lệ
+                </ComButton>
+              )}
+
+              {selected?.reportType === "PHOTO" ? (
+                <ComButton
+                  className={" bg-red-600 "}
+                  onClick={() => {
+                    // update("ComPleted");
+                  }}
+                >
+                  Khóa bài viết
+                </ComButton>
+              ) : (
+                <ComButton
+                  className={" bg-red-600 "}
+                  onClick={() => {
+                    banUser();
+                  }}
+                >
+                  Khóa tài khoản
+                </ComButton>
+              )}
             </>
           ) : (
             <></>
