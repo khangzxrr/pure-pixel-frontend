@@ -39,6 +39,22 @@ export default function DetailReport({ selected, tableRef, onClose }) {
   console.log(selected);
   console.log("====================================");
 
+  const closeReport = () => {
+    patchData(`manager/report`, `${selected.id}`, {
+      reportStatus: "CLOSED",
+    })
+      .then((e) => {
+        console.log("11111", e);
+        notificationApi("success", "Thành công", "Đã đóng báo cáo");
+        tableRef();
+        onClose();
+      })
+      .catch((error) => {
+        notificationApi("error", "Không thành công", "Lỗi");
+        console.log("error", error);
+      });
+  };
+
   const banUser = () => {
     postData(`/user/${selected?.referencedUser?.id}/ban`)
       .then((data) => {
@@ -238,7 +254,7 @@ export default function DetailReport({ selected, tableRef, onClose }) {
               {selected?.reportType === "PHOTO" ? (
                 <ComButton
                   onClick={() => {
-                    // update("ComPleted");
+                    closeReport();
                   }}
                 >
                   Hình ảnh hợp lệ
@@ -246,7 +262,7 @@ export default function DetailReport({ selected, tableRef, onClose }) {
               ) : (
                 <ComButton
                   onClick={() => {
-                    // update("ComPleted");
+                    closeReport();
                   }}
                 >
                   Tài khoản hợp lệ
@@ -258,6 +274,7 @@ export default function DetailReport({ selected, tableRef, onClose }) {
                   className={" bg-red-600 "}
                   onClick={() => {
                     // update("ComPleted");
+                    notificationApi("error", "Không thành công", "Chưa có api");
                   }}
                 >
                   Khóa bài viết

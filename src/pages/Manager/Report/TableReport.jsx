@@ -114,7 +114,7 @@ export const TableReport = forwardRef((props, ref) => {
         // { text: "Bình luận", value: "COMMENT" },
       ],
       onFilter: (value, record) => record.reportType === value,
-      sorter: (a, b) => a?.reportTypes?.localeCompare(b?.reportTypes),
+      // sorter: (a, b) => a?.reportTypes?.localeCompare(b?.reportTypes),
       render: (_, record) => (
         <div>
           <ComReportTypeConverter>{record?.reportType}</ComReportTypeConverter>
@@ -126,14 +126,14 @@ export const TableReport = forwardRef((props, ref) => {
       width: 120,
       dataIndex: "reportStatus",
       key: "reportStatus",
-      filters: [
-        { text: "Chưa phản hồi", value: "OPEN" },
-        // { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
-        // { text: "Đã trả lời", value: "RESPONSED" },
-        { text: "Đóng ", value: "CLOSED" },
-      ],
+      // filters: [
+      //   { text: "Chưa phản hồi", value: "OPEN" },
+      //   // { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
+      //   // { text: "Đã trả lời", value: "RESPONSED" },
+      //   { text: "Đóng ", value: "CLOSED" },
+      // ],
       // onFilter: (value, record) => record.reportStatus === value,
-      sorter: (a, b) => a?.reportStatus?.localeCompare(b?.reportStatus),
+      // sorter: (a, b) => a?.reportStatus?.localeCompare(b?.reportStatus),
       render: (_, record) => (
         <div>
           <ComReportStatusConverter>
@@ -148,7 +148,7 @@ export const TableReport = forwardRef((props, ref) => {
       width: 150,
       dataIndex: "content",
       key: "content",
-      sorter: (a, b) => a?.content?.localeCompare(b?.content),
+      // sorter: (a, b) => a?.content?.localeCompare(b?.content),
       ...getColumnSearchProps("content", "Nội dung"),
     },
 
