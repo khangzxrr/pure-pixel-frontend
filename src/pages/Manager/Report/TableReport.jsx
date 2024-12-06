@@ -8,7 +8,7 @@ import { useTableState } from "../../../hooks/useTableState";
 import { useModalState } from "../../../hooks/useModalState";
 import ComTable from "../../../components/ComTable/ComTable";
 import useColumnFilters from "../../../components/ComTable/utils";
-import { Image, Modal, Tooltip } from "antd";
+import { Image, Modal, Pagination, Tooltip } from "antd";
 import { getData, patchData, putData } from "../../../apis/api";
 import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButonTable";
 import { useNotification } from "../../../Notification/Notification";
@@ -47,10 +47,12 @@ export const TableReport = forwardRef((props, ref) => {
   const modal = useModalState();
   const modalDetail = useModalState();
   const modalEdit = useModalState();
+  const [totalRecord, setTotalRecord] = useState(0);
+
   const { notificationApi } = useNotification();
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10,
+    pageSize: 7,
   });
   const [filters, setFilters] = useState({});
   const [sorter, setSorter] = useState(null);
@@ -68,8 +70,8 @@ export const TableReport = forwardRef((props, ref) => {
       // fixed: "left",
       dataIndex: "user.name",
       key: "user",
-      sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
-      ...getColumnSearchProps("user.name", "Người báo cáo"),
+      // sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
+      // ...getColumnSearchProps("user.name", "Người báo cáo"),
       render: (_, record) => (
         <div className=" gap-2 items-center ">
           {record?.user?.avatar && (
@@ -89,8 +91,8 @@ export const TableReport = forwardRef((props, ref) => {
     {
       title: "Thời gian báo cáo",
       width: 120,
-      dataIndex: "createdAt",
-      key: "createdAt",
+      dataIndex: "orderByCreatedAt",
+      key: "orderByCreatedAt",
       sorter: (a, b) => new Date(a?.createdAt) - new Date(b?.createdAt),
       // ...getColumnApprox("createdAt"),
       render: (_, render) => (
@@ -103,16 +105,16 @@ export const TableReport = forwardRef((props, ref) => {
     {
       title: "Thể loại báo cáo",
       width: 100,
-      dataIndex: "reportType",
-      key: "reportType",
+      dataIndex: "reportTypes",
+      key: "reportTypes",
       filters: [
         { text: "Hình ảnh", value: "PHOTO" },
         { text: "Người dùng", value: "USER" },
-        { text: "Dịch vụ", value: "BOOKING" },
-        { text: "Bình luận", value: "COMMENT" },
+        // { text: "Dịch vụ", value: "BOOKING" },
+        // { text: "Bình luận", value: "COMMENT" },
       ],
       onFilter: (value, record) => record.reportType === value,
-      sorter: (a, b) => a?.reportType?.localeCompare(b?.reportType),
+      sorter: (a, b) => a?.reportTypes?.localeCompare(b?.reportTypes),
       render: (_, record) => (
         <div>
           <ComReportTypeConverter>{record?.reportType}</ComReportTypeConverter>
@@ -130,7 +132,7 @@ export const TableReport = forwardRef((props, ref) => {
         // { text: "Đã trả lời", value: "RESPONSED" },
         { text: "Đóng ", value: "CLOSED" },
       ],
-      onFilter: (value, record) => record.reportStatus === value,
+      // onFilter: (value, record) => record.reportStatus === value,
       sorter: (a, b) => a?.reportStatus?.localeCompare(b?.reportStatus),
       render: (_, record) => (
         <div>
@@ -200,9 +202,9 @@ export const TableReport = forwardRef((props, ref) => {
                 notificationError
               );
             }}
-            extraMenuItems={
-              record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
-            }
+            // extraMenuItems={
+            //   record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
+            // }
             excludeDefaultItems={["edit", "delete"]}
           />
         </div>
@@ -277,50 +279,78 @@ export const TableReport = forwardRef((props, ref) => {
 
   const reloadData = (pagination, filters, sorter) => {
     table.handleOpenLoading();
-    const params = {
-      limit: pagination.pageSize,
-      page: pagination.current - 1, // API của bạn có thể bắt đầu từ 0
-      ...filters, // Thêm các filter vào
-      ...(sorter
-        ? {
-            sortBy: sorter.field, // Tên trường bạn muốn sắp xếp theo
-            sortOrder: sorter.order === "ascend" ? "ASC" : "DESC",
-          }
-        : {}),
-    };
+    const params = {};
 
+    // Thêm các tham số phân trang vào params
+    if (pagination) {
+      params.limit = pagination.pageSize;
+      params.page = pagination.current - 1; // API của bạn có thể bắt đầu từ 0
+    }
+
+    // Thêm các bộ lọc (filters) vào params nếu có
+    if (filters) {
+      Object.keys(filters).forEach((key) => {
+        const value = filters[key];
+        // Nếu giá trị là mảng (ví dụ: reportTypes), thêm từng phần tử vào params dưới dạng tham số riêng biệt
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            params[key] = params[key] ? [...params[key], item] : [item];
+          });
+        } else if (value) {
+          // Nếu giá trị không phải là mảng, thêm trực tiếp vào params
+          params[key] = value;
+        }
+      });
+    }
+
+    if (sorter && sorter.field && sorter.order) {
+      // Chuyển đổi tên trường và kiểu sắp xếp thành format bạn mong muốn
+      const sortField = sorter.field;
+      const sortOrder = sorter.order === "ascend" ? "asc" : "desc";
+      // Giả sử bạn muốn tham số sắp xếp theo định dạng "orderBy<FieldName>"
+      params[sortField] = sortOrder;
+    }
+    // if (sorter && sorter.field && sorter.order) {
+    //   params.sortBy = sorter.field;
+    //   params.sortOrder = sorter.order === "ascend" ? "asc" : "desc";
+    // }
+    const urlParams = new URLSearchParams(params).toString();
     console.log("====================================");
-    console.log(123, params);
-    console.log(123, );
+    console.log(123, urlParams);
+    console.log(123, `/manager/report?${urlParams}`);
 
     console.log("====================================");
     getData(`/manager/report?${new URLSearchParams(params)}`)
       .then((e) => {
         setData(e?.data?.objects);
-        console.log("====================================");
-        console.log(e?.data);
-        console.log("====================================");
+        setTotalRecord(e?.data?.totalRecord);
+
         table.handleCloseLoading();
       })
       .catch((error) => {
         console.error("Error fetching items:", error);
         if (error?.status === 401) {
-          reloadData(pagination, filters, sorter);
+          // reloadData(pagination, filters, sorter);
         }
       });
   };
   useEffect(() => {
-    setTimeout(() => {
-      reloadData(pagination, filters, sorter);
-    }, 500);
-  }, []);
+    reloadData(pagination, filters, sorter);
+  }, [pagination]);
 
-    const handleSearch = () => {
- 
-    };
+  const handleSearch = () => {};
   console.log("====================================");
-  console.log(data);
+  console.log(pagination);
   console.log("====================================");
+
+  const handlePageClick = (pageNumber) => {
+    if (pageNumber !== pagination.current) {
+      setPagination({
+        ...pagination,
+        current: pageNumber,
+      });
+    }
+  };
   return (
     <div>
       {/* <div className="flex justify-end">
@@ -330,7 +360,7 @@ export const TableReport = forwardRef((props, ref) => {
         />
       </div> */}
 
-      <div className="flex items-center rounded-lg bg-[#202225] min-w-min mb-4">
+      {/* <div className="flex items-center rounded-lg bg-[#202225] min-w-min mb-4">
         <input
           // value={inputValue}
           // onChange={handleInputChange}
@@ -340,33 +370,53 @@ export const TableReport = forwardRef((props, ref) => {
           className="font-normal text-sm px-2 py-2 w-full pl-4 bg-[#202225] rounded-lg text-white focus:outline-none"
         />
         <div className=" ">
-          <button
-            className=" py-3 px-4 text-white"
-            onClick={handleSearch}
-          >
+          <button className=" py-3 px-4 text-white" onClick={handleSearch}>
             <FaSearch />
           </button>
         </div>
-      </div>
+      </div> */}
       <ComTable
         y={"65vh"}
         columns={columns}
         dataSource={data}
         loading={table.loading}
-        pagination={pagination}
+        // pagination={false}
+        // pagination={pagination}
+        pagination={{
+          current: pagination.current,
+          total: totalRecord,
+          pageSize: pagination.pageSize,
+          onChange: handlePageClick,
+          showSizeChanger: false,
+        }}
         onChange={(pagination, filters, sorter) => {
           setFilters(filters);
           setSorter(sorter);
           reloadData(pagination, filters, sorter);
         }}
       />
-
+      {/* {totalRecord > 1 && (
+        <Pagination
+          current={pagination.current}
+          total={totalRecord}
+          onChange={handlePageClick}
+          pageSize={pagination.pageSize}
+          showSizeChanger={false}
+          className="flex justify-end my-2"
+        />
+      )} */}
       <ComModal
         isOpen={modalDetail?.isModalOpen}
         onClose={modalDetail?.handleClose}
         width={800}
       >
-        <DetailReport selected={selectedData} />
+        <DetailReport
+          selected={selectedData}
+          tableRef={() => {
+            reloadData(pagination, filters, sorter);
+          }}
+          onClose={modalDetail?.handleClose}
+        />
       </ComModal>
       <ComModal
         isOpen={modalEdit?.isModalOpen}
@@ -375,7 +425,7 @@ export const TableReport = forwardRef((props, ref) => {
       >
         <EditUpgrede
           selectedUpgrede={selectedData}
-          tableRef={reloadData}
+          // tableRef={reloadData}
           onClose={modalEdit?.handleClose}
         />
       </ComModal>
