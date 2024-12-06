@@ -65,6 +65,7 @@ import PrivateExceptionPage from "../layouts/PrivateExceptionPage";
 import SellPhoto from "../pages/Photographer/SellPhoto";
 import ECommerce from "./../pages/Admin/ECommerce";
 import ComTotalUsers from "../components/ComECommerce/ComTotalUsers";
+import PhotographerDetailStats from "../components/ComECommerce/PhotographerDetailStats";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -398,6 +399,10 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/admin/Dashboard/total-users",
             element: <ComTotalUsers />,
+          },
+          {
+            path: "/admin/Dashboard/ptgDetail/:photographerId",
+            element: <PhotographerDetailStats />,
           },
           {
             path: "/admin/upgrade",
