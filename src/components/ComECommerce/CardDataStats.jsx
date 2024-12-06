@@ -9,11 +9,12 @@ const CardDataStats = ({
   iconPercent,
   colorPercent,
   link,
+  onClick,
 }) => {
   const navigate = useNavigate();
   return (
     <div
-      onClick={() => navigate(link)}
+      onClick={onClick}
       className="bg-[#32353b] text-[#eee] flex flex-col  p-6 rounded-sm hover:scale-105 transition-all duration-200 hover:cursor-pointer"
     >
       <div className="flex items-center mb-3">
@@ -25,7 +26,7 @@ const CardDataStats = ({
           <div className="text-sm text-[#7f848e]">{label}</div>
           <div className={`text-sm ${colorPercent} flex gap-1 items-center`}>
             {iconPercent}
-            {percent}%
+            {percent ? `${percent}%` : ""}
           </div>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import formatPrice from "./../../utils/FormatPriceUtils";
 
 const options = {
   chart: {
@@ -36,7 +35,7 @@ const options = {
       breakpoint: 2600,
       options: {
         chart: {
-          width: 360,
+          width: 300,
         },
       },
     },
@@ -51,49 +50,38 @@ const options = {
   ],
 };
 
-const ChartDashboardRevenue = ({
-  nameChart,
-  param1,
-  param2,
-  nameParam1,
-  nameParam2,
-  isMoney = false,
-}) => {
-  const [series, setSeries] = useState([param1, param2]);
+const ChartRevenueOfPhotographer = () => {
+  const [series, setSeries] = useState([5000000, 15000000]);
 
   return (
     <div className="sm:px-7.5 col-span-12 rounded-sm bg-boxdark shadow-default">
       <div className="p-3 text-[#eee] font-bold flex items-center justify-center">
-        {nameChart || ""}
+        Thống kê tổng doanh thu
       </div>
       <div className="">
         <div id="chartDashboardRevenue" className="mx-auto flex justify-center">
           <ReactApexChart options={options} series={series} type="donut" />
         </div>
       </div>
-      <div className="flex flex-col gap-2 px-2">
+      <div className="flex flex-col gap-2 px-2 pb-2">
         <div className="flex items-center justify-between  gap-2 text-[#eee]">
           <div className="flex items-center gap-2 w-full">
-            <span className="w-3 h-3 rounded-full bg-[#6577F3]"></span>{" "}
-            {nameParam1 || ""}
+            <span className="w-3 h-3 rounded-full bg-[#6577F3]"></span> Doanh
+            thu gói dịch vụ
           </div>
-          <div className="font-bold">
-            {isMoney ? formatPrice(series[0]) : series[0]}
-          </div>
+          <div className="font-bold">{series[1].toLocaleString()}đ</div>
         </div>
 
         <div className="flex items-center justify-between  gap-2 text-[#eee]">
           <div className="flex items-center gap-2 ">
-            <span className="w-3 h-3 rounded-full bg-[#3C50E0]"></span>{" "}
-            {nameParam2 || ""}
+            <span className="w-3 h-3 rounded-full bg-[#3C50E0]"></span>Doanh thu
+            bán ảnh
           </div>
-          <div className="font-bold">
-            {isMoney ? formatPrice(series[1]) : series[1]}
-          </div>
+          <div className="font-bold">{series[0].toLocaleString()}đ</div>
         </div>
       </div>
     </div>
   );
 };
 
-export default ChartDashboardRevenue;
+export default ChartRevenueOfPhotographer;
