@@ -8,48 +8,52 @@ import {
   Table,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-const TablePhotoListOfPhotographer = () => {
+import { FormatDate } from "./../../utils/FormatDate";
+const TablePhotoListOfPhotographer = ({ data }) => {
   const navigate = useNavigate();
+
   const columns = [
-    { title: "Xếp hạng", dataIndex: "photoRank" },
+    {
+      title: "Xếp hạng",
+      dataIndex: "photoRank",
+      render: (_, __, index) => <span>{index + 1}</span>,
+      width: 120,
+    },
     {
       title: "Tên",
       dataIndex: "name",
-      render: (text, record) => <p>{text}</p>,
+      render: (text, record) => (
+        <div className="flex items-center gap-2">
+          <div className="size-16 overflow-hidden">
+            <img
+              src={record.thumbnail}
+              alt=""
+              className="size-full object-cover"
+            />
+          </div>
+          {text}
+        </div>
+      ),
     },
     {
       title: "Ngày tạo",
       dataIndex: "createdDate",
+      width: 240,
     },
-    { title: "Tổng số ảnh đã bán", dataIndex: "totalPhotoSold" },
+    {
+      title: "Tổng số ảnh đã bán",
+      dataIndex: "totalPhotoSold",
+      width: 240,
+      render: (text, record) => <div>{text} ảnh</div>,
+    },
   ];
 
-  const dataPhotographers = [
-    {
-      id: 1,
-      photoRank: 1,
-      name: "Trần Thanh Tường",
-      createdDate: "2023-01-01",
-      totalPhotoSold: 10,
-    },
-    {
-      id: 2,
-      photoRank: 1,
-      name: "Trần Thanh Tường",
-
-      createdDate: "2023-01-01",
-
-      totalPhotoSold: 10,
-    },
-    {
-      id: 3,
-      photoRank: 1,
-      name: "Trần Thanh Tường",
-      createdDate: "2023-01-01",
-
-      totalPhotoSold: 10,
-    },
-  ];
+  const dataPhotographers = data?.map((item) => ({
+    name: item.detail?.title,
+    thumbnail: item.detail?.signedUrl?.thumbnail,
+    createdDate: FormatDate(item.detail?.createdAt),
+    totalPhotoSold: item.soldCount,
+  }));
   return (
     <div className="bg-[#32353b] rounded-sm">
       <div className="flex items-center justify-center p-4 font-bold text-[#eee]">

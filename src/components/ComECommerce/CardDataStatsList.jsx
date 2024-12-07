@@ -24,7 +24,6 @@ const CardDataStatsList = ({ data }) => {
   const totalPhotoNotSelling = photoTotal - totalPhotoSelling;
   const revenueFromSellingPhoto = dashBoardData?.revenueFromSellingPhoto;
   const revenueFromUpgradePackage = dashBoardData?.revenueFromUpgradePackage;
-  console.log(totalPhotoNotSelling);
 
   const handleUserTotalModal = () => {
     setIsOpenUserTotal(!isOpenUserTotal);

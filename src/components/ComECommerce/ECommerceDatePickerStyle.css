@@ -1,0 +1,26 @@
+.ant-picker-time-panel {
+  float: left; /* Adjusts the time panel to float to the left */
+}
+
+.ant-picker-date-panel {
+  float: right; /* Adjusts the date panel to float to the right */
+}
+/* Change the content of the OK button in the RangePicker */
+.ant-picker-ok button::before {
+  content: "Xác nhận"; /* Replace 'OK' with 'Xác nhận' or any other text */
+  display: block;
+  color: inherit; /* Ensure the text uses the existing color of the button */
+}
+
+/* Hide the original text inside the button */
+.ant-picker-ok button span {
+  display: none;
+}
+
+.custom-range-picker .ant-picker-input > input::placeholder {
+  color: #d7d7d8;
+}
+
+.custom-range-picker .ant-picker-input-placeholder > input {
+  color: #d7d7d8;
+}
