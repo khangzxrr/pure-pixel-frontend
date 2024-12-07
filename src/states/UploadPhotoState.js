@@ -248,14 +248,14 @@ const useUploadPhotoStore = create(
     setNextSelectedPhoto: () => {
       set((state) => {
         const { uidHashmap, selectedPhoto } = state;
-        if (!selectedPhoto) return;
+        if (!selectedPhoto) return {};
 
         // Get all uids as an array from the keys of uidHashmap
         const uids = Object.keys(uidHashmap);
         const currentIndex = uids.indexOf(selectedPhoto);
 
         // If the current UID is not found, do nothing
-        if (currentIndex === -1) return;
+        if (currentIndex === -1) return {};
 
         // Calculate the next index with wrap-around to the start of the array
         const nextIndex = (currentIndex + 1) % uids.length;
@@ -269,14 +269,14 @@ const useUploadPhotoStore = create(
     setPreviousSelectedPhoto: () => {
       set((state) => {
         const { uidHashmap, selectedPhoto } = state;
-        if (!selectedPhoto) return;
+        if (!selectedPhoto) return {};
 
         // Get all uids as an array from the keys of uidHashmap
         const uids = Object.keys(uidHashmap);
         const currentIndex = uids.indexOf(selectedPhoto);
 
         // If the current UID is not found, do nothing
-        if (currentIndex === -1) return;
+        if (currentIndex === -1) return {};
 
         // Calculate the previous index using circular logic
         const previousIndex = (currentIndex - 1 + uids.length) % uids.length;

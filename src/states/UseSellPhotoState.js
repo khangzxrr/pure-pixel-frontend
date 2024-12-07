@@ -9,12 +9,15 @@ const useSellPhotoStore = create(
   devtools((set, get) => ({
     photoIdHashmap: initPhotoIdHashMap,
     uidHashmap: initUiHashMap,
-    photoArray: [],
+    photoArray: initPhotoArray,
     selectedPhoto: null,
     isUpdatingPhotos: false,
     isOpenDraftModal: false,
     isOpenMapModal: false,
-
+    disableUpload: false,
+    setDisableUpload: (status) => {
+      set({ disableUpload: status });
+    },
     getPhotoByUid: (uid) => {
       const index = get().uidHashmap[uid];
       return get().photoArray[index];
@@ -24,15 +27,6 @@ const useSellPhotoStore = create(
       set((state) => ({
         selectedPhoto: uid,
       })),
-
-    updateSelectedPhotoProperty: (key, value) => {
-      set((state) => {
-        state.selectedPhoto[key] = value;
-        return {
-          selectedPhoto: state.selectedPhoto,
-        };
-      });
-    },
 
     updatePhotoPropertyByUid: (uid, key, value) => {
       set((state) => {
@@ -71,7 +65,52 @@ const useSellPhotoStore = create(
         }
       });
     },
+    updateArrayElementByUid: (uid, arrayKey, value, index, propertyKey) => {
+      set((state) => {
+        const photoIndex = state.uidHashmap[uid];
 
+        // Check if the photo exists and the arrayKey refers to an array
+        if (
+          photoIndex !== undefined &&
+          Array.isArray(state.photoArray[photoIndex]?.[arrayKey])
+        ) {
+          const updatedArray = [...state.photoArray[photoIndex][arrayKey]];
+
+          // Check if the index is valid and the element is an object
+          if (
+            index >= 0 &&
+            index < updatedArray.length &&
+            typeof updatedArray[index] === "object"
+          ) {
+            updatedArray[index] = {
+              ...updatedArray[index],
+              [propertyKey]: value, // Update the specific property in the object
+            };
+          }
+
+          // Update the photoArray with the modified array
+          return {
+            photoArray: state.photoArray.map((photo, idx) =>
+              idx === photoIndex
+                ? { ...photo, [arrayKey]: updatedArray } // Replace the array in the target photo
+                : photo
+            ),
+          };
+        }
+
+        return state; // Return unchanged state if conditions are not met
+      });
+    },
+
+    setPriceByUidAndPricetagIndex: (uid, pricetagIndex, price) =>
+      set((state) => {
+        const index = state.uidHashmap[uid];
+
+        state.photoArray[index].pricetags[pricetagIndex].price = price;
+        return {
+          photoArray: state.photoArray,
+        };
+      }),
     updatePhotoPropertyById: (id, key, value) => {
       set((state) => {
         const index = state.photoIdHashmap[id];
@@ -105,7 +144,6 @@ const useSellPhotoStore = create(
         const index = state.photoArray.length;
 
         state.uidHashmap[uid] = index;
-
         state.photoArray.push(payload);
 
         return {
@@ -113,7 +151,6 @@ const useSellPhotoStore = create(
           uidHashmap: state.uidHashmap,
         };
       }),
-
     removePhotoByUid: (uid) =>
       set((state) => {
         const index = state.uidHashmap[uid];
@@ -242,13 +279,11 @@ const useSellPhotoStore = create(
     setNextSelectedPhoto: () => {
       set((state) => {
         const { uidHashmap, selectedPhoto } = state;
-        if (!selectedPhoto) return;
-
+        if (!selectedPhoto || selectedPhoto === null) return {};
         const uids = Object.keys(uidHashmap);
         const currentIndex = uids.indexOf(selectedPhoto);
 
-        if (currentIndex === -1) return;
-
+        if (currentIndex === -1) return {};
         const nextIndex = (currentIndex + 1) % uids.length;
         const nextUid = uids[nextIndex];
 
@@ -259,12 +294,12 @@ const useSellPhotoStore = create(
     setPreviousSelectedPhoto: () => {
       set((state) => {
         const { uidHashmap, selectedPhoto } = state;
-        if (!selectedPhoto) return;
+        if (!selectedPhoto || selectedPhoto === null) return {};
 
         const uids = Object.keys(uidHashmap);
         const currentIndex = uids.indexOf(selectedPhoto);
 
-        if (currentIndex === -1) return;
+        if (currentIndex === -1) return {};
 
         const previousIndex = (currentIndex - 1 + uids.length) % uids.length;
         const previousUid = uids[previousIndex];

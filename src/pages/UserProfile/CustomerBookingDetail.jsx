@@ -444,7 +444,7 @@ const CustomerBookingDetail = () => {
                 >
                   <div className="relative p-2">
                     <img
-                      src={photo?.signedUrl.url}
+                      src={photo?.signedUrl.thumbnail}
                       className={`w-[150px] lg:w-[170px] h-[150px] lg:h-[170px] object-cover rounded-md cursor-pointer ${
                         photo.id === selectedPhoto?.id
                           ? "border-4 border-gray-300 transition duration-300"

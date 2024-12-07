@@ -6,7 +6,7 @@ const exifOptions = {
   tiff: true, // Parse TIFF data
   ifd0: false, // Disable IFD0
   exif: true, // Enable EXIF data
-  gps: false, // Disable GPS data
+  gps: true, // Disable GPS data
   interop: false, // Disable Interop data
   ifd1: false, // Disable IFD1 (Thumbnail)
   makerNote: false, // Disable MakerNote

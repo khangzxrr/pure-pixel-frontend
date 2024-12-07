@@ -178,7 +178,6 @@ const sharePhotoById = async (photoId, size) => {
 
   return response.data;
 };
-
 const PhotoApi = {
   getPublicPhotos,
   uploadPhoto,

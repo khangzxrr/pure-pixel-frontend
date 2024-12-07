@@ -110,9 +110,9 @@ export default function PhotoCard({ photo }) {
         },
       });
       console.log("response", response);
-      // setPhotoUploadResponse(photo.file.uid, response);
-      // updatePhotoPropertyByUid(photo.file.uid, "status", "done");
-      // updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
+      setPhotoUploadResponse(photo.file.uid, response);
+      updatePhotoPropertyByUid(photo.file.uid, "status", "done");
+      updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
     } catch (e) {
       console.log("tryUploadPhoto error", e);
     }
@@ -127,15 +127,17 @@ export default function PhotoCard({ photo }) {
         <img
           src={photo?.reviewUrl}
           className={`w-full h-full object-cover rounded-md cursor-pointer ${
-            photo.file.uid === selectedPhoto
-              ? "border-4 border-white transition duration-300"
+            photo.file.uid === selectedPhoto && photo.status === "done"
+              ? "border-4 border-white transition duration-200"
+              : photo.file.uid === selectedPhoto && photo.status !== "done"
+              ? "border-4 border-red-500 transition duration-200"
               : ""
           }`}
           alt="Photo"
           onClick={handleSelect}
         />
         <div className="flex justify-between">
-          <p className="text-slate-300 pr-4 font-semibold text-center overflow-hidden whitespace-nowrap text-ellipsis">
+          <p className="text-slate-300 pr-4   font-semibold text-center overflow-hidden whitespace-nowrap text-ellipsis">
             {photo.title}
           </p>
           <div className=" bottom-3 right-3 z-20">
@@ -175,7 +177,8 @@ export default function PhotoCard({ photo }) {
       )}
       {photo.status !== "uploading" && photo.status !== "done" && (
         <div
-          className={`absolute inset-0 grid place-items-center bg-gray-300 bg-opacity-80  z-10 rounded-lg`}
+          className={`absolute m-2 inset-0 grid place-items-center bg-red-300 bg-opacity-50 z-10 rounded-md cursor-pointer`}
+          onClick={handleSelect}
         >
           {tryUploadPhotoPending ? (
             "loading.."
@@ -189,10 +192,13 @@ export default function PhotoCard({ photo }) {
                 reUploadPhoto();
               }}
             >
-              <div className="flex flex-col items-center cursor-pointer text-blue-500 hover:opacity-80">
-                <UndoOutlined className="text-4xl text-blue-500" />
-                <p className="text-blue-500 mt-2">Thử lại</p>
-                <p>{photo.status}</p>
+              <div className="flex flex-col items-center cursor-pointer text-white font-normal text-center hover:opacity-80">
+                {/* <UndoOutlined className="text-4xl text-blue-500" /> */}
+                <p className="p-3">
+                  {photo.status === "duplicated"
+                    ? "Ảnh đã tồn tại trong hệ thống"
+                    : photo.status}
+                </p>
               </div>
             </Tooltip>
           )}

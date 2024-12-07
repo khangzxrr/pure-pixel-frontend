@@ -16,19 +16,18 @@ import PhotoService from "../../../services/PhotoService";
 import { useNotification } from "../../../Notification/Notification";
 import useSellPhotoStore from "../../../states/UseSellPhotoState";
 import PhotoSellList from "./PhotoSellList";
+import PhotoExchange from "../../../apis/PhotoExchange";
 const { Dragger } = Upload;
 
 export default function UploadPhotoSell() {
-  const [isWatermarkAll, setIsWatermarkAll] = useState(true);
-  const [disableUpload, setDisableUpload] = useState(false);
   const {
     addPhoto,
     setSelectedPhotoByUid,
     photoArray,
     updatePhotoPropertyByUid,
-    toggleWatermark,
     setPhotoUploadResponse,
-    clearState,
+    disableUpload,
+    setDisableUpload,
   } = useSellPhotoStore();
 
   const navigate = useNavigate();
@@ -41,26 +40,18 @@ export default function UploadPhotoSell() {
       PhotoApi.uploadPhoto(file, onUploadProgress),
   });
 
+  const getAvailableResolutionsByPhotoId = useMutation({
+    mutationFn: async (photoId) =>
+      await PhotoApi.getAvailableResolutionsByPhotoId(photoId),
+  });
+
   const updatePhotos = useMutation({
     mutationKey: "update-photo",
     mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
-    onSuccess: () => {
-      navigate("/profile/my-photos");
-      // Clear state after successful updates
-      clearState();
-
-      // Display success message
-      notificationApi(
-        "success",
-        "Đăng tải ảnh thành công",
-        "Ảnh của bạn đã được đăng tải thành công"
-      );
-    },
   });
-
-  const addWatermark = useMutation({
-    mutateKey: "add-watermark",
-    mutationFn: async (photo) => await PhotoApi.addWatermark(photo),
+  const sellPhoto = useMutation({
+    mutationFn: async (photos) =>
+      await PhotoExchange.sellPhotoByPhotoId(photos),
   });
 
   //handle exception from api response
@@ -249,13 +240,8 @@ export default function UploadPhotoSell() {
         file,
         title: file.name.substring(0, file.name.lastIndexOf(".")),
         exif,
-        watermark: false,
-        watermarkContent: "PUREPIXEL",
-        visibility: "PUBLIC",
         status: "uploading",
       });
-
-      setSelectedPhotoByUid(file.uid);
     } catch (e) {
       console.log("beforeUpload error", e);
 
@@ -283,8 +269,16 @@ export default function UploadPhotoSell() {
       setPhotoUploadResponse(file.uid, response);
       updatePhotoPropertyByUid(file.uid, "status", "done");
       updatePhotoPropertyByUid(file.uid, "percent", 100);
-
-      onSuccess(response);
+      try {
+        const photoResolution =
+          await getAvailableResolutionsByPhotoId.mutateAsync(response.id);
+        console.log("photoResolution", photoResolution);
+        updatePhotoPropertyByUid(file.uid, "pricetags", photoResolution);
+        setSelectedPhotoByUid(file.uid);
+        onSuccess(response);
+      } catch (error) {
+        onError(e);
+      }
     } catch (e) {
       handleException(file, e);
       onError(e);
@@ -325,56 +319,13 @@ export default function UploadPhotoSell() {
     }
   };
 
-  const handleToggleWatermark = () => {
-    setIsWatermarkAll(!isWatermarkAll);
-    toggleWatermark(!isWatermarkAll);
-  };
-
   const itemRender = () => {
     return "";
   };
 
-  const SubmitUpload = async () => {
+  const SubmitUpload = () => {
     setDisableUpload(true);
-    // Loop over each photo and update them individually
-    const updatePromises = photoArray.map(async (photo) => {
-      const photoToUpdate = {
-        id: photo.response.id,
-        categoryId: photo.categoryId,
-        title: photo.title,
-        watermark: photo.watermark,
-        description: photo.description,
-        categoryIds: photo.categoryIds,
-        visibility: photo.visibility,
-        photoTags: photo.photoTags,
-        gps: photo.gps,
-      };
-
-      // Call the API to update a single photo and add watermark concurrently
-      return Promise.all([
-        updatePhotos.mutateAsync(photoToUpdate),
-        photo.watermark
-          ? addWatermark.mutateAsync({
-              photoId: photo.response.id,
-              text: photo.watermarkContent,
-            })
-          : Promise.resolve(),
-      ]);
-    });
-
-    try {
-      // Wait for all update and watermark operations to complete
-      await Promise.all(updatePromises);
-      setDisableUpload(false);
-      // navigate("/my-photo/photo/all");
-    } catch (error) {
-      // Handle errors if any of the updates fail
-      setDisableUpload(false);
-      console.error("Error updating photos:", error);
-      message.error("Có lỗi xảy ra trong quá trình cập nhật!");
-    }
   };
-
   return (
     <div className="h-full w-full overflow-hidden relative ">
       <div className={`w-full h-full grid grid-cols-7`}>
@@ -384,31 +335,7 @@ export default function UploadPhotoSell() {
             photoArray.length > 0 ? "" : "hidden"
           }`}
         >
-          <div
-            className={`w-full row-span-1 ${
-              photoArray.length > 1 ? "visible" : "invisible"
-            }`}
-          >
-            <Tooltip placement="rightTop" color="geekblue">
-              <div className="flex items-center pl-3">
-                <Switch
-                  defaultChecked
-                  size="small"
-                  onChange={handleToggleWatermark}
-                />
-                {isWatermarkAll ? (
-                  <p className="ml-2 text-slate-300 font-semibold">
-                    Gỡ nhãn toàn bộ ảnh
-                  </p>
-                ) : (
-                  <p className="ml-2 text-slate-300 font-semibold">
-                    Gắn nhãn toàn bộ ảnh
-                  </p>
-                )}
-              </div>
-            </Tooltip>
-          </div>
-          <div className="row-span-7">
+          <div className="row-span-8">
             <PhotoSellList />
           </div>
         </div>

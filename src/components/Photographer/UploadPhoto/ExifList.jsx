@@ -3,15 +3,15 @@ import React, { useState } from "react";
 const ExifList = ({ exifData }) => {
   const [showFull, setShowFull] = useState(false);
 
+  // Check if exifData is undefined or null
+  if (!exifData) {
+    return <div className="text-[#d7d7d8]">Không có dữ liệu của tấm ảnh</div>;
+  }
+
   const fields = [
     { label: "Mẫu máy", value: exifData.Model },
     { label: "Loại ống kính", value: exifData.LensModel },
     { label: "Hãng sản xuất", value: exifData.Make },
-
-    // {
-    //   label: "Hướng chụp",
-    //   value: exifData.Orientation?.includes("Horizontal") ? "Ngang" : "Dọc",
-    // },
     { label: "Hướng chụp", value: exifData.Orientation },
     { label: "ISO", value: exifData.ISO },
     { label: "Thời gian phơi sáng", value: `${exifData.ExposureTime}s` },
