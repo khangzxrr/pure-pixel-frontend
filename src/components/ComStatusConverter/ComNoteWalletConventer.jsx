@@ -17,6 +17,13 @@ function ComNoteWalletConverter({ type, amount }) {
         return <p className="">Nhận được 90% giá trị bức ảnh</p>;
       case "WITHDRAWAL":
         return <p className="">Xử lý trong vòng 3 ngày</p>;
+      case "REFUND_FROM_BUY_IMAGE":
+        return (
+          <p className="">
+            Hoàn tiền từ thanh toán thất bại khi mua ảnh bằng thanh toán QR
+          </p>
+        );
+
       default:
         return "";
     }
