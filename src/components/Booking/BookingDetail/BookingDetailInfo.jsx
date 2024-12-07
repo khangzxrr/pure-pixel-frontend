@@ -72,7 +72,7 @@ const BookingDetailInfo = ({ bookingDetail }) => {
     } else {
       notificationApi(
         "error",
-        "Chưa thể đổi trạng thái",
+        "Thao tác thất bại",
         "Vui lòng trả ảnh cho khách để xác nhận thanh toán"
       );
     }

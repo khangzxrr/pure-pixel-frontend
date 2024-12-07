@@ -18,11 +18,14 @@ export default function UploadPhotoForm({ selectedPhoto }) {
     useUploadPhotoStore();
   const [categories, setCategories] = useState([]);
   const [viewState, setViewState] = useState({
-    latitude: 10.762622,
-    longitude: 106.66667,
+    latitude: selectedPhoto?.exif?.latitude ?? 10.762622,
+    longitude: selectedPhoto?.exif?.longitude ?? 106.66667,
     zoom: 14,
   });
-  const [selectedLocate, setSelectedLocate] = useState();
+  const [selectedLocate, setSelectedLocate] = useState({
+    latitude: selectedPhoto?.exif?.latitude ?? 10.762622,
+    longitude: selectedPhoto?.exif?.longitude ?? 106.66667,
+  });
 
   const getAllCategories = useMutation({
     mutationFn: () => CategoryApi.getAllCategories(),
@@ -40,6 +43,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
+      console.log("address", data);
       setSelectedLocate({
         ...selectedLocate,
         address: data.features[0].properties.full_address,
@@ -68,29 +72,24 @@ export default function UploadPhotoForm({ selectedPhoto }) {
   useEffect(() => {
     reset(getDefaultPhoto(selectedPhoto));
     getAllCategories.mutate();
-    console.log(
-      "selectedPhoto",
-      selectedPhoto?.gps?.longitude,
-      selectedPhoto?.gps?.longitude === undefined
-    );
 
     if (
-      selectedPhoto?.gps &&
-      selectedPhoto?.gps?.longitude !== undefined &&
-      selectedPhoto?.gps?.latitude !== undefined
+      selectedPhoto?.exif &&
+      selectedPhoto?.exif?.longitude !== undefined &&
+      selectedPhoto?.exif?.latitude !== undefined
     ) {
       searchByCoordinate.mutate({
-        longitude: selectedPhoto.gps.longitude,
-        latitude: selectedPhoto.gps.latitude,
+        longitude: selectedPhoto.exif.longitude,
+        latitude: selectedPhoto.exif.latitude,
       });
       setViewState((prev) => ({
         ...prev,
-        latitude: selectedPhoto.gps.latitude,
-        longitude: selectedPhoto.gps.longitude,
+        latitude: selectedPhoto.exif.latitude,
+        longitude: selectedPhoto.exif.longitude,
       }));
       setSelectedLocate({
-        latitude: selectedPhoto.gps.latitude,
-        longitude: selectedPhoto.gps.longitude,
+        latitude: selectedPhoto.exif.latitude,
+        longitude: selectedPhoto.exif.longitude,
       });
     } else {
       console.error("Geolocation is not supported by this browser.");
@@ -359,14 +358,13 @@ export default function UploadPhotoForm({ selectedPhoto }) {
           {/* Trường Vị trí */}
           <p>Vị trí</p>
           <div className="m-2">
-            {selectedPhoto.gps ? (
+            {selectedPhoto.exif.latitude && selectedPhoto.exif.longitude ? (
               <div className="relative w-full h-[40vh]">
                 <Map
                   {...viewState}
                   mapStyle="mapbox://styles/mapbox/streets-v9"
                   mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
                   style={{ width: "100%", height: "100%" }}
-                  onClick={() => setIsOpenMapModal(true)}
                 >
                   {selectedLocate && (
                     <>

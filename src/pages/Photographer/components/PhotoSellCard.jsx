@@ -1,4 +1,4 @@
-import { Checkbox, message, Progress, Tooltip } from "antd";
+import { message, Progress, Tooltip } from "antd";
 import { DeleteOutlined, UndoOutlined } from "@ant-design/icons";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useMutation } from "@tanstack/react-query";
@@ -20,7 +20,13 @@ export default function PhotoSellCard({ photo }) {
   const { notificationApi } = useNotification();
   //handle exception from api response
 
-  const [isDeleting, setIsDeleting] = useState(false);
+  const isInValidPhotoTagsPhoto =
+    photo &&
+    photo.status === "done" &&
+    !photo?.pricetags?.some(
+      (tag) => tag.price !== undefined && tag.price !== ""
+    );
+
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
   });
@@ -62,42 +68,19 @@ export default function PhotoSellCard({ photo }) {
   const handleSelect = () => {
     setSelectedPhotoByUid(photo.file.uid);
   };
-
-  const timeout = (promise, ms) => {
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        reject(new Error("Request timed out"));
-      }, ms);
-
-      promise
-        .then((response) => {
-          clearTimeout(timer);
-          resolve(response);
-        })
-        .catch((err) => {
-          clearTimeout(timer);
-          reject(err);
-        });
-    });
-  };
   const uploadPhoto = useMutation({
-    mutationFn: ({ file, onUploadProgress }) => {
-      console.log("uploadPhoto", file);
-      return timeout(
-        PhotoApi.uploadPhoto(file, onUploadProgress),
-        3000 // 5-minute timeout
-      );
-    },
-    onError: (e) => {
-      console.log("uploadPhoto error", e.response);
-      // handleException(photo.file, e);
-    },
+    mutationFn: ({ file, onUploadProgress }) =>
+      PhotoApi.uploadPhoto(file, onUploadProgress),
   });
   const {
     mutateAsync: tryUploadPhotoMutate,
     isPending: tryUploadPhotoPending,
   } = uploadPhoto; // Destructure the return value of the hook
-  const tryUploadPhoto = async ({ file }) => {
+  const getAvailableResolutionsByPhotoId = useMutation({
+    mutationFn: async (photoId) =>
+      await PhotoApi.getAvailableResolutionsByPhotoId(photoId),
+  });
+  const tryUploadPhoto = async ({ file, onError, onSuccess }) => {
     console.log("tryUploadPhoto", file);
     try {
       const response = await tryUploadPhotoMutate({
@@ -111,9 +94,19 @@ export default function PhotoSellCard({ photo }) {
         },
       });
       console.log("response", response);
-      // setPhotoUploadResponse(photo.file.uid, response);
-      // updatePhotoPropertyByUid(photo.file.uid, "status", "done");
-      // updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
+      setPhotoUploadResponse(photo.file.uid, response);
+      updatePhotoPropertyByUid(photo.file.uid, "status", "done");
+      updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
+      try {
+        const photoResolution =
+          await getAvailableResolutionsByPhotoId.mutateAsync(response.id);
+        console.log("photoResolution", photoResolution);
+        updatePhotoPropertyByUid(file.uid, "pricetags", photoResolution);
+        setSelectedPhotoByUid(file.uid);
+        onSuccess(response);
+      } catch (error) {
+        onError(e);
+      }
     } catch (e) {
       console.log("tryUploadPhoto error", e);
     }
@@ -122,14 +115,17 @@ export default function PhotoSellCard({ photo }) {
     console.log("file", photo.file);
     tryUploadPhoto({ file: photo.file });
   };
+
   return (
-    <div className="relative grid grid-rows-2 p-2">
+    <div className="relative p-2">
       <div className="lg:w-[200px] lg:h-[150px] w-[180px] h-[135px]">
         <img
           src={photo?.reviewUrl}
           className={`w-full h-full object-cover rounded-md cursor-pointer ${
-            photo.file.uid === selectedPhoto
-              ? "border-4 border-white transition duration-300"
+            photo.file.uid === selectedPhoto && photo.status === "done"
+              ? "border-4 border-white transition duration-200"
+              : photo.file.uid === selectedPhoto && photo.status !== "done"
+              ? "border-4 border-red-500 transition duration-200"
               : ""
           }`}
           alt="Photo"
@@ -139,26 +135,9 @@ export default function PhotoSellCard({ photo }) {
           <p className="text-slate-300 pr-4 font-semibold text-center overflow-hidden whitespace-nowrap text-ellipsis">
             {photo.title}
           </p>
-          <div className=" bottom-3 right-3 z-20">
-            <Tooltip
-              placement="topRight"
-              color="geekblue"
-              title={photo.watermark ? "Gỡ nhãn" : "Gắn nhãn"}
-            >
-              <Checkbox
-                onChange={(e) => {
-                  updatePhotoPropertyByUid(
-                    photo.file.uid,
-                    "watermark",
-                    e.target.checked
-                  );
-                }}
-                checked={photo.watermark}
-              />
-            </Tooltip>
-          </div>
         </div>
       </div>
+
       {photo.status === "uploading" && (
         <div
           className={`absolute inset-0 grid place-items-center ${
@@ -174,50 +153,51 @@ export default function PhotoSellCard({ photo }) {
           </p>
         </div>
       )}
+
       {photo.status !== "uploading" && photo.status !== "done" && (
         <div
-          className={`absolute inset-0 grid place-items-center bg-gray-300 bg-opacity-80  z-10 rounded-lg`}
+          className={`absolute m-2 inset-0 grid place-items-center bg-red-300 bg-opacity-50 z-10 rounded-md cursor-pointer`}
+          onClick={handleSelect}
         >
           {tryUploadPhotoPending ? (
             "loading.."
           ) : (
-            <Tooltip
-              title="Thử lại"
-              color="blue"
-              onClick={(e) => {
-                e.preventDefault(); // Prevent default behavior (if applicable)
-                e.stopPropagation(); // Prevent event from propagating to parent elements
-                reUploadPhoto();
-              }}
-            >
-              <div className="flex flex-col items-center cursor-pointer text-blue-500 hover:opacity-80">
-                <UndoOutlined className="text-4xl text-blue-500" />
-                <p className="text-blue-500 mt-2">Thử lại</p>
-                <p>{photo.status}</p>
-              </div>
-            </Tooltip>
+            <div className="flex flex-col items-center cursor-pointer text-white font-normal text-center hover:opacity-80">
+              <p className="p-3 mx-1 bg-gray-500 bg-opacity-55">
+                {photo.status === "duplicated"
+                  ? "Ảnh đã tồn tại trong hệ thống"
+                  : photo.status}
+              </p>
+            </div>
           )}
         </div>
       )}
-      {photo.watermark && (
-        <div
-          className={`absolute inset-0 grid place-items-center z-10 rounded-lg`}
-          onClick={handleSelect}
-        >
-          <p className="text-gray-700 text-xl">PXL</p>
-        </div>
-      )}
-      <div className="absolute top-3 right-3 flex items-center z-10 p-2  rounded-xl hover:bg-opacity-80 bg-opacity-30 bg-gray-200">
+
+      <div className="absolute top-3 right-3 flex items-center z-20 p-2 rounded-xl hover:bg-opacity-80 bg-opacity-30 bg-gray-200">
         <Tooltip title="Xóa ảnh">
           <DeleteOutlined
             className="text-white text-xl hover:text-red-500 cursor-pointer"
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               handleRemove(photo);
             }}
           />
         </Tooltip>
       </div>
+
+      {isInValidPhotoTagsPhoto && (
+        <div
+          className={`absolute m-2 inset-0 grid place-items-center bg-opacity-50 z-10 rounded-md cursor-pointer`}
+          onClick={handleSelect}
+        >
+          <div className="flex flex-col items-center justify-end w-full h-full ">
+            <p className="text-white text-center p-1 w-full bg-yellow-600 bg-opacity-80 rounded-md">
+              Ảnh chưa có giá bán
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

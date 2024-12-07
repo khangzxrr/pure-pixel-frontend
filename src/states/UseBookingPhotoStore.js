@@ -129,7 +129,7 @@ const useBookingPhotoStore = create(
         const index = state.photoArray.length;
 
         //TODO: bao sua loi moi khi upload anh moi
-        state.photoArray.unshift(payload);
+        state.photoArray.push(payload);
         state.uidHashmap[uid] = index;
 
         return {

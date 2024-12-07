@@ -128,7 +128,7 @@ const BookingCard = ({ booking, status }) => {
           </div>
 
           <div className="text-right font-normal text-sm text-[#a3a3a3]">
-            {calculateDateDifference(booking.createdAt)}
+            Cập nhật {calculateDateDifference(booking.updatedAt)}
           </div>
         </div>
 

@@ -116,8 +116,8 @@ export default function UploadBookingPhoto({ bookingDetail }) {
       setPhotoUploadResponse(file.uid, {
         id: response.id,
         reviewUrl: response.signedUrl.url,
+        thumbnailUrl: response.signedUrl.thumbnail,
       });
-
       onSuccess();
     } catch (e) {
       console.log(e);

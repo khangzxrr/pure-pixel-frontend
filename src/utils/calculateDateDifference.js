@@ -3,13 +3,13 @@ export default function calculateDateDifference(inputDate) {
   const givenDate = new Date(inputDate);
   const differenceInMs = inputDate ? currentDate - givenDate : -1;
   if (differenceInMs < 0) {
-    return "Vừa xong";
+    return "vừa xong";
   }
   console.log("differenceInMs", differenceInMs);
   const differenceInHours = differenceInMs / (1000 * 60 * 60);
 
   if (differenceInHours < 1 / 30) {
-    return "Vừa xong";
+    return "vừa xong";
   } else if (differenceInHours < 1) {
     const minutes = Math.floor(differenceInHours * 60);
     return `${minutes} phút trước`;
