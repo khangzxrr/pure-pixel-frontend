@@ -36,10 +36,9 @@ const DropdownSeller = ({ photo, callData }) => {
     {
       key: "2",
       icon: <CgRemove />,
-      label: <span className="text-red-500">Xóa ảnh</span>,
-      danger: true,
+      label: <span className="text-red-500">Ngừng bán ảnh</span>,
       onClick: () => {
-        modalDelete.handleOpen()
+        modalDelete.handleOpen();
       },
     },
   ];
@@ -47,14 +46,13 @@ const DropdownSeller = ({ photo, callData }) => {
     postData(`/photo/${photo.id}/stop-selling`)
       .then((e) => {
         message.success("Xóa ảnh thành công!");
-        callData()
-        modalDelete.handleClose()
-      }).catch((error) => {
+        callData();
+        modalDelete.handleClose();
+      })
+      .catch((error) => {
         message.error("Xóa ảnh không thành công!");
         console.log(error);
-        
-    })
-
+      });
   };
   return (
     <div>

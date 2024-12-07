@@ -15,6 +15,7 @@ export default function UploadPhoto() {
     setNextSelectedPhoto,
     getPhotoByUid,
     uidHashmap,
+    isOpenMapModal,
   } = useUploadPhotoStore();
   const photoData =
     getPhotoByUid(selectedPhoto) !== undefined
@@ -67,7 +68,7 @@ export default function UploadPhoto() {
           )}
 
           {/* <OverviewModal /> */}
-          <MapBoxModal />
+          {isOpenMapModal && <MapBoxModal />}
         </div>
       </div>
     </div>

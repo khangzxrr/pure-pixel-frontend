@@ -333,7 +333,7 @@ export default function CustomUpload() {
         categoryIds: photo.categoryIds,
         visibility: photo.visibility,
         photoTags: photo.photoTags,
-        gps: photo.gps,
+        gps: { longitude: photo.exif.longitude, latitude: photo.exif.latitude },
       };
 
       // Call the API to update a single photo and add watermark concurrently

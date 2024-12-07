@@ -1,8 +1,9 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import useSellPhotoStore from "../../states/UseSellPhotoState";
 import UploadPhotoSell from "./components/UploadPhotoSell.jsx";
 import UploadPhotoSellInfoBar from "./components/UploadPhotoSellInfoBar.jsx";
+import MapBoxModal from "./components/MapBoxModal.jsx";
 
 export default function SellPhoto() {
   const {
@@ -12,15 +13,21 @@ export default function SellPhoto() {
     setNextSelectedPhoto,
     getPhotoByUid,
     uidHashmap,
+    setSelectedPhotoByUid,
+    isOpenMapModal,
   } = useSellPhotoStore();
   const formRef = useRef();
 
   const photoData =
     getPhotoByUid(selectedPhoto) !== undefined
       ? getPhotoByUid(selectedPhoto)
-      : getPhotoByUid(uidHashmap[0]);
-  console.log("photoData", photoData, selectedPhoto);
-
+      : getPhotoByUid(uidHashmap[Object.keys(uidHashmap)[0]]);
+  console.log("photoData", photoData, selectedPhoto, uidHashmap);
+  useEffect(() => {
+    if (photoArray && photoArray.length > 0 && selectedPhoto === null) {
+      setSelectedPhotoByUid(photoArray[0]?.file?.uid);
+    }
+  }, [photoArray]);
   return (
     <div className="">
       <div className="flex flex-col h-[99vh]">
@@ -70,6 +77,7 @@ export default function SellPhoto() {
           )}
         </div>
       </div>
+      {isOpenMapModal && <MapBoxModal />}
     </div>
   );
 }
