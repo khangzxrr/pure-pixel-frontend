@@ -36,8 +36,6 @@ export const uploadPhotoSellInput = yup.object().shape({
       "Yêu cầu có giá tiền cho ít nhất một kích cỡ ảnh bán",
       (pricetags) =>
         Array.isArray(pricetags) &&
-        pricetags.some(
-          (tag) => typeof tag.price === "number" && tag.price > 999
-        )
+        pricetags.some((tag) => typeof tag.price === "number" && tag.price > 0)
     ),
 });

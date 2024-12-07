@@ -20,8 +20,12 @@ import { useNavigate } from "react-router-dom";
 export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
   useImperativeHandle(reference, () => ({
     submitForm() {
-      console.log("form.submitform");
+      // console.log("form.submitform");
       handleSubmit(onSubmit)();
+    },
+    resetForm() {
+      // console.log("form.resetForm");
+      reset(getDefaultPhoto(selectedPhoto));
     },
   }));
   const navigate = useNavigate();
@@ -67,7 +71,6 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
-      console.log("address", data);
       setSelectedLocate({
         ...selectedLocate,
         address: data.features[0].properties.full_address,
@@ -88,7 +91,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
     mode: "onSubmit", // Enable validation onSubmit
     reValidateMode: "onChange", // Revalidate onChange
   });
-
+  console.log("errors", errors);
   const updatePhotos = useMutation({
     mutationKey: "update-photo",
     mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
@@ -102,14 +105,14 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
   });
   const onSubmit = async () => {
     setDisableUpload(true);
-    console.log("get in submit");
+    // console.log("get in submit");
     // Filter out photos with status "done"
     const photosToUpdate = photoArray.filter(
       (photo) => photo.status === "done"
     );
 
     if (photosToUpdate.length === 0) {
-      console.log("all photo done");
+      // console.log("all photo done");
 
       // If there are no photos with "done" status, show a message or handle accordingly
       setDisableUpload(false);
@@ -128,7 +131,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
     );
 
     if (invalidPricePhotos.length > 0) {
-      console.log("all photo done");
+      // console.log("all photo done");
 
       // If there are photos with invalid pricetags, show a message and return early
       setDisableUpload(false);
@@ -166,7 +169,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
     });
 
     try {
-      console.log("updatePromises", updatePromises);
+      // console.log("updatePromises", updatePromises);
       // Wait for all update and watermark operations to complete
       await Promise.all(updatePromises);
       setDisableUpload(false);
@@ -212,7 +215,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
       setSelectedLocate({});
     }
   }, [selectedPhoto, isOpenMapModal, reset]);
-  console.log("selectedPhoto", selectedPhoto, photoArray);
+  // console.log("selectedPhoto", selectedPhoto, photoArray);
   return (
     <div className="relative w-full h-full mx-auto overflow-y-auto custom-scrollbar">
       {/* Overlay Layer */}
@@ -479,11 +482,6 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                                   const updatedPricetags = [
                                     ...(field.value || []),
                                   ];
-                                  console.log(
-                                    "values",
-                                    values,
-                                    parseInt(values.value, 10)
-                                  );
                                   updatedPricetags[index] = {
                                     ...updatedPricetags[index],
                                     price: parseInt(values.value, 10) || 0,

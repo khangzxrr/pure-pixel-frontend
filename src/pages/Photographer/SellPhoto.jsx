@@ -24,10 +24,16 @@ export default function SellPhoto() {
       : getPhotoByUid(uidHashmap[Object.keys(uidHashmap)[0]]);
   console.log("photoData", photoData, selectedPhoto, uidHashmap);
   useEffect(() => {
-    if (photoArray && photoArray.length > 0 && selectedPhoto === null) {
+    if (
+      photoArray &&
+      photoArray.length > 0 &&
+      selectedPhoto === null &&
+      !photoArray.some((photo) => photo.status === "done")
+    ) {
       setSelectedPhotoByUid(photoArray[0]?.file?.uid);
     }
   }, [photoArray]);
+
   return (
     <div className="">
       <div className="flex flex-col h-[99vh]">
