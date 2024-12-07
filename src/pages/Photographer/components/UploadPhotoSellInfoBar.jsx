@@ -124,10 +124,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
 
     // Check if any photo's pricetags does not have at least one valid price
     const invalidPricePhotos = photosToUpdate.filter(
-      (photo) =>
-        !photo.pricetags.some(
-          (tag) => tag.price !== undefined || tag.price !== ""
-        )
+      (photo) => !photo.pricetags.some((tag) => tag.price >= 1000)
     );
 
     if (invalidPricePhotos.length > 0) {
@@ -138,7 +135,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
       notificationApi(
         "info",
         "Không có giá hợp lệ",
-        "Danh sách ảnh có tồn tại ảnh chưa có giá bán, vui long kiểm tra lại"
+        "Danh sách ảnh có tồn tại ảnh chưa có giá bán, vui lòng kiểm tra lại"
       );
 
       return;
@@ -158,9 +155,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
       };
       const photoToSell = {
         id: photo.response.id,
-        pricetags: photo.pricetags.filter(
-          (tag) => tag.price !== undefined && tag.price !== ""
-        ),
+        pricetags: photo.pricetags.filter((tag) => tag.price >= 1000),
       };
 
       // Call the API to update a single photo and add watermark concurrently
@@ -219,11 +214,11 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
   }, [selectedPhoto, isOpenMapModal, reset]);
   console.log("selectedPhoto", selectedPhoto, photoArray);
   return (
-    <div className="relative w-full h-screen mx-auto overflow-y-auto custom-scrollbar">
+    <div className="relative w-full h-full mx-auto overflow-y-auto custom-scrollbar">
       {/* Overlay Layer */}
       {isDisableUpdatePhoto && (
         <div
-          className="absolute inset-0 bg-black bg-opacity-50 z-20 flex items-center justify-center cursor-not-allowed"
+          className="absolute inset-0 bg-black h-screen bg-opacity-50 z-20 flex items-center justify-center cursor-not-allowed"
           style={{ top: 0, left: 0 }}
         />
       )}
@@ -286,40 +281,156 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                   {errors.title.message}
                 </p>
               )}
-
-              {/* Description Field */}
-              <p>Mô tả</p>
-              <Controller
-                name="description"
-                control={control}
-                render={({ field }) => (
-                  <TextArea
-                    {...field}
-                    className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
-                      errors.description
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-[#4c4e52] focus:border-[#e0e0e0]"
-                    }`}
-                    placeholder="Nhập mô tả"
-                    onChange={(e) => {
-                      field.onChange(e);
-                      updatePhotoPropertyByUid(
-                        selectedPhoto.file.uid,
-                        "description",
-                        e.target.value
-                      );
-                    }}
-                    disabled={isDisableUpdatePhoto}
+              {!isDisableUpdatePhoto && (
+                <>
+                  {/* Description Field */}
+                  <p>Mô tả</p>
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field }) => (
+                      <TextArea
+                        {...field}
+                        className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
+                          errors.description
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-[#4c4e52] focus:border-[#e0e0e0]"
+                        }`}
+                        placeholder="Nhập mô tả"
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updatePhotoPropertyByUid(
+                            selectedPhoto.file.uid,
+                            "description",
+                            e.target.value
+                          );
+                        }}
+                        disabled={isDisableUpdatePhoto}
+                      />
+                    )}
                   />
-                )}
-              />
-              {errors.description && (
-                <p className="text-red-500 text-sm p-1">
-                  {errors.description.message}
-                </p>
+                  {errors.description && (
+                    <p className="text-red-500 text-sm p-1">
+                      {errors.description.message}
+                    </p>
+                  )}
+                </>
               )}
-              {/* Pricetags Field */}
+              {!isDisableUpdatePhoto && (
+                <>
+                  {/* Category Field */}
+                  <p>Thể loại</p>
+                  <Controller
+                    name="categoryIds"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        mode="multiple" // Cho phép chọn nhiều
+                        showSearch
+                        placeholder="Chọn thể loại"
+                        filterOption={(input, option) =>
+                          (option?.label ?? "")
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={categories}
+                        dropdownRender={(menu) => (
+                          <div
+                            style={{
+                              color: "#000",
+                              backgroundColor: "#fff",
+                              padding: 2,
+                            }}
+                          >
+                            {menu}
+                          </div>
+                        )}
+                        className={`w-full m-2 cursor-pointer  ${
+                          errors.categoryIds
+                            ? "border-red-500"
+                            : "border-[#4c4e52]"
+                        }`}
+                        tagRender={(props) => {
+                          const { label, value, closable, onClose } = props;
 
+                          return (
+                            <div
+                              style={{
+                                backgroundColor: "#474747",
+                                color: "#fff",
+                                padding: "2px 8px",
+                                margin: 3,
+                                borderRadius: "4px",
+                                marginRight: "4px",
+                              }}
+                            >
+                              {label}
+                              {closable && (
+                                <span
+                                  style={{
+                                    marginLeft: "8px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={onClose}
+                                >
+                                  ×
+                                </span>
+                              )}
+                            </div>
+                          );
+                        }}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          updatePhotoPropertyByUid(
+                            selectedPhoto.file.uid,
+                            "categoryIds",
+                            value
+                          );
+                        }}
+                        disabled={isDisableUpdatePhoto}
+                      />
+                    )}
+                  />
+                  {errors.categoryIds && (
+                    <p className="text-red-500 text-sm p-1">
+                      {errors.categoryIds.message}
+                    </p>
+                  )}
+                  {/* Tags Field */}
+                  <p>Gắn thẻ</p>
+                  <Controller
+                    name="photoTags"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        mode="tags" // Cho phép gắn thẻ
+                        placeholder="Gắn thẻ cho ảnh"
+                        onChange={(value) => {
+                          field.onChange(value);
+                          updatePhotoPropertyByUid(
+                            selectedPhoto.file.uid,
+                            "photoTags",
+                            value
+                          );
+                        }}
+                        options={[]} // Các tùy chọn thẻ, nếu có sẵn
+                        open={false} // Không mở dropdown
+                        suffixIcon={null} // Xóa biểu tượng mũi tên mặc định
+                        className="w-full m-2 "
+                      />
+                    )}
+                  />
+                  {errors.photoTags && (
+                    <p className="text-red-500 text-sm p-1">
+                      {errors.photoTags.message}
+                    </p>
+                  )}
+                </>
+              )}
+
+              {/* Pricetags Field */}
               <Controller
                 name="pricetags"
                 control={control}
@@ -401,114 +512,8 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                 }
               />
 
-              {/* Category Field */}
-              <p>Thể loại</p>
-              <Controller
-                name="categoryIds"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    mode="multiple" // Cho phép chọn nhiều
-                    showSearch
-                    placeholder="Chọn thể loại"
-                    filterOption={(input, option) =>
-                      (option?.label ?? "")
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                    }
-                    options={categories}
-                    dropdownRender={(menu) => (
-                      <div
-                        style={{
-                          color: "#000",
-                          backgroundColor: "#fff",
-                          padding: 2,
-                        }}
-                      >
-                        {menu}
-                      </div>
-                    )}
-                    className={`w-full m-2 cursor-pointer  ${
-                      errors.categoryIds ? "border-red-500" : "border-[#4c4e52]"
-                    }`}
-                    tagRender={(props) => {
-                      const { label, value, closable, onClose } = props;
-
-                      return (
-                        <div
-                          style={{
-                            backgroundColor: "#474747",
-                            color: "#fff",
-                            padding: "2px 8px",
-                            margin: 3,
-                            borderRadius: "4px",
-                            marginRight: "4px",
-                          }}
-                        >
-                          {label}
-                          {closable && (
-                            <span
-                              style={{ marginLeft: "8px", cursor: "pointer" }}
-                              onClick={onClose}
-                            >
-                              ×
-                            </span>
-                          )}
-                        </div>
-                      );
-                    }}
-                    onChange={(value) => {
-                      field.onChange(value);
-                      updatePhotoPropertyByUid(
-                        selectedPhoto.file.uid,
-                        "categoryIds",
-                        value
-                      );
-                    }}
-                    disabled={isDisableUpdatePhoto}
-                  />
-                )}
-              />
-              {errors.categoryIds && (
-                <p className="text-red-500 text-sm p-1">
-                  {errors.categoryIds.message}
-                </p>
-              )}
-
-              {/* Tags Field */}
-              <p>Gắn thẻ</p>
-              <Controller
-                name="photoTags"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    mode="tags" // Cho phép gắn thẻ
-                    placeholder="Gắn thẻ cho ảnh"
-                    onChange={(value) => {
-                      field.onChange(value);
-                      updatePhotoPropertyByUid(
-                        selectedPhoto.file.uid,
-                        "photoTags",
-                        value
-                      );
-                    }}
-                    options={[]} // Các tùy chọn thẻ, nếu có sẵn
-                    open={false} // Không mở dropdown
-                    suffixIcon={null} // Xóa biểu tượng mũi tên mặc định
-                    className="w-full m-2 "
-                  />
-                )}
-              />
-              {errors.photoTags && (
-                <p className="text-red-500 text-sm p-1">
-                  {errors.photoTags.message}
-                </p>
-              )}
-
               {/* Description Location */}
-              <p>Vị trí</p>
+              <p className="my-2">Vị trí</p>
 
               <div className="m-2">
                 {selectedLocate &&

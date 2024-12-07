@@ -23,9 +23,7 @@ export default function PhotoSellCard({ photo }) {
   const isInValidPhotoTagsPhoto =
     photo &&
     photo.status === "done" &&
-    !photo?.pricetags?.some(
-      (tag) => tag.price !== undefined && tag.price !== ""
-    );
+    !photo?.pricetags?.some((tag) => tag.price >= 1000);
 
   const deletePhoto = useMutation({
     mutationFn: ({ id }) => PhotoApi.deletePhoto(id),
@@ -173,7 +171,7 @@ export default function PhotoSellCard({ photo }) {
         </div>
       )}
 
-      <div className="absolute top-3 right-3 flex items-center z-20 p-2 rounded-xl hover:bg-opacity-80 bg-opacity-30 bg-gray-200">
+      <div className="absolute top-3 right-3 flex items-center z-10 p-2 rounded-xl hover:bg-opacity-80 bg-opacity-30 bg-gray-200">
         <Tooltip title="Xóa ảnh">
           <DeleteOutlined
             className="text-white text-xl hover:text-red-500 cursor-pointer"
@@ -188,11 +186,17 @@ export default function PhotoSellCard({ photo }) {
 
       {isInValidPhotoTagsPhoto && (
         <div
-          className={`absolute m-2 inset-0 grid place-items-center bg-opacity-50 z-10 rounded-md cursor-pointer`}
+          className={`absolute m-2 inset-0 grid place-items-center bg-opacity-50 rounded-md cursor-pointer`}
           onClick={handleSelect}
         >
           <div className="flex flex-col items-center justify-end w-full h-full ">
-            <p className="text-white text-center p-1 w-full bg-yellow-600 bg-opacity-80 rounded-md">
+            <p
+              className={`text-white text-center p-1 w-full bg-yellow-600 bg-opacity-80 rounded-b-md   ${
+                photo.file.uid === selectedPhoto &&
+                photo.status === "done" &&
+                "border-x-4 border-b-4 border-white transition duration-200"
+              }`}
+            >
               Ảnh chưa có giá bán
             </p>
           </div>

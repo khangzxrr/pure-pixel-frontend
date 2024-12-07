@@ -273,7 +273,14 @@ export default function UploadPhotoSell({ formRef }) {
         const photoResolution =
           await getAvailableResolutionsByPhotoId.mutateAsync(response.id);
         console.log("photoResolution", photoResolution);
-        updatePhotoPropertyByUid(file.uid, "pricetags", photoResolution);
+        updatePhotoPropertyByUid(
+          file.uid,
+          "pricetags",
+          photoResolution.map((item) => ({
+            ...item, // Spread the existing properties
+            price: 0, // Add the `price` field with a default value of 0
+          }))
+        );
         setSelectedPhotoByUid(file.uid);
         onSuccess(response);
       } catch (error) {

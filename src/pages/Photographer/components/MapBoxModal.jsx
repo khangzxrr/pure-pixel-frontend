@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Spin, Tooltip } from "antd";
-import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Map, { Marker, Popup } from "react-map-gl";
 import { IoLocationSharp } from "react-icons/io5";
@@ -10,6 +9,7 @@ import { v4 as uuidv4 } from "uuid"; // For session token
 import MapBoxApi from "../../../apis/MapBoxApi";
 import { notificationApi } from "../../../Notification/Notification";
 import { FaDotCircle } from "react-icons/fa";
+import useSellPhotoStore from "../../../states/UseSellPhotoState";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN; // Set your mapbox token here
 
@@ -19,7 +19,7 @@ export default function MapBoxModal() {
     setIsOpenMapModal,
     selectedPhoto,
     updatePhotoPropertyByUid,
-  } = useUploadPhotoStore();
+  } = useSellPhotoStore();
   const [currentLocation, setCurrentLocation] = useState(null);
   const [isLoadingCurrentLocation, setIsLoadingCurrentLocation] =
     useState(false);
@@ -38,7 +38,11 @@ export default function MapBoxModal() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setCurrentLocation({ latitude, longitude });
-
+          setViewState((prev) => ({
+            ...prev,
+            latitude,
+            longitude,
+          }));
           setIsLoadingCurrentLocation(false);
         },
         (error) => {
