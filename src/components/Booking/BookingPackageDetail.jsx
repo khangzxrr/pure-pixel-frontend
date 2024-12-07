@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import formatPrice from "../../utils/FormatPriceUtils";
 import BookingModal from "./../../pages/BookingPage/component/BookingModal";
 import ChatButton from "../ChatButton/ChatButton";
+
 const formatNumber = (number) => {
   return new Intl.NumberFormat("de-DE").format(number);
 };

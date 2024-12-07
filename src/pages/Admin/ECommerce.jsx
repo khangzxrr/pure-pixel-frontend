@@ -3,7 +3,7 @@ import ECommerceLayout from "../../layouts/ECommerceLayout";
 
 const ECommerce = () => {
   return (
-    <div className="p-4">
+    <div className="px-4 pb-4">
       <ECommerceLayout />
     </div>
   );
