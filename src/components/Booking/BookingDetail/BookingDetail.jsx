@@ -30,6 +30,7 @@ const BookingDetail = () => {
     clearState();
     if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
       for (let photo of bookingDetail.photos) {
+        console.log(photo);
         addPhotoWithId(photo.id, {
           id: photo.id,
           uid: photo.id,

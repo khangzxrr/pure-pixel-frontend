@@ -24,5 +24,6 @@ export default function getDefaultPhoto(photo) {
     watermarkPhotoUrl: photo?.watermarkPhotoUrl || "",
     watermarkThumbnailPhotoUrl: photo?.watermarkThumbnailPhotoUrl || "",
     status: photo?.status || "",
+    pricetags: photo?.pricetags || [],
   };
 }

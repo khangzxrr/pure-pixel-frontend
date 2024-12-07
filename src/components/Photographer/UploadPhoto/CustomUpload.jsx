@@ -42,18 +42,6 @@ export default function CustomUpload() {
   const updatePhotos = useMutation({
     mutationKey: "update-photo",
     mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
-    onSuccess: () => {
-      navigate("/profile/my-photos");
-      // Clear state after successful updates
-      clearState();
-
-      // Display success message
-      notificationApi(
-        "success",
-        "Đăng tải ảnh thành công",
-        "Ảnh của bạn đã được đăng tải thành công"
-      );
-    },
   });
 
   const addWatermark = useMutation({
@@ -364,7 +352,16 @@ export default function CustomUpload() {
       // Wait for all update and watermark operations to complete
       await Promise.all(updatePromises);
       setDisableUpload(false);
-      // navigate("/my-photo/photo/all");
+      navigate("/profile/my-photos");
+      // Clear state after successful updates
+      clearState();
+
+      // Display success message
+      notificationApi(
+        "success",
+        "Đăng tải ảnh thành công",
+        "Ảnh của bạn đã được đăng tải thành công"
+      );
     } catch (error) {
       // Handle errors if any of the updates fail
       setDisableUpload(false);

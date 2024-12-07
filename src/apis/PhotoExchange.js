@@ -20,10 +20,18 @@ const getPhotoBoughtDetailDownload = async (id, photoBuyId) => {
   );
   return response.data;
 };
+const sellPhotoByPhotoId = async (photo) => {
+  // Destructure the photo object to exclude the id field
+  const { id, ...photoWithoutId } = photo;
+
+  const response = await http.post(`photo/${id}/sell`, photoWithoutId);
+  return response.data;
+};
 const PhotoExchange = {
   getPhotoBought,
   getPhotoBoughtDetail,
   getPhotoBoughtDetailDownload,
+  sellPhotoByPhotoId,
 };
 
 export default PhotoExchange;

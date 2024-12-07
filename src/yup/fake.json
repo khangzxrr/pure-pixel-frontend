@@ -1,0 +1,69 @@
+[
+  {
+    "uid": "uid1",
+    "title": "title",
+    "description": "description",
+    "tags": ["tags1", "tags2", "tags3"],
+    "pricetags": [
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      },
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      },
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      }
+    ]
+  },
+  {
+    "title": "title",
+    "description": "description",
+    "tags": ["tags1", "tags2", "tags3"],
+    "pricetags": [
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      },
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      },
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      }
+    ]
+  },
+  {
+    "title": "title",
+    "description": "description",
+    "tags": ["tags1", "tags2", "tags3"],
+    "pricetags": [
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      },
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      },
+      {
+        "width": 123,
+        "heigh": 123,
+        "price": 1234567
+      }
+    ]
+  }
+]
