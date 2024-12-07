@@ -9,6 +9,24 @@ const getDashboard = async (fromDate, toDate) => {
   return response.data;
 };
 
+const getTopSellerDashboard = async (fromDate, toDate) => {
+  const response = await http.get(
+    `/admin/dashboard/top-seller?fromDate=${encodeURIComponent(
+      fromDate
+    )}&toDate=${encodeURIComponent(toDate)}`
+  );
+  return response.data;
+};
+
+const getSellerByIdDashboard = async (id, fromDate, toDate) => {
+  const response = await http.get(
+    `/admin/dashboard/top-seller/${id}?fromDate=${encodeURIComponent(
+      fromDate
+    )}&toDate=${encodeURIComponent(toDate)}`
+  );
+  return response.data;
+};
+
 const getUserManager = async (limit, page) => {
   const params = {
     limit,
@@ -31,6 +49,13 @@ const updateUser = async (id, updateBody) => {
   return response.data;
 };
 
-const AdminApi = { getDashboard, getUserManager, getUserById, updateUser };
+const AdminApi = {
+  getDashboard,
+  getUserManager,
+  getUserById,
+  updateUser,
+  getTopSellerDashboard,
+  getSellerByIdDashboard,
+};
 
 export default AdminApi;

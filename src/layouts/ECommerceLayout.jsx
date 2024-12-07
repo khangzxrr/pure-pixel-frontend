@@ -21,19 +21,36 @@ const ECommerceLayout = () => {
       AdminApi.getDashboard(fromDateCustomize, toDate.toISOString()),
   });
 
+  const {
+    data: TopSeller,
+    isLoading: isLoadingTop,
+    isError: isErrorTop,
+    error: errorTop,
+  } = useQuery({
+    queryKey: ["top-seller-dashboard"],
+    queryFn: () =>
+      AdminApi.getTopSellerDashboard(fromDateCustomize, toDate.toISOString()),
+  });
+
   if (isLoading)
     return (
       <div className="flex items-center justify-center h-[200px]">
         <LoadingOval />
       </div>
     );
-  console.log("data", data);
+
+  if (isLoadingTop)
+    return (
+      <div className="flex items-center justify-center h-[200px]">
+        <LoadingOval />
+      </div>
+    );
 
   return (
     <div className="flex flex-col gap-8 ">
       <CardDataStatsList data={data} />
       <ChartDashboard dashBoardData={data} />
-      <Table />
+      <Table dataTopSeller={TopSeller} />
     </div>
   );
 };

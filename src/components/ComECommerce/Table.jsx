@@ -1,10 +1,10 @@
 import React from "react";
 import TablePhotographersList from "./TablePhotographersList";
 
-const Table = () => {
+const Table = ({ dataTopSeller }) => {
   return (
     <div className="flex flex-col gap-8 px-5 ">
-      <TablePhotographersList />
+      <TablePhotographersList dataTopSeller={dataTopSeller} />
     </div>
   );
 };
