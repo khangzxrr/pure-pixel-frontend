@@ -27,7 +27,7 @@ export const uploadPhotoSellInput = yup.object().shape({
           .test(
             "price-min-value",
             "Giá phải từ 1,000vnđ trở lên",
-            (value) => value === undefined || value > 999
+            (value) => value === undefined || value > 999 || value === 0
           ),
       })
     )
