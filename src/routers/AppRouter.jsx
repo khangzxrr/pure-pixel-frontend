@@ -66,6 +66,7 @@ import SellPhoto from "../pages/Photographer/SellPhoto";
 import ECommerce from "./../pages/Admin/ECommerce";
 import ComTotalUsers from "../components/ComECommerce/ComTotalUsers";
 import PhotographerDetailStats from "../components/ComECommerce/PhotographerDetailStats";
+import LoadingPage from "../pages/LoadingPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -463,6 +464,10 @@ export const AppRouter = createBrowserRouter([
         element: <DetailedBlog />,
       },
     ],
+  },
+  {
+    path: "/loading-page",
+    element: <LoadingPage />,
   },
   {
     path: "/private-exception",
