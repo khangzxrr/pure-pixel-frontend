@@ -282,6 +282,7 @@ export default function UploadPhotoSell({ formRef }) {
           }))
         );
         setSelectedPhotoByUid(file.uid);
+        formRef.current.resetForm();
         onSuccess(response);
       } catch (error) {
         onError(e);
