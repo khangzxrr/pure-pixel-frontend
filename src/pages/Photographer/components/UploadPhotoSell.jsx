@@ -19,7 +19,7 @@ import PhotoSellList from "./PhotoSellList";
 import PhotoExchange from "../../../apis/PhotoExchange";
 const { Dragger } = Upload;
 
-export default function UploadPhotoSell() {
+export default function UploadPhotoSell({ formRef }) {
   const {
     addPhoto,
     setSelectedPhotoByUid,
@@ -323,9 +323,6 @@ export default function UploadPhotoSell() {
     return "";
   };
 
-  const SubmitUpload = () => {
-    setDisableUpload(true);
-  };
   return (
     <div className="h-full w-full overflow-hidden relative ">
       <div className={`w-full h-full grid grid-cols-7`}>
@@ -362,7 +359,7 @@ export default function UploadPhotoSell() {
                 !photoArray.some((photo) => photo.status === "uploading") ||
                 disableUpload
               ) {
-                SubmitUpload();
+                formRef.current.submitForm();
               }
             }}
           >
