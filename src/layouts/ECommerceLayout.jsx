@@ -1,39 +1,101 @@
 import React from "react";
-import CardDataStats from "../components/ComECommerce/CardDataStats";
-import { FiImage, FiPackage, FiUsers } from "react-icons/fi";
-import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
-import { MdAttachMoney } from "react-icons/md";
 import CardDataStatsList from "../components/ComECommerce/CardDataStatsList";
 import ChartDashboard from "../components/ComECommerce/ChartDashboard";
 import Table from "../components/ComECommerce/Table";
 import { useQuery } from "@tanstack/react-query";
 import AdminApi from "../apis/AdminApi";
 import LoadingOval from "../components/LoadingSpinner/LoadingOval";
+import { ConfigProvider, DatePicker, Space } from "antd";
+import vi_VN from "antd/es/locale/vi_VN";
+import "../components/ComECommerce/ECommerceDatePickerStyle.css";
+import UseECommerceStore from "../states/UseECommerceStore";
+import dayjs from "dayjs";
+const { RangePicker } = DatePicker;
 
 const ECommerceLayout = () => {
-  const toDate = new Date();
-  const fromDate = new Date(toDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const { fromDate, toDate, setFromDateState, setToDateState } =
+    UseECommerceStore();
+  const [arrayDatePicker, setArrayDatePicker] = React.useState([
+    fromDate,
+    toDate,
+  ]);
+
+  console.log(arrayDatePicker);
+
+  // const toDate = new Date();
+  // const fromDate = new Date(toDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
   const fromDateCustomize = "2024-10-01T01:30:14.761+07:00";
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["dashboard"],
+    queryKey: ["dashboard", fromDate, toDate],
     queryFn: () =>
-      AdminApi.getDashboard(fromDateCustomize, toDate.toISOString()),
+      AdminApi.getDashboard(fromDate.toISOString(), toDate.toISOString()),
   });
 
-  if (isLoading)
-    return (
-      <div className="flex items-center justify-center h-[200px]">
-        <LoadingOval />
-      </div>
-    );
-  console.log("data", data);
+  const {
+    data: TopSeller,
+    isLoading: isLoadingTop,
+    isError: isErrorTop,
+    error: errorTop,
+  } = useQuery({
+    queryKey: ["top-seller-dashboard", fromDate, toDate],
+    queryFn: () =>
+      AdminApi.getTopSellerDashboard(
+        fromDate.toISOString(),
+        toDate.toISOString()
+      ),
+  });
 
+  const handleOnClickDatePicker = () => {
+    setFromDateState(arrayDatePicker[0]);
+    setToDateState(arrayDatePicker[1]);
+  };
   return (
-    <div className="flex flex-col gap-8 ">
-      <CardDataStatsList data={data} />
-      <ChartDashboard dashBoardData={data} />
-      <Table />
+    <div className="flex flex-col gap-2">
+      <div className=" flex justify-end items-center gap-2 mr-5">
+        <div className="text-[#eee]">Thống kê từ ngày: </div>
+        <ConfigProvider
+          locale={vi_VN}
+          theme={{
+            components: {
+              DatePicker: {
+                activeBorderColor: "#e0e0e0",
+              },
+            },
+          }}
+        >
+          <RangePicker
+            className="custom-range-picker font-light p-2"
+            defaultValue={[dayjs(fromDate), dayjs(toDate)]}
+            style={{ backgroundColor: "#292b2f", outline: "none" }}
+            onChange={(value) => {
+              const [startDate, endDate] = value;
+              setArrayDatePicker([
+                new Date(startDate.$d),
+                new Date(endDate.$d),
+              ]);
+            }}
+          />
+        </ConfigProvider>
+        <button
+          onClick={() => handleOnClickDatePicker()}
+          className="bg-[#eee] font-semibold text-[#202225] px-2 py-1 rounded-md"
+        >
+          Xác nhận
+        </button>
+      </div>
+      {(isLoading || isLoadingTop) && (
+        <div className="flex items-center justify-center h-[200px]">
+          <LoadingOval />
+        </div>
+      )}
+      {!isLoading && !isLoadingTop && (
+        <div className="flex flex-col gap-8 ">
+          <CardDataStatsList data={data} />
+          <ChartDashboard dashBoardData={data} />
+          <Table dataTopSeller={TopSeller} />
+        </div>
+      )}
     </div>
   );
 };

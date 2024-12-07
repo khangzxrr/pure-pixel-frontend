@@ -1,165 +1,106 @@
 import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
-const options = {
-  legend: {
-    show: false,
-    position: "top",
-    horizontalAlign: "left",
-  },
-  colors: ["#3C50E0", "#80CAEE", "#bec922"],
-  chart: {
-    fontFamily: "Satoshi, sans-serif",
-    height: 335,
-    type: "area",
-    background: "#32353b", // Màu nền cho biểu đồ (Dark Mode)
-    dropShadow: {
-      enabled: true,
-      color: "#623CEA14",
-      top: 10,
-      blur: 4,
-      left: 0,
-      opacity: 0.1,
-    },
-    toolbar: {
-      show: false,
-    },
-  },
-  responsive: [
-    {
-      breakpoint: 1024,
-      options: {
-        chart: {
-          height: 300,
-        },
-      },
-    },
-    {
-      breakpoint: 1366,
-      options: {
-        chart: {
-          height: 350,
-        },
-      },
-    },
-  ],
-  stroke: {
-    width: [2, 2],
-    curve: "straight",
-  },
-  grid: {
-    borderColor: "#43474e", // Đường kẻ lưới (Dark Mode)
-    xaxis: {
-      lines: {
-        show: true,
-      },
-    },
-    yaxis: {
-      lines: {
-        show: true,
-      },
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  markers: {
-    size: 4,
-    colors: "#1A1A1A", // Màu nền markers
-    strokeColors: ["#3056D3", "#80CAEE", "#bec922"],
-    strokeWidth: 3,
-    strokeOpacity: 0.9,
-    strokeDashArray: 0,
-    fillOpacity: 1,
-    discrete: [],
-    hover: {
-      size: undefined,
-      sizeOffset: 5,
-    },
-  },
-  xaxis: {
-    type: "category",
-    categories: [
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-    ],
-    axisBorder: {
-      show: false,
-    },
-    axisTicks: {
-      show: false,
-    },
-    labels: {
-      style: {
-        colors: "#eee", // Màu chữ trục x
-      },
-    },
-  },
-  yaxis: {
-    title: {
-      style: {
-        fontSize: "0px",
-      },
-    },
-    labels: {
-      style: {
-        colors: "#eee", // Màu chữ trục y
-      },
-    },
-    min: 0,
-    max: 100,
-  },
-};
-
 const ChartDashboardUpgradePackage = () => {
-  const [state, setState] = useState({
+  const [state, setState] = React.useState({
     series: [
       {
-        name: "Gói căn bản",
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
-      },
-      {
-        name: "Gói nâng cao",
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
-      },
-      {
-        name: "Gói cao cấp",
-        data: [90, 25, 97, 89, 54, 12, 76, 86, 12, 34, 34, 19],
+        data: [
+          { x: "South Korea", y: 400, fillColor: "#3C50E0" },
+          { x: "Canada", y: 430, fillColor: "#80CAEE" },
+          { x: "United Kingdom", y: 448, fillColor: "#BEC922" },
+          { x: "Netherlands", y: 470, fillColor: "#FF6F61" },
+          { x: "Italy", y: 540, fillColor: "#8E44AD" },
+        ],
       },
     ],
+    options: {
+      chart: {
+        type: "bar",
+        height: 420,
+        background: "#32353b", // Màu nền cho biểu đồ (Dark Mode)
+        toolbar: {
+          show: false, // Ẩn nút menu
+        },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          borderRadiusApplication: "end",
+          horizontal: true,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 1024,
+          options: {
+            chart: {
+              height: 300,
+            },
+          },
+        },
+        {
+          breakpoint: 1366,
+          options: {
+            chart: {
+              height: 350,
+            },
+          },
+        },
+      ],
+      dataLabels: {
+        enabled: false,
+      },
+      grid: {
+        borderColor: "#43474e", // Màu lưới
+        xaxis: {
+          lines: {
+            show: true,
+          },
+        },
+        yaxis: {
+          lines: {
+            show: false, // Không hiển thị lưới dọc
+          },
+        },
+      },
+      xaxis: {
+        categories: [
+          "South Korea",
+          "Canada",
+          "United Kingdom",
+          "Netherlands",
+          "Italy",
+        ],
+        labels: {
+          style: {
+            colors: "#eee", // Màu chữ trục X
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: "#eee", // Màu chữ trục Y
+          },
+        },
+      },
+      tooltip: {
+        theme: "dark", // Tooltip chế độ tối
+      },
+    },
   });
-
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-    }));
-  };
-  handleReset;
 
   return (
     <div className="col-span-12 rounded-sm  px-5 pt-7.5  shadow-default sm:px-7.5 xl:col-span-8">
-      <div className=" text-[#eee] p-3 flex items-center justify-center font-bold ">
-        Thống kê số lượng người nâng cấp theo gói
-      </div>
-      <div>
-        <div id="chartOne" className="-ml-5">
-          <ReactApexChart
-            options={options}
-            series={state.series}
-            type="area"
-            height={350}
-          />
-        </div>
+      <div id="chart">
+        <ReactApexChart
+          className="-ml-5"
+          options={state.options}
+          series={state.series}
+          type="bar"
+          height={420}
+        />
       </div>
     </div>
   );

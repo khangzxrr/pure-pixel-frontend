@@ -8,49 +8,60 @@ import {
   Table,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-const TablePhotoshootOfPhotographer = () => {
+import formatPrice from "./../../utils/FormatPriceUtils";
+import { FormatDate } from "./../../utils/FormatDate";
+const TablePhotoshootOfPhotographer = ({ data }) => {
+  console.log(data);
+
   const navigate = useNavigate();
   const columns = [
-    { title: "Xếp hạng", dataIndex: "photoshootRank", width: 125 },
+    {
+      title: "Xếp hạng",
+      dataIndex: "photoshootRank",
+      render: (_, __, index) => <span>{index + 1}</span>,
+      width: 125,
+    },
     {
       title: "Tên",
       dataIndex: "name",
-
-      render: (text, record) => <p>{text}</p>,
+      width: 300,
+      render: (text, record) => (
+        <div className="flex items-center gap-2">
+          <div className="size-16 overflow-hidden">
+            <img
+              src={record.thumbnail}
+              alt=""
+              className="size-full object-cover"
+            />
+          </div>
+          {text}
+        </div>
+      ),
     },
     {
-      title: "Ngày tạp",
+      title: "Ngày tạo",
       dataIndex: "createdDate",
     },
+    { title: "Giá", dataIndex: "price" },
     {
       title: "Tổng số lượt đặt",
-      dataIndex: "totalPhotoshootOrder",
+      dataIndex: "totalPhotoshootBooking",
+      render: (text, record) => <div>{text} lượt đặt</div>,
+      width: 150,
     },
   ];
 
-  const dataPhotoshootPackages = [
-    {
-      id: 1,
-      photoshootRank: 1,
-      name: "Trần Thanh Tường",
-      createdDate: "2023-01-01",
-      totalPhotoshootOrder: 10,
-    },
-    {
-      id: 2,
-      photoshootRank: 1,
-      name: "Trần Thanh Tường",
-      createdDate: "2023-01-01",
-      totalPhotoshootOrder: 10,
-    },
-    {
-      id: 3,
-      photoshootRank: 1,
-      name: "Trần Thanh Tường",
-      createdDate: "2023-01-01",
-      totalPhotoshootOrder: 10,
-    },
-  ];
+  const dataPhotoshootPackages = data.map((item) => {
+    return {
+      key: item.id,
+      thumbnail: item.thumbnail,
+      name: item.title,
+      photoshootRank: item.photoshootRank,
+      createdDate: FormatDate(item.createdAt),
+      price: formatPrice(item.price),
+      totalPhotoshootBooking: item._count?.bookings,
+    };
+  });
   return (
     <div className="bg-[#32353b] rounded-sm">
       <div className="flex items-center justify-center p-4 font-bold text-[#eee]">

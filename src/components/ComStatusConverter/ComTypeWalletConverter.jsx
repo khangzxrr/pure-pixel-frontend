@@ -13,6 +13,8 @@ function ComTypeWalletConverter({ children }) {
         return <p className="">Bán ảnh</p>;
       case "WITHDRAWAL":
         return <p className="">Rút tiền</p>;
+      case "REFUND_FROM_BUY_IMAGE":
+        return <p className="">Hoàn tiền</p>;
       default:
         return type; // Giá trị mặc định nếu không khớp
     }

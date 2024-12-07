@@ -60,7 +60,9 @@ export default function TableTransactilonList() {
         <div>
           <h1>
             {record.status === "SUCCESS" && record.amount !== 0 ? (
-              record.type === "IMAGE_SELL" || record.type === "DEPOSIT" ? (
+              record.type === "IMAGE_SELL" ||
+              record.type === "DEPOSIT" ||
+              record.type === "REFUND_FROM_BUY_IMAGE" ? (
                 <span className="text-green-400">
                   +{formatCurrency(record.amount - record.fee)}
                 </span>

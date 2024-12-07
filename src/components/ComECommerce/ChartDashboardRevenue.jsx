@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import formatPrice from "./../../utils/FormatPriceUtils";
 
@@ -61,6 +61,9 @@ const ChartDashboardRevenue = ({
 }) => {
   const [series, setSeries] = useState([param1, param2]);
 
+  useEffect(() => {
+    setSeries([param1, param2]);
+  }, [param1, param2]);
   return (
     <div className="sm:px-7.5 col-span-12 rounded-sm bg-boxdark shadow-default">
       <div className="p-3 text-[#eee] font-bold flex items-center justify-center">

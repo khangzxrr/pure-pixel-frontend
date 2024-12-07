@@ -8,7 +8,7 @@ import {
   Table,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-const TablePhotographersList = () => {
+const TablePhotographersList = ({ dataTopSeller }) => {
   const navigate = useNavigate();
   const columns = [
     {
@@ -22,7 +22,7 @@ const TablePhotographersList = () => {
             className="w-9 h-9 rounded-full object-cover bg-[#eee]"
           />
           <span
-            onClick={() => navigate(`ptgDetail/${123}`)}
+            onClick={() => navigate(`ptgDetail/${record.id}`)}
             className="hover:cursor-pointer hover:underline text-blue-400"
           >
             {text}
@@ -36,32 +36,15 @@ const TablePhotographersList = () => {
     { title: "Tổng số ảnh đã bán", dataIndex: "totalPhotoSold" },
   ];
 
-  const dataPhotographers = [
-    {
-      id: 1,
-      name: "Trần Thanh Tường",
-      email: "5X0Y2@example.com",
-      phoneNumber: "0978456789",
-      location: "Hanoi",
-      totalPhotoSold: 10,
-    },
-    {
-      id: 2,
-      name: "Trần Thanh Tường",
-      email: "5X0Y2@example.com",
-      phoneNumber: "0978456789",
-      location: "Hanoi",
-      totalPhotoSold: 10,
-    },
-    {
-      id: 3,
-      name: "Trần Thanh Tường",
-      email: "5X0Y2@example.com",
-      phoneNumber: "0978456789",
-      location: "Hanoi",
-      totalPhotoSold: 10,
-    },
-  ];
+  const dataPhotographers = dataTopSeller?.map((item) => ({
+    id: item.id,
+    name: item.detail.name,
+    avatar: item.detail.avatar,
+    email: item.detail.mail,
+    phoneNumber: item.detail.phonenumber,
+    location: item.detail.location,
+    totalPhotoSold: item.totalPhotoSale,
+  }));
   return (
     <div className="bg-[#32353b] rounded-sm">
       <div className="flex items-center justify-center p-4 font-bold text-[#eee]">

@@ -10,12 +10,17 @@ const CardDataStats = ({
   colorPercent,
   link,
   onClick,
+  isScaleHover = true,
 }) => {
   const navigate = useNavigate();
   return (
     <div
       onClick={onClick}
-      className="bg-[#32353b] text-[#eee] flex flex-col  p-6 rounded-sm hover:scale-105 transition-all duration-200 hover:cursor-pointer"
+      className={`bg-[#32353b] text-[#eee] flex flex-col  p-6 rounded-sm ${
+        isScaleHover
+          ? "hover:scale-105 transition-all duration-200 hover:cursor-pointer"
+          : ""
+      }`}
     >
       <div className="flex items-center mb-3">
         <div className="p-2 bg-[#44484f] rounded-full ">{icon}</div>

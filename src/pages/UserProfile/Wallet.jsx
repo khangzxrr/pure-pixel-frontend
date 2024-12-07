@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { WalletApi } from "../../apis/Wallet";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import UserService from "../../services/Keycloak";
-import TransactionList from "../../components/Wallet/TransactionList";
+
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import SideDepositForm from "../../components/Wallet/SideDepositForm";
