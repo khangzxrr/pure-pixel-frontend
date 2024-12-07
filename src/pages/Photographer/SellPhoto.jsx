@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useRef } from "react";
 import useSellPhotoStore from "../../states/UseSellPhotoState";
 import UploadPhotoSell from "./components/UploadPhotoSell.jsx";
 import UploadPhotoSellInfoBar from "./components/UploadPhotoSellInfoBar.jsx";
@@ -13,6 +13,8 @@ export default function SellPhoto() {
     getPhotoByUid,
     uidHashmap,
   } = useSellPhotoStore();
+  const formRef = useRef();
+
   const photoData =
     getPhotoByUid(selectedPhoto) !== undefined
       ? getPhotoByUid(selectedPhoto)
@@ -28,7 +30,7 @@ export default function SellPhoto() {
               photoArray && photoArray.length > 0 ? "" : "h-1/2"
             }`}
           >
-            <UploadPhotoSell />
+            <UploadPhotoSell formRef={formRef} />
           </div>
           {photoArray && photoArray.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-10 gap-4 h-3/4 lg:h-2/3 bg-[#2f3136]">
@@ -59,11 +61,10 @@ export default function SellPhoto() {
               </div>
 
               <div className="col-span-10 md:col-span-6 h-full overflow-hidden">
-                {/* {!photoData ||
-                  (photoData.status !== "done" && (
-                    <div className="  bg-black opacity-10 z-50 flex justify-center items-center h-full" />
-                  ))} */}
-                <UploadPhotoSellInfoBar selectedPhoto={photoData} />
+                <UploadPhotoSellInfoBar
+                  reference={formRef}
+                  selectedPhoto={photoData}
+                />
               </div>
             </div>
           )}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useImperativeHandle, useState } from "react";
 import useSellPhotoStore from "../../../states/UseSellPhotoState";
 import { CategoryApi } from "../../../apis/CategoryApi";
 import { useMutation } from "@tanstack/react-query";
@@ -17,7 +17,13 @@ import PhotoExchange from "../../../apis/PhotoExchange";
 import { useNotification } from "../../../Notification/Notification";
 import { NumericFormat } from "react-number-format";
 import { useNavigate } from "react-router-dom";
-export default function UploadPhotoSellInfoBar({ selectedPhoto }) {
+export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
+  useImperativeHandle(reference, () => ({
+    submitForm() {
+      console.log("form.submitform");
+      handleSubmit(onSubmit)();
+    },
+  }));
   const navigate = useNavigate();
   const { notificationApi } = useNotification();
 
@@ -187,14 +193,6 @@ export default function UploadPhotoSellInfoBar({ selectedPhoto }) {
   };
 
   useEffect(() => {
-    if (disableUpload) {
-      console.log("errors", errors);
-      handleSubmit(onSubmit); // Trigger form submission and validation
-      setDisableUpload(false);
-    }
-  }, [disableUpload, handleSubmit, onSubmit]); // Add dependencies for handleSubmit and onSubmit
-
-  useEffect(() => {
     reset(getDefaultPhoto(selectedPhoto));
     getAllCategories.mutate();
     if (
@@ -237,7 +235,6 @@ export default function UploadPhotoSellInfoBar({ selectedPhoto }) {
         </p>
         <div className="px-2 lg:px-6 text-[#d7d7d8] font-normal lg:text-base text-xs">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <button type="submit">submit</button>
             <ConfigProvider
               theme={{
                 components: {
@@ -322,16 +319,18 @@ export default function UploadPhotoSellInfoBar({ selectedPhoto }) {
                 </p>
               )}
               {/* Pricetags Field */}
-              <div className="bg-[#292b2f] p-4 rounded-md">
-                <h3 className="text-lg text-gray-100">
-                  Chỉnh giá theo Kích thước
-                </h3>
-                <Controller
-                  name="pricetags"
-                  control={control}
-                  defaultValue={[]} // Ensure defaultValue is an empty array
-                  render={({ field }) => (
-                    <>
+
+              <Controller
+                name="pricetags"
+                control={control}
+                defaultValue={[]} // Ensure defaultValue is an empty array
+                render={({ field }) =>
+                  !isDisableUpdatePhoto && (
+                    <div className="bg-[#292b2f] p-4 rounded-md">
+                      <h3 className="text-lg text-gray-100">
+                        Chỉnh giá theo Kích thước
+                      </h3>
+
                       {errors.pricetags && (
                         <p className="text-red-500 text-sm p-1">
                           {errors.pricetags.message}
@@ -397,10 +396,10 @@ export default function UploadPhotoSellInfoBar({ selectedPhoto }) {
                           </div>
                         )
                       )}
-                    </>
-                  )}
-                />
-              </div>
+                    </div>
+                  )
+                }
+              />
 
               {/* Category Field */}
               <p>Thể loại</p>
