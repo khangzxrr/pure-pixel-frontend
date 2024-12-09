@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CardDataStats from "./CardDataStats";
 import { FiImage, FiPackage, FiUsers } from "react-icons/fi";
 import { MdAttachMoney } from "react-icons/md";
@@ -6,6 +6,7 @@ import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
 import { ConfigProvider, Modal } from "antd";
 import ChartDashboardRevenue from "./ChartDashboardRevenue";
 import formatPrice from "./../../utils/FormatPriceUtils";
+import { IoClose } from "react-icons/io5";
 
 const CardDataStatsList = ({ data }) => {
   const [isOpenUserTotal, setIsOpenUserTotal] = React.useState(false);
@@ -36,73 +37,95 @@ const CardDataStatsList = ({ data }) => {
   const handleRevenueTotalModal = () => {
     setIsOpenRevenueTotal(!isOpenRevenueTotal);
   };
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      setIsOpenUserTotal(false);
+      setIsOpenPhotoTotal(false);
+      setIsOpenRevenueTotal(false);
+    }
+  };
+  useEffect(() => {
+    if (isOpenUserTotal || isOpenPhotoTotal || isOpenRevenueTotal) {
+      document.body.style.overflow = "hidden"; // Tắt thanh cuộn khi modal mở
+    } else {
+      document.body.style.overflow = "auto"; // Mở lại thanh cuộn khi modal đóng
+    }
+  }, [isOpenUserTotal, isOpenPhotoTotal, isOpenRevenueTotal]);
   return (
     <>
-      {/* Modal */}
-      <ConfigProvider
-        theme={{
-          components: {
-            Modal: {
-              contentBg: "#292b2f",
-              headerBg: "#292b2f",
-              titleColor: "white",
-            },
-          },
-        }}
-      >
-        <Modal
-          title="Thống kê tổng số người đăng ký"
-          visible={isOpenUserTotal} // Use state from Zustand store
-          onCancel={handleUserTotalModal} // Close the modal on cancel
-          footer={null}
-          width={600} // Set the width of the modal
-          centered={true}
-          className="custom-close-icon"
+      {isOpenUserTotal && (
+        <div
+          onClick={handleOverlayClick}
+          className={`fixed inset-0 bg-black bg-opacity-70 z-50 w-screen overflow-y-auto flex justify-center items-center`}
         >
-          <ChartDashboardRevenue
-            nameChart={"Thống kê tổng số người đăng ký"}
-            nameParam1={"Tổng số khách hàng"}
-            nameParam2={"Tổng số nhiếp ảnh gia"}
-            param1={totalCustomer}
-            param2={totalPhotographer}
-          />
-        </Modal>
-        <Modal
-          title="Thống kê tổng số ảnh"
-          visible={isOpenPhotoTotal} // Use state from Zustand store
-          onCancel={handlePhotoTotalModal} // Close the modal on cancel
-          footer={null}
-          width={600} // Set the width of the modal
-          centered={true}
-          className="custom-close-icon"
+          <div className="relative bg-[#292b2f] rounded-sm">
+            <div
+              onClick={handleUserTotalModal}
+              className="absolute top-2 right-2 text-[#eee] p-2 rounded-full hover:bg-[#636363] hover:cursor-pointer transition duration-200"
+            >
+              <IoClose />
+            </div>
+            <div className=" p-5 w-[600px]">
+              <ChartDashboardRevenue
+                nameChart={"Thống kê tổng số người đăng ký"}
+                nameParam1={"Tổng số khách hàng"}
+                nameParam2={"Tổng số nhiếp ảnh gia"}
+                param1={totalCustomer}
+                param2={totalPhotographer}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      {isOpenPhotoTotal && (
+        <div
+          onClick={handleOverlayClick}
+          className={`fixed inset-0 bg-black bg-opacity-70 z-50 w-screen overflow-y-auto flex justify-center items-center`}
         >
-          <ChartDashboardRevenue
-            nameChart={"Thống kê tổng số ảnh"}
-            param1={totalPhotoSelling}
-            nameParam1={"Tổng số ảnh bán"}
-            param2={totalPhotoNotSelling}
-            nameParam2={"Tổng số ảnh không bán"}
-          />
-        </Modal>
-        <Modal
-          title="Thống kê tổng số doanh thu"
-          visible={isOpenRevenueTotal} // Use state from Zustand store
-          onCancel={handleRevenueTotalModal} // Close the modal on cancel
-          footer={null}
-          width={600} // Set the width of the modal
-          centered={true}
-          className="custom-close-icon"
+          <div className="relative bg-[#292b2f] rounded-sm">
+            <div
+              onClick={handlePhotoTotalModal}
+              className="absolute top-2 right-2 text-[#eee] p-2 rounded-full hover:bg-[#636363] hover:cursor-pointer transition duration-200"
+            >
+              <IoClose />
+            </div>
+            <div className=" p-5 w-[600px]">
+              <ChartDashboardRevenue
+                nameChart={"Thống kê tổng số ảnh"}
+                param1={totalPhotoSelling}
+                nameParam1={"Tổng số ảnh bán"}
+                param2={totalPhotoNotSelling}
+                nameParam2={"Tổng số ảnh không bán"}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      {isOpenRevenueTotal && (
+        <div
+          onClick={handleOverlayClick}
+          className={`fixed inset-0 bg-black bg-opacity-70 z-50 w-screen overflow-y-auto flex justify-center items-center`}
         >
-          <ChartDashboardRevenue
-            nameChart={"Thống kê tổng doanh thu"}
-            nameParam1={"Doanh thu bán ảnh"}
-            nameParam2={"Doanh thu gói nâng cấp"}
-            param1={revenueFromSellingPhoto}
-            param2={revenueFromUpgradePackage}
-            isMoney={true}
-          />
-        </Modal>
-      </ConfigProvider>
+          <div className="relative bg-[#292b2f] rounded-sm">
+            <div
+              onClick={handlePhotoTotalModal}
+              className="absolute top-2 right-2 text-[#eee] p-2 rounded-full hover:bg-[#636363] hover:cursor-pointer transition duration-200"
+            >
+              <IoClose />
+            </div>
+            <div className=" p-5 w-[600px]">
+              <ChartDashboardRevenue
+                nameChart={"Thống kê tổng doanh thu"}
+                nameParam1={"Doanh thu bán ảnh"}
+                nameParam2={"Doanh thu gói nâng cấp"}
+                param1={revenueFromSellingPhoto}
+                param2={revenueFromUpgradePackage}
+                isMoney={true}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Card */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-5">
