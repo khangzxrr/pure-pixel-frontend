@@ -36,7 +36,7 @@ const ChartDashboardUpgradePackage = ({ dashBoardData }) => {
       setChartData({
         series: [
           {
-            name: "Số lượng người nâng cấp gói này là",
+            name: "Số lượng người dùng nâng cấp gói này là",
             data: seriesData,
           },
         ],
@@ -91,7 +91,7 @@ const ChartDashboardUpgradePackage = ({ dashBoardData }) => {
             },
           },
           xaxis: {
-            categories: ["Gói nâng cao", "Gói bắt đầu", "Cao cấp"],
+            categories: ["Gói nâng cao", "Gói bắt đầu", "Gói cao cấp"],
             labels: {
               style: {
                 colors: "#eee",
@@ -118,17 +118,22 @@ const ChartDashboardUpgradePackage = ({ dashBoardData }) => {
   }, [dashBoardData, maxUserTotal]);
 
   return (
-    <div className="col-span-12 rounded-sm  px-5 pt-7.5  shadow-default sm:px-7.5 xl:col-span-8">
-      <div id="chart">
-        {chartData.series.length > 0 && (
-          <ReactApexChart
-            className="-ml-5"
-            options={chartData.options}
-            series={chartData.series}
-            type="bar"
-            height={420}
-          />
-        )}
+    <div className="flex flex-col pt-4 ">
+      <div className="text-center font-bold text-[#eee]">
+        Thông kê số lượng người dùng nâng cấp theo gói
+      </div>
+      <div className="col-span-12 rounded-sm  px-5 pt-7.5  shadow-default sm:px-7.5 xl:col-span-8">
+        <div id="chart">
+          {chartData.series.length > 0 && (
+            <ReactApexChart
+              className="-ml-5"
+              options={chartData.options}
+              series={chartData.series}
+              type="bar"
+              height={420}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

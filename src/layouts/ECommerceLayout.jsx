@@ -12,6 +12,7 @@ import UseECommerceStore from "../states/UseECommerceStore";
 import dayjs from "dayjs";
 import TableCameraList from "../components/ComECommerce/TableCameraList";
 import CameraApi from "../apis/CameraApi";
+import ChartDashboardRevenue from "../components/ComECommerce/ChartDashboardRevenue";
 const { RangePicker } = DatePicker;
 
 const ECommerceLayout = () => {
@@ -104,7 +105,21 @@ const ECommerceLayout = () => {
           <CardDataStatsList data={data} />
           <ChartDashboard dashBoardData={data} />
           <Table dataTopSeller={TopSeller} />
-          <TableCameraList dataCamera={TopCamera} />
+          <div className="grid grid-cols-1 md:grid-cols-8 gap-8 px-5">
+            <TableCameraList dataCamera={TopCamera} />
+            <div className="col-span-3">
+              <div className="bg-[#32353b]  rounded-sm">
+                <ChartDashboardRevenue
+                  nameChart={"Đang layout, chưa gắn api"}
+                  nameParam1={"Doanh thu bán ảnh"}
+                  nameParam2={"Doanh thu gói nâng cấp"}
+                  param1={2000}
+                  param2={2000}
+                  isMoney={true}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
