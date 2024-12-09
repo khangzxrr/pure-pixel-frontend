@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { ConfigProvider, Modal } from "antd";
+import { ConfigProvider, Modal, Pagination } from "antd";
 import CreatePhotoshootPackage from "./CreatePhotoshootPackage";
 import { useModalState } from "../../hooks/useModalState";
 import ComButton from "../../components/ComButton/ComButton";
@@ -21,7 +21,7 @@ const PhotoshootPackageManagementV2 = () => {
   } = useModalStore();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = window.innerWidth < 1024 ? 4 : 8;
   const [orderByCreateAt, setOrderByCreateAt] = useState("desc");
 
   // Fetch current user package details
@@ -43,12 +43,19 @@ const PhotoshootPackageManagementV2 = () => {
   });
 
   const listPhotoshootPackages = data?.objects || [];
+  const numberOfRecord = data?.totalRecord || 0;
+  const totalPages = data?.totalPage || 1;
+
   const maxPackageCount = currentPackage?.maxPackageCount ?? "Chưa rõ";
   const packageCount = currentPackage?.packageCount ?? "Chưa rõ";
   const usedPercentage = currentPackage
     ? (packageCount / maxPackageCount) * 100
     : 0;
-
+  const handlePageClick = (pageNumber) => {
+    if (pageNumber !== page) {
+      setPage(pageNumber);
+    }
+  };
   return (
     <ConfigProvider
       theme={{
@@ -116,7 +123,29 @@ const PhotoshootPackageManagementV2 = () => {
             </div>
           )}
         </div>
-
+        {totalPages > 1 && (
+          <ConfigProvider
+            theme={{
+              token: {
+                colorBgContainer: "#1e1e1e",
+                colorText: "#b3b3b3",
+                colorPrimary: "white",
+                colorBgTextHover: "#333333",
+                colorBgTextActive: "#333333",
+                colorTextDisabled: "#666666",
+              },
+            }}
+          >
+            <Pagination
+              current={page}
+              total={totalPages * itemsPerPage}
+              onChange={handlePageClick}
+              pageSize={itemsPerPage}
+              showSizeChanger={false}
+              className="flex justify-end my-2"
+            />
+          </ConfigProvider>
+        )}
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {listPhotoshootPackages.map((packageDetail) => (
             <div
@@ -128,6 +157,9 @@ const PhotoshootPackageManagementV2 = () => {
               <MyPhotoshootPackageCard
                 packageDetail={packageDetail}
                 page={page}
+                setPage={setPage}
+                numberOfRecord={numberOfRecord}
+                itemsPerPage={itemsPerPage}
               />
             </div>
           ))}

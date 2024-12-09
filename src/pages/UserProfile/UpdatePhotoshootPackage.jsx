@@ -102,6 +102,8 @@ export default function UpdatePhotoshootPackage({ onClose }) {
       setThumbnailUrl();
       setShowcasesUrl([]);
       queryClient.invalidateQueries("package-detail-by-photographer");
+      queryClient.invalidateQueries("findAllPhotoshootPackages");
+
       reset();
     },
     onError: (error) => {
@@ -199,7 +201,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
 
                   <div className="w-full h-[40vh] overflow-hidden flex my-auto">
                     <img
-                      src={thumbnailUrl}
+                      src={`${thumbnailUrl}?random_number=${new Date().getTime()}`}
                       className="w-full object-cover"
                       alt="Thumbnail"
                     />

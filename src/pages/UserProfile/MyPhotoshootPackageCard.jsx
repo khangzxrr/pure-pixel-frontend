@@ -10,7 +10,13 @@ import { Popconfirm, Tooltip } from "antd";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useModalStore from "../../states/UseModalStore";
-const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
+const MyPhotoshootPackageCard = ({
+  packageDetail,
+  page,
+  setPage,
+  numberOfRecord,
+  itemsPerPage,
+}) => {
   const {
     setIsUpdatePhotoshootPackageModal,
     setSelectedUpdatePhotoshootPackage,
@@ -25,10 +31,17 @@ const MyPhotoshootPackageCard = ({ packageDetail, page }) => {
     },
     onSuccess: () => {
       console.log("deletePhotoshootPackage success", page);
-
-      queryClient.invalidateQueries({
-        queryKey: ["findAllPhotoshootPackages", page],
-      });
+      const updatedNumberOfRecord = numberOfRecord - 1;
+      console.log(
+        updatedNumberOfRecord,
+        itemsPerPage,
+        page,
+        Math.ceil(updatedNumberOfRecord / itemsPerPage) < page
+      );
+      if (Math.ceil(updatedNumberOfRecord / itemsPerPage) < page) {
+        console.log(`move to previous page ${page - 1}`);
+        setPage(page - 1);
+      }
       queryClient.invalidateQueries("findAllPhotoshootPackages");
     },
     onError: (error) => {

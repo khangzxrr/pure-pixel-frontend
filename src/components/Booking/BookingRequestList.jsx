@@ -69,9 +69,9 @@ const BookingRequestList = () => {
       <div className="flex flex-col gap-2">
         <span className="text-xl">Danh sách lịch hẹn chụp cho khách</span>
 
-        <div className="flex justify-between items-center border-b-2 text-sm font-medium border-[#818181] pb-2 mb-2">
+        <div className="flex flex-col md:flex-row md:justify-between items-end md:items-center border-b-2 text-sm font-medium border-[#818181] pb-2 mb-2">
           <ConfigProvider theme={customTheme}>
-            <div className="flex gap-3">
+            <div className="flex gap-3 text-sm">
               {statuses.map((statusField) => (
                 <button
                   key={statusField.value}
@@ -87,7 +87,7 @@ const BookingRequestList = () => {
                       ? statusField.color
                       : "#fff",
                   }}
-                  className="hover:opacity-90 transition-opacity cursor-pointer border-none rounded-lg px-4 py-2 font-semibold"
+                  className="hover:opacity-90 transition-opacity cursor-pointer border-none rounded-lg px-3 md:px-4 py-2 font-semibold"
                 >
                   {statusField.label}
                 </button>

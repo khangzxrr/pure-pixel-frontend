@@ -88,7 +88,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
   } = useForm({
     resolver: yupResolver(uploadPhotoSellInput),
     defaultValues: getDefaultPhoto(),
-    mode: "onSubmit", // Enable validation onSubmit
+    mode: "onChange", // Enable validation onSubmit
     reValidateMode: "onChange", // Revalidate onChange
   });
   console.log("errors", errors);
@@ -111,38 +111,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
       (photo) => photo.status === "done"
     );
 
-    if (photosToUpdate.length === 0) {
-      // console.log("all photo done");
-
-      // If there are no photos with "done" status, show a message or handle accordingly
-      setDisableUpload(false);
-      notificationApi(
-        "info",
-        "Không có ảnh phù hợp để đăng tải",
-        "Danh sách hiện tại không có ảnh nào phù hợp để bán"
-      );
-
-      return;
-    }
-
-    // Check if any photo's pricetags does not have at least one valid price
-    const invalidPricePhotos = photosToUpdate.filter(
-      (photo) => !photo.pricetags.some((tag) => tag.price >= 1000)
-    );
-
-    if (invalidPricePhotos.length > 0) {
-      // console.log("all photo done");
-
-      // If there are photos with invalid pricetags, show a message and return early
-      setDisableUpload(false);
-      notificationApi(
-        "info",
-        "Không có giá hợp lệ",
-        "Danh sách ảnh có tồn tại ảnh chưa có giá bán, vui lòng kiểm tra lại"
-      );
-
-      return;
-    }
+    //
 
     // Loop over each photo with status "done" and update them individually
     const updatePromises = photosToUpdate.map(async (photo) => {
