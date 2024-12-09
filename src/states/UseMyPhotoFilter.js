@@ -17,6 +17,8 @@ const UseMyPhotoFilter = create((set) => ({
   setIsWatermarkChecked: (value) => set({ isWatermarkChecked: value }),
   isForSaleChecked: false,
   setIsForSaleChecked: (value) => set({ isForSaleChecked: value }),
+  isBanned: false,
+  setIsBanned: (value) => set({ isBanned: value }),
 }));
 
 export default UseMyPhotoFilter;

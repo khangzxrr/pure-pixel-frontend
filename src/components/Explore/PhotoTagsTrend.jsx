@@ -17,8 +17,8 @@ const PhotoTagsTrend = () => {
     error,
     isError,
   } = useQuery({
-    queryKey: ["photoTags", { top: 10 }], // Sử dụng queryKey dưới dạng đối tượng
-    queryFn: () => PhotoApi.getPhotoTags({ top: 10 }), // Gọi hàm API
+    queryKey: ["photoTags", { top: 5 }], // Sử dụng queryKey dưới dạng đối tượng
+    queryFn: () => PhotoApi.getPhotoTags({ top: 5 }), // Gọi hàm API
   });
   const clearActiveTag = () => {
     setActiveTag(null);

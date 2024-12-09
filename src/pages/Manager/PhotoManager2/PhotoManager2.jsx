@@ -31,7 +31,7 @@ const PhotoManager2 = () => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["manager-photos", page, sortDate],
     queryFn: () =>
-      ManagerPhotoApi.getAllPhotos(itemsPerPage, page - 1, sortDate),
+      ManagerPhotoApi.getAllPhotos(itemsPerPage, page - 1, null, sortDate),
     keepPreviousData: true,
   });
   4;
