@@ -13,7 +13,7 @@ import FilterModel from "./FilterModel";
 import { FaFilter, FaFilterCircleXmark, FaHeart } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { MdDateRange } from "react-icons/md";
+import { MdDateRange, MdReportGmailerrorred } from "react-icons/md";
 import { ConfigProvider, Pagination, Tooltip } from "antd";
 import { motion } from "framer-motion";
 import UpdateDropdown from "./UpdateDropdown";
@@ -23,6 +23,7 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState(null);
+  const [banned, setIsBanned] = useState([]);
   const { inputValue, setInputValue, setSearchResult } = UseMyPhotoFilter();
   const filterByPhotoDate = UseMyPhotoFilter(
     (state) => state.filterByPhotoDate
@@ -39,6 +40,16 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
   );
   const filterByUpVote = UseMyPhotoFilter((state) => state.filterByUpVote);
   const orderByUpVote = filterByUpVote.param;
+  const isBanned = UseMyPhotoFilter((state) => state.isBanned);
+
+  useEffect(() => {
+    if (isBanned) {
+      setIsBanned(["BAN"]);
+    } else {
+      setIsBanned("");
+    }
+  }, [isBanned]);
+
   const {
     isWatermarkChecked,
     isForSaleChecked,
@@ -57,6 +68,7 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
       isWatermarkChecked,
       isForSaleChecked,
       searchResult,
+      banned,
     ],
     queryFn: () =>
       PhotographerApi.getMyPhotos(
@@ -67,7 +79,8 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
         watermark,
         selling,
         searchResult,
-        "RAW"
+        "RAW",
+        banned
       ),
     keepPreviousData: true,
   });
@@ -299,6 +312,14 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
                     </div>
                   </div>
                 </div>
+                {photo.status === "BAN" && (
+                  <div className="absolute flex items-center animate-pulse group-hover:animate-none top-2 left-1 rounded-full bg-red-500 text-white text-center p-2 group">
+                    <MdReportGmailerrorred className="text-3xl" />
+                    <div className="hidden group-hover:block">
+                      Ảnh này đã bị cấm!
+                    </div>
+                  </div>
+                )}
               </div>
             ))
           ) : (
