@@ -74,7 +74,7 @@ const ChartDashboardRevenue = ({
           <ReactApexChart options={options} series={series} type="donut" />
         </div>
       </div>
-      <div className="flex flex-col gap-2 px-2">
+      <div className="flex flex-col justify-center items-center pt-4 gap-2 px-2">
         <div className="flex items-center justify-between  gap-2 text-[#eee]">
           <div className="flex items-center gap-2 w-full">
             <span className="w-3 h-3 rounded-full bg-[#6577F3]"></span>{" "}
