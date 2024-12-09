@@ -32,6 +32,7 @@ const TableCameraList = ({ dataCamera }) => {
       title: "Tên máy ảnh",
       dataIndex: "name",
       key: "name",
+      width: 200,
     },
     {
       title: "Các mã phổ biến",

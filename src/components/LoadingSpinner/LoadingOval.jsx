@@ -7,8 +7,8 @@ const LoadingOval = () => {
       visible={true}
       height="80"
       width="80"
-      color="#18d8ed"
-      secondaryColor="#626869"
+      color="#eee"
+      secondaryColor="#43474e"
       ariaLabel="oval-loading"
       wrapperStyle={{}}
       wrapperClass=""
