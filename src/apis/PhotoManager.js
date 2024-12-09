@@ -1,6 +1,6 @@
 import http from "../configs/Http";
 
-const getAllPhotos = async (
+const getPhotoManager = async (
   limit,
   page,
   categoryName,
@@ -69,16 +69,6 @@ const getAllPhotos = async (
   return response.data;
 };
 
-const deletePhoto = async (id) => {
-  const url = `manager/photo/${id}`;
-  const response = await http.delete(url);
-  return response.data;
-};
+const PhotoManagerApi = { getPhotoManager };
 
-const updatePhoto = async (id, updateBody) => {
-  const url = `manager/photo/${id}`;
-  const response = await http.patch(url, updateBody);
-  return response.data;
-};
-const ManagerPhotoApi = { getAllPhotos, deletePhoto, updatePhoto };
-export default ManagerPhotoApi;
+export default PhotoManagerApi;

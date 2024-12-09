@@ -3,12 +3,13 @@ import "./ChannelInbox.css";
 import { useKeycloak } from "@react-keycloak/web";
 import ChatClientProvider from "./ChatClientProvider";
 import PurePixelLoading from "../Animation/PurePixelLoading";
+import LoadingPage from "../../pages/LoadingPage";
 
 const ChatProvider = ({ children }) => {
   const { keycloak, initialized } = useKeycloak();
 
   if (!initialized) {
-    return <PurePixelLoading />;
+    return <LoadingPage />;
   }
 
   if (keycloak.authenticated && keycloak.tokenParsed) {

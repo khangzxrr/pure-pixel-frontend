@@ -7,7 +7,7 @@ const options = {
     type: "donut",
   },
   colors: ["#3C50E0", "#6577F3"],
-  labels: ["Lợi nhuận chiết khấu bán ảnh", "Doanh thu gói nâng cấp"],
+  labels: ["Doanh thu bán ảnh", "Doanh thu đặt gói dịch vụ chụp ảnh"],
   legend: {
     show: false,
     position: "bottom",
