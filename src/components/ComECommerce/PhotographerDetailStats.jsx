@@ -111,9 +111,9 @@ const PhotographerDetailStats = () => {
         </div>
       </div>
       <div className="col-span-6 flex flex-col gap-4 ">
-        <div className="bg-[#32353b]  rounded-sm">
+        {/* <div className="bg-[#32353b]  rounded-sm">
           <ChartTotalPhotoSoldByDay />
-        </div>
+        </div> */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-[#32353b]  rounded-sm col-span-3">
             <TablePhotoListOfPhotographer data={topSoldPhotos} />

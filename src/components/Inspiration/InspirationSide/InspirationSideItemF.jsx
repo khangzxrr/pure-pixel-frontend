@@ -43,13 +43,13 @@ const InspirationSideItemF = [
     link: "/explore/selling",
     quote: "Những bức ảnh đang được đăng bán",
   },
-  {
-    id: 9,
-    title: "Blog",
-    icon: <MdFeed />,
-    link: "/explore/blog",
-    quote: "Những bức ảnh đang được đăng bán",
-  },
+  // {
+  //   id: 9,
+  //   title: "Blog",
+  //   icon: <MdFeed />,
+  //   link: "/explore/blog",
+  //   quote: "Những bức ảnh đang được đăng bán",
+  // },
   {
     id: 5,
     title: "Máy ảnh phổ biến",
