@@ -1,14 +1,12 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react";
 import PhotoApi from "../../apis/PhotoApi";
-
 import { useNavigate, useParams } from "react-router-dom";
 import DetailUser from "../DetailUser/DetailUser";
 import { useModalState } from "./../../hooks/useModalState";
 import ComModal from "../../components/ComModal/ComModal";
 import ComSharePhoto from "../../components/ComSharePhoto/ComSharePhoto";
 import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
-
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
@@ -16,7 +14,6 @@ import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
 import { Blurhash } from "react-blurhash";
 import { motion } from "framer-motion";
 import { useParentSize } from "@cutting/use-get-parent-size";
-
 import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
 import { ConfigProvider, Modal } from "antd";
 import { useKeycloak } from "@react-keycloak/web";
@@ -26,6 +23,10 @@ import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore"
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import TextWithShowMore from "./components/TextWithShowMore";
 import UserService from "../../services/Keycloak";
+import Map, { Marker, Popup } from "react-map-gl";
+import { IoLocationSharp } from "react-icons/io5";
+import MapBoxApi from "../../apis/MapBoxApi";
+import usePhotoMapStore from "../../states/UsePhotoMapStore";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -72,9 +73,11 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const imageRef = useRef(null);
   const { id } = useParams();
   const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
+  const [photoAddress, setPhotoAddress] = useState("");
   const setNamePhotographer = UsePhotographerFilterStore(
     (state) => state.setNamePhotographer
   );
+  const { setSelectedPhoto, setIsFromPhotoDetailPage } = usePhotoMapStore(); // Use Zustand store
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
@@ -124,12 +127,28 @@ export default function DetailedPhotoView({ onClose, photo }) {
     queryFn: () => PhotoApi.getNextPublicById(currentPhoto.id),
     enabled: !!currentPhoto?.id,
   });
-
+  const searchByCoordinate = useMutation({
+    mutationFn: ({ longitude, latitude }) =>
+      MapBoxApi.getAddressByCoordinate(longitude, latitude),
+    onSuccess: (data) => {
+      setPhotoAddress(data.features[0].properties.full_address);
+    },
+    onError: (error) => {
+      console.error("Error fetching address:", error);
+    },
+  });
   // if (isError) {
   //   console.log(error);
   //   navigate("/404");
   // }
-
+  useEffect(() => {
+    if (currentPhoto?.exif?.longitude && currentPhoto?.exif?.latitude) {
+      searchByCoordinate.mutate({
+        longitude: currentPhoto.exif.longitude,
+        latitude: currentPhoto.exif.latitude,
+      });
+    }
+  }, [currentPhoto]);
   useEffect(() => {
     if (!isPending && data !== currentPhoto) {
       setCurrentPhoto(data);
@@ -224,7 +243,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const handleCloseLoginWarning = () => {
     setIsOpenLoginModal(false);
   };
-
+  console.log("currentPhoto", currentPhoto);
   return (
     <div className={isPending ? "hidden" : "block"}>
       <div className="fixed inset-0 bg-black bg-opacity-80 md:flex justify-center items-center z-50 w-screen overflow-y-auto">
@@ -419,7 +438,58 @@ export default function DetailedPhotoView({ onClose, photo }) {
             <div className="my-2 font-normal">
               <TextWithShowMore description={currentPhoto.description} />
             </div>
+            <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
 
+            {currentPhoto?.exif && (
+              <div className="space-y-2 mb-6">
+                <ExifList exifData={currentPhoto?.exif} />
+              </div>
+            )}
+            {currentPhoto?.exif?.longitude && currentPhoto?.exif?.latitude && (
+              <div className="relative p-4 my-4 w-full h-[40vh]">
+                <Map
+                  viewState={{
+                    latitude: currentPhoto?.exif.latitude,
+                    longitude: currentPhoto?.exif.longitude,
+                    zoom: 13,
+                  }}
+                  mapStyle="mapbox://styles/mapbox/streets-v9"
+                  mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+                  style={{ width: "100%", height: "100%" }}
+                  className="rounded-lg"
+                  // onClick={() => {
+                  //   console.log("click", currentPhoto);
+                  //   setSelectedPhoto(currentPhoto);
+                  //   navigate(`/explore/photo-map`);
+                  //   setIsFromPhotoDetailPage(true);
+                  //   onClose();
+                  // }}
+                >
+                  <>
+                    <Marker
+                      latitude={currentPhoto.exif.latitude}
+                      longitude={currentPhoto.exif.longitude}
+                      anchor="bottom"
+                    >
+                      <div className="marker-btn" style={{ cursor: "pointer" }}>
+                        <IoLocationSharp fontSize={39} color="red" />
+                      </div>
+                    </Marker>
+                    <Popup
+                      latitude={currentPhoto.exif.latitude}
+                      longitude={currentPhoto.exif.longitude}
+                      anchor="top"
+                      closeOnClick={false}
+                      closeButton={false}
+                    >
+                      <div style={{ cursor: "pointer" }}>
+                        <h2 className="text-black">{photoAddress}</h2>
+                      </div>
+                    </Popup>
+                  </>
+                </Map>
+              </div>
+            )}
             {/* <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div> */}
 
             <div className="flex items-center space-x-6 mb-6">
@@ -535,13 +605,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
               </Menu>
             </div>
 
-            <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
-
-            {currentPhoto?.exif && (
-              <div className="space-y-2 mb-6">
-                <ExifList exifData={currentPhoto?.exif} />
-              </div>
-            )}
             <div className="mb-6">
               <CommentPhoto id={currentPhoto.id} reload={refreshPhoto} />
             </div>

@@ -8,27 +8,21 @@ import PhotoBoughtPreviewComponent from "./PhotoBoughtPreviewComponent";
 const PhotoBoughtDetail = () => {
   const { boughtId } = useParams();
 
-  const { data, isLoading: isPhotoBoughtDetailLoading } = useQuery({
+  const { data: photoData, isLoading } = useQuery({
     queryKey: ["photo-bought-detail", boughtId],
     queryFn: () => PhotoExchange.getPhotoBoughtDetail(boughtId),
   });
-  const sizeList = data;
 
-  const { data: photoData, isLoading } = useQuery({
-    queryKey: ["photo-by-id", boughtId],
+  const { data: photoById } = useQuery({
+    queryKey: ["photo", boughtId],
     queryFn: () => PhotoApi.getPhotoById(boughtId), // Không cần `await` khi đã trả về `Promise`
   });
-
-  if (isLoading || isPhotoBoughtDetailLoading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <PhotoBoughtPreviewComponent
-      photo={photoData}
-      sizeList={sizeList}
-      photoBoughtId={boughtId}
-    />
+    <PhotoBoughtPreviewComponent photo={photoData} photoBoughtId={boughtId} />
   );
 };
 

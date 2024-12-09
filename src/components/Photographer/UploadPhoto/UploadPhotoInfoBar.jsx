@@ -5,7 +5,7 @@ import useUploadPhotoStore from "../../../states/UploadPhotoState";
 export default function UploadPhotoInfoBar({ photoData }) {
   const isDisableUpdatePhoto = !photoData || photoData.status !== "done";
   return (
-    <div className="w-full h-full mx-auto overflow-y-auto custom-scrollbar">
+    <div className="relative w-full h-full mx-auto md:overflow-y-auto md:custom-scrollbar">
       {isDisableUpdatePhoto && (
         <div
           className="absolute inset-0 bg-black h-screen bg-opacity-50 z-20 flex items-center justify-center cursor-not-allowed"
