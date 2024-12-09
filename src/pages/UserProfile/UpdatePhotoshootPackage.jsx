@@ -201,7 +201,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
 
                   <div className="w-full h-[40vh] overflow-hidden flex my-auto">
                     <img
-                      src={`${thumbnailUrl}?random_number=${new Date().getTime()}`}
+                      src={thumbnailUrl}
                       className="w-full object-cover"
                       alt="Thumbnail"
                     />
