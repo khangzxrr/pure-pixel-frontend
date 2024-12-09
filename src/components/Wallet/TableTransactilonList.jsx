@@ -11,6 +11,7 @@ import TableSkeleton from "../Skeleton/TableSkeleton";
 import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter";
 import ComNoteWalletConverter from "../ComStatusConverter/ComNoteWalletConventer";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
+import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
 
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
@@ -88,7 +89,7 @@ export default function TableTransactilonList() {
     },
     {
       title: "Loại",
-      width: "25%",
+      width: "15%",
       dataIndex: "type",
       key: "type",
       render: (_, record) => (
@@ -176,12 +177,10 @@ export default function TableTransactilonList() {
           )}
         </button>
       ),
-      width: "15%",
+      width: "20%",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      render: (updatedAt, record) => (
-        <ComDateConverter>{updatedAt}</ComDateConverter>
-      ),
+      render: (updatedAt, record) => FormatDateTime(updatedAt),
     },
   ];
   const {

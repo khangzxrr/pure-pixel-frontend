@@ -102,6 +102,8 @@ export default function UpdatePhotoshootPackage({ onClose }) {
       setThumbnailUrl();
       setShowcasesUrl([]);
       queryClient.invalidateQueries("package-detail-by-photographer");
+      queryClient.invalidateQueries("findAllPhotoshootPackages");
+
       reset();
     },
     onError: (error) => {

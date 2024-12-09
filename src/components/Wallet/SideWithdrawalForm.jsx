@@ -25,7 +25,7 @@ export default function SideWithdrawalForm({
       .number()
       .typeError("Vui lòng nhập số tiền hợp lệ")
       .min(10000, "Số tiền rút phải lớn hơn 10,000 VND")
-      .max(balance + 1, "Số dư không đủ để thực hiện giao dịch") // Maximum price validation
+      .max(balance, "Số dư không đủ để thực hiện giao dịch") // Maximum price validation
       .transform((value, originalValue) => {
         if (typeof originalValue === "string") {
           // Convert the value to a number

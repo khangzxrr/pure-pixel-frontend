@@ -12,6 +12,7 @@ import PhotoManagementModal from "./PhotoManagementModal";
 import { postData } from "../../apis/api";
 
 const DropdownSeller = ({ photo, callData }) => {
+  const queryClient = useQueryClient();
   const [isHovered, setIsHovered] = useState(false);
   const {
     setIsUpdatePhotoModal,
@@ -48,6 +49,7 @@ const DropdownSeller = ({ photo, callData }) => {
         message.success("Xóa ảnh thành công!");
         callData();
         modalDelete.handleClose();
+        queryClient.invalidateQueries("my-photo");
       })
       .catch((error) => {
         message.error("Xóa ảnh không thành công!");
