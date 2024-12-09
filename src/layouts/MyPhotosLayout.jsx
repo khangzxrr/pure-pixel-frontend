@@ -44,7 +44,6 @@ const MyPhotosLayout = () => {
       await deletePhoto.mutateAsync(deletePhotoId, {
         onSuccess: (data) => {
           queryClient.invalidateQueries({ queryKey: ["my-photo"] });
-          notificationApi("success", "Xóa ảnh thành công", "Ảnh đã được xóa.");
 
           const updatedNumberOfRecord = numberOfRecord - 1;
           console.log(page);

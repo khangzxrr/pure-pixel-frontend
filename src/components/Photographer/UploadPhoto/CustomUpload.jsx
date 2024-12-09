@@ -322,35 +322,49 @@ export default function CustomUpload() {
 
   const SubmitUpload = async () => {
     setDisableUpload(true);
-    // Loop over each photo and update them individually
-    const updatePromises = photoArray.map(async (photo) => {
-      const photoToUpdate = {
-        id: photo.response.id,
-        categoryId: photo.categoryId,
-        title: photo.title,
-        watermark: photo.watermark,
-        description: photo.description,
-        categoryIds: photo.categoryIds,
-        visibility: photo.visibility,
-        photoTags: photo.photoTags,
-        gps: { longitude: photo.exif.longitude, latitude: photo.exif.latitude },
-      };
-
-      // Call the API to update a single photo and add watermark concurrently
-      return Promise.all([
-        updatePhotos.mutateAsync(photoToUpdate),
-        photo.watermark
-          ? addWatermark.mutateAsync({
-              photoId: photo.response.id,
-              text: photo.watermarkContent,
-            })
-          : Promise.resolve(),
-      ]);
-    });
 
     try {
+      // Filter photos with the 'done' status
+      const filteredPhotos = photoArray.filter(
+        (photo) => photo.status === "done"
+      );
+
+      // Loop over each filtered photo and update them individually
+      const updatePromises = filteredPhotos.map(async (photo) => {
+        // Build the photoToUpdate object conditionally
+        const photoToUpdate = {
+          id: photo.response.id,
+          categoryId: photo.categoryId,
+          title: photo.title,
+          watermark: photo.watermark,
+          description: photo.description,
+          categoryIds: photo.categoryIds,
+          visibility: photo.visibility,
+          photoTags: photo.photoTags,
+          ...(photo.exif.longitude &&
+            photo.exif.latitude && {
+              gps: {
+                longitude: photo.exif.longitude,
+                latitude: photo.exif.latitude,
+              },
+            }),
+        };
+
+        // Call the API to update a single photo and add watermark concurrently
+        return Promise.all([
+          updatePhotos.mutateAsync(photoToUpdate),
+          photo.watermark
+            ? addWatermark.mutateAsync({
+                photoId: photo.response.id,
+                text: photo.watermarkContent,
+              })
+            : Promise.resolve(),
+        ]);
+      });
+
       // Wait for all update and watermark operations to complete
       await Promise.all(updatePromises);
+
       setDisableUpload(false);
       navigate("/profile/my-photos");
       // Clear state after successful updates

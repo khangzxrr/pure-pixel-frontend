@@ -45,18 +45,9 @@ export default function UploadPhotoSell({ formRef }) {
       await PhotoApi.getAvailableResolutionsByPhotoId(photoId),
   });
 
-  const updatePhotos = useMutation({
-    mutationKey: "update-photo",
-    mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),
-  });
-  const sellPhoto = useMutation({
-    mutationFn: async (photos) =>
-      await PhotoExchange.sellPhotoByPhotoId(photos),
-  });
-
   //handle exception from api response
   const handleException = (file, e) => {
-    switch (e && e.response.data.message) {
+    switch (e && e.response?.data?.message) {
       case "RunOutPhotoQuotaException":
         notificationApi(
           "error",
@@ -331,6 +322,43 @@ export default function UploadPhotoSell({ formRef }) {
     return "";
   };
 
+  // Filter out photos with status "done"
+  const photosToUpdate =
+    photoArray && photoArray.filter((photo) => photo.status === "done");
+  // Check if any photo's pricetags does not have at least one valid price
+  const invalidPricePhotos =
+    photosToUpdate &&
+    photosToUpdate.filter(
+      (photo) => !photo.pricetags?.some((tag) => tag.price >= 1000)
+    );
+  const submitForm = async () => {
+    // if (photosToUpdate.length === 0) {
+    //   // If there are no photos with "done" status, show a message or handle accordingly
+    //   setDisableUpload(false);
+    //   notificationApi(
+    //     "info",
+    //     "Không có ảnh phù hợp để đăng tải",
+    //     "Danh sách hiện tại không có ảnh nào phù hợp để bán"
+    //   );
+
+    //   return;
+    // }
+
+    // if (invalidPricePhotos.length > 0) {
+    //   // console.log("all photo done");
+
+    //   // If there are photos with invalid pricetags, show a message and return early
+    //   setDisableUpload(false);
+    //   notificationApi(
+    //     "info",
+    //     "Vui lòng cập nhật giá cho tất cả ảnh",
+    //     "Danh sách ảnh có tồn tại ảnh chưa có giá bán, vui lòng kiểm tra lại"
+    //   );
+
+    //   return;
+    // }
+    formRef.current.submitForm();
+  };
   return (
     <div className="h-full w-full overflow-hidden relative ">
       <div className={`w-full h-full grid grid-cols-7`}>
@@ -357,18 +385,32 @@ export default function UploadPhotoSell({ formRef }) {
             className={`w-full row-span-3 ${
               photoArray.length > 0 ? "" : "hidden"
             } ${
-              photoArray.some((photo) => photo.status === "uploading") ||
-              disableUpload
+              (photoArray &&
+                photoArray?.some((photo) => photo.status === "uploading")) ||
+              disableUpload ||
+              invalidPricePhotos.length > 0 ||
+              photosToUpdate.length === 0
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-[#56bc8a] hover:bg-[#68c397] cursor-pointer"
             } transition duration-150 flex justify-center items-center`}
+            disabled={
+              (photoArray &&
+                photoArray?.some((photo) => photo.status === "uploading")) ||
+              disableUpload ||
+              invalidPricePhotos?.length > 0 ||
+              photosToUpdate?.length === 0
+            }
             onClick={() => {
               if (
-                !photoArray.some((photo) => photo.status === "uploading") ||
-                disableUpload
-              ) {
-                formRef.current.submitForm();
-              }
+                (photoArray &&
+                  photoArray?.some((photo) => photo.status === "uploading")) ||
+                disableUpload ||
+                invalidPricePhotos?.length > 0 ||
+                photosToUpdate?.length === 0
+              )
+                return;
+              setDisableUpload(true);
+              submitForm();
             }}
           >
             <div className="w-full lg:text-6xl md:text-4xl sm:text-4xl text-4xl text-white flex justify-center items-center">
