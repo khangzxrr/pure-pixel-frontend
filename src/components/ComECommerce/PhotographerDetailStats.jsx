@@ -39,6 +39,16 @@ const PhotographerDetailStats = () => {
       </div>
     );
 
+  if (isError)
+    return (
+      <div className="flex flex-col text-red-500 items-center justify-center h-[200px]">
+        <p>Xảy ra lỗi trong quá trình cập nhật thông tin</p>
+        <p>
+          {error.message}: {error.response.data.message}
+        </p>
+      </div>
+    );
+
   const photographerData = data?.user;
 
   const photoSellRevenue = data?.photoSellRevenue;

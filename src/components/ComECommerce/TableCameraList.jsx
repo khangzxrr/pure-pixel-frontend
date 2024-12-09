@@ -16,7 +16,7 @@ const TableCameraList = ({ dataCamera }) => {
       dataIndex: "index",
       key: "index",
       render: (text, record, index) => index + 1,
-      width: 120,
+      width: 100,
     },
     {
       title: "Logo",
@@ -26,23 +26,25 @@ const TableCameraList = ({ dataCamera }) => {
           <img src={text} alt="" className="bg-[#eee] size-full object-cover" />
         </div>
       ),
-      width: 200,
+      width: 100,
     },
     {
       title: "Tên máy ảnh",
       dataIndex: "name",
       key: "name",
+      width: 120,
     },
     {
       title: "Các mã phổ biến",
       dataIndex: "modalCamera",
       render: (text, record) =>
         record?.modal?.map((item) => item.name).join(", "),
+      width: 150,
     },
     {
       title: "Số người dùng sử dụng",
       dataIndex: "userCount",
-      width: 200,
+      width: 150,
     },
   ];
 
@@ -55,7 +57,7 @@ const TableCameraList = ({ dataCamera }) => {
   }));
 
   return (
-    <div className="bg-[#32353b] rounded-sm mx-5  flex flex-col">
+    <div className="bg-[#32353b] rounded-sm flex flex-col col-span-5">
       <div className="text-center font-bold p-4 text-[#eee]">
         Danh sách xếp hạng các máy ảnh phổ biến nhất
       </div>
@@ -65,7 +67,7 @@ const TableCameraList = ({ dataCamera }) => {
         dataSource={dataCameraList}
         // onChange={onChange}
         scroll={{
-          x: 1020, // Chiều rộng để bảng cuộn ngang nếu nội dung vượt quá
+          x: 900, // Chiều rộng để bảng cuộn ngang nếu nội dung vượt quá
           y: "73vh", // Chiều cao cố định để bảng cuộn dọc
         }}
         pagination={false}
