@@ -124,15 +124,15 @@ export const TableReport = forwardRef((props, ref) => {
     {
       title: "Trạng thái",
       width: 120,
-      dataIndex: "reportStatus",
-      key: "reportStatus",
-      // filters: [
-      //   { text: "Chưa phản hồi", value: "OPEN" },
-      //   // { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
-      //   // { text: "Đã trả lời", value: "RESPONSED" },
-      //   { text: "Đóng ", value: "CLOSED" },
-      // ],
-      // onFilter: (value, record) => record.reportStatus === value,
+      dataIndex: "reportStatuses",
+      key: "reportStatuses",
+      filters: [
+        { text: "Chưa phản hồi", value: "OPEN" },
+        // { text: "WAITING_FEEDBACK", value: "WAITING_FEEDBACK" },
+        // { text: "Đã trả lời", value: "RESPONSED" },
+        { text: "Đóng ", value: "CLOSED" },
+      ],
+      onFilter: (value, record) => record.reportStatus === value,
       // sorter: (a, b) => a?.reportStatus?.localeCompare(b?.reportStatus),
       render: (_, record) => (
         <div>
@@ -146,8 +146,8 @@ export const TableReport = forwardRef((props, ref) => {
     {
       title: "Nội dung",
       width: 150,
-      dataIndex: "content",
-      key: "content",
+      dataIndex: "search",
+      key: "search",
       // sorter: (a, b) => a?.content?.localeCompare(b?.content),
       ...getColumnSearchProps("content", "Nội dung"),
     },
@@ -309,6 +309,9 @@ export const TableReport = forwardRef((props, ref) => {
       const sortOrder = sorter.order === "ascend" ? "asc" : "desc";
       // Giả sử bạn muốn tham số sắp xếp theo định dạng "orderBy<FieldName>"
       params[sortField] = sortOrder;
+    } else {
+      params["orderByCreatedAt"] = "desc";
+      
     }
     // if (sorter && sorter.field && sorter.order) {
     //   params.sortBy = sorter.field;
