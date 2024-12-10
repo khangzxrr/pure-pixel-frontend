@@ -91,6 +91,10 @@ const PhotosUser = () => {
             navigate(`/user/${userId}/photos`);
             setSelectedImage(null);
           }}
+          onCloseToMap={() => {
+            navigate(`/explore/photo-map`);
+            setSelectedImage(null);
+          }}
         />
       )}
       {isLoading && (

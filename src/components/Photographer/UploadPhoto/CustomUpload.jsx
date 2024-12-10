@@ -5,7 +5,7 @@ import {
 } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
 import { message, Upload, Tooltip, Switch } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
 import ScrollingBar from "./ScrollingBar";
@@ -17,8 +17,9 @@ import { useNotification } from "../../../Notification/Notification";
 const { Dragger } = Upload;
 
 export default function CustomUpload() {
-  const [isWatermarkAll, setIsWatermarkAll] = useState(true);
+  const [isWatermarkAll, setIsWatermarkAll] = useState(false);
   const [disableUpload, setDisableUpload] = useState(false);
+  const [isCheckToggleWatermark, setIsCheckToggleWatermark] = useState(false);
   const {
     addPhoto,
     setSelectedPhotoByUid,
@@ -28,7 +29,6 @@ export default function CustomUpload() {
     setPhotoUploadResponse,
     clearState,
   } = useUploadPhotoStore();
-
   const navigate = useNavigate();
   const { notificationApi } = useNotification();
 
@@ -314,8 +314,22 @@ export default function CustomUpload() {
   const handleToggleWatermark = () => {
     setIsWatermarkAll(!isWatermarkAll);
     toggleWatermark(!isWatermarkAll);
+    setIsCheckToggleWatermark(!isWatermarkAll);
   };
+  useEffect(() => {
+    // Perform your logic here
+    if (photoArray.length === 0) return;
+    if (photoArray.every((item) => item.watermark === true)) {
+      setIsCheckToggleWatermark(true);
+      setIsWatermarkAll(true);
+    }
+    if (photoArray.every((item) => item.watermark === false)) {
+      setIsCheckToggleWatermark(false);
+      setIsWatermarkAll(false);
+    }
 
+    console.log("Watermark field changed:", photoArray);
+  }, [photoArray.map((item) => item.watermark).join(",")]); // Derive dependency
   const itemRender = () => {
     return "";
   };
@@ -401,11 +415,11 @@ export default function CustomUpload() {
             <Tooltip placement="rightTop" color="geekblue">
               <div className="flex items-center pl-3">
                 <Switch
-                  defaultChecked
                   size="small"
+                  checked={isCheckToggleWatermark}
                   onChange={handleToggleWatermark}
                 />
-                {isWatermarkAll ? (
+                {isCheckToggleWatermark ? (
                   <p className="ml-2 text-slate-300 font-semibold">
                     Gỡ nhãn toàn bộ ảnh
                   </p>

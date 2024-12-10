@@ -72,6 +72,10 @@ const BookmarkList = () => {
             navigate(`/profile/bookmark`);
             setSelectedImage(null);
           }}
+          onCloseToMap={() => {
+            navigate(`/explore/photo-map`);
+            setSelectedImage(null);
+          }}
           listImg={listBookmarks}
         />
       )}

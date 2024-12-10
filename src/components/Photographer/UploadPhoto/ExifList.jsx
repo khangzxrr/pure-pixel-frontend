@@ -10,8 +10,8 @@ const ExifList = ({ exifData }) => {
 
   const fields = [
     { label: "Mẫu máy", value: exifData.Model },
-    { label: "Loại ống kính", value: exifData.LensModel },
     { label: "Hãng sản xuất", value: exifData.Make },
+    { label: "Loại ống kính", value: exifData.LensModel },
     { label: "Hướng chụp", value: exifData.Orientation },
     { label: "ISO", value: exifData.ISO },
     { label: "Thời gian phơi sáng", value: `${exifData.ExposureTime}s` },
@@ -24,6 +24,10 @@ const ExifList = ({ exifData }) => {
     {
       label: "Độ phân giải Y",
       value: `${exifData.YResolution} ${exifData.ResolutionUnit}`,
+    },
+    {
+      label: "Bản quyền",
+      value: `${exifData.Copyright}`,
     },
   ];
 

@@ -13,14 +13,25 @@ import { photoShootInput } from "../../../yup/PhotoShootInput";
 import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
 import { useNotification } from "../../../Notification/Notification";
 import { useNavigate } from "react-router-dom";
+import { set } from "lodash";
 
 // Set dayjs to use the Vietnamese locale
 dayjs.locale("vi");
 
 const { RangePicker } = DatePicker;
 
+const range = (start, end) => {
+  const result = [];
+  for (let i = start; i < end; i++) {
+    result.push(i);
+  }
+  return result;
+};
+
 export default function BookingModal({ photoPackage, onClose }) {
   const navigate = useNavigate();
+  const minStartDate = dayjs().add(1440, "minute"); // 24 hours from now
+  const maxStartDate = dayjs().add(3, "month").endOf("day"); // 3 months from now
 
   const {
     handleSubmit,
@@ -108,86 +119,11 @@ export default function BookingModal({ photoPackage, onClose }) {
   const handleCancel = () => {
     onClose();
   };
-  // Watch the date range to dynamically disable the RangePicker
-  const dateRange = watch("dateRange");
-
-  // const isStartDateValid =
-  //   dateRange && dayjs(dateRange[0]).isAfter(dayjs().add(24, "hour"));
-  // const isEndDateValid =
-  //   dateRange &&
-  //   dayjs(dateRange[1]).isAfter(dayjs(dateRange[0]).add(3, "hour"));
-
-  const minStartDate = dayjs().add(1440, "minute"); // 1440 minutes (24 hours) from now
-  const maxStartDate = dayjs().add(3, "month").endOf("day"); // End of the day 3 months from now
   const disabledDate = (current) => {
     return (
       current &&
-      (current < minStartDate.startOf("day") || current > maxStartDate) // Disable dates before and after the valid range
+      (current < minStartDate.startOf("minute") || current > maxStartDate)
     );
-  };
-
-  const range = (start, end) => {
-    const result = [];
-    for (let i = start; i < end; i++) {
-      result.push(i);
-    }
-    return result;
-  };
-  const disabledTime = (current, type) => {
-    const now = dayjs();
-    const minStartDate = dayjs().add(1441, "minute"); // 1440 minutes (24 hours) from now
-
-    if (type === "start") {
-      // Check if the selected day is the first valid day for the start date
-      if (current && current.isSame(minStartDate, "day")) {
-        return {
-          disabledHours: () => {
-            const validStartHour = minStartDate.hour(); // First valid hour
-            return [...Array(24).keys()].filter(
-              (hour) => hour < validStartHour
-            );
-          },
-          disabledMinutes: (selectedHour) => {
-            if (selectedHour === minStartDate.hour()) {
-              const validStartMinute = minStartDate.minute(); // First valid minute
-              return [...Array(60).keys()].filter(
-                (minute) => minute < validStartMinute
-              );
-            }
-            return []; // No restriction for other hours
-          },
-        };
-      }
-      return {}; // No restrictions for other days
-    }
-
-    // if (type === "end") {
-    //   // Apply restrictions to the end time based on the selected start date
-    //   const minEndDate = selectedStartDate
-    //     ? dayjs(selectedStartDate).add(3, "hour")
-    //     : null;
-
-    //   if (current && minEndDate && current.isSame(minEndDate, "day")) {
-    //     return {
-    //       disabledHours: () => {
-    //         const validEndHour = minEndDate.hour(); // First valid hour for end date
-    //         return [...Array(24).keys()].filter((hour) => hour < validEndHour);
-    //       },
-    //       disabledMinutes: (selectedHour) => {
-    //         if (selectedHour === minEndDate.hour()) {
-    //           const validEndMinute = minEndDate.minute(); // First valid minute for end date
-    //           return [...Array(60).keys()].filter(
-    //             (minute) => minute < validEndMinute
-    //           );
-    //         }
-    //         return []; // No restriction for other hours
-    //       },
-    //     };
-    //   }
-    //   return {}; // No restrictions for other days
-    // }
-
-    return {}; // Default case
   };
 
   return (
@@ -243,9 +179,10 @@ export default function BookingModal({ photoPackage, onClose }) {
                     className={`custom-range-picker w-full font-light ${
                       errors.dateRange ? "border-red-500" : ""
                     }`}
-                    onChange={(value) => field.onChange(value)}
+                    onChange={(value) => {
+                      field.onChange(value);
+                    }}
                     disabledDate={disabledDate}
-                    disabledTime={disabledTime}
                   />
                   {errors.dateRange && (
                     <p className="text-red-500 text-xs mt-1">

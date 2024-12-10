@@ -533,6 +533,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                   </div>
                 ) : (
                   <button
+                    type="button"
                     onClick={() => setIsOpenMapModal(true)}
                     className={`border-[#4c4e52] w-full flex flex-row justify-center text-white py-1 rounded-lg bg-[#292b2f] hover:border-[#e0e0e0] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] `}
                   >
