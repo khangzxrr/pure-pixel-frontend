@@ -2,55 +2,6 @@ import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import formatPrice from "./../../utils/FormatPriceUtils";
 
-const options = {
-  chart: {
-    fontFamily: "Satoshi, sans-serif",
-    type: "donut",
-  },
-  colors: ["#3C50E0", "#6577F3"],
-  labels: ["Lợi nhuận chiết khấu bán ảnh", "Doanh thu gói nâng cấp"],
-  legend: {
-    show: false,
-    position: "bottom",
-  },
-  plotOptions: {
-    pie: {
-      donut: {
-        size: "65%",
-        background: "transparent",
-      },
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  tooltip: {
-    y: {
-      formatter: (val) => {
-        return `${val.toLocaleString()}đ`;
-      },
-    },
-  },
-  responsive: [
-    {
-      breakpoint: 2600,
-      options: {
-        chart: {
-          width: 360,
-        },
-      },
-    },
-    {
-      breakpoint: 640,
-      options: {
-        chart: {
-          width: 200,
-        },
-      },
-    },
-  ],
-};
-
 const ChartDashboardRevenue = ({
   nameChart,
   param1,
@@ -60,6 +11,55 @@ const ChartDashboardRevenue = ({
   isMoney = false,
 }) => {
   const [series, setSeries] = useState([param1, param2]);
+
+  const options = {
+    chart: {
+      fontFamily: "Satoshi, sans-serif",
+      type: "donut",
+    },
+    colors: ["#3C50E0", "#6577F3"],
+    labels: [nameParam1, nameParam2],
+    legend: {
+      show: false,
+      position: "bottom",
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "65%",
+          background: "transparent",
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    tooltip: {
+      y: {
+        formatter: (val) => {
+          return `${val.toLocaleString()}đ`;
+        },
+      },
+    },
+    responsive: [
+      {
+        breakpoint: 2600,
+        options: {
+          chart: {
+            width: 360,
+          },
+        },
+      },
+      {
+        breakpoint: 640,
+        options: {
+          chart: {
+            width: 200,
+          },
+        },
+      },
+    ],
+  };
 
   useEffect(() => {
     setSeries([param1, param2]);
@@ -74,7 +74,7 @@ const ChartDashboardRevenue = ({
           <ReactApexChart options={options} series={series} type="donut" />
         </div>
       </div>
-      <div className="flex flex-col gap-2 px-2">
+      <div className="flex flex-col justify-center items-center pt-4 gap-2 px-2">
         <div className="flex items-center justify-between  gap-2 text-[#eee]">
           <div className="flex items-center gap-2 w-full">
             <span className="w-3 h-3 rounded-full bg-[#6577F3]"></span>{" "}

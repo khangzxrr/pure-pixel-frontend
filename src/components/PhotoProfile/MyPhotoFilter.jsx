@@ -36,14 +36,16 @@ const MyPhotoFilter = () => {
     setIsWatermarkChecked,
     isForSaleChecked,
     setIsForSaleChecked,
+    isBanned,
+    setIsBanned,
   } = UseMyPhotoFilter();
   const handleWatermarkChange = (event) => {
     const isChecked = event.target.checked;
     setIsWatermarkChecked(isChecked);
   };
-  const handleForSaleChange = (event) => {
+  const handleForPhotoBanned = (event) => {
     const isChecked = event.target.checked;
-    setIsForSaleChecked(isChecked);
+    setIsBanned(isChecked);
   };
 
   const setFilterByPhotoDate = UseMyPhotoFilter(
@@ -143,7 +145,10 @@ const MyPhotoFilter = () => {
         </div>
         <div className="flex flex-col  gap-2 ">
           <div className="flex items-center p-[5px] rounded-md">
-            <label class="inline-flex items-center cursor-pointer">
+            <label class="inline-flex items-center cursor-pointer gap-2">
+              <span class="ms-3  font-normal text-[#eee] ">
+                Bật/tắt ảnh watermark
+              </span>
               <input
                 id="watermarkCheckbox"
                 type="checkbox"
@@ -153,25 +158,24 @@ const MyPhotoFilter = () => {
                 onChange={handleWatermarkChange}
               />
               <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
-              <span class="ms-3  font-normal text-[#eee] ">
-                Ảnh có watermark
-              </span>
             </label>
           </div>
-          {/* <div className="flex items-center p-[5px] rounded-md">
-            <label class="inline-flex items-center cursor-pointer">
+          <div className="flex items-center p-[5px] rounded-md">
+            <label class="inline-flex items-center gap-2 cursor-pointer">
+              <span class="ms-3 text-[#eee] font-normal ">
+                Bật/tắt ảnh bị cấm
+              </span>
               <input
                 id="forSaleCheckbox"
                 type="checkbox"
                 value=""
                 class="sr-only peer"
-                checked={isForSaleChecked}
-                onChange={handleForSaleChange}
+                checked={isBanned}
+                onChange={handleForPhotoBanned}
               />
               <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none  rounded-full peer dark:bg-[#202225] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#6b7280]"></div>
-              <span class="ms-3 text-[#eee] font-normal ">Ảnh đang bán</span>
             </label>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>

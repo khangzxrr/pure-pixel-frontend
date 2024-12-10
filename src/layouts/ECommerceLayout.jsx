@@ -10,6 +10,9 @@ import vi_VN from "antd/es/locale/vi_VN";
 import "../components/ComECommerce/ECommerceDatePickerStyle.css";
 import UseECommerceStore from "../states/UseECommerceStore";
 import dayjs from "dayjs";
+import TableCameraList from "../components/ComECommerce/TableCameraList";
+import CameraApi from "../apis/CameraApi";
+import ChartDashboardRevenue from "../components/ComECommerce/ChartDashboardRevenue";
 const { RangePicker } = DatePicker;
 
 const ECommerceLayout = () => {
@@ -20,12 +23,10 @@ const ECommerceLayout = () => {
     toDate,
   ]);
 
-  console.log(arrayDatePicker);
-
   // const toDate = new Date();
   // const fromDate = new Date(toDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  const fromDateCustomize = "2024-10-01T01:30:14.761+07:00";
+  // const fromDateCustomize = "2024-10-01T01:30:14.761+07:00";
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["dashboard", fromDate, toDate],
     queryFn: () =>
@@ -44,6 +45,16 @@ const ECommerceLayout = () => {
         fromDate.toISOString(),
         toDate.toISOString()
       ),
+  });
+
+  const {
+    data: TopCamera,
+    isLoading: isLoadingTopCamera,
+    isError: isErrorTopCamera,
+    error: errorTopCamera,
+  } = useQuery({
+    queryKey: ["top-camera-dashboard", fromDate, toDate],
+    queryFn: () => CameraApi.getTopCameras(10),
   });
 
   const handleOnClickDatePicker = () => {
@@ -84,16 +95,31 @@ const ECommerceLayout = () => {
           Xác nhận
         </button>
       </div>
-      {(isLoading || isLoadingTop) && (
+      {(isLoading || isLoadingTop || isLoadingTopCamera) && (
         <div className="flex items-center justify-center h-[200px]">
           <LoadingOval />
         </div>
       )}
-      {!isLoading && !isLoadingTop && (
+      {!isLoading && !isLoadingTop && !isLoadingTopCamera && (
         <div className="flex flex-col gap-8 ">
           <CardDataStatsList data={data} />
           <ChartDashboard dashBoardData={data} />
           <Table dataTopSeller={TopSeller} />
+          <div className="grid grid-cols-1 md:grid-cols-8 gap-8 px-5">
+            <TableCameraList dataCamera={TopCamera} />
+            <div className="col-span-3">
+              <div className="bg-[#32353b]  rounded-sm">
+                <ChartDashboardRevenue
+                  nameChart={"Đang layout, chưa gắn api"}
+                  nameParam1={"Doanh thu bán ảnh"}
+                  nameParam2={"Doanh thu gói nâng cấp"}
+                  param1={2000}
+                  param2={2000}
+                  isMoney={true}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

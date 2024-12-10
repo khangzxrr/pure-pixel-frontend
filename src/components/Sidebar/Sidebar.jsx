@@ -149,12 +149,12 @@ const Sidebar = ({
             </div>
           </div>
         )}
-        {isPhotographer && (
+        {/* {isPhotographer && (
           <div className="flex flex-col text-[#a3a3a3] gap-2 mt-2 mx-1 border-y-[1px] border-[#a3a3a3] py-2">
             <div>Bộ lọc nhiếp ảnh gia</div>
             <PhotographerFilter />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
