@@ -129,7 +129,7 @@ export default function SideDepositForm({
         notificationApi(
           "success",
           "Nạp tiền thành công",
-          "Nạp thành cong, vui lòng kiểm tra ví của bạn"
+          "Nạp thành công, vui lòng kiểm tra ví của bạn"
         );
         setTimeout(() => {
           setIsNavVisible(false);

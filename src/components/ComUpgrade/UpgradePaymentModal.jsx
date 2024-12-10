@@ -81,6 +81,9 @@ export default function UpgradePaymentModal() {
         case "CannotTransferToTheSameUpgradePackage":
           message = "Không thể chuyển thành gói nâng cấp hiện tại.";
           break;
+        case "CannotDowngradeOrderException":
+          message = "Không thể xuống thành gói nâng cấp thấp hơn.";
+          break;
         default:
           message = "Đã xảy ra lỗi, vui lòng thử lại sau.";
           break;

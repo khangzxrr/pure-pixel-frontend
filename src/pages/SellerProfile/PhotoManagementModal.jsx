@@ -3,6 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { getData, postData, putData } from "../../apis/api";
 import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
+import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
 
 export default function PhotoManagementModal({ close, id, data, callData }) {
   const queryClient = useQueryClient();
@@ -10,7 +11,6 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
     title: data.title || " ",
     description: data.description || " ",
   });
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const [sizes, setSizes] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -130,9 +130,6 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
       });
   };
 
-  const allDetails = Object?.entries(data?.exif || {});
-  const mainDetails = allDetails?.slice(0, 4);
-  const extraDetails = allDetails.slice(4);
   console.log("====================================");
   console.log(data);
   console.log("====================================");
@@ -219,67 +216,7 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
                   </div>
 
                   {/* Camera Specifications */}
-                  <div className="bg-[#1e1f22] rounded-lg p-4">
-                    <div className="space-y-3">
-                      {mainDetails.map(([key, value], index) => (
-                        <div
-                          className="flex justify-between items-start"
-                          key={index}
-                        >
-                          <span className="text-gray-400">{key}:</span>
-
-                          <span
-                            className="text-gray-100"
-                            style={{
-                              wordBreak: "break-all",
-                              overflowWrap: "break-word",
-                            }}
-                          >
-                            {value}
-                          </span>
-                        </div>
-                      ))}
-
-                      {isExpanded &&
-                        extraDetails.map(([key, value], index) => (
-                          <>
-                            {typeof value === "string" && value && (
-                              <div
-                                className="flex justify-between items-start"
-                                key={index}
-                              >
-                                <span className="text-gray-400">{key}:</span>
-
-                                <span
-                                  className="text-gray-100 ml-4"
-                                  style={{
-                                    wordBreak: "break-all",
-                                    overflowWrap: "break-word",
-                                  }}
-                                >
-                                  {value}
-                                </span>
-                              </div>
-                            )}
-                          </>
-                        ))}
-
-                      <button
-                        onClick={() => {
-                          setIsSpecsExpanded(!isSpecsExpanded);
-                          setIsExpanded(!isExpanded);
-                        }}
-                        className="w-full flex items-center justify-center text-gray-400 hover:text-gray-200 transition-colors pt-2"
-                      >
-                        {isExpanded ? "Ẩn bớt" : "Xem thêm"}
-                        <ChevronDown
-                          className={`w-4 h-4 transform transition-transform ${
-                            isSpecsExpanded ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
+                  <ExifList exifData={data.exif} />
                 </div>
 
                 {/* Price Settings */}

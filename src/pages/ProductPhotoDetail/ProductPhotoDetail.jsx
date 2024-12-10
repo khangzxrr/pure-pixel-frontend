@@ -11,12 +11,14 @@ import CommentPhoto from "../../components/CommentPhoto/CommentPhoto";
 import DetailUser from "../DetailUser/DetailUser";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import UseUserProfileStore from "../../states/UseUserProfileStore";
 import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
 import { notificationApi } from "../../Notification/Notification";
+import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
+import PhotoExchange from "../../apis/PhotoExchange";
 function calculateTimeFromNow(dateString) {
   const startDate = new Date(dateString);
   const now = new Date();
@@ -70,7 +72,6 @@ const ProductPhotoDetail = () => {
   const navigate = useNavigate();
   const popup = useModalState();
   const popupReport = useModalState();
-  const [isExpanded, setIsExpanded] = useState(false);
   const queryClient = useQueryClient();
   const setNamePhotographer = UsePhotographerFilterStore(
     (state) => state.setNamePhotographer
@@ -79,6 +80,10 @@ const ProductPhotoDetail = () => {
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
+  const { data: photoBoughtDetail, isLoading } = useQuery({
+    queryKey: ["photo-bought-detail", id],
+    queryFn: () => PhotoExchange.getPhotoBoughtDetail(id),
+  });
 
   const reload = () => {
     getData(`photo/${id}`)
@@ -105,14 +110,12 @@ const ProductPhotoDetail = () => {
           };
         });
 
-        console.log("====================================");
-        console.log(3333, userData.sub);
-        console.log();
         // Kiểm tra xem người dùng đã mua pricetag nào
         if (userData) {
           const userId = userData.sub;
           if (photoSelling) {
             const photoSellHistories = photoSelling.photoSellHistories;
+            console.log("User bought pricetag:", photoSellHistories);
 
             photoSellHistories.forEach((history) => {
               const boughtByUser = history.photoBuy.some(
@@ -123,8 +126,7 @@ const ProductPhotoDetail = () => {
                 const matchingPricetag = pricetags.find(
                   (pricetag) =>
                     pricetag.width === history.width &&
-                    pricetag.height === history.height &&
-                    pricetag.price === history.price
+                    pricetag.height === history.height
                 );
                 if (matchingPricetag) {
                   pricetagStatus[matchingPricetag.id].isPurchased = true;
@@ -207,14 +209,7 @@ const ProductPhotoDetail = () => {
   if (!data) {
     return <div className="min-h-screen text-white p-8">Loading...</div>;
   }
-
-  const allDetails = Object?.entries(data?.exif || {});
-  const mainDetails = allDetails?.slice(0, 4);
-  const extraDetails = allDetails?.slice(4);
-  console.log("====================================");
-  console.log(444, mainDetails);
-  console.log(123, extraDetails);
-  console.log("====================================");
+  console.log("exif", data.exif);
   const photoSelling =
     data.photoSellings && data.photoSellings.length > 0
       ? data.photoSellings[0]
@@ -229,6 +224,20 @@ const ProductPhotoDetail = () => {
 
   const price = selectedPricetag ? selectedPricetag.price : 0;
 
+  const isBought =
+    photoBoughtDetail &&
+    photoBoughtDetail?.photoBuys.some(
+      (photoBuy) =>
+        photoBuy.photoSellHistory.width === selectedPricetag.width &&
+        photoBuy.photoSellHistory.height === selectedPricetag.height
+    );
+  console.log(
+    "photoBoughtDetail",
+    photoBoughtDetail && photoBoughtDetail.photoBuys,
+    // data && data.photoSellings[0].pricetags,
+    selectedPricetag,
+    isBought
+  );
   const handleConfirmPayment = () => {
     handleBuyNow(selectedPaymentMethod);
   };
@@ -507,63 +516,8 @@ const ProductPhotoDetail = () => {
                 {photoSelling?.description}
               </h1>
             </div>
-            <div className="bg-[#2f3136] text-gray-200 rounded-lg p-4 border">
-              <h1 className="text-xl mb-2 mt-4">Thông số:</h1>
-              <div className="space-y-2 mb-6 grid  grid-cols-1 sm:grid-cols-1 gap-3 ">
-                {/* Hiển thị 3 thông số đầu tiên */}
-                {mainDetails.map(([key, value], index) => (
-                  <div
-                    className="flex justify-between items-start border-b border-[#ffffff3d]"
-                    key={index}
-                  >
-                    <span className="font-semibold mr-2">{key}:</span>
+            <ExifList exifData={data.exif} />
 
-                    <span
-                      className="font-light"
-                      style={{
-                        wordBreak: "break-all",
-                        overflowWrap: "break-word",
-                      }}
-                    >
-                      {value}
-                    </span>
-                  </div>
-                ))}
-
-                {/* Hiển thị thông số còn lại khi mở rộng */}
-                {isExpanded &&
-                  extraDetails.map(([key, value], index) => (
-                    <>
-                      {typeof value === "string" && value && (
-                        <div
-                          className="flex justify-between items-start border-b border-[#ffffff3d]"
-                          key={index}
-                        >
-                          <span className="font-semibold mr-2">{key}:</span>
-                          <span
-                            className="font-light"
-                            style={{
-                              wordBreak: "break-all",
-                              overflowWrap: "break-word",
-                            }}
-                          >
-                            {value}
-                          </span>
-                        </div>
-                      )}
-                    </>
-                  ))}
-              </div>
-              {/* Nút Xem thêm/Ẩn bớt */}
-              <div className="flex justify-center">
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className=" text-white rounded-md"
-                >
-                  {isExpanded ? "Ẩn bớt" : "Xem thêm"}
-                </button>
-              </div>
-            </div>
             <p className="text-3xl font-semibold mb-2">
               {selectedPricetag ? selectedPricetag.price.toLocaleString() : 0}Đ
             </p>
@@ -596,8 +550,8 @@ const ProductPhotoDetail = () => {
                 })}
               </div>
             </div>
-            {userData ? (
-              pricetagStatus[selectedPricetagId]?.isPurchased ? (
+            {photoBoughtDetail ? (
+              isBought ? (
                 <div className="text-green-500 text-center font-semibold">
                   Bạn đã mua kích thước này
                 </div>
@@ -625,7 +579,7 @@ const ProductPhotoDetail = () => {
             )}
 
             {modal?.isModalOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+              <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
                 <div className="bg-gray-800 text-white rounded-lg w-full max-w-2xl">
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-gray-700">

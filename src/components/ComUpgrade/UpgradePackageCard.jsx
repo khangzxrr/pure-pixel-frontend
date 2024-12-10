@@ -56,7 +56,10 @@ const UpgradePackageCard = ({
     tranferData,
     currentPackage
   );
-
+  const isLowestPackagePrice =
+    currentPackage &&
+    packageItem &&
+    currentPackage.upgradePackageHistory.price > packageItem.price;
   const handleOpenPaymentModal = () => {
     setIsUpgradePaymentModal(true);
     setSelectedUpgradePackage({
@@ -130,23 +133,20 @@ const UpgradePackageCard = ({
             Đăng nhập để sử dụng gói
           </button>
         ) : isCurrentPackage ? (
-          <button className="text-green-500 rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200">
+          <p className="text-green-500 rounded-md px-5 py-1  transition-opacity duration-200">
             Gói hiện tại của bạn
-          </button>
+          </p>
+        ) : isLowestPackagePrice ? (
+          ""
         ) : currentPackage ? (
-          <button
-            onClick={handleOpenPaymentModal}
-            className="bg-yellow-500 text-white rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
-          >
-            Chuyển gói
-          </button>
-        ) : (
           <button
             onClick={handleOpenPaymentModal}
             className="bg-yellow-500 text-[#202225] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
           >
             Nâng cấp
           </button>
+        ) : (
+          ""
         )}
       </div>
     </div>

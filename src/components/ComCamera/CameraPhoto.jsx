@@ -101,6 +101,10 @@ const CameraPhoto = ({ nameCamera }) => {
             navigate(`/explore/camera-model/${cameraId}`);
             setSelectedImage(null);
           }}
+          onCloseToMap={() => {
+            navigate(`/explore/photo-map`);
+            setSelectedImage(null);
+          }}
           listImg={photoList}
         />
       )}

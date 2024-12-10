@@ -70,6 +70,10 @@ const ForYou = () => {
             navigate(`/discover/for-you`);
             setSelectedImage(null);
           }}
+          onCloseToMap={() => {
+            navigate(`/explore/photo-map`);
+            setSelectedImage(null);
+          }}
           listImg={photoList}
         />
       )}

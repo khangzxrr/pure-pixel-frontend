@@ -35,9 +35,23 @@ const UpdateDropdown = ({ photo, totalRecord, page, setPage }) => {
     {
       key: "3",
       icon: <BiDollar />,
-      label: <p className="text-blue-500">Đăng bán ảnh</p>,
+      label: (
+        <p
+          className={`${
+            photo.status === "BAN"
+              ? "text-blue-200 cursor-not-allowed"
+              : "text-blue-500"
+          } `}
+        >
+          Đăng bán ảnh
+        </p>
+      ),
       onClick: () => {
-        modal.handleOpen();
+        if (photo.status === "BAN") {
+          return;
+        } else {
+          modal.handleOpen();
+        }
       },
     },
     {
@@ -52,7 +66,7 @@ const UpdateDropdown = ({ photo, totalRecord, page, setPage }) => {
       },
     },
   ];
-
+  console.log("photo", photo);
   return (
     <div>
       {modal.isModalOpen && (
