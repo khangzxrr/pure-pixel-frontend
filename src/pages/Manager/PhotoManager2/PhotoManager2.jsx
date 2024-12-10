@@ -235,7 +235,7 @@ const PhotoManager2 = () => {
           visible={isModalUpdateOpen} // Use state from Zustand store
           onCancel={handleCloseUpdateModal} // Close the modal on cancel
           footer={null}
-          width={800} // Set the width of the modal
+          width={1100} // Set the width of the modal
           centered={true}
           className="custom-close-icon"
         >
@@ -266,7 +266,7 @@ const PhotoManager2 = () => {
         dataSource={dataPhotosTable}
         onChange={onChange}
         scroll={{
-          x: 1020, // Chiều rộng để bảng cuộn ngang nếu nội dung vượt quá
+          x: 1080, // Chiều rộng để bảng cuộn ngang nếu nội dung vượt quá
           y: "74vh", // Chiều cao cố định để bảng cuộn dọc
         }}
         pagination={false}
