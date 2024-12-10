@@ -253,6 +253,7 @@ export default function PhotoMap() {
         <DetailedPhotoView
           photo={selectedPhoto}
           onClose={() => popupDetail.handleClose()}
+          onCloseToMap={() => popupDetail.handleClose()}
           listImg={photos?.objects.length > 0 ? photos.objects : []}
         />
       )}

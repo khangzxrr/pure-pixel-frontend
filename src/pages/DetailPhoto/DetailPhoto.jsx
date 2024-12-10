@@ -67,7 +67,7 @@ function calculateTimeFromNow(dateString) {
   }
 }
 
-export default function DetailedPhotoView({ onClose, photo }) {
+export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
   const popup = useModalState();
   const popupReport = useModalState();
   const popupShare = useModalState();
@@ -628,7 +628,8 @@ export default function DetailedPhotoView({ onClose, photo }) {
                         setSelectedPhoto(currentPhoto);
                         setIsFromPhotoDetailPage(true);
                         navigate(`/explore/photo-map`);
-                        onClose();
+                        onCloseToMap();
+                        // onClose();
                       }}
                     >
                       <Map

@@ -86,6 +86,10 @@ const NewfeedCard = ({
             navigate(`/home/newfeed`);
             setSelectedImage(null);
           }}
+          onCloseToMap={() => {
+            navigate(`/explore/photo-map`);
+            setSelectedImage(null);
+          }}
           listImg={ListPhotos}
         />
       )}

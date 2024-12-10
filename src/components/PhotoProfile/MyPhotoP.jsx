@@ -159,6 +159,10 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
             navigate(`/profile/my-photos`);
             setSelectedImage(null);
           }}
+          onCloseToMap={() => {
+            navigate(`/explore/photo-map`);
+            setSelectedImage(null);
+          }}
           listImg={data.objects}
         />
       )}
@@ -297,6 +301,7 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
                     },
                     originalPhotoUrl: photo.signedUrl.url,
                     thumbnailPhotoUrl: photo.signedUrl.thumbnail,
+                    status: photo.status,
                   }}
                   totalRecord={data?.totalRecord}
                   page={page}
