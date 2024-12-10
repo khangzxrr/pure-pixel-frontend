@@ -7,8 +7,20 @@ import {
   Pagination,
   Table,
 } from "antd";
+import UseTotalCameraUsedByUserStore from "../../states/UseTotalCameraUsedByUserStore";
 const TableCameraList = ({ dataCamera }) => {
-  console.log(dataCamera);
+  const setIdCameraByBrand = UseTotalCameraUsedByUserStore(
+    (state) => state.setIdCameraByBrand
+  );
+
+  const setNameCameraByBrand = UseTotalCameraUsedByUserStore(
+    (state) => state.setNameCameraByBrand
+  );
+
+  const handleOnClickNameCamera = (id, name) => {
+    setIdCameraByBrand(id);
+    setNameCameraByBrand(name);
+  };
 
   const columns = [
     {
@@ -16,7 +28,7 @@ const TableCameraList = ({ dataCamera }) => {
       dataIndex: "index",
       key: "index",
       render: (text, record, index) => index + 1,
-      width: 100,
+      width: 60,
     },
     {
       title: "Logo",
@@ -33,6 +45,14 @@ const TableCameraList = ({ dataCamera }) => {
       dataIndex: "name",
       key: "name",
       width: 120,
+      render: (text, record) => (
+        <div
+          className="cursor-pointer text-blue-400 hover:underline"
+          onClick={() => handleOnClickNameCamera(record?.id, record?.name)}
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: "Các mã phổ biến",
@@ -50,6 +70,7 @@ const TableCameraList = ({ dataCamera }) => {
 
   const dataCameraList = dataCamera?.map((item, index) => ({
     index: index + 1,
+    id: item?.maker.id,
     name: item?.maker.name,
     logo: item?.maker.thumbnail,
     userCount: item?.userCount,
