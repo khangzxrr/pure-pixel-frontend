@@ -186,7 +186,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
   }, [selectedPhoto, isOpenMapModal, reset]);
   // console.log("selectedPhoto", selectedPhoto, photoArray);
   return (
-    <div className="relative w-full h-full mx-auto overflow-y-auto custom-scrollbar">
+    <div className="relative w-full h-full mx-auto md:overflow-y-auto md:custom-scrollbar">
       {/* Overlay Layer */}
       {isDisableUpdatePhoto && (
         <div
@@ -223,38 +223,41 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
               }}
             >
               {/* Title Field */}
-              <p>Tựa đề</p>
-              <Controller
-                name="title"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
-                      errors.title
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-[#4c4e52] focus:border-[#e0e0e0]"
-                    }`}
-                    type="text"
-                    placeholder="Nhập tựa đề cho ảnh"
-                    onChange={(e) => {
-                      field.onChange(e);
-                      updatePhotoPropertyByUid(
-                        selectedPhoto.file.uid,
-                        "title",
-                        e.target.value
-                      );
-                    }}
-                  />
+              <div className="p-2">
+                <p>Tựa đề</p>
+                <Controller
+                  name="title"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 my-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
+                        errors.title
+                          ? "border-red-500 focus:border-red-500"
+                          : "border-[#4c4e52] focus:border-[#e0e0e0]"
+                      }`}
+                      type="text"
+                      placeholder="Nhập tựa đề cho ảnh"
+                      onChange={(e) => {
+                        field.onChange(e);
+                        updatePhotoPropertyByUid(
+                          selectedPhoto.file.uid,
+                          "title",
+                          e.target.value
+                        );
+                      }}
+                    />
+                  )}
+                />
+                {errors.title && (
+                  <p className="text-red-500 text-sm p-1">
+                    {errors.title.message}
+                  </p>
                 )}
-              />
-              {errors.title && (
-                <p className="text-red-500 text-sm p-1">
-                  {errors.title.message}
-                </p>
-              )}
+              </div>
+
               {!isDisableUpdatePhoto && (
-                <>
+                <div className="p-2">
                   {/* Description Field */}
                   <p>Mô tả</p>
                   <Controller
@@ -263,7 +266,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                     render={({ field }) => (
                       <TextArea
                         {...field}
-                        className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
+                        className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 my-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
                           errors.description
                             ? "border-red-500 focus:border-red-500"
                             : "border-[#4c4e52] focus:border-[#e0e0e0]"
@@ -286,10 +289,10 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                       {errors.description.message}
                     </p>
                   )}
-                </>
+                </div>
               )}
               {!isDisableUpdatePhoto && (
-                <>
+                <div>
                   {/* Category Field */}
                   <p>Thể loại</p>
                   <Controller
@@ -318,7 +321,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                             {menu}
                           </div>
                         )}
-                        className={`w-full m-2 cursor-pointer  ${
+                        className={`w-full p-2 cursor-pointer  ${
                           errors.categoryIds
                             ? "border-red-500"
                             : "border-[#4c4e52]"
@@ -370,119 +373,123 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                     </p>
                   )}
                   {/* Tags Field */}
-                  <p>Gắn thẻ</p>
-                  <Controller
-                    name="photoTags"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        mode="tags" // Cho phép gắn thẻ
-                        placeholder="Gắn thẻ cho ảnh"
-                        onChange={(value) => {
-                          field.onChange(value);
-                          updatePhotoPropertyByUid(
-                            selectedPhoto.file.uid,
-                            "photoTags",
-                            value
-                          );
-                        }}
-                        options={[]} // Các tùy chọn thẻ, nếu có sẵn
-                        open={false} // Không mở dropdown
-                        suffixIcon={null} // Xóa biểu tượng mũi tên mặc định
-                        className="w-full m-2 "
-                      />
+                  <div>
+                    <p>Gắn thẻ</p>
+                    <Controller
+                      name="photoTags"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          mode="tags" // Cho phép gắn thẻ
+                          placeholder="Gắn thẻ cho ảnh"
+                          onChange={(value) => {
+                            field.onChange(value);
+                            updatePhotoPropertyByUid(
+                              selectedPhoto.file.uid,
+                              "photoTags",
+                              value
+                            );
+                          }}
+                          options={[]} // Các tùy chọn thẻ, nếu có sẵn
+                          open={false} // Không mở dropdown
+                          suffixIcon={null} // Xóa biểu tượng mũi tên mặc định
+                          className="w-full p-2 "
+                        />
+                      )}
+                    />
+                    {errors.photoTags && (
+                      <p className="text-red-500 text-sm p-1">
+                        {errors.photoTags.message}
+                      </p>
                     )}
-                  />
-                  {errors.photoTags && (
-                    <p className="text-red-500 text-sm p-1">
-                      {errors.photoTags.message}
-                    </p>
-                  )}
-                </>
+                  </div>
+                </div>
               )}
 
-              {/* Pricetags Field */}
-              <Controller
-                name="pricetags"
-                control={control}
-                defaultValue={[]} // Ensure defaultValue is an empty array
-                render={({ field }) =>
-                  !isDisableUpdatePhoto && (
-                    <div className="bg-[#292b2f] p-4 rounded-md">
-                      <h3 className="text-lg text-gray-100">
-                        Chỉnh giá theo Kích thước
-                      </h3>
+              <div>
+                {/* Pricetags Field */}
+                <Controller
+                  name="pricetags"
+                  control={control}
+                  defaultValue={[]} // Ensure defaultValue is an empty array
+                  render={({ field }) =>
+                    !isDisableUpdatePhoto && (
+                      <div className="bg-[#292b2f] p-4 rounded-md">
+                        <h3 className="text-lg text-gray-100">
+                          Chỉnh giá theo Kích thước
+                        </h3>
 
-                      {errors.pricetags && (
-                        <p className="text-red-500 text-sm p-1">
-                          {errors.pricetags.message}
-                        </p>
-                      )}
+                        {errors.pricetags && (
+                          <p className="text-red-500 text-sm p-1">
+                            {errors.pricetags.message}
+                          </p>
+                        )}
 
-                      {/* Ensure field.value is always an array */}
-                      {(Array.isArray(field.value) ? field.value : []).map(
-                        (_, index) => (
-                          <div>
-                            <div
-                              key={index}
-                              className={`flex items-center gap-4 cursor-pointer `}
-                            >
-                              <span
-                                className={`text-gray-100 w-32 p-2  rounded bg-gray-700`}
+                        {/* Ensure field.value is always an array */}
+                        {(Array.isArray(field.value) ? field.value : []).map(
+                          (_, index) => (
+                            <div>
+                              <div
+                                key={index}
+                                className={`flex items-center gap-4 cursor-pointer `}
                               >
-                                {field.value[index]?.width || ""} x{" "}
-                                {field.value[index]?.height || ""}{" "}
-                              </span>
+                                <span
+                                  className={`text-gray-100 w-32 p-2  rounded bg-gray-700`}
+                                >
+                                  {field.value[index]?.width || ""} x{" "}
+                                  {field.value[index]?.height || ""}{" "}
+                                </span>
 
-                              {/* Migrate NumericFormat here */}
-                              <NumericFormat
-                                thousandSeparator="."
-                                decimalSeparator=","
-                                suffix=" ₫"
-                                className={`w-full rounded-md p-2 m-2 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none hover:border-[#e0e0e0] placeholder:text-[#bababa] ${
-                                  errors.pricetags?.[index]?.price
-                                    ? "border-red-500 focus:border-red-500"
-                                    : "border-[#4c4e52] focus:border-[#e0e0e0]"
-                                }`}
-                                placeholder="Nhập giá"
-                                value={field.value[index]?.price || ""}
-                                onValueChange={(values) => {
-                                  const updatedPricetags = [
-                                    ...(field.value || []),
-                                  ];
-                                  updatedPricetags[index] = {
-                                    ...updatedPricetags[index],
-                                    price: parseInt(values.value, 10) || 0,
-                                  };
-                                  setPriceByUidAndPricetagIndex(
-                                    selectedPhoto.file.uid,
-                                    index,
-                                    parseInt(values.value, 10) || 0
-                                  );
-                                  field.onChange(updatedPricetags);
-                                }}
-                                disabled={isDisableUpdatePhoto}
-                              />
+                                {/* Migrate NumericFormat here */}
+                                <NumericFormat
+                                  thousandSeparator="."
+                                  decimalSeparator=","
+                                  suffix=" ₫"
+                                  className={`w-full rounded-md p-2 m-2 text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none hover:border-[#e0e0e0] placeholder:text-[#bababa] ${
+                                    errors.pricetags?.[index]?.price
+                                      ? "border-red-500 focus:border-red-500"
+                                      : "border-[#4c4e52] focus:border-[#e0e0e0]"
+                                  }`}
+                                  placeholder="Nhập giá"
+                                  value={field.value[index]?.price || ""}
+                                  onValueChange={(values) => {
+                                    const updatedPricetags = [
+                                      ...(field.value || []),
+                                    ];
+                                    updatedPricetags[index] = {
+                                      ...updatedPricetags[index],
+                                      price: parseInt(values.value, 10) || 0,
+                                    };
+                                    setPriceByUidAndPricetagIndex(
+                                      selectedPhoto.file.uid,
+                                      index,
+                                      parseInt(values.value, 10) || 0
+                                    );
+                                    field.onChange(updatedPricetags);
+                                  }}
+                                  disabled={isDisableUpdatePhoto}
+                                />
+                              </div>
+                              {/* Displaying individual error message for the price field */}
+                              {errors.pricetags?.[index]?.price && (
+                                <p className="text-red-500 text-xs text-right pr-4">
+                                  {errors.pricetags[index].price.message}
+                                </p>
+                              )}
                             </div>
-                            {/* Displaying individual error message for the price field */}
-                            {errors.pricetags?.[index]?.price && (
-                              <p className="text-red-500 text-xs text-right pr-4">
-                                {errors.pricetags[index].price.message}
-                              </p>
-                            )}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  )
-                }
-              />
+                          )
+                        )}
+                      </div>
+                    )
+                  }
+                />
+              </div>
 
-              {/* Description Location */}
-              <p className="my-2">Vị trí</p>
+              <div className="p-2">
+                {/* Description Location */}
+                <p className="my-2">Vị trí</p>
 
-              <div className="m-2">
                 {selectedLocate &&
                 selectedLocate?.latitude &&
                 selectedLocate?.longitude ? (
@@ -534,6 +541,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                   </button>
                 )}
               </div>
+
               <ExifList exifData={selectedPhoto?.exif} />
               <div className="h-24"></div>
             </ConfigProvider>

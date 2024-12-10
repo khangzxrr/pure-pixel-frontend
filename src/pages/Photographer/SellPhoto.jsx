@@ -47,7 +47,7 @@ export default function SellPhoto() {
           </div>
           {photoArray && photoArray.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-10 gap-4 h-3/4 lg:h-2/3 bg-[#2f3136]">
-              <div className="col-span-10 md:col-span-4 h-full bg-[#292b2f] p-7 relative flex justify-center items-center overflow-hidden">
+              <div className="col-span-10 md:col-span-4 h-full bg-[#292b2f] p-7 relative flex justify-center items-center ">
                 {photoArray.length > 1 && (
                   <>
                     <div
@@ -69,11 +69,11 @@ export default function SellPhoto() {
                 <img
                   src={photoData?.reviewUrl}
                   className="w-full shadow-gray-600 shadow-xl drop-shadow-none z-0"
-                  alt="Selected Photo"
+                  alt="Ảnh được chọn"
                 />
               </div>
 
-              <div className="col-span-10 md:col-span-6 h-full overflow-hidden">
+              <div className="col-span-10 md:col-span-6 h-full bg-[#2f3136] md:overflow-hidden">
                 <UploadPhotoSellInfoBar
                   reference={formRef}
                   selectedPhoto={photoData}

@@ -5,6 +5,8 @@ const usePhotoMapStore = create(
   devtools((set, get) => ({
     // Set up manage photo list
     photoList: [], // Default is empty array
+    isFromPhotoDetailPage: false,
+    setIsFromPhotoDetailPage: (value) => set({ isFromPhotoDetailPage: value }),
     setPhotoList: (value) => set({ photoList: value }),
     addMultiplePhotosToList: (newPhotos) =>
       set((state) => ({ photoList: [...state.photoList, ...newPhotos] })),
