@@ -54,7 +54,30 @@ export default function DetailReport({ selected, tableRef, onClose }) {
         console.log("error", error);
       });
   };
+  const banPhoto = () => {
+    postData(`/manager/photo/${selected?.referencedPhoto?.id}/ban`)
+      .then((data) => {
+        console.log(data);
+        patchData(`manager/report`, `${selected.id}`, {
+          reportStatus: "CLOSED",
+        })
+          .then((e) => {
+            console.log("11111", e);
+            notificationApi("success", "Thành công", "Đã đóng báo cáo");
+            tableRef();
+            onClose();
+          })
+          .catch((error) => {
+            notificationApi("error", "Không thành công", "Lỗi");
+            console.log("error", error);
+          });
+      })
+      .catch((error) => {
+        notificationApi("error", "Không thành công", "Lỗi khóa hình ảnh");
 
+        console.log(error);
+      });
+  };
   const banUser = () => {
     postData(`/user/${selected?.referencedUser?.id}/ban`)
       .then((data) => {
@@ -91,7 +114,7 @@ export default function DetailReport({ selected, tableRef, onClose }) {
         {/* Report ID and Type */}
         <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
           <span className="text-lg font-semibold">
-            ID báo cáo: {reportDetails.id}
+            ID báo cáo: {selected.id}
           </span>
           <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
             {selected?.reportType === "PHOTO"
@@ -194,8 +217,10 @@ export default function DetailReport({ selected, tableRef, onClose }) {
 
                 {/* Ảnh đại diện */}
                 <div className="absolute ">
-                  <Image
-                    wrapperClassName="w-32 h-32 object-cover rounded-full border-4 border-white"
+                   
+                  <img
+                    wrapperClassName="w-32 max-h-32 object-cover rounded-full border-4 border-white"
+                    className="w-32 h-32 object-cover rounded-full border-4 border-white"
                     src={selected?.referencedUser?.avatar} // Nếu không có avatar, dùng ảnh mặc định
                     alt={selected?.referencedUser?.name}
                     preview={{ mask: "Xem ảnh" }}
@@ -274,10 +299,11 @@ export default function DetailReport({ selected, tableRef, onClose }) {
                   className={" bg-red-600 "}
                   onClick={() => {
                     // update("ComPleted");
+                    banPhoto()
                     notificationApi("error", "Không thành công", "Chưa có api");
                   }}
                 >
-                  Khóa bài viết
+                  Khóa hình ảnh
                 </ComButton>
               ) : (
                 <ComButton

@@ -7,7 +7,7 @@ import ManagerPhotoApi from "../../apis/ManagerPhotoApi";
 import { message } from "antd";
 import { notificationApi } from "../../Notification/Notification";
 import LoadingOval from "../LoadingSpinner/LoadingOval";
-const UpdatePhotoInManager = ({ photo, onClose }) => {
+const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
   const [isWatermark, setIsWatermark] = useState(photo?.watermark);
   const [isVisibility, setIsVisibility] = useState(photo?.visibility);
   const [title, setTitle] = useState(photo?.title);
@@ -46,6 +46,7 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
         );
         queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
         setIsLoading(false);
+        loading()
         onClose();
       },
       onError: (error) => {
