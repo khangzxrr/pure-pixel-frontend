@@ -3,17 +3,23 @@ import formatPrice from "./../../utils/FormatPriceUtils";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
 import PhotoExchange from "../../apis/PhotoExchange";
 import { useModalState } from "./../../hooks/useModalState";
-import DetailUser from "../../pages/DetailUser/DetailUser";
 import { message } from "antd";
 import ExifList from "../Photographer/UploadPhoto/ExifList";
-
-const PhotoBoughtPreviewComponent = ({ photo, photoBoughtId }) => {
-  console.log(photo, photo[0]);
-  const photoDetail = photo[0].photoSellHistory.originalPhotoSell.photo;
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { LoadingOutlined } from "@ant-design/icons";
+const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
+  console.log(
+    "checkPhotoData",
+    photoData && photoData.photo,
+    photoData.photoBuys
+  );
+  const navigate = useNavigate();
+  const photoDetail = photoData && photoData.photo;
+  const photoBuys = photoData ? photoData.photoBuys : [];
   const [selectedSize, setSelectedSize] = useState(null);
-  const [previewPhoto, setPreviewPhoto] = useState(photo[0]?.previewUrl);
+  const [previewPhoto, setPreviewPhoto] = useState(photoBuys[0]?.previewUrl);
   const popup = useModalState();
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleOnSizeChange = (photobuy) => {
     console.log(
@@ -24,41 +30,60 @@ const PhotoBoughtPreviewComponent = ({ photo, photoBoughtId }) => {
     setSelectedSize(photobuy);
     setPreviewPhoto(photobuy.previewUrl);
   };
-
+  const downloadPhotoMutation = useMutation({
+    mutationFn: ({ id, photoBuyId }) =>
+      PhotoExchange.getPhotoBoughtDetailDownload(id, photoBuyId),
+    onMutate: () => {
+      message.loading("Đang tải ảnh...");
+    },
+  });
+  const { mutateAsync: downloadPhotoMutateAsync, isPending: isDownloading } =
+    downloadPhotoMutation;
   const handleDownload = async () => {
-    if (selectedSize) {
-      try {
-        const data = await PhotoExchange.getPhotoBoughtDetailDownload(
-          photoBoughtId,
-          selectedSize.id
-        );
+    console.log("checkPhotoDetail", isDownloading);
 
-        // Tạo link tải về từ dữ liệu nhận được
-        const href = URL.createObjectURL(data);
-
-        // Tạo tên file động (dùng `selectedSize` hoặc thông tin từ `data`)
-        const fileName = `${photo.title}-${
-          selectedSize.photoSellHistory.width +
-          `x` +
-          selectedSize.photoSellHistory.height
-        }.jpg`; // Hoặc có thể thay đổi thành định dạng khác nếu cần
-
-        // Tạo phần tử <a> và tự động click để tải
-        const link = document.createElement("a");
-        link.href = href;
-        link.setAttribute("download", fileName); // Sử dụng tên file động
-        document.body.appendChild(link);
-        link.click();
-
-        // Dọn dẹp bộ nhớ và phần tử <a>
-        document.body.removeChild(link);
-        URL.revokeObjectURL(href);
-      } catch (error) {
-        console.error("Error downloading file:", error);
-        message.error("Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.");
-      }
-    } else {
+    if (!selectedSize) {
       message.error("Vui lòng chọn một kích thước trước khi tải ảnh.");
+      return;
+    }
+
+    try {
+      console.log("selectedSize", selectedSize);
+
+      await downloadPhotoMutateAsync(
+        { id: photoBoughtId, photoBuyId: selectedSize.id },
+        {
+          onSuccess: (data) => {
+            // Handle successful download
+            const href = URL.createObjectURL(data);
+            const fileName = `${photoDetail.title}-${
+              selectedSize.photoSellHistory.width +
+              `x` +
+              selectedSize.photoSellHistory.height
+            }.jpg`;
+
+            const link = document.createElement("a");
+            link.href = href;
+            link.setAttribute("download", fileName);
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up resources
+            document.body.removeChild(link);
+            URL.revokeObjectURL(href);
+
+            message.success("Ảnh đã được tải thành công.");
+          },
+          onError: (error) => {
+            // Handle error during download
+            console.error("Error downloading file:", error);
+            message.error("Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.");
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Unexpected error during download:", error);
+      message.error("Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.");
     }
   };
 
@@ -91,44 +116,34 @@ const PhotoBoughtPreviewComponent = ({ photo, photoBoughtId }) => {
           <div className=" p-4 rounded-lg flex justify-center items-center ">
             <img
               src={previewPhoto}
-              alt={photoDetail.title}
+              alt={photoDetail?.title}
               className=" w-auto h-full transform  scale-[0.95] max-h-[650px] border-4 border-black "
             />
           </div>
         </div>
-        {popup.isModalOpen && (
-          <div className="fixed inset-0 flex items-stretch justify-between z-50 overflow-y-auto">
-            <div
-              className="w-full h-auto bg-[rgba(0,0,0,0.5)]"
-              onClick={popup.handleClose}
-            ></div>
-            <div className="w-[700px]">
-              <DetailUser
-                id={photo.photographer.id}
-                data={photo.photographer}
-              />
-            </div>
-          </div>
-        )}
         <div className="xl:w-1/3 overflow-y-auto  overflow-x-hidden custom-scrollbar2">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-1">
               <img
-                src={photo.photographer?.avatar}
-                alt={photo.photographer?.name}
-                onClick={popup.handleOpen}
+                src={photoDetail?.photographer?.avatar}
+                alt={photoDetail?.photographer?.name}
+                onClick={() =>
+                  navigate(`/user/${photoDetail?.photographer?.id}/selling`)
+                }
                 className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
               />
               <div>
                 <h2
                   className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                  onClick={popup.handleOpen}
+                  onClick={() =>
+                    navigate(`/user/${photoDetail?.photographer?.id}/selling`)
+                  }
                   style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
                 >
-                  {photo.photographer?.name}
+                  {photoDetail?.photographer?.name}
                 </h2>
                 <p className="text-sm text-gray-400">
-                  {calculateTimeFromNow(photo?.createdAt)}
+                  {calculateTimeFromNow(photoDetail?.createdAt)}
                 </p>
               </div>
             </div>
@@ -139,23 +154,23 @@ const PhotoBoughtPreviewComponent = ({ photo, photoBoughtId }) => {
               className="text-2xl font-medium mb-2"
               style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
             >
-              {photoDetail.title}
+              {photoDetail?.title}
             </h1>
 
-            <h1
-              className="mb-2"
+            <p
+              className="m-2 font-normal text-gray-200"
               style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
             >
-              {photoDetail.description}
-            </h1>
+              {photoDetail?.description}
+            </p>
           </div>
-          <ExifList exifData={photoDetail.exif} />
+          <ExifList exifData={photoDetail?.exif} />
 
           <div className="flex flex-col gap-2 mt-4">
             <h2 className="text-xl">Chọn kích thước để tải:</h2>
             <div className="flex flex-wrap gap-4 px-3">
-              {photo?.map((photoBySize, index) => {
-                console.log("check photo", photoBySize.id, selectedSize?.id);
+              {photoBuys?.map((photoBySize, index) => {
+                console.log("check photo", selectedSize?.id);
 
                 return (
                   <button
@@ -215,8 +230,21 @@ const PhotoBoughtPreviewComponent = ({ photo, photoBoughtId }) => {
             <button
               className="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition-colors mt-4"
               onClick={handleDownload}
+              disabled={isDownloading || !selectedSize}
             >
-              Tải ảnh
+              {isDownloading ? (
+                <p>
+                  <LoadingOutlined
+                    style={{
+                      fontSize: 24,
+                    }}
+                    spin
+                  />
+                  <span className="mx-4">Đang tải ảnh về</span>
+                </p>
+              ) : (
+                "Tải ảnh"
+              )}
             </button>
           </div>
         </div>

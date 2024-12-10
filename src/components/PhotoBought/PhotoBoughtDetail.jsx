@@ -13,16 +13,16 @@ const PhotoBoughtDetail = () => {
     queryFn: () => PhotoExchange.getPhotoBoughtDetail(boughtId),
   });
 
-  const { data: photoById } = useQuery({
-    queryKey: ["photo", boughtId],
-    queryFn: () => PhotoApi.getPhotoById(boughtId), // Không cần `await` khi đã trả về `Promise`
-  });
+  console.log("photoData", photoData);
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <PhotoBoughtPreviewComponent photo={photoData} photoBoughtId={boughtId} />
+    <PhotoBoughtPreviewComponent
+      photoData={photoData}
+      photoBoughtId={boughtId}
+    />
   );
 };
 

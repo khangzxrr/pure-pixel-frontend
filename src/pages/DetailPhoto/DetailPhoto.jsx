@@ -446,7 +446,15 @@ export default function DetailedPhotoView({ onClose, photo }) {
               </div>
             )}
             {currentPhoto?.exif?.longitude && currentPhoto?.exif?.latitude && (
-              <div className="relative p-4 my-4 w-full h-[40vh]">
+              <div
+                className="relative p-4 my-4 w-full h-[40vh]"
+                onClick={() => {
+                  setSelectedPhoto(currentPhoto);
+                  setIsFromPhotoDetailPage(true);
+                  navigate(`/explore/photo-map`);
+                  onClose();
+                }}
+              >
                 <Map
                   viewState={{
                     latitude: currentPhoto?.exif.latitude,
@@ -457,13 +465,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
                   mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
                   style={{ width: "100%", height: "100%" }}
                   className="rounded-lg"
-                  // onClick={() => {
-                  //   console.log("click", currentPhoto);
-                  //   setSelectedPhoto(currentPhoto);
-                  //   navigate(`/explore/photo-map`);
-                  //   setIsFromPhotoDetailPage(true);
-                  //   onClose();
-                  // }}
                 >
                   <>
                     <Marker

@@ -52,6 +52,8 @@ export default function PhotoMap() {
   const limit = 10; // Set limit to 10
   const [page, setPage] = useState(1); // Set page to 0
 
+  const [isStopped, setIsStopped] = useState(true);
+
   // Initialize viewState dynamically
   const [viewState, setViewState] = useState(() => ({
     latitude: selectedPhoto ? selectedPhoto.latitude : 10.844706068296105,
@@ -69,7 +71,7 @@ export default function PhotoMap() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["photo-by-coordinates", limit, page, viewState.zoom], // Include viewState in queryKey
+    queryKey: ["photo-by-coordinates", limit, page, viewState], // Include viewState in queryKey
     queryFn: () =>
       MapBoxApi.getPhotoListByCoorddinate(
         page - 1,
@@ -78,6 +80,7 @@ export default function PhotoMap() {
         viewState.latitude,
         getZoomValue(viewState.zoom)
       ),
+    enabled: isStopped,
     keepPreviousData: true,
   });
 
@@ -98,6 +101,7 @@ export default function PhotoMap() {
     setViewState({ longitude: lng, latitude: lat });
   };
   const handleSelectPhoto = (photo) => {
+    setIsStopped(false);
     setSelectedPhoto(photo);
     setViewState((prev) => ({
       ...prev,
@@ -111,11 +115,13 @@ export default function PhotoMap() {
   };
 
   const handleMapMove = (event) => {
+    setIsStopped(false);
     setViewState(event.viewState);
   };
 
   const handleMapMoveEnd = (event) => {
     setPage(1);
+    setIsStopped(true);
     queryClient.invalidateQueries(["photo-by-coordinates"]);
   };
   const getCurrentPosition = () => {
@@ -187,20 +193,39 @@ export default function PhotoMap() {
       setIsLoadingCurrentLocation(false);
     }
   }, []);
-  const getPhotosBySelectedPhoto = async () => {
-    setViewState((prev) => ({
-      ...prev,
-      latitude: selectedPhoto.latitude,
-      longitude: selectedPhoto.longitude,
-    }));
-    await queryClient.invalidateQueries(["photo-by-coordinates"]);
-    setPhotoList([]);
-  };
+  // const getPhotosBySelectedPhoto = async () => {
+  //   // Manually construct the new viewState
+  //   const newViewState = {
+  //     ...viewState,
+  //     latitude: selectedPhoto.latitude,
+  //     longitude: selectedPhoto.longitude,
+  //   };
+
+  //   // Update viewState
+  //   setViewState(newViewState);
+  //   handleMapMoveEnd();
+  // };
+
+  // useEffect(() => {
+  //   if (isFromPhotoDetailPage) {
+  //     getPhotosBySelectedPhoto();
+  //   }
+  // }, [isFromPhotoDetailPage]);
   useEffect(() => {
-    if (isFromPhotoDetailPage) {
-      getPhotosBySelectedPhoto();
+    if (selectedPhoto && isFromPhotoDetailPage) {
+      const newViewState = {
+        ...viewState,
+        latitude: selectedPhoto.latitude,
+        longitude: selectedPhoto.longitude,
+      };
+
+      // Update viewState
+      setViewState(newViewState);
     }
   }, [isFromPhotoDetailPage]);
+  useEffect(() => {
+    queryClient.invalidateQueries(["photo-by-coordinates"]);
+  }, [viewState && isFromPhotoDetailPage]);
 
   useEffect(() => {
     if (isAddNewPhotoList && photos) {
@@ -240,9 +265,9 @@ export default function PhotoMap() {
         onMove={(evt) => handleMapMove(evt)}
         onMoveEnd={(evt) => handleMapMoveEnd(evt)}
       >
-        {photos &&
-          photos.objects.length > 0 &&
-          photos.objects.map((photo) => (
+        {photoList &&
+          photoList.length > 0 &&
+          photoList.map((photo) => (
             <Marker
               key={photo.id}
               latitude={photo.exif.latitude}
@@ -301,6 +326,7 @@ export default function PhotoMap() {
           totalPage={photos?.totalPage}
           totalRecords={photos?.totalRecords}
           selectedPhoto={selectedPhoto}
+          setIsStopped={setIsStopped}
           setIsAddNewPhotoList={setIsAddNewPhotoList}
           handleSelectPhoto={handleSelectPhoto}
         />
@@ -320,6 +346,7 @@ export default function PhotoMap() {
               onClick={() => {
                 popupDetail.handleOpen();
                 setIsFromPhotoDetailPage(false);
+                setIsStopped(true);
               }}
             >
               <p className="font-normal text-base">
