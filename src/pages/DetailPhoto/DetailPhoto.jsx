@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react";
 import PhotoApi from "../../apis/PhotoApi";
+
 import { useNavigate, useParams } from "react-router-dom";
 import DetailUser from "../DetailUser/DetailUser";
 import { useModalState } from "./../../hooks/useModalState";
@@ -23,12 +24,11 @@ import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore"
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import TextWithShowMore from "./components/TextWithShowMore";
 import UserService from "../../services/Keycloak";
+import LoadingOval from "./../../components/LoadingSpinner/LoadingOval";
+import usePhotoMapStore from "../../states/UsePhotoMapStore";
 import Map, { Marker, Popup } from "react-map-gl";
 import { IoLocationSharp } from "react-icons/io5";
 import MapBoxApi from "../../apis/MapBoxApi";
-import usePhotoMapStore from "../../states/UsePhotoMapStore";
-import LoadingOval from "./../../components/LoadingSpinner/LoadingOval";
-
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -74,8 +74,8 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const navigate = useNavigate();
   const imageRef = useRef(null);
   const { id } = useParams();
-  const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
   const [photoAddress, setPhotoAddress] = useState("");
+  const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
   const setNamePhotographer = UsePhotographerFilterStore(
     (state) => state.setNamePhotographer
   );
@@ -129,28 +129,12 @@ export default function DetailedPhotoView({ onClose, photo }) {
     queryFn: () => PhotoApi.getNextPublicById(currentPhoto.id),
     enabled: !!currentPhoto?.id,
   });
-  const searchByCoordinate = useMutation({
-    mutationFn: ({ longitude, latitude }) =>
-      MapBoxApi.getAddressByCoordinate(longitude, latitude),
-    onSuccess: (data) => {
-      setPhotoAddress(data.features[0].properties.full_address);
-    },
-    onError: (error) => {
-      console.error("Error fetching address:", error);
-    },
-  });
+
   // if (isError) {
   //   console.log(error);
   //   navigate("/404");
   // }
-  useEffect(() => {
-    if (currentPhoto?.exif?.longitude && currentPhoto?.exif?.latitude) {
-      searchByCoordinate.mutate({
-        longitude: currentPhoto.exif.longitude,
-        latitude: currentPhoto.exif.latitude,
-      });
-    }
-  }, [currentPhoto]);
+
   useEffect(() => {
     if (!isPending && data !== currentPhoto) {
       setCurrentPhoto(data);
@@ -245,7 +229,24 @@ export default function DetailedPhotoView({ onClose, photo }) {
   const handleCloseLoginWarning = () => {
     setIsOpenLoginModal(false);
   };
-  console.log("currentPhoto", currentPhoto);
+  const searchByCoordinate = useMutation({
+    mutationFn: ({ longitude, latitude }) =>
+      MapBoxApi.getAddressByCoordinate(longitude, latitude),
+    onSuccess: (data) => {
+      setPhotoAddress(data.features[0].properties.full_address);
+    },
+    onError: (error) => {
+      console.error("Error fetching address:", error);
+    },
+  });
+  useEffect(() => {
+    if (currentPhoto?.exif?.longitude && currentPhoto?.exif?.latitude) {
+      searchByCoordinate.mutate({
+        longitude: currentPhoto.exif.longitude,
+        latitude: currentPhoto.exif.latitude,
+      });
+    }
+  }, [currentPhoto]);
   return (
     <div className={""}>
       <div
@@ -430,78 +431,6 @@ export default function DetailedPhotoView({ onClose, photo }) {
                   className="custom-skeleton-input"
                 />
               </div>
-            </div>
-
-            <div className="my-2">{currentPhoto.title}</div>
-            <div className="my-2 font-normal">
-              <TextWithShowMore description={currentPhoto.description} />
-            </div>
-            <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
-
-            {currentPhoto?.exif && (
-              <div className="space-y-2 mb-6">
-                <ExifList exifData={currentPhoto?.exif} />
-              </div>
-            )}
-            {currentPhoto?.exif?.longitude && currentPhoto?.exif?.latitude && (
-              <div
-                className="relative p-4 my-4 w-full h-[40vh]"
-                onClick={() => {
-                  setSelectedPhoto(currentPhoto);
-                  setIsFromPhotoDetailPage(true);
-                  navigate(`/explore/photo-map`);
-                  onClose();
-                }}
-              >
-                <Map
-                  viewState={{
-                    latitude: currentPhoto?.exif.latitude,
-                    longitude: currentPhoto?.exif.longitude,
-                    zoom: 13,
-                  }}
-                  mapStyle="mapbox://styles/mapbox/streets-v9"
-                  mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-                  style={{ width: "100%", height: "100%" }}
-                  className="rounded-lg"
-                >
-                  <>
-                    <Marker
-                      latitude={currentPhoto.exif.latitude}
-                      longitude={currentPhoto.exif.longitude}
-                      anchor="bottom"
-                    >
-                      <div className="marker-btn" style={{ cursor: "pointer" }}>
-                        <IoLocationSharp fontSize={39} color="red" />
-                      </div>
-                    </Marker>
-                    <Popup
-                      latitude={currentPhoto.exif.latitude}
-                      longitude={currentPhoto.exif.longitude}
-                      anchor="top"
-                      closeOnClick={false}
-                      closeButton={false}
-                    >
-                      <div style={{ cursor: "pointer" }}>
-                        <h2 className="text-black">{photoAddress}</h2>
-                      </div>
-                    </Popup>
-                  </>
-                </Map>
-              </div>
-            )}
-            {/* <div className="my-2">{categoryName ? `#${categoryName}` : ""}</div> */}
-
-            <div className="flex items-center space-x-6 mb-6">
-              {keycloak.authenticated ? (
-                <div className="flex items-center gap-2">
-                  <LikeButton
-                    size="size-5"
-                    reloadData={() => refreshPhoto()}
-                    photoId={currentPhoto.id}
-                    key={currentPhoto.id}
-                  />
-                  <span>{currentPhoto?._count?.votes}</span>
-
             ) : (
               <div className="w-full md:w-96 p-6 bg-zinc-900 custom-scrollbar">
                 <div className="flex justify-between items-center mb-6">
@@ -683,6 +612,7 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     )}
                   </Menu>
                 </div>
+
                 <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
 
                 {currentPhoto?.exif && (
@@ -690,6 +620,56 @@ export default function DetailedPhotoView({ onClose, photo }) {
                     <ExifList exifData={currentPhoto?.exif} />
                   </div>
                 )}
+                {currentPhoto?.exif?.longitude &&
+                  currentPhoto?.exif?.latitude && (
+                    <div
+                      className="relative p-4 my-4 w-full h-[40vh]"
+                      onClick={() => {
+                        setSelectedPhoto(currentPhoto);
+                        setIsFromPhotoDetailPage(true);
+                        navigate(`/explore/photo-map`);
+                        onClose();
+                      }}
+                    >
+                      <Map
+                        viewState={{
+                          latitude: currentPhoto?.exif.latitude,
+                          longitude: currentPhoto?.exif.longitude,
+                          zoom: 13,
+                        }}
+                        mapStyle="mapbox://styles/mapbox/streets-v9"
+                        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+                        style={{ width: "100%", height: "100%" }}
+                        className="rounded-lg"
+                      >
+                        <>
+                          <Marker
+                            latitude={currentPhoto.exif.latitude}
+                            longitude={currentPhoto.exif.longitude}
+                            anchor="bottom"
+                          >
+                            <div
+                              className="marker-btn"
+                              style={{ cursor: "pointer" }}
+                            >
+                              <IoLocationSharp fontSize={39} color="red" />
+                            </div>
+                          </Marker>
+                          <Popup
+                            latitude={currentPhoto.exif.latitude}
+                            longitude={currentPhoto.exif.longitude}
+                            anchor="top"
+                            closeOnClick={false}
+                            closeButton={false}
+                          >
+                            <div style={{ cursor: "pointer" }}>
+                              <h2 className="text-black">{photoAddress}</h2>
+                            </div>
+                          </Popup>
+                        </>
+                      </Map>
+                    </div>
+                  )}
                 <div className="mb-6">
                   <CommentPhoto id={currentPhoto.id} reload={refreshPhoto} />
                 </div>
