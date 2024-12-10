@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { FaAngleDown } from "react-icons/fa6";
 import { TbEdit, TbEditOff } from "react-icons/tb";
@@ -6,9 +6,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ManagerPhotoApi from "../../apis/ManagerPhotoApi";
 import { message } from "antd";
 import { notificationApi } from "../../Notification/Notification";
+import LoadingOval from "../LoadingSpinner/LoadingOval";
 const UpdatePhotoInManager = ({ photo, onClose }) => {
   const [isWatermark, setIsWatermark] = useState(photo?.watermark);
   const [isVisibility, setIsVisibility] = useState(photo?.visibility);
+  const [title, setTitle] = useState(photo?.title);
+  const [description, setDescription] = useState(photo?.description);
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
 
@@ -17,10 +20,20 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
       ManagerPhotoApi.updatePhoto(photo.id, updateBody),
   });
 
+  useEffect(() => {
+    if (photo) {
+      setTitle(photo.title || "");
+      setDescription(photo.description || "");
+      setIsWatermark(photo.watermark);
+      setIsVisibility(photo.visibility);
+    }
+  }, [photo]);
+
   const handleUpdatePhoto = () => {
     setIsLoading(true);
     const updateBody = {
-      watermark: isWatermark,
+      title: title.trim() || undefined,
+      description: description.trim() || undefined,
       visibility: isVisibility,
     };
     updatePhoto.mutate(updateBody, {
@@ -47,15 +60,13 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
           notificationApi("error", "Cập nhật không thành công", errorMessage);
         }
 
-        setIsVisibility(photo?.visibility);
-        setIsWatermark(photo?.watermark);
+        setTitle(photo?.title);
+        setDescription(photo?.description);
         setIsLoading(false);
         queryClient.invalidateQueries({ queryKey: ["manager-photos"] });
       },
     });
   };
-
-  console.log(isWatermark, isVisibility);
 
   return (
     <div className="text-[#eee] flex flex-col  w-full">
@@ -84,21 +95,31 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
             {/* Tiêu đề */}
             <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
               <div className="text-gray-400 flex items-center gap-1">
-                <TbEditOff className="text-red-500 size-4" />
+                <TbEdit className="text-blue-500 size-4" />
                 Tiêu đề:
               </div>
-              <div className="font-bold text-[#eee] truncate">
-                {photo?.title}
-              </div>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="font-bold text-[#eee] bg-transparent border-none outline-none w-full"
+                placeholder="Nhập tiêu đề mới"
+              />
             </div>
 
             {/* Mô tả */}
             <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
               <div className="text-gray-400 flex items-center gap-1">
-                <TbEditOff className="text-red-500 size-4" />
+                <TbEdit className="text-blue-500 size-4" />
                 Mô tả:
               </div>
-              <div className="text-[#eee] truncate">{photo?.description}</div>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="text-[#eee] bg-transparent border-none outline-none w-full resize-none"
+                rows={3}
+                placeholder="Nhập mô tả mới"
+              ></textarea>
             </div>
 
             {/* Loại ảnh */}
@@ -111,7 +132,7 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
             </div>
 
             {/* Danh mục */}
-            <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
+            {/* <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
               <div className="text-gray-400 flex items-center gap-1">
                 <TbEditOff className="text-red-500 size-4" />
                 Danh mục:
@@ -119,15 +140,15 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
               <div className="text-[#eee]">
                 {photo?.categories.map((c) => c.name).join(", ")}
               </div>
-            </div>
+            </div> */}
 
             {/* Bật/tắt nhãn */}
             <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
               <div className="text-gray-400 flex items-center gap-1">
-                <TbEdit className="text-blue-500 size-4" />
-                Bật/tắt nhãn:
+                <TbEditOff className="text-red-500 size-4" />
+                Nhãn (watermark):
               </div>
-              <label className="inline-flex items-center cursor-pointer">
+              {/* <label className="inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   className="sr-only peer"
@@ -135,16 +156,22 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
                   onChange={(e) => setIsWatermark(e.target.checked)}
                 />
                 <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none dark:peer-focus:ring-green-500 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-500"></div>
-              </label>
+              </label> */}
+              <div className="text-[#eee] font-bold">
+                {isWatermark ? "Có" : "Không"}
+              </div>
             </div>
 
             {/* Quyền riêng tư */}
             <div className="grid grid-cols-2 items-center py-2">
               <div className="text-gray-400 flex items-center gap-1">
-                <TbEdit className="text-blue-500 size-4" />
-                Quyền riêng tư:
+                <TbEditOff className="text-red-500 size-4" />
+                Quyền riêng tư:{" "}
               </div>
-              <div>
+              <div className="font-bold">
+                {isVisibility === "PUBLIC" ? "Công khai" : "Riêng tư"}
+              </div>
+              {/* <div>
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
                     <MenuButton className="inline-flex items-center bg-[#eee] text-[#202225] gap-2 w-full justify-center rounded-md px-3 py-2 text-sm font-semibold">
@@ -181,16 +208,25 @@ const UpdatePhotoInManager = ({ photo, onClose }) => {
                     </div>
                   </MenuItems>
                 </Menu>
-              </div>
+              </div> */}
             </div>
           </div>
 
           <div className="flex">
             <button
               onClick={() => handleUpdatePhoto()}
-              className="bg-[#eee] w-full text-[#202225] hover:bg-[#9d9d9d] font-bold py-2 rounded-md"
+              className="bg-[#eee] w-full flex items-center justify-center text-[#202225] hover:bg-[#9d9d9d] font-bold py-2 rounded-md"
             >
-              {isLoading ? "Đang cập nhật...." : "Lưu chỉnh sửa"}
+              {isLoading ? (
+                <LoadingOval
+                  size={"22"}
+                  color={"#202225"}
+                  strongWidth={5}
+                  secondaryColor={"#eee"}
+                />
+              ) : (
+                "Lưu chỉnh sửa"
+              )}
             </button>
           </div>
         </div>
