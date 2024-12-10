@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notificationApi } from "../../Notification/Notification";
 import AdminApi from "./../../apis/AdminApi";
 import LoadingOval from "../LoadingSpinner/LoadingOval";
-const UpdateUserDetail = ({ userDetail, onClose }) => {
+const UpdateUserDetail = ({ userDetail, onClose, loading }) => {
   const queryClient = useQueryClient();
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [name, setName] = useState("");
@@ -59,6 +59,7 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
           "Cập nhật thành công",
           "Cập nhật tài khoản thành công"
         );
+        loading();
         queryClient.invalidateQueries({ queryKey: ["users-manager"] });
         setIsLoadingButton(false);
         onClose();

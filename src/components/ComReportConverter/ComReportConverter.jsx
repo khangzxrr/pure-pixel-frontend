@@ -1,5 +1,6 @@
 import { Image } from "antd";
 import React from "react";
+import { Link } from "react-router-dom";
 
 function ComReportConverter({ children }) {
   const convert = (data) => {
@@ -15,7 +16,12 @@ function ComReportConverter({ children }) {
                 preview={{ mask: "Xem ảnh" }}
               />
             </div>
-              {/* <p>ID:{data?.referencedPhoto?.id}</p> */}
+            {/* ID:
+            <Link
+              to={`/photo/${data?.referencedPhoto?.id}`}
+            >
+              {data?.referencedPhoto?.id}
+            </Link> */}
           </>
         );
       case "USER":
@@ -34,7 +40,12 @@ function ComReportConverter({ children }) {
               )} */}
               {/* <p>ID:{data?.referencedUser?.id}</p> */}
             </div>
-            <div>Tài khoản:{data?.referencedUser?.name}</div>
+            <div>
+              Tài khoản:
+              <Link to={`/user/${data?.referencedUser?.id}/photos`}>
+                {data?.referencedUser?.name}
+              </Link>
+            </div>
           </>
         );
       case "BOOKING":
@@ -48,7 +59,6 @@ function ComReportConverter({ children }) {
     }
   };
   const translated = convert(children);
-
 
   return <>{translated}</>;
 }
