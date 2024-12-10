@@ -5,6 +5,7 @@ import { FaAngleDown } from "react-icons/fa6";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notificationApi } from "../../Notification/Notification";
 import AdminApi from "./../../apis/AdminApi";
+import LoadingOval from "../LoadingSpinner/LoadingOval";
 const UpdateUserDetail = ({ userDetail, onClose }) => {
   const queryClient = useQueryClient();
   const [isLoadingButton, setIsLoadingButton] = useState(false);
@@ -37,38 +38,20 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
     setQuote(userDetail?.quote || "");
   }, [userDetail]);
 
-  console.log(userDetail);
-
   const updateUser = useMutation({
     mutationFn: (updateBody) => AdminApi.updateUser(userDetail.id, updateBody),
   });
 
   const handleUpdateUser = () => {
     setIsLoadingButton(true);
-
-    // Map giá trị từ giao diện người dùng sang giá trị API
-    const roleApiValue = {
-      "quản lý": "manager",
-      "nhiếp ảnh gia": "photographer",
-      "khách hàng": "customer",
-      "quản trị viên": "purepixel-admin",
-    }[role]; // Nếu không tìm thấy sẽ trả về undefined
-
-    if (!roleApiValue) {
-      notificationApi("error", "Cập nhật thất bại", "Quyền không hợp lệ.");
-      setIsLoadingButton(false);
-      return;
-    }
     const updateBody = {
-      name: name,
-      mail: email,
-      phonenumber: phone,
-      quote: quote,
-      location: location,
-      role: roleApiValue,
       enabled: isActive,
     };
-
+    if (name) updateBody.name = name;
+    if (email) updateBody.mail = email;
+    if (phone) updateBody.phonenumber = phone;
+    if (quote) updateBody.quote = quote;
+    if (location) updateBody.location = location;
     updateUser.mutate(updateBody, {
       onSuccess: () => {
         notificationApi(
@@ -81,14 +64,22 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
         onClose();
       },
       onError: (error) => {
-        notificationApi(
-          "error",
-          "Cập nhật thất bại",
-          "Cần phải điền đầy đủ thông tin"
-        );
+        if (error.response.data.message[0].includes("phonenumber must match")) {
+          notificationApi(
+            "error",
+            "Cập nhật thất bại",
+            "Số điện thoại không đúng định dạng"
+          );
+        } else {
+          notificationApi(
+            "error",
+            "Cập nhật thất bại",
+            error.response.data.message[0]
+          );
+        }
+
         queryClient.invalidateQueries({ queryKey: ["users-manager"] });
         setIsLoadingButton(false);
-        onClose();
       },
     });
   };
@@ -148,8 +139,8 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
         <div class="relative w-11 h-6 bg-gray-200  rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
       </label>
       <div className="flex items-center gap-2">
-        Quyền:
-        <Menu as="div" className="relative inline-block text-left">
+        Quyền: <span className="font-bold">{role || ""}</span>
+        {/* <Menu as="div" className="relative inline-block text-left">
           <div>
             <MenuButton className="inline-flex items-center bg-[#374151] w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-90 ">
               {role}
@@ -188,7 +179,7 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
               </MenuItem>
             </div>
           </MenuItems>
-        </Menu>
+        </Menu> */}
       </div>
       <div className="flex flex-col gap-2">
         <div>Tiểu sử:</div>
@@ -203,9 +194,18 @@ const UpdateUserDetail = ({ userDetail, onClose }) => {
       <div className="flex flex-col items-center">
         <button
           onClick={() => handleUpdateUser()}
-          className=" w-full text-[#202225] font-bold bg-[#eee] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
+          className=" w-full text-[#202225] flex justify-center font-bold bg-[#eee] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
         >
-          {isLoadingButton ? "Đang cập nhật..." : "Lưu chỉnh sửa"}
+          {isLoadingButton ? (
+            <LoadingOval
+              size={"20"}
+              color={"#202225"}
+              strongWidth={7}
+              secondaryColor={"#eee"}
+            />
+          ) : (
+            "Lưu chỉnh sửa"
+          )}
         </button>
       </div>
     </div>
