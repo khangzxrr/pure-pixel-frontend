@@ -43,17 +43,23 @@ export default function PhotoMap() {
     selectedPhoto,
     setSelectedPhoto,
     photoList,
+    isFromPhotoDetailPage,
+    setIsFromPhotoDetailPage,
   } = usePhotoMapStore(); // Use Zustand store
   const [isAddNewPhotoList, setIsAddNewPhotoList] = useState(false);
   const [selectedPhotoRatio, setSelectedPhotoRatio] = useState(0);
   const [currentLocate, setCurrentLocate] = useState(null);
   const limit = 10; // Set limit to 10
   const [page, setPage] = useState(1); // Set page to 0
-  const [viewState, setViewState] = useState({
-    latitude: 10.844706068296105,
-    longitude: 106.79257343412127,
-    zoom: 10,
-  });
+
+  const [isStopped, setIsStopped] = useState(true);
+
+  // Initialize viewState dynamically
+  const [viewState, setViewState] = useState(() => ({
+    latitude: selectedPhoto ? selectedPhoto.latitude : 10.844706068296105,
+    longitude: selectedPhoto ? selectedPhoto.longitude : 106.79257343412127,
+    zoom: 13,
+  }));
   const navigate = useNavigate(); // Initialize useNavigate
   const queryClient = useQueryClient(); // Initialize the QueryClient
   const popupDetail = useModalState();
@@ -65,7 +71,7 @@ export default function PhotoMap() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["photo-by-coordinates", limit, page],
+    queryKey: ["photo-by-coordinates", limit, page, viewState], // Include viewState in queryKey
     queryFn: () =>
       MapBoxApi.getPhotoListByCoorddinate(
         page - 1,
@@ -74,8 +80,10 @@ export default function PhotoMap() {
         viewState.latitude,
         getZoomValue(viewState.zoom)
       ),
-    keepPreviousData: true, // Add this option to keep previous data while fetching
+    enabled: isStopped,
+    keepPreviousData: true,
   });
+
   const searchByCoordinate = useMutation({
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
@@ -85,9 +93,7 @@ export default function PhotoMap() {
         address: data.features[0].properties.full_address,
       });
     },
-    onError: (error) => {
-      console.error("Error fetching address:", error);
-    },
+    onError: (error) => {},
   });
   // Function to handle map click and get coordinates
   const handleMapClick = (event) => {
@@ -95,6 +101,7 @@ export default function PhotoMap() {
     setViewState({ longitude: lng, latitude: lat });
   };
   const handleSelectPhoto = (photo) => {
+    setIsStopped(false);
     setSelectedPhoto(photo);
     setViewState((prev) => ({
       ...prev,
@@ -108,11 +115,13 @@ export default function PhotoMap() {
   };
 
   const handleMapMove = (event) => {
+    setIsStopped(false);
     setViewState(event.viewState);
   };
 
   const handleMapMoveEnd = (event) => {
     setPage(1);
+    setIsStopped(true);
     queryClient.invalidateQueries(["photo-by-coordinates"]);
   };
   const getCurrentPosition = () => {
@@ -124,12 +133,11 @@ export default function PhotoMap() {
           setIsLoadingCurrentLocation(false);
         },
         (error) => {
-          console.error("Error getting current location:", error);
           setIsLoadingCurrentLocation(false);
         }
       );
     } else {
-      console.error("Geolocation is not supported by this browser.");
+      // console.error("Geolocation is not supported by this browser.");
       setIsLoadingCurrentLocation(false);
       notificationApi(
         "info",
@@ -142,7 +150,6 @@ export default function PhotoMap() {
     }
   };
   const backToCurrentLocate = () => {
-    // console.log("currentLocate", currentLocate, viewState);
     if (
       currentLocate.latitude === viewState.latitude &&
       currentLocate.longitude === viewState.longitude
@@ -168,17 +175,15 @@ export default function PhotoMap() {
       );
     }
   };
-  console.log("currentLocate", currentLocate, viewState);
 
   //Take the width and height of an image
   const handleImageLoad = (event) => {
     const { width, height } = event.target; // Get width and height from the loaded image
     setSelectedPhotoRatio(height / width);
   };
-  // Get user's current location
   useEffect(() => {
     getCurrentPosition();
-    if (currentLocate) {
+    if (!selectedPhoto && currentLocate) {
       setViewState((prev) => ({
         ...prev,
         latitude: currentLocate.latitude,
@@ -188,9 +193,41 @@ export default function PhotoMap() {
       setIsLoadingCurrentLocation(false);
     }
   }, []);
-  useEffect(() => {
-    console.log("photos", photos);
+  // const getPhotosBySelectedPhoto = async () => {
+  //   // Manually construct the new viewState
+  //   const newViewState = {
+  //     ...viewState,
+  //     latitude: selectedPhoto.latitude,
+  //     longitude: selectedPhoto.longitude,
+  //   };
 
+  //   // Update viewState
+  //   setViewState(newViewState);
+  //   handleMapMoveEnd();
+  // };
+
+  // useEffect(() => {
+  //   if (isFromPhotoDetailPage) {
+  //     getPhotosBySelectedPhoto();
+  //   }
+  // }, [isFromPhotoDetailPage]);
+  useEffect(() => {
+    if (selectedPhoto && isFromPhotoDetailPage) {
+      const newViewState = {
+        ...viewState,
+        latitude: selectedPhoto.latitude,
+        longitude: selectedPhoto.longitude,
+      };
+
+      // Update viewState
+      setViewState(newViewState);
+    }
+  }, [isFromPhotoDetailPage]);
+  useEffect(() => {
+    queryClient.invalidateQueries(["photo-by-coordinates"]);
+  }, [viewState && isFromPhotoDetailPage]);
+
+  useEffect(() => {
     if (isAddNewPhotoList && photos) {
       addMultiplePhotosToList(photos.objects);
       setIsAddNewPhotoList(false);
@@ -198,7 +235,7 @@ export default function PhotoMap() {
       setPhotoList(photos.objects);
     }
   }, [photos]);
-  console.table(photoList);
+
   return (
     <div className="relative w-full h-screen">
       {/* <ComModal
@@ -228,9 +265,9 @@ export default function PhotoMap() {
         onMove={(evt) => handleMapMove(evt)}
         onMoveEnd={(evt) => handleMapMoveEnd(evt)}
       >
-        {photos &&
-          photos.objects.length > 0 &&
-          photos.objects.map((photo) => (
+        {photoList &&
+          photoList.length > 0 &&
+          photoList.map((photo) => (
             <Marker
               key={photo.id}
               latitude={photo.exif.latitude}
@@ -289,6 +326,7 @@ export default function PhotoMap() {
           totalPage={photos?.totalPage}
           totalRecords={photos?.totalRecords}
           selectedPhoto={selectedPhoto}
+          setIsStopped={setIsStopped}
           setIsAddNewPhotoList={setIsAddNewPhotoList}
           handleSelectPhoto={handleSelectPhoto}
         />
@@ -307,6 +345,8 @@ export default function PhotoMap() {
               className="flex flex-col h-full cursor-pointer"
               onClick={() => {
                 popupDetail.handleOpen();
+                setIsFromPhotoDetailPage(false);
+                setIsStopped(true);
               }}
             >
               <p className="font-normal text-base">

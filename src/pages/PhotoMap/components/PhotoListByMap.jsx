@@ -10,6 +10,7 @@ const PhotoListByMap = ({
   totalRecords,
   setIsAddNewPhotoList,
   handleSelectPhoto,
+  setIsStopped,
 }) => {
   const { photoList, selectedPhoto, setPreviousSelectedPhoto } =
     usePhotoMapStore();
