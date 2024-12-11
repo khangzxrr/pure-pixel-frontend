@@ -42,6 +42,15 @@ export const TableUpgrade = forwardRef((props, ref) => {
   } = useColumnFilters();
   const columns = [
     {
+      title: "Id",
+      width: 150,
+      fixed: "left",
+      dataIndex: "id",
+      key: "id",
+      sorter: (a, b) => a?.id?.localeCompare(b?.id),
+      ...getColumnSearchProps("id", "Id"),
+    },
+    {
       title: "Tên gói",
       width: "10%",
       fixed: "left",
