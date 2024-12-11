@@ -19,7 +19,7 @@ const getPhotoListByCoorddinate = async (
   distance
 ) => {
   const response = await http.get(
-    `/photo/public?limit=${limit}&page=${page}&gps=true&longitude=${longitude}&latitude=${latitude}&distance=${distance}`
+    `/photo/public?limit=${limit}&page=${page}&gps=true&longitude=${longitude}&latitude=${latitude}&distance=${distance}&selling=false`
   );
   return response.data;
 };
