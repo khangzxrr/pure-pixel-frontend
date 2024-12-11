@@ -23,7 +23,6 @@ export default function CommentPhoto({ id, reload, top }) {
   const commentPhoto = useMutation({
     mutationFn: ({ id, content }) => CommentApi.addComment(id, content),
     onSuccess: () => {
-      console.log("hiiii");
       queryClient.invalidateQueries(["photo-comment"], id);
       setValueComment("");
     },
