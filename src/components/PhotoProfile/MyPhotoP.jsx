@@ -18,6 +18,7 @@ import { ConfigProvider, Pagination, Tooltip } from "antd";
 import { motion } from "framer-motion";
 import UpdateDropdown from "./UpdateDropdown";
 import { thumbnail } from "exifr";
+import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
 
 const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
   const navigate = useNavigate();
@@ -85,7 +86,10 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
     keepPreviousData: true,
   });
 
+  const { setBeforeRoute } = useBeforeRouteDetailPhoto();
+
   const handleOnClick = (photo) => {
+    setBeforeRoute("/profile/my-photos");
     setSelectedImage(photo);
   };
 
