@@ -10,7 +10,15 @@ import { useNotification } from "../../../Notification/Notification";
 import { putData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
 import ComTextArea from "../../../components/ComInput/ComTextArea";
-
+function formatCurrency(number) {
+  // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
+  if (typeof number === "number") {
+    return number.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+  }
+}
 export default function DetailUpgrede({ selectedUpgrede, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
@@ -87,160 +95,69 @@ export default function DetailUpgrede({ selectedUpgrede, onClose, tableRef }) {
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
           Chi tiết gói Nâng cấp
         </h2>
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-xl">
-            <div className="overflow-y-auto p-4">
-              <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-                <div className="sm:col-span-2">
-                  <div className="mt-2.5">
-                    <ComInput
-                      type="text"
-                      label={"Tên gói"}
-                      placeholder={"Tên gói"}
-                      readOnly
-                      {...register("name")}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-1">
-                  <div div className="mt-2.5">
-                    <ComSelect
-                      size={"large"}
-                      style={{
-                        width: "100%",
-                      }}
-                      label="Thời hạn "
-                      placeholder="Thời hạn"
-                      onChangeValue={(name, value) => {
-                        setValue(name, value);
-                      }}
-                      readOnly
-                      open={false}
-                      value={watch("minOrderMonth")}
-                      mode="default"
-                      options={[
-                        {
-                          value: 3,
-                          label: `3 tháng`,
-                        },
-                        {
-                          value: 6,
-                          label: `6 tháng`,
-                        },
-                        {
-                          value: 12,
-                          label: `1 năm`,
-                        },
-                      ]}
-                      {...register("minOrderMonth")}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-1">
-                  <div className="mt-2.5">
-                    <ComNumber
-                      type="money"
-                      money
-                      value={watch("price")}
-                      defaultValue={10000}
-                      readOnly
-                      min={10000}
-                      label={"Số tiền"}
-                      placeholder={"Vui lòng nhập số tiền"}
-                      {...register("price")}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-1">
-                  <div className="mt-2.5">
-                    <ComInput
-                      type={"numbers"}
-                      readOnly
-                      label={"maxPhotoQuota"}
-                      placeholder={"Vui lòng nhập maxPhotoQuota"}
-                      {...register("maxPhotoQuota")}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-1">
-                  <div className="mt-2.5">
-                    <ComInput
-                      type={"numbers"}
-                      readOnly
-                      label={"Số lượng gói dịch vụ tối đa "}
-                      placeholder={"Vui lòng nhập số lượng gói dịch vụ tối đa "}
-                      {...register("maxPackageCount")}
-                      required
-                    />
-                  </div>
-                </div>
+        <table className="w-full">
+          <tbody>
+            {/* Tên gói */}
+            <tr className="border-b">
+              <td className="px-4 py-2 text-gray-600 font-medium">Tên gói:</td>
+              <td className="px-4 py-2">{selectedUpgrede?.name}</td>
+            </tr>
 
-                <div className="sm:col-span-2">
-                  <div className="mt-2.5">
-                    <ComTextArea
-                      readOnly
-                      type={"numbers"}
-                      rows={5}
-                      label={"Tóm tắt về gói"}
-                      placeholder={"Vui lòng nhập bản tóm tắt "}
-                      {...register("summary")}
-                      required
-                    />
-                  </div>
-                </div>
-                {fields.map((description, index) => (
-                  <div className="sm:col-span-2" key={index}>
-                    <div className="mt-2.5">
-                      <ComInput
-                        id={`description-${index}`}
-                        readOnly
-                        label={`Chi tiết  ${index + 1} của gói`}
-                        placeholder="Vui lòng nhập chi tiết"
-                        {...register(`descriptions[${index}]`)}
-                        required
-                      />
-                    </div>
-                    {/* <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className={`text-red-500 mt-1 ${
-                        fields.length === 1 ? "hidden" : ""
-                      }`} // Ẩn nút xóa khi chỉ có một phần tử
-                    >
-                      Xóa
-                    </button> */}
-                  </div>
-                ))}
-              </div>
+            {/* Thời hạn */}
+            <tr className="border-b">
+              <td className="px-4 py-2 text-gray-600 font-medium">Thời hạn:</td>
+              <td className="px-4 py-2">
+                {selectedUpgrede?.minOrderMonth === 3
+                  ? "3 tháng"
+                  : selectedUpgrede?.minOrderMonth === 6
+                  ? "6 tháng"
+                  : "1 năm"}
+              </td>
+            </tr>
 
-              {errors.descriptions?.root?.message && (
-                <p className="text-red-600"></p>
-              )}
-              {/* <div className="sm:col-span-2">
-                <button
-                  type="button"
-                  onClick={() => append(" ")}
-                  className="mt-4 bg-blackpointer-events-auto rounded-md bg-[#0F296D] px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-[#0F296D] hover:text-white"
-                >
-                  Thêm Chi Tiết Gói
-                </button>
-              </div> */}
-              {/* <div className="mt-10">
-                <ComButton
-                  htmlType="submit"
-                  disabled={disabled}
-                  className="block w-full rounded-md bg-[#0F296D] text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0F296D] "
-                >
-                  Cập nhật
-                </ComButton>
-              </div> */}
-            </div>
-          </form>
-        </FormProvider>
+            {/* Số tiền */}
+            <tr className="border-b">
+              <td className="px-4 py-2 text-gray-600 font-medium">Số tiền:</td>
+              <td className="px-4 py-2">
+                {formatCurrency(selectedUpgrede?.price)}
+              </td>
+            </tr>
+
+            {/* Số lượng gói dịch vụ tối đa */}
+            <tr className="border-b">
+              <td className="px-4 py-2 text-gray-600 font-medium">
+                Số lượng gói dịch vụ tối đa:
+              </td>
+              <td className="px-4 py-2">{selectedUpgrede?.maxPackageCount}</td>
+            </tr>
+
+            {/* Max photo quota */}
+            <tr className="border-b">
+              <td className="px-4 py-2 text-gray-600 font-medium">
+                Max Photo Quota:
+              </td>
+              <td className="px-4 py-2">{selectedUpgrede?.maxPhotoQuota}</td>
+            </tr>
+
+            {/* Tóm tắt về gói */}
+            <tr className="border-b">
+              <td className="px-4 py-2 text-gray-600 font-medium">
+                Tóm tắt về gói:
+              </td>
+              <td className="px-4 py-2">{selectedUpgrede?.summary}</td>
+            </tr>
+
+            {/* Mô tả chi tiết các gói (mỗi dòng là một mô tả) */}
+            {selectedUpgrede?.descriptions?.map((description, index) => (
+              <tr key={index} className="border-b">
+                <td className="px-4 py-2 text-gray-600 font-medium">
+                  Chi tiết {index + 1} của gói:
+                </td>
+                <td className="px-4 py-2">{description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
