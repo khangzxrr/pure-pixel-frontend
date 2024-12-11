@@ -20,6 +20,7 @@ const ChartDashboard = ({ dashBoardData }) => {
           param1={revenueFromSellingPhoto}
           param2={revenueFromUpgradePackage}
           isMoney={true}
+          isRevenue={true}
         />
       </div>
     </div>
