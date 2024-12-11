@@ -112,8 +112,12 @@ const ChartTotalUsedCameraByBrand = () => {
             <LoadingOval />
           </div>
         ) : series.length === 0 ? (
-          <div className="text-center text-xl font-bold flex items-center justify-center h-[300px] text-[#eee] py-4">
-            Hãy nhấn chọn một hãng máy ảnh để thống kê
+          <div className="text-xl p-4 flex flex-col items-center justify-center  h-[300px] text-[#eee] py-4">
+            Hãy nhấn chọn một hãng máy ảnh trong{" "}
+            <span className="font-bold text-blue-400">
+              Danh sách xếp hạng các máy ảnh phổ biến nhất
+            </span>{" "}
+            để thống kê
           </div>
         ) : (
           <div
