@@ -9,6 +9,7 @@ import PhotoApi from "../../../apis/PhotoApi";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Masonry from "react-masonry-css";
 import DetailedPhotoView from "../../../pages/DetailPhoto/DetailPhoto";
+import useBeforeRouteDetailPhoto from "../../../states/UseBeforeRouteDetailPhoto";
 
 const ForYou = () => {
   const navigate = useNavigate();
@@ -53,12 +54,14 @@ const ForYou = () => {
     700: 2,
     500: 1,
   };
+  const { setBeforeRoute } = useBeforeRouteDetailPhoto();
 
   const handleOnClick = (id) => {
     //clear cache before navigate to photo detail
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     // navigate(`/photoss/${id}`);
     setSelectedImage(id);
+    setBeforeRoute("/discover/for-you");
   };
 
   return (

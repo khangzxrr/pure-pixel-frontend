@@ -29,6 +29,7 @@ import usePhotoMapStore from "../../states/UsePhotoMapStore";
 import Map, { Marker, Popup } from "react-map-gl";
 import { IoLocationSharp } from "react-icons/io5";
 import MapBoxApi from "../../apis/MapBoxApi";
+import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -80,6 +81,7 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
     (state) => state.setNamePhotographer
   );
   const { setSelectedPhoto, setIsFromPhotoDetailPage } = usePhotoMapStore(); // Use Zustand store
+  const { beforeRoute, setBeforeRoute } = useBeforeRouteDetailPhoto();
   const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
@@ -170,8 +172,10 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
   };
 
   const handleGoBack = () => {
-    if (!navigate(-1)) {
+    if (beforeRoute === "") {
       navigate("/");
+    } else {
+      navigate(beforeRoute);
     }
   };
 

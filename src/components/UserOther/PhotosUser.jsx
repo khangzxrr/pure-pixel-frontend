@@ -14,6 +14,7 @@ import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
 import { useModalState } from "../../hooks/useModalState";
 import ComModal from "../ComModal/ComModal";
 import ComSharePhoto from "../ComSharePhoto/ComSharePhoto";
+import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
 
 const PhotosUser = () => {
   const { userId } = useParams();
@@ -66,8 +67,11 @@ const PhotosUser = () => {
     700: 2,
     500: 1,
   };
+  const { setBeforeRoute } = useBeforeRouteDetailPhoto();
+
   const handleOnClick = (photo) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
+    setBeforeRoute(`/user/${userId}/photos`);
     setSelectedImage(photo);
   };
   return (

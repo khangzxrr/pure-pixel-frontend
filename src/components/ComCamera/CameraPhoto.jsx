@@ -16,6 +16,7 @@ import { useModalState } from "../../hooks/useModalState";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
 import UseUserProfileStore from "../../states/UseUserProfileStore";
+import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
 
 const CameraPhoto = ({ nameCamera }) => {
   const { keycloak } = useKeycloak();
@@ -73,10 +74,12 @@ const CameraPhoto = ({ nameCamera }) => {
     700: 2,
     500: 1,
   };
+  const { setBeforeRoute } = useBeforeRouteDetailPhoto();
 
   const handleOnClick = (photo) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     setSelectedImage(photo);
+    setBeforeRoute(`/explore/camera-model/${cameraId}`);
   };
 
   return (
