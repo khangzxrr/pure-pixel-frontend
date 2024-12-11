@@ -115,7 +115,10 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
   });
 
   useEffect(() => {
-    if (error && error.response?.data?.message.includes("PrivatedException")) {
+    if (
+      error?.response?.data?.message.includes("PrivatedException") ||
+      error?.response?.data?.message.includes("BannedException")
+    ) {
       navigate("/private-exception");
     }
   }, [isError, error]);
@@ -251,6 +254,7 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
       });
     }
   }, [currentPhoto]);
+
   return (
     <div className={""}>
       <div
@@ -336,28 +340,28 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                 ref={ref}
                 className="z-0 flex justify-center items-center md:h-screen h-[50vh] relative"
               >
-                {currentPhoto?.blurHash && (
+                {/* {currentPhoto?.blurHash && (
                   <Blurhash
                     className="absolute"
                     hash={currentPhoto.blurHash}
                     height={height}
                     width={blurhashWidth}
                   />
-                )}
+                )} */}
 
-                <motion.img
-                  src={
-                    isOriginalPhotoLoaded
-                      ? currentPhoto?.signedUrl?.url
-                      : currentPhoto?.signedUrl?.thumbnail
-                  }
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
-                  transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
-                  className="h-auto max-h-screen absolute w-auto"
-                  lazy="lazy"
-                />
                 <img
+                  src={
+                    // isOriginalPhotoLoaded
+                    currentPhoto?.signedUrl?.url
+                    // : currentPhoto?.signedUrl?.thumbnail
+                  }
+                  // initial={{ opacity: 0 }}
+                  // animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
+                  // transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
+                  className="h-auto max-h-screen absolute w-auto"
+                  // lazy="lazy"
+                />
+                {/* <img
                   ref={imageRef}
                   src={
                     !isOriginalPhotoLoaded
@@ -366,7 +370,7 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                   }
                   // alt={currentPhoto.title}
                   className="w-0 h-0"
-                />
+                /> */}
               </div>
 
               <button
@@ -551,22 +555,23 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                       <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                     </Icon>
                   </button>
-                  <Menu as="div" className="relative">
-                    <MenuButton className="-m-1.5 flex items-center p-1.5">
-                      <button className="hover:text-gray-400">
-                        <Icon>
-                          <circle cx="12" cy="12" r="1" />
-                          <circle cx="19" cy="12" r="1" />
-                          <circle cx="5" cy="12" r="1" />
-                        </Icon>
-                      </button>
-                    </MenuButton>
-                    {keycloak.authenticated ? (
-                      <MenuItems
-                        transition
-                        className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                      >
-                        {/* <MenuItem>
+                  {currentPhoto?.photographer?.id !== userData?.sub ? (
+                    <Menu as="div" className="relative">
+                      <MenuButton className="-m-1.5 flex items-center p-1.5">
+                        <button className="hover:text-gray-400">
+                          <Icon>
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="19" cy="12" r="1" />
+                            <circle cx="5" cy="12" r="1" />
+                          </Icon>
+                        </button>
+                      </MenuButton>
+                      {keycloak.authenticated ? (
+                        <MenuItems
+                          transition
+                          className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                        >
+                          {/* <MenuItem>
                       <button
                         onClick={() => {}}
                         className="block w-full px-3 text-left py-1 text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
@@ -575,23 +580,23 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                       </button>
                     </MenuItem> */}
 
-                        <MenuItem>
-                          <button
-                            onClick={() => {
-                              popupReport.handleOpen();
-                            }}
-                            className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
-                          >
-                            Báo cáo bài viết
-                          </button>
-                        </MenuItem>
-                      </MenuItems>
-                    ) : (
-                      <MenuItems
-                        transition
-                        className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                      >
-                        {/* <MenuItem>
+                          <MenuItem>
+                            <button
+                              onClick={() => {
+                                popupReport.handleOpen();
+                              }}
+                              className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                            >
+                              Báo cáo bài viết
+                            </button>
+                          </MenuItem>
+                        </MenuItems>
+                      ) : (
+                        <MenuItems
+                          transition
+                          className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                        >
+                          {/* <MenuItem>
                       <button
                         onClick={() => {
                           handleLoginWarning();
@@ -602,19 +607,22 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                       </button>
                     </MenuItem> */}
 
-                        <MenuItem>
-                          <button
-                            onClick={() => {
-                              handleLoginWarning();
-                            }}
-                            className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
-                          >
-                            Báo cáo bài viết
-                          </button>
-                        </MenuItem>
-                      </MenuItems>
-                    )}
-                  </Menu>
+                          <MenuItem>
+                            <button
+                              onClick={() => {
+                                handleLoginWarning();
+                              }}
+                              className="block w-full px-3 py-1 text-left text-sm leading-6 text-gray-900 data-[focus]:bg-gray-50"
+                            >
+                              Báo cáo bài viết
+                            </button>
+                          </MenuItem>
+                        </MenuItems>
+                      )}
+                    </Menu>
+                  ) : (
+                    ""
+                  )}
                 </div>
 
                 <h1 className="text-2xl font-bold mb-4">Thông số chi tiết</h1>
