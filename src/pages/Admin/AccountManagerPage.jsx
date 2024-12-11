@@ -78,6 +78,8 @@ const AccountManagerPage = () => {
       const sortOrder = sorter.order === "ascend" ? "asc" : "desc";
       // Giả sử bạn muốn tham số sắp xếp theo định dạng "orderBy<FieldName>"
       params[sortField] = sortOrder;
+    } else {
+      params["orderByCreatedAt"] = "desc";
     }
 
     console.log("====================================");
@@ -105,7 +107,7 @@ const AccountManagerPage = () => {
   }, [pagination]);
 
   const columns = [
-    { title: "ID", dataIndex: "id" },
+    { title: "ID", dataIndex: "id", ...getColumnSearchProps("id", "id") },
     {
       title: "Tên",
       dataIndex: "search",
