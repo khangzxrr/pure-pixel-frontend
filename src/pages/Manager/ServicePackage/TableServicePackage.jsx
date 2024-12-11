@@ -44,6 +44,15 @@ export const TableServicePackage = forwardRef((props, ref) => {
   } = useColumnFilters();
   const columns = [
     {
+      title: "Id",
+      width: 100,
+      fixed: "left",
+      dataIndex: "id",
+      key: "id",
+      sorter: (a, b) => a?.id?.localeCompare(b?.id),
+      ...getColumnSearchProps("id", "Id"),
+    },
+    {
       title: "Tên gói chụp",
       width: 100,
       fixed: "left",

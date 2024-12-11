@@ -65,6 +65,15 @@ export const TableReport = forwardRef((props, ref) => {
   } = useColumnFilters();
   const columns = [
     {
+      title: "Id",
+      width: 120,
+      fixed: "left",
+      dataIndex: "id",
+      key: "id",
+      // sorter: (a, b) => a?.id?.localeCompare(b?.id),
+      ...getColumnSearchProps("id", "Id"),
+    },
+    {
       title: "Người báo cáo",
       width: 120,
       // fixed: "left",

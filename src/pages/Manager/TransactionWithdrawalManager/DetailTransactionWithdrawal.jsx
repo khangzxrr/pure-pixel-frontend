@@ -51,11 +51,11 @@ export default function DetailTransactionWithdrawal({
   };
    const ErrorConfirmPay = async () => {
      Modal.confirm({
-       title: "Xác nhận đã chuyển tiền",
-       content: "Bạn có chắc đã chuyển tiền cho người dùng?",
-       okText: "Xác nhận đã chuyển",
+       title: "Xác nhận hủy rút tiền",
+       content: "Bạn có chắc hủy chuyển tiền cho người dùng?",
+       okText: "Xác nhận hủy",
        okType: "primary",
-       cancelText: "Hủy",
+       cancelText: "Quay lại",
        onOk: () => {
          patchData(`/manager/transaction`, `${selectedData.id}`, {
            status: "CANCEL",
@@ -108,7 +108,7 @@ export default function DetailTransactionWithdrawal({
                 {
                   label: "Thời gian yêu cầu:",
                   value: (
-                    <ComDateConverter>
+                    <ComDateConverter time>
                       {selectedData?.createdAt}
                     </ComDateConverter>
                   ),
@@ -119,11 +119,30 @@ export default function DetailTransactionWithdrawal({
                 },
                 {
                   label: "Ngân hàng:",
-                  value: <></>,
+                  value: (
+                    <>
+                      {selectedData?.withdrawalTransaction?.bankInfo?.bankName}
+                    </>
+                  ),
                 },
                 {
                   label: "Số tài khoản:",
-                  value: <></>,
+                  value: (
+                    <>
+                     <p>
+                        {
+                          selectedData?.withdrawalTransaction?.bankInfo
+                            ?.bankNumber
+                        }
+                     </p>
+                    <p>
+                        {
+                          selectedData?.withdrawalTransaction?.bankInfo
+                            ?.bankUsername
+                        }
+                    </p>
+                    </>
+                  ),
                 },
                 { label: "Ghi chú:", value: selectedData?.notes },
               ].map((item, index) => (

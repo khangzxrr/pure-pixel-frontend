@@ -83,6 +83,8 @@ const PhotoManager2 = () => {
       const sortOrder = sorter.order === "ascend" ? "asc" : "desc";
       // Giả sử bạn muốn tham số sắp xếp theo định dạng "orderBy<FieldName>"
       params[sortField] = sortOrder;
+    } else {
+      params["orderByCreatedAt"] = "desc";
     }
 
     console.log("====================================");
@@ -150,6 +152,8 @@ const PhotoManager2 = () => {
       title: "ID ảnh",
       dataIndex: "id",
       width: 300,
+      ...getColumnSearchProps("id", "Tên ảnh"),
+
       render: (id) => (
         <div
           className="hover:text-blue-500 hover:underline underline-offset-2 hover:cursor-pointer"
@@ -389,7 +393,7 @@ const PhotoManager2 = () => {
         }}
         scroll={{
           x: 1080, // Chiều rộng để bảng cuộn ngang nếu nội dung vượt quá
-          y: "74vh", // Chiều cao cố định để bảng cuộn dọc
+          y: "72vh", // Chiều cao cố định để bảng cuộn dọc
         }}
         pagination={{
           current: pagination.current,

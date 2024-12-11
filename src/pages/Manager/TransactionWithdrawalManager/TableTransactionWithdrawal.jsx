@@ -57,7 +57,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
       key: "id",
       sorter: (a, b) => a?.id?.localeCompare(b?.id),
       ...getColumnSearchProps("id", "ID giao dịch"),
-    }, 
+    },
     {
       title: "Số tiền",
       width: 50,
@@ -70,9 +70,8 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
     {
       title: "Người yêu cầu",
       width: 80,
-      dataIndex: "createdAt",
-      key: "createdAt",
-      sorter: (a, b) => new Date(a?.createdAt) - new Date(b?.createdAt),
+      dataIndex: "name",
+      key: "name",
       ...getColumnSearchProps("user.name", "Tên"),
       render: (text, record) => (
         <div className="flex items-center gap-3">
@@ -82,6 +81,18 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
             className="w-9 h-9 rounded-full object-cover bg-[#eee]"
           />
           <span>{record?.user?.name}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Số dư ví",
+      width: 80,
+      dataIndex: "walletBalance",
+      key: "walletBalance",
+      // ...getColumnSearchProps("wallet.walletBalance", "Số dư ví"),
+      render: (text, record) => (
+        <div className="flex items-center gap-3">
+          <>{formatCurrency(record?.wallet.walletBalance)}</>
         </div>
       ),
     },
@@ -99,7 +110,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
         </div>
       ),
     },
-     
+
     {
       title: "Trạng thái",
       width: 50,
@@ -191,7 +202,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
   const reloadData = () => {
     table.handleOpenLoading();
     getData(
-      "manager/transaction?limit=9999&page=0&types=WITHDRAWAL&orderByPaymentMethod=asc&orderByAmount=asc&orderByType=asc&orderByCreatedAt=asc"
+      "manager/transaction?limit=9999&page=0&types=WITHDRAWAL&orderByCreatedAt=desc"
     )
       .then((e) => {
         setData(e?.data?.objects);
