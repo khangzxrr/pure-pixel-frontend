@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useModalState } from "../../hooks/useModalState";
 import ComSharePhoto from "../ComSharePhoto/ComSharePhoto";
 import ComModal from "./../ComModal/ComModal";
+import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
 
 const BookmarkList = () => {
   const navigate = useNavigate();
@@ -46,7 +47,10 @@ const BookmarkList = () => {
       setPage(pageNumber);
     }
   };
+  const { setBeforeRoute } = useBeforeRouteDetailPhoto();
+
   const handleOnClick = (photo) => {
+    setBeforeRoute("/profile/bookmark");
     setSelectedImage(photo);
   };
 

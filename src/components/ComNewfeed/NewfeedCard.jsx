@@ -14,6 +14,7 @@ import UserApi from "../../apis/UserApi";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
 import { useNavigate } from "react-router-dom";
+import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
 
 const NewfeedCard = ({
   userInfo,
@@ -71,11 +72,13 @@ const NewfeedCard = ({
 
     return `${text.substring(0, truncateIndex)}...`;
   };
+  const { setBeforeRoute } = useBeforeRouteDetailPhoto();
 
   const ListPhotos = photo;
   const handleOnClick = (id) => {
     queryClient.invalidateQueries({ queryKey: ["get-photo-by-id"] });
     setSelectedImage(id);
+    setBeforeRoute("/home/newfeed");
   };
   return (
     <>

@@ -54,6 +54,7 @@ const BookingCard = ({ booking, status }) => {
     mutationFn: () => PhotographerBookingApi.denyBooking(booking.id),
     onSuccess: () => {
       queryClient.invalidateQueries("get-all-photographer-booking");
+      queryClient.invalidateQueries("photographer-booking-detail");
     },
   });
 

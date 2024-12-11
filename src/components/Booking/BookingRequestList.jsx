@@ -87,7 +87,7 @@ const BookingRequestList = () => {
                       ? statusField.color
                       : "#fff",
                   }}
-                  className="hover:opacity-90 transition-opacity cursor-pointer border-none rounded-lg px-3 md:px-4 py-2 font-semibold"
+                  className="hover:opacity-90 transition-opacity cursor-pointer border-none rounded-lg text-xs sm:px-3 md:px-4 py-2 font-semibold"
                 >
                   {statusField.label}
                 </button>

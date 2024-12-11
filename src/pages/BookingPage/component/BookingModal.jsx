@@ -20,18 +20,8 @@ dayjs.locale("vi");
 
 const { RangePicker } = DatePicker;
 
-const range = (start, end) => {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-};
-
 export default function BookingModal({ photoPackage, onClose }) {
   const navigate = useNavigate();
-  const minStartDate = dayjs().add(1440, "minute"); // 24 hours from now
-  const maxStartDate = dayjs().add(3, "month").endOf("day"); // 3 months from now
 
   const {
     handleSubmit,
@@ -119,13 +109,50 @@ export default function BookingModal({ photoPackage, onClose }) {
   const handleCancel = () => {
     onClose();
   };
+  const current = dayjs().add(1, "day");
+  const minStartDate = dayjs().add(1, "day").startOf("day"); // 1440 minutes (24 hours) from now
+  const maxStartDate = dayjs().add(3, "month").endOf("day"); // End of the day 3 months from now
   const disabledDate = (current) => {
-    return (
-      current &&
-      (current < minStartDate.startOf("minute") || current > maxStartDate)
-    );
+    return current && (current < minStartDate || current > maxStartDate);
   };
+  const [startDateTime, setStartDateTime] = useState(null);
+  console.log("startDateTime", startDateTime, current.hour());
+  const disabledTime = (date) => {
+    if (date.isSame(current, "day") && current.hour()) {
+      // console.log("current.hour()", current.hour());
+      return {
+        disabledHours: () =>
+          Array.from({ length: 24 }, (_, i) => i).filter(
+            (hour) => hour < current.hour()
+          ),
+      };
+    }
+    if (date.isSame(current, "hour") && current.minute()) {
+      // console.log("current.minute()", current.minute());
+      return {
+        disabledMinutes: () =>
+          Array.from({ length: 60 }, (_, i) => i).filter(
+            (minute) => minute < current.minute()
+          ),
+      };
+    }
 
+    // if (date.isSame(startDateTime, "day")) {
+    //   return {
+    //     disabledHours: () =>
+    //       Array.from({ length: 24 }, (_, i) => i).filter((hour) => hour > 17),
+    //   };
+    // }
+
+    // Only need to consider the start and end time
+    // the range itself has been disabled by `disabledDate`
+    return {};
+  };
+  const canlendarChange = (date, dateString) => {
+    if (date && date[0]) setStartDateTime(date[0]);
+
+    console.log(date, dateString);
+  };
   return (
     <ConfigProvider
       locale={vi_VN}
@@ -183,6 +210,8 @@ export default function BookingModal({ photoPackage, onClose }) {
                       field.onChange(value);
                     }}
                     disabledDate={disabledDate}
+                    disabledTime={disabledTime}
+                    onCalendarChange={canlendarChange}
                   />
                   {errors.dateRange && (
                     <p className="text-red-500 text-xs mt-1">
