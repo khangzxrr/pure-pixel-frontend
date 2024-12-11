@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
 import NotificationApi from "../../apis/NotificationApi";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
-
 import useNotificationStore from "../../states/UseNotificationStore";
 import { notificationApi } from "../../Notification/Notification";
 import { useKeycloak } from "@react-keycloak/web";
+import BookingNotification from "./BookingNotification";
+import PhotoNotification from "./PhotoNotification";
+import PhotoBuyNotification from "./PhotoBuyNotification";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   const [showModal, setShowModal] = useState(false);
@@ -93,22 +102,67 @@ const NotificationModal = ({ isOpen, onClose }) => {
     const validPage = Math.max(0, Math.min(pageParam, 9999));
     const response = await NotificationApi.getAllNotifactions(
       validLimit,
-      validPage,
+      validPage
     );
     return response;
   };
+  // const { data, isLoading, isError } = useQuery({
+  //   queryKey: ["notifications"],
+  //   queryFn: fetchNotifications,
+  //   staleTime: 6000,
+  //   cacheTime: 12000,
+  // });
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage } =
+    useInfiniteQuery({
+      queryKey: ["notifications"],
+      queryFn: fetchNotifications,
+      getNextPageParam: (lastPage, pages) => {
+        // Số trang đã fetch
+        const currentPage = pages.length;
+        // Trả về số trang tiếp theo nếu còn ảnh
+        return currentPage < lastPage.totalPage ? currentPage : undefined;
+      },
+    });
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["notifications"],
-    queryFn: fetchNotifications,
-    staleTime: 6000,
-    cacheTime: 12000,
-  });
+  const notificationList = data?.pages
+    ? data.pages.flatMap((page) => page.objects)
+    : [];
 
-  const notificationList = data?.objects;
+  // const notificationList = data?.objects;
 
   console.log(notificationList);
-
+  const renderContent = (notification) => {
+    switch (notification.referenceType) {
+      case "BOOKING":
+        return (
+          <BookingNotification
+            onClose={onClose}
+            notification={notification}
+            key={notification.id}
+          />
+        );
+      case "PHOTO_BUY":
+        return (
+          <PhotoBuyNotification
+            notification={notification}
+            key={notification.id}
+          />
+        );
+      case "PHOTO":
+        return (
+          <PhotoNotification
+            notification={notification}
+            key={notification.id}
+          />
+        );
+      default:
+        return (
+          <span className="text-gray-500">
+            {notification.content} - Loại không xác định
+          </span>
+        );
+    }
+  };
   return showModal ? (
     <div
       id="modal-overlay"
@@ -126,38 +180,28 @@ const NotificationModal = ({ isOpen, onClose }) => {
           <h2 className="text-xl font-semibold p-3">Thông báo</h2>
           <hr className="border-gray-500" />
         </div>
-        <div className="font-normal px-1 flex-1 overflow-y-auto custom-scrollbar">
-          {isLoading && (
-            <div className="w-full h-full flex items-center justify-center">
-              <LoadingSpinner />
-            </div>
-          )}
-          {isError && <div>Có gì đó đã sai, vui lòng thử lại</div>}
-          {notificationList.map((notification) => (
-            <div
-              className="border-b border-gray-500 px-1 py-2"
-              key={notification.id}
-            >
-              <div className="flex items-center gap-2 p-2 rounded-sm hover:cursor-pointer hover:bg-gray-500 transition-colors duration-200">
-                <div className="w-[35px] h-[35px] overflow-hidden rounded-full">
-                  <img
-                    src="https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="w-[225px] lg:w-[335px] text-sm lg:text-base">
-                  {/* <span className="font-bold">{notification.name}</span> đã bắt
-                  đầu theo dõi bạn */}
-                  {notification.content}
-                </div>
-              </div>
-            </div>
-          ))}
+        {isError && <div>Có gì đó đã sai, vui lòng thử lại</div>}
+        <div
+          id="modal-notification"
+          className="font-normal px-1 flex-1 overflow-y-auto custom-scrollbar"
+        >
+          <InfiniteScroll
+            dataLength={notificationList.length}
+            next={fetchNextPage}
+            hasMore={hasNextPage}
+            scrollableTarget="modal-notification"
+            endMessage={
+              <p className="text-center">Không còn thông báo nào nữa</p>
+            }
+          >
+            {notificationList.map((notification) =>
+              renderContent(notification)
+            )}
+          </InfiniteScroll>
         </div>
+        {isLoading && <Spin indicator={<LoadingOutlined spin />} />}
       </div>
     </div>
   ) : null;
 };
-
 export default NotificationModal;

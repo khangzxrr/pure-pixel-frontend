@@ -18,6 +18,7 @@ function ComModal({ isOpen, onClose, children, title, width, className }) {
       onCancel={onClose}
       footer={null}
       className={className}
+      centered={true}
     >
       <div key={key}>{children}</div>
     </Modal>
