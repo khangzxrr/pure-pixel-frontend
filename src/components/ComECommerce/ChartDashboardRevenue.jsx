@@ -9,6 +9,7 @@ const ChartDashboardRevenue = ({
   nameParam1,
   nameParam2,
   isMoney = false,
+  isRevenue = false,
 }) => {
   const [series, setSeries] = useState([param1, param2]);
 
@@ -68,6 +69,9 @@ const ChartDashboardRevenue = ({
     <div className="sm:px-7.5 col-span-12 rounded-sm bg-boxdark shadow-default">
       <div className="p-3 text-[#eee] font-bold flex items-center justify-center">
         {nameChart || ""}
+      </div>
+      <div className="text-[#eee] text-center font-bold">
+        {isRevenue && formatPrice(param1 + param2)}
       </div>
       <div className="">
         <div id="chartDashboardRevenue" className="mx-auto flex justify-center">

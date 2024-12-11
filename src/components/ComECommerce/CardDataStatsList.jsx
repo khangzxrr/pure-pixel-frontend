@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import ChartDashboardRevenue from "./ChartDashboardRevenue";
 import formatPrice from "./../../utils/FormatPriceUtils";
 import styles from "./CardDataStatsList.module.css";
+import CardBalance from "./CardBalance";
 const CardDataStatsList = ({ data }) => {
   const [isOpenUserTotal, setIsOpenUserTotal] = React.useState(false);
   const [isOpenPhotoTotal, setIsOpenPhotoTotal] = React.useState(false);
@@ -24,6 +25,9 @@ const CardDataStatsList = ({ data }) => {
   const totalPhotoNotSelling = photoTotal - totalPhotoSelling;
   const revenueFromSellingPhoto = dashBoardData?.revenueFromSellingPhoto;
   const revenueFromUpgradePackage = dashBoardData?.revenueFromUpgradePackage;
+  const totalWithdrawal = dashBoardData?.totalWithdrawal;
+  const totalBalance = dashBoardData?.totalBalance;
+  console.log(dashBoardData);
 
   const handleUserTotalModal = () => {
     setIsOpenUserTotal(!isOpenUserTotal);
@@ -148,13 +152,9 @@ const CardDataStatsList = ({ data }) => {
           icon={<FiPackage className="text-xl" />}
           dataCount={photoshootPackage}
           label={"Tổng số gói dịch vụ"}
+          isScaleHover={false}
         />
-        <CardDataStats
-          icon={<MdAttachMoney className="text-xl" />}
-          dataCount={totalRevenue}
-          label={"Tổng doanh thu"}
-          onClick={handleRevenueTotalModal}
-        />
+        <CardBalance balance={totalBalance} withdrawal={totalWithdrawal} />
       </div>
     </>
   );

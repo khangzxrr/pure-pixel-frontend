@@ -49,7 +49,7 @@ const navigation = [
   ...(!roles.includes("manager")
     ? [
         {
-          name: "Dashboard",
+          name: "Thống kê",
           href: "/admin/Dashboard",
           icon: HomeIcon,
           current: false,
@@ -69,17 +69,17 @@ const navigation = [
     current: true,
   },
   {
-    name: "Photo",
+    name: "Hình ảnh",
     href: "/admin/photo",
     icon: CalendarIcon,
     current: false,
   },
-  {
-    name: "Blog ",
-    href: "/admin/blog",
-    icon: DocumentDuplicateIcon,
-    current: false,
-  },
+  // {
+  //   name: "Blog ",
+  //   href: "/admin/blog",
+  //   icon: DocumentDuplicateIcon,
+  //   current: false,
+  // },
   {
     name: "Giao dịch",
     href: "/admin/transaction",
@@ -93,7 +93,7 @@ const navigation = [
     current: false,
   },
   {
-    name: "Camera ",
+    name: "Máy ảnh",
     href: "/admin/camera",
     icon: VideoCameraIcon,
     current: false,
@@ -176,13 +176,15 @@ export default function AdminLayout({ children }) {
               </TransitionChild>
               {/* Sidebar component, swap this element with another sidebar if you like */}
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-4 pb-4 ring-1 ring-white/10">
-                <div className="flex h-16 shrink-0 items-center">
+                <div className="flex gap-2 h-16 shrink-0 items-center">
                   <img
-                    alt="./purepixel-icon.png"
-                    src="./purepixel-icon.png"
+                    alt="/purepixel.png"
+                    src="/purepixel.png"
                     className="h-8 w-auto"
                   />
+                  <div className="text-white">Pure Pixel</div>
                 </div>
+
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
@@ -255,7 +257,7 @@ export default function AdminLayout({ children }) {
                       </ul>
                     </li>
 
-                    <li className="mt-auto">
+                    {/* <li className="mt-auto">
                       <a
                         href="#"
                         className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -266,7 +268,7 @@ export default function AdminLayout({ children }) {
                         />
                         Settings
                       </a>
-                    </li>
+                    </li> */}
                   </ul>
                 </nav>
               </div>
@@ -384,13 +386,13 @@ export default function AdminLayout({ children }) {
                   className="relative flex flex-1"
                 ></form>
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
-                  <button
+                  {/* <button
                     type="button"
                     className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
                   >
                     <span className="sr-only">View notifications</span>
                     <BellIcon aria-hidden="true" className="h-6 w-6" />
-                  </button>
+                  </button> */}
 
                   {/* Separator */}
                   <div
