@@ -12,7 +12,7 @@ const ChartDashboard = ({ dashBoardData }) => {
       <div className="col-span-4 bg-[#32353b]  rounded-sm">
         <ChartDashboardUpgradePackage dashBoardData={dashBoardData} />
       </div>
-      <div className="col-span-2 bg-[#32353b]  rounded-sm">
+      <div className="lg:col-span-2 col-span-4 bg-[#32353b]  rounded-sm">
         <ChartDashboardRevenue
           nameChart={"Thống kê tổng doanh thu"}
           nameParam1={"Doanh thu bán ảnh"}

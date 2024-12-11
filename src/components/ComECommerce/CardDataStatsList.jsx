@@ -98,7 +98,7 @@ const CardDataStatsList = ({ data }) => {
             </div>
             <div className=" p-5 w-[600px]">
               <ChartDashboardRevenue
-                nameChart={"Thống kê tổng số ảnh"}
+                nameChart={"Thống kê tổng số ảnh RAW"}
                 param1={totalPhotoSelling}
                 nameParam1={"Tổng số ảnh bán"}
                 param2={totalPhotoNotSelling}
@@ -145,7 +145,7 @@ const CardDataStatsList = ({ data }) => {
         <CardDataStats
           icon={<FiImage className="text-xl" />}
           dataCount={photoTotal}
-          label={"Tổng số ảnh"}
+          label={"Tổng số ảnh RAW"}
           onClick={handlePhotoTotalModal}
         />
         <CardDataStats
