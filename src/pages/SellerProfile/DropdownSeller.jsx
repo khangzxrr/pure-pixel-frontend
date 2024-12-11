@@ -91,7 +91,7 @@ const DropdownSeller = ({ photo, callData }) => {
         >
           <>
             <p className="text-white text-xl font-semibold py-4">
-              Bạn có chắc muốn xóa ảnh này không?
+              Bạn có chắc muốn ngưng bán ảnh này không?
             </p>
 
             <div className="flex justify-end space-x-4">

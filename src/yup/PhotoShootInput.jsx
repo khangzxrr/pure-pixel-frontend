@@ -16,8 +16,7 @@ export const photoShootInput = yup.object().shape({
         const currentDate = dayjs();
         const startDate = value && value[0];
         return (
-          startDate && dayjs(startDate).isAfter(currentDate.add(1339, "minute"))
-
+          startDate && dayjs(startDate).isAfter(currentDate.add(1440, "minute"))
         );
       }
     )
@@ -31,7 +30,6 @@ export const photoShootInput = yup.object().shape({
           startDate &&
           endDate &&
           dayjs(endDate).isAfter(dayjs(startDate).add(179, "minute"))
-
         );
       }
     ),
