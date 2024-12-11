@@ -106,12 +106,12 @@ const ECommerceLayout = () => {
           <CardDataStatsList data={data} />
           <ChartDashboard dashBoardData={data} />
           <Table dataTopSeller={TopSeller} />
-          <div className="grid grid-cols-1 md:grid-cols-8 gap-8 px-5">
-            <div className="col-span-5">
+          <div className="grid grid-cols-1 lg:grid-cols-8 gap-8 px-5">
+            <div className="col-span-5 ">
               <TableCameraList dataCamera={TopCamera} />
             </div>
 
-            <div className="col-span-3">
+            <div className="col-span-5 lg:col-span-3">
               <div className="bg-[#32353b]  rounded-sm">
                 <ChartTotalUsedCameraByBrand />
               </div>
