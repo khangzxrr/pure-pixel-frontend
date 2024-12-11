@@ -135,10 +135,7 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
     enabled: !!currentPhoto?.id,
   });
 
-  // if (isError) {
-  //   console.log(error);
-  //   navigate("/404");
-  // }
+  console.log(currentPhoto);
 
   useEffect(() => {
     if (!isPending && data !== currentPhoto) {
@@ -465,7 +462,10 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                         {currentPhoto?.photographer?.name}
                       </h2>
                       <p className="text-sm text-gray-400">
-                        {calculateTimeFromNow(currentPhoto?.createdAt)}
+                        {calculateTimeFromNow(currentPhoto?.createdAt)} -{" "}
+                        {currentPhoto.visibility === "PUBLIC"
+                          ? "Công khai"
+                          : "Riêng tư"}
                       </p>
                     </div>
                   </div>
