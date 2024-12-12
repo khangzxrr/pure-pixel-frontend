@@ -87,14 +87,14 @@ const PhotoManager2 = () => {
       params["orderByCreatedAt"] = "desc";
     }
 
-    console.log("====================================");
+    // console.log("====================================");
 
-    console.log(`/manager/photo?${new URLSearchParams(params)}`);
+    // console.log(`/manager/photo?${new URLSearchParams(params)}`);
     getData(`/manager/photo?${new URLSearchParams(params)}`)
       .then((e) => {
         setData(e?.data?.objects);
         setTotalRecord(e?.data?.totalRecord);
-        console.log(e?.data?.objects);
+        // console.log(e?.data?.objects);
 
         table.handleCloseLoading();
       })
@@ -107,6 +107,11 @@ const PhotoManager2 = () => {
         }
       });
   };
+
+  const reLoadCurrentPage = () => {
+    reloadData(pagination, filters, sorter);
+  };
+
   useEffect(() => {
     reloadData(pagination, filters, sorter);
   }, [pagination]);
@@ -355,7 +360,7 @@ const PhotoManager2 = () => {
           visible={isModalUpdateOpen} // Use state from Zustand store
           onCancel={handleCloseUpdateModal} // Close the modal on cancel
           footer={null}
-          width={1100} // Set the width of the modal
+          width={1200} // Set the width of the modal
           centered={true}
           className="custom-close-icon"
         >
