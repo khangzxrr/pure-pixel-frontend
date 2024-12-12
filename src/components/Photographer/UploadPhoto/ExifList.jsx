@@ -27,11 +27,19 @@ const ExifList = ({ exifData }) => {
     },
     {
       label: "Bản quyền",
-      value: `${exifData.Copyright}`,
+      value: exifData.Copyright, // This field might be undefined or null
     },
   ];
 
-  const displayedFields = showFull ? fields : fields.slice(0, 3);
+  // Filter out fields where the value is undefined or null
+  const filteredFields = fields.filter(
+    (field) => field.value !== undefined && field.value !== null
+  );
+
+  // Determine which fields to display
+  const displayedFields = showFull
+    ? filteredFields
+    : filteredFields.slice(0, 3);
 
   return (
     <div className="exif-info-container p-4 bg-[#292b2f] rounded-lg text-[#d7d7d8]">
@@ -51,6 +59,7 @@ const ExifList = ({ exifData }) => {
       </ul>
       <div className="flex justify-end mt-4">
         <button
+          type="button"
           onClick={() => setShowFull(!showFull)}
           className="text-sm text-[#e0e0e0] hover:underline"
         >

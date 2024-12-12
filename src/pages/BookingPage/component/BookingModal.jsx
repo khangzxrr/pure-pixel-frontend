@@ -96,7 +96,7 @@ export default function BookingModal({ photoPackage, onClose }) {
         body: {
           startDate: formattedDates.startDate,
           endDate: formattedDates.endDate,
-          discription: data.discription,
+          description: data.description,
         },
       });
 
@@ -229,7 +229,7 @@ export default function BookingModal({ photoPackage, onClose }) {
             </p>
 
             <Controller
-              name="discription"
+              name="description"
               control={control}
               defaultValue=""
               render={({ field }) => (
@@ -244,9 +244,9 @@ export default function BookingModal({ photoPackage, onClose }) {
                     }`}
                     rows={4}
                   />
-                  {errors.expect && (
+                  {errors.description && (
                     <p className="text-red-500 text-xs mt-1">
-                      {errors.expect.message}
+                      {errors.description.message}
                     </p>
                   )}
                 </>

@@ -120,166 +120,174 @@ export default function UploadPhotoForm({ selectedPhoto }) {
           }}
         >
           {/* Trường Tựa đề */}
-          <p>Tựa đề</p>
-          <Controller
-            name="title"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
-                  errors.title ? "border-red-500" : "border-[#4c4e52]"
-                }`}
-                type="text"
-                placeholder="Nhập tựa đề cho ảnh"
-                onChange={(e) => {
-                  field.onChange(e);
-                  updatePhotoPropertyByUid(
-                    selectedPhoto.file.uid,
-                    "title",
-                    e.target.value
-                  );
-                }}
-              />
+          <div className="p-2">
+            <p>Tựa đề</p>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
+                    errors.title ? "border-red-500" : "border-[#4c4e52]"
+                  }`}
+                  type="text"
+                  placeholder="Nhập tựa đề cho ảnh"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    updatePhotoPropertyByUid(
+                      selectedPhoto.file.uid,
+                      "title",
+                      e.target.value
+                    );
+                  }}
+                />
+              )}
+            />
+            {errors.title && (
+              <p className="text-red-500 text-sm p-1">{errors.title.message}</p>
             )}
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm p-1">{errors.title.message}</p>
-          )}
+          </div>
 
           {/* Trường Mô tả */}
-          <p>Mô tả</p>
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => (
-              <TextArea
-                {...field}
-                className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
-                  errors.description ? "border-red-500" : "border-[#4c4e52]"
-                }`}
-                placeholder="Nhập mô tả"
-                onChange={(e) => {
-                  field.onChange(e);
-                  updatePhotoPropertyByUid(
-                    selectedPhoto.file.uid,
-                    "description",
-                    e.target.value
-                  );
-                }}
-              />
+          <div className="p-2">
+            <p>Mô tả</p>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextArea
+                  {...field}
+                  className={`w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 m-2 border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] ${
+                    errors.description ? "border-red-500" : "border-[#4c4e52]"
+                  }`}
+                  placeholder="Nhập mô tả"
+                  onChange={(e) => {
+                    field.onChange(e);
+                    updatePhotoPropertyByUid(
+                      selectedPhoto.file.uid,
+                      "description",
+                      e.target.value
+                    );
+                  }}
+                />
+              )}
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm p-1">
+                {errors.description.message}
+              </p>
             )}
-          />
-          {errors.description && (
-            <p className="text-red-500 text-sm p-1">
-              {errors.description.message}
-            </p>
-          )}
+          </div>
 
           {/* Trường Thể loại */}
-          <p>Thể loại</p>
-          <Controller
-            name="categoryIds"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                mode="multiple" // Cho phép chọn nhiều
-                showSearch
-                placeholder="Chọn thể loại"
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={categories}
-                dropdownRender={(menu) => (
-                  <div
-                    style={{
-                      color: "#000",
-                      backgroundColor: "#fff",
-                      padding: 2,
-                    }}
-                  >
-                    {menu}
-                  </div>
-                )}
-                className={`w-full m-2 cursor-pointer  ${
-                  errors.categoryIds ? "border-red-500" : "border-[#4c4e52]"
-                }`}
-                tagRender={(props) => {
-                  const { label, value, closable, onClose } = props;
-
-                  return (
+          <div className="p-2">
+            <p>Thể loại</p>
+            <Controller
+              name="categoryIds"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  mode="multiple" // Cho phép chọn nhiều
+                  showSearch
+                  placeholder="Chọn thể loại"
+                  filterOption={(input, option) =>
+                    (option?.label ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={categories}
+                  dropdownRender={(menu) => (
                     <div
                       style={{
-                        backgroundColor: "#474747",
-                        color: "#fff",
-                        padding: "2px 8px",
-                        margin: 3,
-                        borderRadius: "4px",
-                        marginRight: "4px",
+                        color: "#000",
+                        backgroundColor: "#fff",
+                        padding: 2,
                       }}
                     >
-                      {label}
-                      {closable && (
-                        <span
-                          style={{ marginLeft: "8px", cursor: "pointer" }}
-                          onClick={onClose}
-                        >
-                          ×
-                        </span>
-                      )}
+                      {menu}
                     </div>
-                  );
-                }}
-                onChange={(value) => {
-                  field.onChange(value);
-                  updatePhotoPropertyByUid(
-                    selectedPhoto.file.uid,
-                    "categoryIds",
-                    value
-                  );
-                }}
-              />
+                  )}
+                  className={`w-full m-2 cursor-pointer  ${
+                    errors.categoryIds ? "border-red-500" : "border-[#4c4e52]"
+                  }`}
+                  tagRender={(props) => {
+                    const { label, value, closable, onClose } = props;
+
+                    return (
+                      <div
+                        style={{
+                          backgroundColor: "#474747",
+                          color: "#fff",
+                          padding: "2px 8px",
+                          margin: 3,
+                          borderRadius: "4px",
+                          marginRight: "4px",
+                        }}
+                      >
+                        {label}
+                        {closable && (
+                          <span
+                            style={{ marginLeft: "8px", cursor: "pointer" }}
+                            onClick={onClose}
+                          >
+                            ×
+                          </span>
+                        )}
+                      </div>
+                    );
+                  }}
+                  onChange={(value) => {
+                    field.onChange(value);
+                    updatePhotoPropertyByUid(
+                      selectedPhoto.file.uid,
+                      "categoryIds",
+                      value
+                    );
+                  }}
+                />
+              )}
+            />
+            {errors.categoryIds && (
+              <p className="text-red-500 text-sm p-1">
+                {errors.categoryIds.message}
+              </p>
             )}
-          />
-          {errors.categoryIds && (
-            <p className="text-red-500 text-sm p-1">
-              {errors.categoryIds.message}
-            </p>
-          )}
+          </div>
 
           {/* Trường Gắn thẻ */}
-          <p>Gắn thẻ</p>
-          <Controller
-            name="photoTags"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                mode="tags" // Cho phép gắn thẻ
-                placeholder="Gắn thẻ cho ảnh"
-                onChange={(value) => {
-                  field.onChange(value);
-                  updatePhotoPropertyByUid(
-                    selectedPhoto.file.uid,
-                    "photoTags",
-                    value
-                  );
-                }}
-                options={[]} // Các tùy chọn thẻ, nếu có sẵn
-                open={false} // Không mở dropdown
-                suffixIcon={null} // Xóa biểu tượng mũi tên mặc định
-                className="w-full m-2 "
-              />
+          <div className="p-2">
+            <p>Gắn thẻ</p>
+            <Controller
+              name="photoTags"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  mode="tags" // Cho phép gắn thẻ
+                  placeholder="Gắn thẻ cho ảnh"
+                  onChange={(value) => {
+                    field.onChange(value);
+                    updatePhotoPropertyByUid(
+                      selectedPhoto.file.uid,
+                      "photoTags",
+                      value
+                    );
+                  }}
+                  options={[]} // Các tùy chọn thẻ, nếu có sẵn
+                  open={false} // Không mở dropdown
+                  suffixIcon={null} // Xóa biểu tượng mũi tên mặc định
+                  className="w-full m-2 "
+                />
+              )}
+            />
+            {errors.photoTags && (
+              <p className="text-red-500 text-sm p-1">
+                {errors.photoTags.message}
+              </p>
             )}
-          />
-          {errors.photoTags && (
-            <p className="text-red-500 text-sm p-1">
-              {errors.photoTags.message}
-            </p>
-          )}
+          </div>
 
           <div className="grid grid-cols-4 gap-4 w-full mt-1">
             {/* Trường Hiển thị */}

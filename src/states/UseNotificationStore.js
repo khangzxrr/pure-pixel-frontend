@@ -5,11 +5,14 @@ import UserService from "../services/Keycloak";
 
 const useNotificationStore = create(
   devtools((set, get) => ({
+    isNewNotification: true,
     isNotificationOpen: false,
     socket: null,
     toggleNotificationModal: () =>
       set((state) => ({ isNotificationOpen: !state.isNotificationOpen })),
     closeNotificationModal: () => set({ isNotificationOpen: false }),
+
+    setIsNotification: (noti) => set({ isNewNotification: noti }),
 
     initSocket: (token) => {
       const socket = io(`${import.meta.env.VITE_AXIOS_BASE_URL}/notification`, {
@@ -39,7 +42,7 @@ const useNotificationStore = create(
     //     set({ socket: undefined });
     //   }
     // },
-  })),
+  }))
 );
 
 export default useNotificationStore;

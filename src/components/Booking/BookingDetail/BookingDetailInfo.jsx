@@ -352,13 +352,15 @@ const BookingDetailInfo = ({ bookingDetail }) => {
                       {...register("description")}
                       type="text"
                       className={`m-2 w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 py-1 border-[1px] text-sm font-normal focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] rounded-md ${
-                        errors.title ? "border-red-500" : "border-[#4c4e52]"
+                        errors.description
+                          ? "border-red-500"
+                          : "border-[#4c4e52]"
                       }`}
                       placeholder="Nhập dịch vụ thêm"
                     />
-                    {errors.title && (
+                    {errors.description && (
                       <p className="text-red-500 text-xs">
-                        {errors.title.message}
+                        {errors.description.message}
                       </p>
                     )}
                     <div className="flex flex-col gap-2 mt-2">
