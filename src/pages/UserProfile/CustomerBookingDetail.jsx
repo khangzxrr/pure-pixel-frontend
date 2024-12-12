@@ -404,74 +404,78 @@ const CustomerBookingDetail = () => {
           )}
         </div>
       </div>
-      <div className="md:col-span-5 flex flex-col h-screen">
-        <div
-          className={`${
-            bookingDetail.photos.length === 0 && "hidden"
-          } bg-[#292b2f] p-7 relative flex  justify-center items-center overflow-hidden h-3/5`}
-        >
-          {bookingDetail.photos.length > 1 && (
-            <>
-              <div
-                onClick={handlePreviousPhoto}
-                className={`absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10`}
-              >
-                <ArrowLeftOutlined />
-              </div>
-              <div
-                onClick={handleNextPhoto}
-                className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10`}
-              >
-                <ArrowRightOutlined />
-              </div>
-            </>
-          )}
-          <img
-            src={selectedPhoto?.signedUrl.url}
-            className="h-[444px] shadow-gray-600 shadow-xl drop-shadow-none z-0"
-            alt="Selected Photo"
-          />
-        </div>
-        <div className="h-2/5">
-          <div className="w-full bg-[#36393f] h-full flex flex-wrap overflow-y-scroll custom-scrollbar">
-            {bookingDetail.photos &&
-              bookingDetail.photos.map((photo, index) => (
+      {bookingDetail.photos.length === 0 ? (
+        "hello"
+      ) : (
+        <div className="md:col-span-5 flex flex-col h-screen">
+          <div
+            className={` bg-[#292b2f] p-7 relative flex  justify-center items-center overflow-hidden h-3/5`}
+          >
+            {bookingDetail.photos.length > 1 && (
+              <>
                 <div
-                  className="w-1/4 lg:w-1/5 "
-                  ref={photo.id === selectedPhoto?.id ? selectedPhotoRef : null}
-                  key={index}
-                  id={photo.id} // Add unique ID
+                  onClick={handlePreviousPhoto}
+                  className={`absolute left-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10`}
                 >
-                  <div className="relative p-2">
-                    <img
-                      src={photo?.signedUrl.thumbnail}
-                      className={`w-[150px] lg:w-[170px] h-[150px] lg:h-[170px] object-cover rounded-md cursor-pointer ${
-                        photo.id === selectedPhoto?.id
-                          ? "border-4 border-gray-300 transition duration-300"
-                          : ""
-                      }`}
-                      alt="Ban Thao"
-                      onClick={() => setSelectedPhoto(photo)}
-                    />
-                    {bookingDetail.status === "SUCCESSED" && (
-                      <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
-                        <Tooltip title="Tải ảnh này về" color="blue">
-                          <DownloadOutlined
-                            className="text-white text-xl cursor-pointer hover:text-red-500"
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent triggering the parent onClick
-                              handleDownload(photo);
-                            }}
-                          />
-                        </Tooltip>
-                      </div>
-                    )}
-                  </div>
+                  <ArrowLeftOutlined />
                 </div>
-              ))}
+                <div
+                  onClick={handleNextPhoto}
+                  className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-4xl hover:scale-110 text-white bg-slate-500 p-1 rounded-md opacity-70 hover:opacity-90 cursor-pointer z-10`}
+                >
+                  <ArrowRightOutlined />
+                </div>
+              </>
+            )}
+            <img
+              src={selectedPhoto?.signedUrl.url}
+              className="h-[444px] shadow-gray-600 shadow-xl drop-shadow-none z-0"
+              alt="Selected Photo"
+            />
+          </div>
+          <div className="h-2/5">
+            <div className="w-full bg-[#36393f] h-full flex flex-wrap overflow-y-scroll custom-scrollbar">
+              {bookingDetail.photos &&
+                bookingDetail.photos.map((photo, index) => (
+                  <div
+                    className="w-1/4 lg:w-1/5 "
+                    ref={
+                      photo.id === selectedPhoto?.id ? selectedPhotoRef : null
+                    }
+                    key={index}
+                    id={photo.id} // Add unique ID
+                  >
+                    <div className="relative p-2">
+                      <img
+                        src={photo?.signedUrl.thumbnail}
+                        className={`w-[150px] lg:w-[170px] h-[150px] lg:h-[170px] object-cover rounded-md cursor-pointer ${
+                          photo.id === selectedPhoto?.id
+                            ? "border-4 border-gray-300 transition duration-300"
+                            : ""
+                        }`}
+                        alt="Ban Thao"
+                        onClick={() => setSelectedPhoto(photo)}
+                      />
+                      {bookingDetail.status === "SUCCESSED" && (
+                        <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
+                          <Tooltip title="Tải ảnh này về" color="blue">
+                            <DownloadOutlined
+                              className="text-white text-xl cursor-pointer hover:text-red-500"
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent triggering the parent onClick
+                                handleDownload(photo);
+                              }}
+                            />
+                          </Tooltip>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
