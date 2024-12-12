@@ -39,9 +39,9 @@ const BookingDetail = () => {
           visibility: photo.visibility,
           status: "done",
         });
+        setSelectedPhotoByUid(photo.id);
       }
     }
-    setSelectedPhotoByUid(bookingDetail?.photos[0]?.id);
   }, [bookingDetail, bookingId]);
 
   if (isPending) {

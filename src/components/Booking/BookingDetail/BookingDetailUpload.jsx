@@ -104,14 +104,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
       });
 
       updatePhotoPropertyByUid(file.uid, "status", "done");
-      notificationApi(
-        "success",
-        "Tải ảnh thành công",
-        "Ảnh đã được tải lên thành công",
-        "",
-        0,
-        "upload-photo-dragger"
-      );
+
       console.log("response", response);
       setPhotoUploadResponse(file.uid, {
         id: response.id,
@@ -232,20 +225,22 @@ export default function UploadBookingPhoto({ bookingDetail }) {
       </div>
 
       {photoArray.length > 0 &&
-        photoArray.map((photo, index) => (
-          <div
-            key={index}
-            id={photo.uid} // Add unique ID
-            className="w-1/4 lg:w-1/5 "
-            ref={photo.uid === selectedPhoto ? selectedPhotoRef : null} // Set ref conditionally for selected photo
-          >
-            <UploadBookingPhotoCard
-              photo={photo}
-              index={index}
-              enableUpdate={enableUpdate}
-            />
-          </div>
-        ))}
+        [...photoArray] // Create a shallow copy to avoid mutating the original array
+          .reverse() // Reverse the copied array
+          .map((photo, index) => (
+            <div
+              key={index}
+              id={photo.uid} // Add unique ID
+              className="w-1/4 lg:w-1/5"
+              ref={photo.uid === selectedPhoto ? selectedPhotoRef : null} // Set ref conditionally for selected photo
+            >
+              <UploadBookingPhotoCard
+                photo={photo}
+                index={index}
+                enableUpdate={enableUpdate}
+              />
+            </div>
+          ))}
     </div>
   );
 }

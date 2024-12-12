@@ -16,6 +16,8 @@ import { Spin } from "antd";
 import CustomerBookingNotification from "./CustomerBookingNotification";
 import UseSidebarStore from "../../states/UseSidebarStore";
 import PhotographerBookingNotification from "./PhotographerBookingNotification";
+import PhotoExchangeNotification from "./PhotoExchangeNotification";
+import OrtherNotification from "./OtherNotification";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   const [showModal, setShowModal] = useState(false);
@@ -98,7 +100,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
       onClose();
     }
   };
-  const limit = 10; // Tổng số ảnh
+  const limit = 13; // Tổng số ảnh
   const fetchNotifications = async ({ pageParam = 0 }) => {
     const validLimit = Math.max(1, Math.min(limit, 9999));
     const validPage = Math.max(0, Math.min(pageParam, 9999));
@@ -172,11 +174,24 @@ const NotificationModal = ({ isOpen, onClose }) => {
             key={notification.id}
           />
         );
+      case "CUSTOMER_PHOTO_BUY":
+      case "PHOTOGRAPHER_PHOTO_SELL":
+      case "PHOTO_NEW_PRICE_UPDATED":
+      case "  ":
+        return (
+          <PhotoExchangeNotification
+            onClose={closeSidebar}
+            notification={notification}
+            key={notification.id}
+          />
+        );
       default:
         return (
-          <span className="text-gray-500">
-            {notification.content} - {notification.referenceType}
-          </span>
+          <OrtherNotification
+            onClose={closeSidebar}
+            notification={notification}
+            key={notification.id}
+          />
         );
     }
   };
@@ -207,6 +222,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
             dataLength={notificationList.length}
             next={fetchNextPage}
             hasMore={hasNextPage}
+            scrollThreshold={0.9}
             scrollableTarget="modal-notification"
             endMessage={<div className="m-8" />}
           >

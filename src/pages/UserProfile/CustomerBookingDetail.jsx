@@ -127,18 +127,18 @@ const CustomerBookingDetail = () => {
   );
   // Function to go to the previous photo
   const handlePreviousPhoto = () => {
-    if (currentIndex > 0) {
-      setSelectedPhoto(bookingDetail.photos[currentIndex - 1]);
-    } else {
-      setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
-    }
-  };
-  // Function to go to the next photo
-  const handleNextPhoto = () => {
     if (currentIndex < bookingDetail.photos.length - 1) {
       setSelectedPhoto(bookingDetail.photos[currentIndex + 1]);
     } else {
       setSelectedPhoto(bookingDetail.photos[0]);
+    }
+  };
+  // Function to go to the next photo
+  const handleNextPhoto = () => {
+    if (currentIndex > 0) {
+      setSelectedPhoto(bookingDetail.photos[currentIndex - 1]);
+    } else {
+      setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
     }
   };
   //Download single photo
@@ -231,9 +231,10 @@ const CustomerBookingDetail = () => {
   // Ensure selectedPhoto is consistently initialized
   useEffect(() => {
     if (bookingDetail?.photos && Array.isArray(bookingDetail.photos)) {
-      setSelectedPhoto(bookingDetail.photos[0]);
+      setSelectedPhoto(bookingDetail.photos[bookingDetail.photos.length - 1]);
     }
   }, [bookingDetail]);
+
   console.log("Booking Detail:", selectedPhoto);
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
@@ -441,7 +442,7 @@ const CustomerBookingDetail = () => {
           <div className="h-2/5">
             <div className="w-full bg-[#36393f] h-full flex flex-wrap overflow-y-scroll custom-scrollbar">
               {bookingDetail.photos &&
-                bookingDetail.photos.map((photo, index) => (
+                [...bookingDetail.photos].reverse().map((photo, index) => (
                   <div
                     className="w-1/4 lg:w-1/5 "
                     ref={
