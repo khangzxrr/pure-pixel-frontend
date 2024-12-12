@@ -405,7 +405,12 @@ const CustomerBookingDetail = () => {
         </div>
       </div>
       {bookingDetail.photos.length === 0 ? (
-        "hello"
+        <div className="md:col-span-5">
+          <div className="bg-[#292b2f] text-lg h-[85vh] justify-center items-center flex flex-col mt-2 mr-2 rounded-lg">
+            Ảnh của bạn đang được xử lý. Vui lòng chờ nhiếp ảnh gia hoàn thành
+            và gửi ảnh.
+          </div>
+        </div>
       ) : (
         <div className="md:col-span-5 flex flex-col h-screen">
           <div

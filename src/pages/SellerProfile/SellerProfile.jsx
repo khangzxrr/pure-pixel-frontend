@@ -14,6 +14,7 @@ import { ConfigProvider, Pagination } from "antd";
 import UserProfileApi from "../../apis/UserProfile";
 import { FaSearch } from "react-icons/fa";
 import DropdownSeller from "./DropdownSeller";
+import { FaImages } from "react-icons/fa6";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -48,9 +49,8 @@ const SellerProfile = () => {
 
   const queryClient = useQueryClient();
   const callData = () => {
-
     console.log(12321321);
-    
+
     queryClient.invalidateQueries({
       queryKey: ["my-photo-selling"],
     });
@@ -120,7 +120,7 @@ const SellerProfile = () => {
                 <img
                   src={myProfile?.avatar}
                   alt="Dr.Bedirhan Küpeli"
-                  className="w-16 h-16 rounded-full"
+                  className="w-16 h-16 rounded-full bg-[#eee]"
                 />
                 <div>
                   <h2 className="text-xl font-semibold">{myProfile?.name}</h2>
@@ -162,46 +162,62 @@ const SellerProfile = () => {
               className="flex justify-end my-2"
             />
           )}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {isLoading && <div>Loading...</div>}
-            {isError && <div>Error</div>}
-            {myPhotosSelling.map((product) => (
-              <div
-                key={product.id}
-                className="relative group hover:cursor-pointer"
-              >
+          {myPhotosSelling.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {isLoading && <div>Loading...</div>}
+              {isError && <div>Error</div>}
+              {myPhotosSelling.map((product) => (
                 <div
-                  onClick={() => {
-                    navigate(`/profile/product-photo/${product.id}`);
-                  }}
-                  className="rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-100 hover:shadow-lg cursor-pointer"
+                  key={product.id}
+                  className="relative group hover:cursor-pointer"
                 >
-                  <img
-                    src={product.signedUrl.thumbnail}
-                    alt={product?.photoSellings[0]?.description}
-                    className="w-full h-[300px] object-cover pointer-events-none"
-                    draggable="false" // Ngăn người dùng kéo ảnh
-                  />
-                  <div className="p-4">
-                    <div className="flex justify-between">
-                      <h3 className="text-lg font-semibold mb-2">
-                        {product.title}
-                      </h3>
+                  <div
+                    onClick={() => {
+                      navigate(`/profile/product-photo/${product.id}`);
+                    }}
+                    className="rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-100 hover:shadow-lg cursor-pointer"
+                  >
+                    <img
+                      src={product.signedUrl.thumbnail}
+                      alt={product?.photoSellings[0]?.description}
+                      className="w-full h-[300px] object-cover pointer-events-none"
+                      draggable="false" // Ngăn người dùng kéo ảnh
+                    />
+                    <div className="p-4">
+                      <div className="flex justify-between">
+                        <h3 className="text-lg font-semibold mb-2">
+                          {product.title}
+                        </h3>
+                      </div>
+                      <p className="text-gray-300">
+                        Giá:{" "}
+                        {formatCurrency(
+                          product?.photoSellings[0]?.pricetags[0]?.price
+                        )}
+                      </p>
                     </div>
-                    <p className="text-gray-300">
-                      Giá:{" "}
-                      {formatCurrency(
-                        product?.photoSellings[0]?.pricetags[0]?.price
-                      )}
-                    </p>
+                  </div>
+                  <div className=" ">
+                    <DropdownSeller photo={product} callData={callData} />
                   </div>
                 </div>
-                <div className=" ">
-                  <DropdownSeller photo={product} callData={callData} />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col justify-center items-center h-[200px]">
+              <FaImages className="text-[100px] text-gray-400" />
+              <p className="text-center text-lg text-gray-400">
+                Không tìm thấy ảnh trong cửa hàng. Hãy{" "}
+                <span
+                  onClick={() => navigate("/upload/sell")}
+                  className="font-bold text-blue-500 uppercase cursor-pointer hover:underline underline-offset-2"
+                >
+                  tải lên
+                </span>{" "}
+                những bức ảnh nghệ thuật độc đáo của bạn để bắt đầu kinh doanh!
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </ConfigProvider>

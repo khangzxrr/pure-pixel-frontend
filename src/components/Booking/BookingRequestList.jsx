@@ -134,7 +134,7 @@ const BookingRequestList = () => {
               />
             ))
           ) : (
-            <div className="flex flex-col col-span-3 justify-center items-center text-[#8b8d91] h-[200px]">
+            <div className="flex flex-col col-span-4 justify-center items-center text-[#8b8d91] h-[200px]">
               <FiCameraOff className="text-[100px]" />
               Không có gói buổi chụp nào!
             </div>
