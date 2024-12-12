@@ -120,16 +120,16 @@ export default function UpdatePhotoModal() {
       delete updatedData.description;
     }
 
-    // Check if longitude and latitude exist in the exif object
-    if (updatedData.exif?.longitude && updatedData.exif?.latitude) {
+    // // Check if longitude and latitude exist in the exif object
+    if (!updatedData.exif?.longitude || !updatedData.exif?.latitude) {
       updatedData.gps = {
         longitude: updatedData.exif.longitude,
         latitude: updatedData.exif.latitude,
       };
     }
-
+    console.log("updatedData", updatedData);
     // Call the updatePhotos mutation with the updated data
-    updatePhotos.mutate(updatedData);
+    // updatePhotos.mutate(updatedData);
   };
 
   const openUpdateMapModal = () => {

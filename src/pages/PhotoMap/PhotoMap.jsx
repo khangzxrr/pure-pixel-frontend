@@ -47,9 +47,10 @@ export default function PhotoMap() {
     setIsFromPhotoDetailPage,
   } = usePhotoMapStore(); // Use Zustand store
   const [isAddNewPhotoList, setIsAddNewPhotoList] = useState(false);
+  const [totalPage, setTotalPage] = useState(1);
   const [selectedPhotoRatio, setSelectedPhotoRatio] = useState(0);
   const [currentLocate, setCurrentLocate] = useState(null);
-  const limit = 10; // Set limit to 10
+  const limit = 20; // Set limit to 10
   const [page, setPage] = useState(1); // Set page to 0
 
   const [isStopped, setIsStopped] = useState(true);
@@ -70,6 +71,7 @@ export default function PhotoMap() {
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["photo-by-coordinates", limit, page, viewState], // Include viewState in queryKey
     queryFn: () =>
@@ -83,7 +85,6 @@ export default function PhotoMap() {
     enabled: isStopped,
     keepPreviousData: true,
   });
-
   const searchByCoordinate = useMutation({
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
@@ -100,6 +101,9 @@ export default function PhotoMap() {
     const { lng, lat } = event.lngLat; // Extract longitude and latitude
     setViewState({ longitude: lng, latitude: lat });
   };
+  const selectedIndex = photoList.findIndex(
+    (photoCheck) => photoCheck.id === selectedPhoto?.id
+  );
   const handleSelectPhoto = (photo) => {
     setIsStopped(false);
     setSelectedPhoto(photo);
@@ -112,8 +116,31 @@ export default function PhotoMap() {
       longitude: photo.exif.longitude,
       latitude: photo.exif.latitude,
     });
-  };
 
+    console.log(
+      "check selected photo",
+      page,
+      totalPage,
+      selectedIndex,
+      photoList.length - 1
+    );
+
+    // Check if selectedPhoto is the second-to-last element in photoList
+    if (selectedIndex === photoList.length - 2 && page < totalPage) {
+      console.log("Next Page");
+      setPage(page + 1);
+      setIsAddNewPhotoList(true);
+      setIsStopped(true);
+      queryClient.invalidateQueries(
+        ["photo-by-coordinates"],
+        limit,
+        page,
+        viewState
+      );
+      refetch();
+    }
+  };
+  console.log("check selected photo", page, isAddNewPhotoList, isStopped);
   const handleMapMove = (event) => {
     setIsStopped(false);
     setViewState(event.viewState);
@@ -193,24 +220,6 @@ export default function PhotoMap() {
       setIsLoadingCurrentLocation(false);
     }
   }, []);
-  // const getPhotosBySelectedPhoto = async () => {
-  //   // Manually construct the new viewState
-  //   const newViewState = {
-  //     ...viewState,
-  //     latitude: selectedPhoto.latitude,
-  //     longitude: selectedPhoto.longitude,
-  //   };
-
-  //   // Update viewState
-  //   setViewState(newViewState);
-  //   handleMapMoveEnd();
-  // };
-
-  // useEffect(() => {
-  //   if (isFromPhotoDetailPage) {
-  //     getPhotosBySelectedPhoto();
-  //   }
-  // }, [isFromPhotoDetailPage]);
   useEffect(() => {
     if (selectedPhoto && isFromPhotoDetailPage) {
       const newViewState = {
@@ -229,13 +238,15 @@ export default function PhotoMap() {
 
   useEffect(() => {
     if (isAddNewPhotoList && photos) {
+      console.log("add new photo list", photos);
       addMultiplePhotosToList(photos.objects);
       setIsAddNewPhotoList(false);
+      setTotalPage(photos.totalPage);
     } else if (photos) {
       setPhotoList(photos.objects);
+      setTotalPage(photos.totalPage);
     }
-  }, [photos]);
-
+  }, [photos, isAddNewPhotoList]);
   return (
     <div className="relative w-full h-screen">
       {/* <ComModal
@@ -324,10 +335,11 @@ export default function PhotoMap() {
         <PhotoListByMap
           page={page}
           setPage={setPage}
-          totalPage={photos?.totalPage}
+          totalPage={totalPage}
           totalRecords={photos?.totalRecords}
           selectedPhoto={selectedPhoto}
           setIsStopped={setIsStopped}
+          isAddNewPhotoList={isAddNewPhotoList}
           setIsAddNewPhotoList={setIsAddNewPhotoList}
           handleSelectPhoto={handleSelectPhoto}
         />

@@ -2,12 +2,13 @@ import React from "react";
 import calculateDateDifference from "../../utils/calculateDateDifference";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import PhotoApi from "../../apis/PhotoApi";
+import PhotoExchange from "../../apis/PhotoExchange";
 
 // REFERENCE TYPE:
-// "PHOTOGRAPHER_BOOKING_NEW_REQUEST"
-// "PHOTOGRAPHER_NEW_BOOKING_REVIEW"
-export default function PhotoNotification({ notification, onClose }) {
+// "PHOTOGRAPHER_PHOTO_SELL"
+// "PHOTO_NEW_PRICE_UPDATED"
+// "CUSTOMER_PHOTO_BUY"
+export default function PhotoExchangeNotification({ notification, onClose }) {
   const navigate = useNavigate();
   const photoId = notification.payload.id;
   const {
@@ -17,19 +18,23 @@ export default function PhotoNotification({ notification, onClose }) {
     isError,
     isLoading,
   } = useQuery({
-    queryKey: ["photo-detail-nofi", photoId],
-    queryFn: () => PhotoApi.getPhotoById(photoId),
+    queryKey: ["photo-exchange-detail-nofi", photoId],
+    queryFn: () => PhotoExchange.getPhotoBoughtDetail(photoId),
   });
+  const referenceUrl =
+    notification.referenceType === "CUSTOMER_PHOTO_BUY"
+      ? photoDetail?.photoBuys[0]?.previewUrl
+      : photoDetail?.photo?.signedUrl?.thumbnail;
 
+  console.log("photoDetail", photoDetail, notification.referenceType);
   const handleNavigate = (referenceType) => {
     switch (referenceType) {
-      case "PHOTO_BAN":
-      case "PHOTO_UNBAN":
-      case "DUPLICATED_PHOTO":
-        navigate("/profile/my-photos");
+      case "PHOTOGRAPHER_PHOTO_SELL":
+      case "PHOTO_NEW_PRICE_UPDATED":
+        navigate("/profile/wallet");
         break;
-      case "PHOTO_COMMENT":
-        navigate("/photo/" + photoId);
+      case "CUSTOMER_PHOTO_BUY":
+        navigate("/profile/photo-bought/" + photoId);
         break;
       default:
         break;
@@ -51,18 +56,14 @@ export default function PhotoNotification({ notification, onClose }) {
         <div className="w-[35px] h-[35px] overflow-hidden rounded-full">
           <img
             src={
-              photoDetail?.signedUrl?.thumbnail ||
+              referenceUrl ||
               "https://vnn-imgs-a1.vgcloud.vn/image1.ictnews.vn/_Files/2020/03/17/trend-avatar-1.jpg"
             }
             alt=""
             className="w-full h-full object-cover"
           />
         </div>
-        <div
-          className={`w-[225px] lg:w-[335px] text-sm lg:text-base ${
-            notification.referenceType === "PHOTO_BAN" && "text-red-500"
-          }`}
-        >
+        <div className={`w-[225px] lg:w-[335px] text-sm lg:text-base`}>
           {notification.content}
         </div>
       </div>
