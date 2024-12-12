@@ -397,7 +397,12 @@ export default function CustomUpload() {
       message.error("Có lỗi xảy ra trong quá trình cập nhật!");
     }
   };
-
+  console.log(
+    "check data",
+    photoArray.some((photo) => photo.status === "done") &&
+      photoArray.every((photo) => photo.title !== "") &&
+      !disableUpload
+  );
   return (
     <div className="h-full w-full overflow-hidden relative ">
       <div className={`w-full h-full grid grid-cols-7`}>
@@ -448,15 +453,17 @@ export default function CustomUpload() {
             className={`w-full row-span-3 ${
               photoArray.length > 0 ? "" : "hidden"
             } ${
-              photoArray.some((photo) => photo.status === "uploading") ||
-              disableUpload
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-[#56bc8a] hover:bg-[#68c397] cursor-pointer"
+              photoArray.some((photo) => photo.status === "done") &&
+              photoArray.every((photo) => photo.title !== "") &&
+              !disableUpload
+                ? " bg-[#56bc8a] hover:bg-[#68c397] cursor-pointer"
+                : "bg-gray-400 cursor-not-allowed"
             } transition duration-150 flex justify-center items-center`}
             onClick={() => {
               if (
-                !photoArray.some((photo) => photo.status === "uploading") ||
-                disableUpload
+                photoArray.some((photo) => photo.status === "done") &&
+                photoArray.every((photo) => photo.title !== "") &&
+                !disableUpload
               ) {
                 SubmitUpload();
               }
