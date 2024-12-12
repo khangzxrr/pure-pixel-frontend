@@ -332,10 +332,19 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
               </div>
             ))
           ) : (
-            <div className="flex justify-center items-center w-full col-span-5 h-[60vh]">
-              <div className="flex flex-col items-center text-[#8b8d91]">
+            <div className="flex justify-center items-center w-full col-span-5 h-[30vh]">
+              <div className="flex flex-col items-center text-gray-400">
                 <IoMdImages className="text-[100px]" />
-                <p className="select-none">Không tìm thấy ảnh khả dụng!</p>
+                <p className="select-none">
+                  Chưa có bức ảnh nào được tìm thấy. Hãy bắt đầu{" "}
+                  <span
+                    onClick={() => navigate("/upload/public")}
+                    className="text-blue-500 uppercase cursor-pointer hover:underline underline-offset-2"
+                  >
+                    tải lên
+                  </span>{" "}
+                  những bức ảnh nghệ thuật độc đáo của bạn!
+                </p>
               </div>
             </div>
           )}
