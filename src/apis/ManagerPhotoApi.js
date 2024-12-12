@@ -80,5 +80,24 @@ const updatePhoto = async (id, updateBody) => {
   const response = await http.patch(url, updateBody);
   return response.data;
 };
-const ManagerPhotoApi = { getAllPhotos, deletePhoto, updatePhoto };
+
+const banPhoto = async (id) => {
+  const url = `manager/photo/${id}/ban`;
+  const response = await http.post(url);
+  return response.data;
+};
+
+const unBanPhoto = async (id) => {
+  const url = `manager/photo/${id}/unban`;
+  const response = await http.post(url);
+  return response.data;
+};
+
+const ManagerPhotoApi = {
+  getAllPhotos,
+  deletePhoto,
+  updatePhoto,
+  banPhoto,
+  unBanPhoto,
+};
 export default ManagerPhotoApi;
