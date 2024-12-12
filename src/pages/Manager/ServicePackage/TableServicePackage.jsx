@@ -14,18 +14,18 @@ import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButo
 import { useNotification } from "../../../Notification/Notification";
 import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
 import ComModal from "../../../components/ComModal/ComModal";
-import DetailUpgrede from "./DetailUpgrede";
-import EditUpgrede from './EditBlog';
+import DetailServicePackage from "./DetailServicePackage";
+import EditUpgrede from "./EditBlog";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
-  function formatCurrency(number) {
-    // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
-    if (typeof number === "number") {
-      return number.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-    }
+function formatCurrency(number) {
+  // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
+  if (typeof number === "number") {
+    return number.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
   }
+}
 export const TableServicePackage = forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState({});
@@ -173,7 +173,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
               );
             }}
             // extraMenuItems={extraMenuItems}
-            excludeDefaultItems={["details", "edit"]}
+            excludeDefaultItems={["edit"]}
           />
         </div>
       ),
@@ -220,7 +220,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
         onClose={modalDetail?.handleClose}
         width={800}
       >
-        <DetailUpgrede selectedUpgrede={selectedData} />
+        <DetailServicePackage selected={selectedData} />
       </ComModal>
       <ComModal
         isOpen={modalEdit?.isModalOpen}

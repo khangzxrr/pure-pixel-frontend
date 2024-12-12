@@ -112,7 +112,6 @@ const AccountManagerPage = () => {
       title: "Tên",
       dataIndex: "search",
       ...getColumnSearchProps("name", "Tên"),
-
       render: (text, record) => (
         <div className="flex items-center gap-3">
           <img
@@ -125,6 +124,30 @@ const AccountManagerPage = () => {
       ),
     },
 
+    {
+      title: "Quyền",
+      dataIndex: "roles",
+      // ...getColumnSearchProps("mail", "Email"),
+      render: (text, record) => (
+        <div className="flex items-center gap-3">
+          <span>{record.roles && record.roles[0]}</span>
+        </div>
+      ),
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "enabled",
+      // ...getColumnSearchProps("mail", "Email"),
+      render: (text, record) => (
+        <div className="flex items-center gap-3">
+          <span
+            className={`${record.enabled ? "text-green-500" : "text-red-500"}`}
+          >
+            {record.enabled ? "Hoạt động" : "Tạm ngưng"}
+          </span>
+        </div>
+      ),
+    },
     {
       title: "Email",
       dataIndex: "mail",
