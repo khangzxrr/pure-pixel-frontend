@@ -1,6 +1,11 @@
 import { Checkbox, message, Progress, Tooltip } from "antd";
 import useUploadPhotoStore from "../../../states/UploadPhotoState";
-import { DeleteOutlined, UndoOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  LoadingOutlined,
+  RedoOutlined,
+  UndoOutlined,
+} from "@ant-design/icons";
 import PhotoApi from "../../../apis/PhotoApi";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -31,7 +36,6 @@ export default function PhotoCard({ photo }) {
     const photoId = photo.response?.id;
     if (isPendingDeletePhoto) return;
     if (photoId && photo.status !== "error") {
-      console.log("deletephoto", photo);
       removePhotoById(photo.response.id);
 
       try {
@@ -62,7 +66,113 @@ export default function PhotoCard({ photo }) {
   const handleSelect = () => {
     setSelectedPhotoByUid(photo.file.uid);
   };
+  const handleException = (errorMessage) => {
+    switch (errorMessage) {
+      case "RunOutPhotoQuotaException":
+        notificationApi(
+          "error",
+          "Tải ảnh lên thất bại",
+          "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ",
+          "",
+          0,
+          "upload-photo-dragger-error"
+        );
+        updatePhotoPropertyByUid(photo.file.uid, "status", "outQuota");
 
+        break;
+
+      case "FailToPerformOnDuplicatedPhotoException":
+        notificationApi(
+          "error",
+          "Tải ảnh lên thất bại",
+          "Ảnh bạn tải lên đã tồn tại trong hệ thống, vui lòng kiểm tra lại",
+          "",
+          0,
+          "upload-photo-dragger-error"
+        );
+        updatePhotoPropertyByUid(photo.file.uid, "status", "duplicated");
+
+        break;
+
+      case "FileIsNotValidException":
+        notificationApi(
+          "error",
+          "Tải ảnh lên thất bại",
+          "Tệp tải lên không hợp lệ, vui lòng chọn tệp hình ảnh hợp lệ",
+          "",
+          0,
+          "upload-photo-dragger-error"
+        );
+        updatePhotoPropertyByUid(photo.file.uid, "status", "invalid");
+
+        break;
+
+      case "ExifNotFoundException":
+        notificationApi(
+          "error",
+          "Tải ảnh lên thất bại",
+          "Không tìm thấy dữ liệu EXIF trong ảnh, vui lòng chọn ảnh có dữ liệu EXIF",
+          "",
+          0,
+          "upload-photo-dragger-error"
+        );
+        updatePhotoPropertyByUid(photo.file.uid, "status", "invalid");
+
+        break;
+
+      case "MissingMakeExifException":
+        notificationApi(
+          "error",
+          "Tải ảnh lên thất bại",
+          "Dữ liệu EXIF thiếu thông tin nhà sản xuất (Make), vui lòng kiểm tra lại",
+          "",
+          0,
+          "upload-photo-dragger-error"
+        );
+        updatePhotoPropertyByUid(photo.file.uid, "status", "invalid");
+
+        break;
+
+      case "MissingModelExifException":
+        notificationApi(
+          "error",
+          "Tải ảnh lên thất bại",
+          "Dữ liệu EXIF thiếu thông tin mẫu máy (Model), vui lòng kiểm tra lại",
+          "",
+          0,
+          "upload-photo-dragger-error"
+        );
+        updatePhotoPropertyByUid(photo.file.uid, "status", "invalid");
+
+        break;
+
+      case "UploadPhotoFailedException":
+        notificationApi(
+          "error",
+          "Tải ảnh lên thất bại",
+          "Đã xảy ra lỗi khi tải ảnh lên, vui lòng thử lại",
+          "",
+          0,
+          "upload-photo-dragger-error"
+        );
+        updatePhotoPropertyByUid(photo.file.uid, "status", "failed");
+
+        break;
+
+      default:
+        notificationApi(
+          "error",
+          "Lỗi không xác định",
+          "Đã xảy ra lỗi không xác định, vui lòng thử lại",
+          "",
+          0,
+          "upload-photo-dragger-error"
+        );
+        updatePhotoPropertyByUid(photo.file.uid, "status", "failed");
+
+        break;
+    }
+  };
   const timeout = (promise, ms) => {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
@@ -114,6 +224,7 @@ export default function PhotoCard({ photo }) {
       updatePhotoPropertyByUid(photo.file.uid, "status", "done");
       updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
     } catch (e) {
+      handleException(e?.response?.data?.message);
       console.log("tryUploadPhoto error", e);
     }
   };
@@ -175,35 +286,70 @@ export default function PhotoCard({ photo }) {
           </p>
         </div>
       )}
-      {photo.status !== "uploading" && photo.status !== "done" && (
-        <div
-          className={`absolute m-2 inset-0 grid place-items-center bg-red-300 bg-opacity-50 z-10 rounded-md cursor-pointer`}
-          onClick={handleSelect}
-        >
-          {tryUploadPhotoPending ? (
-            "loading.."
-          ) : (
-            <Tooltip
-              title="Thử lại"
-              color="blue"
-              onClick={(e) => {
-                e.preventDefault(); // Prevent default behavior (if applicable)
-                e.stopPropagation(); // Prevent event from propagating to parent elements
-                reUploadPhoto();
-              }}
-            >
-              <div className="flex flex-col items-center cursor-pointer text-white font-normal text-center hover:opacity-80">
-                {/* <UndoOutlined className="text-4xl text-blue-500" /> */}
-                <p className="p-3">
-                  {photo.status === "duplicated"
-                    ? "Ảnh đã tồn tại trong hệ thống"
-                    : photo.status}
-                </p>
-              </div>
-            </Tooltip>
-          )}
-        </div>
-      )}
+      {photo.status !== "duplicated" ||
+        (photo.status !== "invalid" && (
+          <div
+            className={`absolute m-2 inset-0 grid place-items-center bg-red-300 bg-opacity-50 z-10 rounded-md cursor-pointer`}
+            onClick={handleSelect}
+          >
+            <div className="flex flex-col items-center cursor-pointer text-white font-normal text-center hover:opacity-80">
+              {/* <UndoOutlined className="text-4xl text-blue-500" /> */}
+              <p className="p-3">
+                {photo.status === "duplicated"
+                  ? "Ảnh đã tồn tại trong hệ thống"
+                  : photo.status === "invalid"
+                  ? "Ảnh không hợp lệ"
+                  : photo.status}
+              </p>
+            </div>
+          </div>
+        ))}
+      {photo.status === "outQuota" ||
+        (photo.status === "failed" && (
+          <div
+            className={`absolute m-2 inset-0 grid place-items-center bg-red-300 bg-opacity-50 z-10 rounded-md cursor-pointer`}
+            onClick={handleSelect}
+          >
+            {tryUploadPhotoPending ? (
+              <LoadingOutlined
+                style={{
+                  fontSize: 33,
+                }}
+              />
+            ) : (
+              <Tooltip
+                title="Thử lại"
+                color="blue"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default behavior (if applicable)
+                  e.stopPropagation(); // Prevent event from propagating to parent elements
+                  reUploadPhoto();
+                }}
+              >
+                <div className="flex flex-col items-center cursor-pointer text-white font-normal text-center hover:opacity-80">
+                  {/* <UndoOutlined className="text-4xl text-blue-500" /> */}
+                  <p className="p-3  text-sm">
+                    {photo.status === "outQuota"
+                      ? "Dung lượng ảnh vượt quá giới hạn"
+                      : photo.status === "failed"
+                      ? "Tải ảnh lên thất bại"
+                      : ""}
+                  </p>
+                  <div className="flex flex-col ">
+                    <p>Thử lại</p>
+                    <RedoOutlined
+                      className="flex justify-center item-center mx-auto"
+                      style={{
+                        fontSize: 24,
+                      }}
+                    />
+                  </div>
+                </div>
+              </Tooltip>
+            )}
+          </div>
+        ))}
+
       {photo.watermark && (
         <div
           className={`absolute inset-0 grid place-items-center z-10 rounded-lg`}

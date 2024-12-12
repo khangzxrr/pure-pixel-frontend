@@ -146,7 +146,12 @@ const UpgradePackageCard = ({
             Nâng cấp
           </button>
         ) : (
-          ""
+          <button
+            onClick={handleOpenPaymentModal}
+            className="bg-yellow-500 text-[#202225] rounded-md px-5 py-1 hover:opacity-80 transition-opacity duration-200"
+          >
+            Nâng cấp
+          </button>
         )}
       </div>
     </div>
