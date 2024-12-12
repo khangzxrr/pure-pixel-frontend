@@ -48,7 +48,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
   const [viewState, setViewState] = useState({
     latitude: selectedPhoto?.exif?.latitude ?? 10.762622,
     longitude: selectedPhoto?.exif?.longitude ?? 106.66667,
-    zoom: 14,
+    zoom: 13,
   });
   const [selectedLocate, setSelectedLocate] = useState({
     latitude: selectedPhoto?.exif?.latitude ?? 10.762622,

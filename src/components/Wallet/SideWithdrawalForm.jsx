@@ -50,6 +50,7 @@ export default function SideWithdrawalForm({
     handleSubmit,
     formState: { errors, isValid },
     getValues,
+    watch,
     reset,
   } = useForm({
     resolver: yupResolver(withdrawalSchema),
@@ -84,7 +85,7 @@ export default function SideWithdrawalForm({
     onSuccess: (data) => {
       console.log(data);
       message.success("Yêu cầu rút tiền thành công");
-      queryClient.invalidateQueries("transactionList"); // Invalidate the wallet query to refetch the data
+      queryClient.invalidateQueries("transaction-list"); // Invalidate the wallet query to refetch the data
       queryClient.invalidateQueries("wallet"); // Invalidate the wallet query to refetch the data
       reset();
       closeNav();
@@ -150,7 +151,7 @@ export default function SideWithdrawalForm({
   const onSubmit = (data) => {
     confirm(data); // Confirm the form submission with valid data
   };
-
+  console.log("errors", errors);
   return (
     <div
       ref={sideNavRef}
@@ -269,8 +270,8 @@ export default function SideWithdrawalForm({
             <div className="w-11/12 flex justify-end mt-4">
               <Popconfirm
                 title="Xác nhận rút tiền?"
-                description={`Bạn có chắc muốn rút ${formatNumber(
-                  getValues("amount")
+                description={`Bạn có chắc muốn rút ${watch(
+                  "amount"
                 )} vào tài khoản ${getValues(
                   "bankNumber"
                 )} tại ngân hàng ${getValues("bankName")} ?`}
@@ -281,7 +282,13 @@ export default function SideWithdrawalForm({
                 getPopupContainer={() => sideNavRef.current}
                 disabled={!isValid}
               >
-                <p className="m-2 px-8 py-1 rounded-md bg-blue-500 text-white hover:bg-blue-400 cursor-pointer">
+                <p
+                  className={`m-2 px-8 py-1 rounded-md  ${
+                    isValid
+                      ? "bg-blue-500 text-white hover:bg-blue-400 cursor-pointer"
+                      : "bg-gray-500 text-white  cursor-not-allowed"
+                  }`}
+                >
                   Yêu cầu rút
                 </p>
               </Popconfirm>

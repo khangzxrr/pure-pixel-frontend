@@ -146,14 +146,28 @@ export default function MapBoxModal() {
 
   const handleOk = async () => {
     if (selectedLocate) {
-      updatePhotoPropertyByUid(selectedPhoto, "exif", {
-        latitude: selectedLocate.latitude,
-        longitude: selectedLocate.longitude,
-      });
-      updatePhotoPropertyByUid(selectedPhoto, "address", selectedLocate.title);
+      console.log("Selected location:", selectedLocate);
+      // Update photo properties with new location data
+      await updatePhotoPropertyByUid(
+        selectedPhoto,
+        "exif.latitude",
+        selectedLocate.latitude
+      );
+      await updatePhotoPropertyByUid(
+        selectedPhoto,
+        "exif.longitude",
+        selectedLocate.longitude
+      );
+
+      await updatePhotoPropertyByUid(
+        selectedPhoto,
+        "address",
+        selectedLocate.title
+      );
     }
+
+    // Close the map modal
     setIsOpenMapModal(false);
-    //
   };
 
   const handleCancel = () => {

@@ -39,9 +39,9 @@ export default function UpdatePhotoModal() {
   console.log("selectedUpdatePhoto", selectedUpdatePhoto);
   const [categories, setCategories] = useState([]);
   const [viewState, setViewState] = useState({
-    latitude: 10.762622,
-    longitude: 106.66667,
-    zoom: 14,
+    latitude: selectedUpdatePhoto?.exif?.latitude ?? 10.762622,
+    longitude: selectedUpdatePhoto?.exif?.longitude ?? 106.66667,
+    zoom: 12,
   });
   const [selectedLocate, setSelectedLocate] = useState();
   const { notificationApi } = useNotification();
@@ -91,10 +91,11 @@ export default function UpdatePhotoModal() {
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
-      setSelectedLocate({
-        ...selectedLocate,
-        address: data.features[0].properties.full_address,
-      });
+      console.log("datacheck", data);
+      updateSelectedUpdatePhotoField(
+        "address",
+        data.features[0].properties.full_address
+      );
     },
     onError: (error) => {
       console.error("Error fetching address:", error);
@@ -114,21 +115,21 @@ export default function UpdatePhotoModal() {
     // Clone the data to avoid mutating the original object
     let updatedData = { ...data };
 
-    // Check if 'isChangeGPS' is false, and if so, remove the 'gps' field
-    if (!data.isChangeGPS) {
-      delete updatedData.gps;
+    // Remove the 'description' field if it is empty or null
+    if (!updatedData.description || updatedData.description.trim() === "") {
+      delete updatedData.description;
     }
 
-    // Check if 'description' is falsy (undefined, null, or empty string), and if so, remove the 'description' field
-    if (!data.description) {
-      delete updatedData.description;
+    // Check if longitude and latitude exist in the exif object
+    if (updatedData.exif?.longitude && updatedData.exif?.latitude) {
+      updatedData.gps = {
+        longitude: updatedData.exif.longitude,
+        latitude: updatedData.exif.latitude,
+      };
     }
 
     // Call the updatePhotos mutation with the updated data
     updatePhotos.mutate(updatedData);
-
-    // Log the updated photo data for debugging
-    console.log("Updated photo data:", updatedData);
   };
 
   const openUpdateMapModal = () => {
@@ -138,49 +139,26 @@ export default function UpdatePhotoModal() {
   useEffect(() => {
     reset(getDefaultPhoto(selectedUpdatePhoto));
     getAllCategories.mutate();
-    searchByCoordinate.mutate({
-      longitude: selectedUpdatePhoto.gps.longitute,
-      latitude: selectedUpdatePhoto.gps.latitude,
-    });
-    if (
-      selectedUpdatePhoto.gps.longitute !== undefined &&
-      selectedUpdatePhoto.gps.latitude !== undefined
-    ) {
-      setViewState((prev) => ({
-        ...prev,
-        latitude: selectedUpdatePhoto.gps.latitude,
-        longitude: selectedUpdatePhoto.gps.longitute,
-      }));
-      setSelectedLocate({
-        latitude: selectedUpdatePhoto.gps.latitude,
-        longitude: selectedUpdatePhoto.gps.longitute,
-      });
-    } else if (navigator.geolocation) {
-      console.log("navigator.geolocation", navigator.geolocation);
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setViewState((prev) => ({
-            ...prev,
-            latitude,
-            longitude,
-          }));
-          if (!selectedLocate) {
-            setSelectedLocate({
-              latitude,
-              longitude,
-              address: "Vị trí hiện tại của bạn",
-            });
-          }
-          console.log("Current location:", position.coords);
-        },
-        (error) => {
-          console.error("Error getting current location:", error);
-        }
-      );
+    if (
+      !selectedUpdatePhoto.exif.longitute ||
+      !selectedUpdatePhoto.exif.latitude
+    ) {
+      searchByCoordinate.mutate({
+        longitude: selectedUpdatePhoto.exif.longitude,
+        latitude: selectedUpdatePhoto.exif.latitude,
+      });
+      // setViewState((prev) => ({
+      //   ...prev,
+      //   latitude: selectedUpdatePhoto.exif.latitude,
+      //   longitude: selectedUpdatePhoto.exif.longitute,
+      // }));
+      // setSelectedLocate({
+      //   latitude: selectedUpdatePhoto.exif.latitude,
+      //   longitude: selectedUpdatePhoto.exif.longitute,
+      // });
     } else {
-      console.error("Geolocation is not supported by this browser.");
+      setSelectedLocate({});
     }
   }, [isUpdatePhotoModal, reset]);
   return (
@@ -409,20 +387,20 @@ export default function UpdatePhotoModal() {
               {/* Location Field */}
               <p>Vị trí</p>
               <div className="m-2 w-11/12 h-full overflow-hidden">
-                <div className="relative w-full h-[40vh]">
-                  {/* Adjust height as needed */}
-                  <Map
-                    {...viewState}
-                    mapStyle="mapbox://styles/mapbox/streets-v9"
-                    mapboxAccessToken={MAPBOX_TOKEN}
-                    style={{ width: "100%", height: "100%" }}
-                    onClick={() => openUpdateMapModal()}
-                  >
-                    {selectedLocate && (
+                {selectedUpdatePhoto.exif.latitude &&
+                selectedUpdatePhoto.exif.longitude ? (
+                  <div className="relative w-full h-[40vh]">
+                    {/* Adjust height as needed */}
+                    <Map
+                      {...viewState}
+                      mapStyle="mapbox://styles/mapbox/streets-v9"
+                      mapboxAccessToken={MAPBOX_TOKEN}
+                      style={{ width: "100%", height: "100%" }}
+                    >
                       <>
                         <Marker
-                          latitude={selectedLocate.latitude}
-                          longitude={selectedLocate.longitude}
+                          latitude={selectedUpdatePhoto.exif.latitude}
+                          longitude={selectedUpdatePhoto.exif.longitude}
                           anchor="bottom"
                         >
                           <div
@@ -433,22 +411,31 @@ export default function UpdatePhotoModal() {
                           </div>
                         </Marker>
                         <Popup
-                          latitude={selectedLocate.latitude}
-                          longitude={selectedLocate.longitude}
+                          latitude={selectedUpdatePhoto.exif.latitude}
+                          longitude={selectedUpdatePhoto.exif.longitude}
                           anchor="top"
                           closeOnClick={false}
                           closeButton={false}
                         >
                           <div style={{ cursor: "pointer" }}>
                             <h2 className="text-black">
-                              {selectedLocate.address}
+                              {selectedUpdatePhoto.address}
                             </h2>
                           </div>
                         </Popup>
                       </>
-                    )}
-                  </Map>
-                </div>
+                    </Map>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => openUpdateMapModal()}
+                    className={`border-[#4c4e52] w-full flex flex-row justify-center text-white py-1 rounded-lg bg-[#292b2f] hover:border-[#e0e0e0] focus:bg-[#292b2f] border-[1px] lg:text-base text-xs focus:outline-none focus:border-[#e0e0e0] `}
+                  >
+                    <IoLocationSharp color="red" size={22} />
+                    Nhấn để thêm vị trí bức ảnh
+                  </button>
+                )}
               </div>
               <div className="m-1">
                 <ExifList exifData={selectedUpdatePhoto?.exif} />

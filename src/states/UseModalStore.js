@@ -32,13 +32,41 @@ const useModalStore = create(
     // State to store selected photo details and related setters
     selectedUpdatePhoto: {}, // Object to store the currently selected photo details
     setSelectedPhoto: (photo) => set({ selectedUpdatePhoto: photo }), // Setter for selected photo details
-    updateSelectedUpdatePhotoField: (field, value) =>
-      set((state) => ({
-        selectedUpdatePhoto: {
-          ...state.selectedUpdatePhoto, // Copy existing fields
-          [field]: value, // Update the specified field
-        },
-      })),
+    updateSelectedUpdatePhotoField: (key, value) => {
+      set((state) => {
+        const selectedUpdatePhoto = { ...state.selectedUpdatePhoto }; // Copy the selected update photo object for immutability
+
+        // Handle nested keys like "exif.ShutterSpeedValue"
+        if (key.includes(".")) {
+          const keys = key.split(".");
+          let current = selectedUpdatePhoto;
+
+          // Traverse to the second-to-last key
+          for (let i = 0; i < keys.length - 1; i++) {
+            const k = keys[i];
+
+            // Create the nested object if it doesn't exist
+            if (!current[k]) {
+              current[k] = {};
+            }
+
+            current = current[k]; // Move deeper
+          }
+
+          // Update the final key
+          current[keys[keys.length - 1]] = value;
+        } else {
+          // Handle non-nested keys
+          selectedUpdatePhoto[key] = value;
+        }
+
+        // Return the updated state
+        return {
+          ...state, // Keep the rest of the state unchanged
+          selectedUpdatePhoto, // Replace the updated selectedUpdatePhoto in the state
+        };
+      });
+    },
 
     // State to store selected upgrade package details and setter
     selectedUpgradePackage: {}, // Object to store the selected upgrade package
