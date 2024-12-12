@@ -299,10 +299,6 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }) => {
                     categories: photo.categories,
                     photoTags: photo.photoTags.map((item) => item.name),
                     exif: photo.exif,
-                    gps: {
-                      longitute: photo.exif.longitude,
-                      latitude: photo.exif.latitude,
-                    },
                     originalPhotoUrl: photo.signedUrl.url,
                     thumbnailPhotoUrl: photo.signedUrl.thumbnail,
                     status: photo.status,

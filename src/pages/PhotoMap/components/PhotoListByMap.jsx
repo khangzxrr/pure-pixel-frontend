@@ -7,7 +7,7 @@ const PhotoListByMap = ({
   page,
   setPage,
   totalPage,
-  totalRecords,
+  isAddNewPhotoList,
   setIsAddNewPhotoList,
   handleSelectPhoto,
   setIsStopped,
@@ -35,15 +35,6 @@ const PhotoListByMap = ({
 
   // Handle Next Photo (Update selected photo and scroll)
   const handleNextPhoto = () => {
-    console.log("Next Photo", selectedPhoto, photoList);
-    const selectedIndex =
-      photoList.findIndex((photo) => photo.id === selectedPhoto?.id) ?? -1;
-
-    // Check if selectedPhoto is the second-to-last element in photoList
-    if (selectedIndex === photoList.length - 2 && page < totalPage) {
-      setPage(page + 1);
-      setIsAddNewPhotoList(true);
-    }
     if (photoList.length > 0 && selectedPhoto) {
       const currentIndex = photoList.findIndex(
         (p) => p.id === selectedPhoto.id
