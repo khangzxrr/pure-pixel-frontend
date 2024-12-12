@@ -14,7 +14,8 @@ const ServerSideItem = ({
   const location = useLocation();
   const { activeLinkServer, setActiveLinkServer } = UseServerSideStore();
   const [isHovered, setIsHovered] = useState(false);
-  const { closeNotificationModal } = UseNotificationStore();
+  const { closeNotificationModal, isNewNotification, setIsNotification } =
+    UseNotificationStore();
   useEffect(() => {
     if (location.pathname === link) {
       setActiveLinkServer(link);
@@ -37,14 +38,19 @@ const ServerSideItem = ({
   if (isNotification) {
     return (
       <div
-        onClick={onNotificationClick}
+        onClick={() => {
+          onNotificationClick();
+          setIsNotification(false);
+        }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         title={name}
         className="relative flex items-center justify-center w-12 h-12 hover:cursor-pointer hover:bg-gray-500 p-2 rounded-md transition-colors duration-200"
       >
         {icon}
-        <div className="absolute top-0 right-0 size-3 bg-red-500 rounded-full"></div>
+        {isNewNotification && (
+          <div className="absolute top-0 right-0 size-3 bg-red-500 rounded-full"></div>
+        )}
         {isHovered && name && (
           <div
             className={`absolute left-full ml-[14px] whitespace-nowrap bg-[#202225] text-[#eee] text-sm rounded-md shadow-lg z-50 px-4 py-[6px] 

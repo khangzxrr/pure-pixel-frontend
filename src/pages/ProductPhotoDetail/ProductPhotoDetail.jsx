@@ -173,6 +173,7 @@ const ProductPhotoDetail = () => {
               // message.success("Thanh toán thành công!");
               clearInterval(intervalId);
               queryClient.invalidateQueries({ queryKey: ["photo-bought"] });
+              queryClient.invalidateQueries({ queryKey: ["transaction-list"] });
               // Cập nhật trạng thái pricetag
               setPricetagStatus((prevStatus) => {
                 const newStatus = { ...prevStatus };
@@ -190,8 +191,10 @@ const ProductPhotoDetail = () => {
                 navigate(`/profile/photos-bought`);
               }, 1000);
             } else if (status === "FAILED") {
+              queryClient.invalidateQueries({ queryKey: ["transaction-list"] });
+              reload();
+              modal?.handleClose();
               setPaymentStatus("FAILED");
-              message.error("Thanh toán thất bại.");
               clearInterval(intervalId);
             }
           })
@@ -263,7 +266,6 @@ const ProductPhotoDetail = () => {
             setPaymentStatus("PENDING");
           } else if (paymentMethod === "WALLET") {
             modal?.handleClose();
-            // message.success("Thanh toán bằng ví thành công!");
             setTimeout(() => {
               navigate(`/profile/photos-bought`);
             }, 1000);
@@ -304,7 +306,10 @@ const ProductPhotoDetail = () => {
               message = "Bạn không thể mua ảnh của chính mình";
               break;
             case "NotEnoughBalanceException":
-              message = "Số dư của bạn không đủ.Vui lòng nạp thêm tiền";
+              message = "Số dư của bạn không đủ. Vui lòng nạp thêm tiền";
+              break;
+            case "":
+              message = "Đã có lỗi vui lòng thử lại";
               break;
             default:
               message = "Đã có lỗi vui lòng thử lại";

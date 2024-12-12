@@ -190,7 +190,7 @@ export default function TableTransactilonList() {
     isFetching,
     isError,
   } = useQuery({
-    queryKey: ["transactionList", page, orderByAmount, orderByCreatedAt], // Unique query key for caching
+    queryKey: ["transaction-list", page, orderByAmount, orderByCreatedAt], // Unique query key for caching
     queryFn: () => {
       return WalletApi.getTransaction({
         limit,

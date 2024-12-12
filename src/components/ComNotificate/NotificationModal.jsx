@@ -9,21 +9,22 @@ import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
 import useNotificationStore from "../../states/UseNotificationStore";
 import { notificationApi } from "../../Notification/Notification";
 import { useKeycloak } from "@react-keycloak/web";
-import BookingNotification from "./BookingNotification";
 import PhotoNotification from "./PhotoNotification";
-import PhotoBuyNotification from "./PhotoBuyNotification";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
+import CustomerBookingNotification from "./CustomerBookingNotification";
+import UseSidebarStore from "../../states/UseSidebarStore";
+import PhotographerBookingNotification from "./PhotographerBookingNotification";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   const [showModal, setShowModal] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const { toggleSidebar } = UseSidebarStore();
 
   const queryClient = useQueryClient();
 
-  const { initSocket, socket } = useNotificationStore();
-
+  const { initSocket, socket, setIsNotification } = useNotificationStore();
   const { keycloak } = useKeycloak();
 
   const showUpNotification = (data) => {
@@ -52,6 +53,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     async function showNotification(data) {
+      setIsNotification(true);
       showUpNotification(data);
 
       if (data.referenceType === "BAN") {
@@ -129,28 +131,43 @@ const NotificationModal = ({ isOpen, onClose }) => {
     : [];
 
   // const notificationList = data?.objects;
-
+  const closeSidebar = () => {
+    onClose();
+    toggleSidebar();
+  };
   console.log(notificationList);
   const renderContent = (notification) => {
     switch (notification.referenceType) {
-      case "BOOKING":
+      case "CUSTOMER_BOOKING_REQUEST":
+      case "CUSTOMER_BOOKING_CANCEL":
+      case "CUSTOMER_BOOKING_ACCEPT":
+      case "CUSTOMER_BOOKING_BILL_UPDATE":
+      case "CUSTOMER_BOOKING_PHOTO_ADD":
+      case "CUSTOMER_BOOKING_PHOTO_REMOVE":
+      case "CUSTOMER_BOOKING_PAID":
         return (
-          <BookingNotification
-            onClose={onClose}
+          <CustomerBookingNotification
+            onClose={closeSidebar}
             notification={notification}
             key={notification.id}
           />
         );
-      case "PHOTO_BUY":
+      case "PHOTOGRAPHER_BOOKING_NEW_REQUEST":
+      case "PHOTOGRAPHER_NEW_BOOKING_REVIEW":
         return (
-          <PhotoBuyNotification
+          <PhotographerBookingNotification
+            onClose={closeSidebar}
             notification={notification}
             key={notification.id}
           />
         );
-      case "PHOTO":
+      case "PHOTO_BAN":
+      case "PHOTO_UNBAN":
+      case "PHOTO_COMMENT":
+      case "DUPLICATED_PHOTO":
         return (
           <PhotoNotification
+            onClose={closeSidebar}
             notification={notification}
             key={notification.id}
           />
@@ -158,11 +175,12 @@ const NotificationModal = ({ isOpen, onClose }) => {
       default:
         return (
           <span className="text-gray-500">
-            {notification.content} - Loại không xác định
+            {notification.content} - {notification.referenceType}
           </span>
         );
     }
   };
+
   return showModal ? (
     <div
       id="modal-overlay"
@@ -190,9 +208,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
             next={fetchNextPage}
             hasMore={hasNextPage}
             scrollableTarget="modal-notification"
-            endMessage={
-              <p className="text-center">Không còn thông báo nào nữa</p>
-            }
+            endMessage={<div className="m-8" />}
           >
             {notificationList.map((notification) =>
               renderContent(notification)

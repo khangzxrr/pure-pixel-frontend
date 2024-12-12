@@ -142,10 +142,16 @@ export default function MapBoxModal() {
 
   const handleOk = async () => {
     if (selectedLocate) {
-      updatePhotoPropertyByUid(selectedPhoto, "exif", {
-        latitude: selectedLocate.latitude,
-        longitude: selectedLocate.longitude,
-      });
+      await updatePhotoPropertyByUid(
+        selectedPhoto,
+        "exif.latitude",
+        selectedLocate.latitude
+      );
+      await updatePhotoPropertyByUid(
+        selectedPhoto,
+        "exif.longitude",
+        selectedLocate.longitude
+      );
       updatePhotoPropertyByUid(selectedPhoto, "address", selectedLocate.title);
     }
     setIsOpenMapModal(false);

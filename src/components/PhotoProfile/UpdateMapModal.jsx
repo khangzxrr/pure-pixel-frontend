@@ -8,6 +8,7 @@ import { SearchBox } from "@mapbox/search-js-react";
 import useModalStore from "../../states/UseModalStore";
 import MapBoxApi from "../../apis/MapBoxApi";
 import { notificationApi } from "../../Notification/Notification";
+import { FaDotCircle } from "react-icons/fa";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -23,7 +24,7 @@ export default function UpdateMapModal() {
   const [selectedLocate, setSelectedLocate] = useState();
   const [isLoadingCurrentLocation, setIsLoadingCurrentLocation] =
     useState(false);
-
+  const [currentLocation, setCurrentLocation] = useState();
   const [viewState, setViewState] = useState({
     latitude: 10.762622,
     longitude: 106.66667,
@@ -35,8 +36,7 @@ export default function UpdateMapModal() {
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
       setSelectedLocate({
-        latitude: data.features[0].geometry.coordinates[1],
-        longitude: data.features[0].geometry.coordinates[0],
+        ...selectedLocate,
         address: data.features[0].properties.full_address,
       });
     },
@@ -47,18 +47,25 @@ export default function UpdateMapModal() {
 
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat;
+    console.log("Clicked on:", lng, lat);
     searchByCoordinate.mutate({ longitude: lng, latitude: lat });
     setSelectedLocate({ latitude: lat, longitude: lng });
+    setViewState((prev) => ({
+      ...prev,
+      latitude: lat,
+      longitude: lng,
+    }));
   };
 
   const handleOk = () => {
     if (selectedLocate) {
-      updateSelectedUpdatePhotoField("gps", {
-        latitude: selectedLocate.latitude,
-        longitude: selectedLocate.longitude,
-      });
+      updateSelectedUpdatePhotoField("exif.latitude", selectedLocate.latitude);
+      updateSelectedUpdatePhotoField(
+        "exif.longitude",
+        selectedLocate.longitude
+      );
+
       updateSelectedUpdatePhotoField("address", selectedLocate.address);
-      updateSelectedUpdatePhotoField("isChangeGPS", true);
     }
     setIsUpdateOpenMapModal(false);
     setIsUpdatePhotoModal(true);
@@ -71,6 +78,7 @@ export default function UpdateMapModal() {
 
   const handleRetrieve = (res) => {
     if (res && res.features && res.features.length > 0) {
+      console.log("Retrieved:", res.features[0]);
       const feature = res.features[0];
       const { coordinates } = feature.geometry;
       const { full_address } = feature.properties;
@@ -94,23 +102,18 @@ export default function UpdateMapModal() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+          setCurrentLocation({ latitude, longitude });
           setViewState((prev) => ({
             ...prev,
             latitude,
             longitude,
           }));
-          if (!selectedLocate) {
-            setSelectedLocate({
-              latitude,
-              longitude,
-              address: "Vị trí hiện tại của bạn",
-            });
-          }
           setIsLoadingCurrentLocation(false);
         },
         (error) => {
           console.error("Error getting current location:", error);
           setIsLoadingCurrentLocation(false);
+          if (currentLocation || isOpenMapModal) return;
           notificationApi(
             "error",
             "Lỗi",
@@ -122,7 +125,6 @@ export default function UpdateMapModal() {
         }
       );
     } else {
-      console.error("Geolocation is not supported by this browser.");
       setIsLoadingCurrentLocation(false);
       notificationApi(
         "error",
@@ -134,31 +136,17 @@ export default function UpdateMapModal() {
       );
     }
   }
+  const backToCurrentLocate = () => {
+    setViewState((prev) => ({
+      ...prev,
+      latitude: currentLocation.latitude,
+      longitude: currentLocation.longitude,
+    }));
+  };
+
   useEffect(() => {
-    if (
-      selectedUpdatePhoto.gps?.longtitute !== undefined &&
-      selectedUpdatePhoto.gps?.latitude !== undefined
-    ) {
-      searchByCoordinate.mutate({
-        longitude: selectedUpdatePhoto.gps.longtitute,
-        latitude: selectedUpdatePhoto.gps.latitude,
-      });
-
-      setViewState((prev) => ({
-        ...prev,
-        latitude: selectedUpdatePhoto.gps.latitude,
-        longitude: selectedUpdatePhoto.gps.longtitute,
-      }));
-      setSelectedLocate({
-        latitude: selectedUpdatePhoto.gps.latitude,
-        longitude: selectedUpdatePhoto.gps.longtitute,
-        address: "",
-      });
-    } else {
-      getCurrentLocation();
-    }
-  }, [selectedUpdatePhoto]);
-
+    getCurrentLocation();
+  }, []);
   return (
     <Modal
       title="Chọn vị trí"
@@ -180,13 +168,7 @@ export default function UpdateMapModal() {
           >
             <Button
               className="bg-white shadow-md flex items-center justify-center mx-2"
-              onClick={() =>
-                getCurrentLocation(
-                  setViewState,
-                  setSelectedLocate,
-                  setIsLoadingCurrentLocation
-                )
-              }
+              onClick={() => backToCurrentLocate()}
               icon={
                 isLoadingCurrentLocation ? (
                   <Spin size="small" />
@@ -224,15 +206,45 @@ export default function UpdateMapModal() {
               <Marker
                 latitude={selectedLocate.latitude}
                 longitude={selectedLocate.longitude}
+                anchor="bottom"
               >
+                <div></div>
                 <IoLocationSharp fontSize={39} color="red" />
               </Marker>
               <Popup
                 latitude={selectedLocate.latitude}
                 longitude={selectedLocate.longitude}
                 anchor="top"
+                closeOnClick={false}
+                closeButton={false}
               >
-                <h2>{selectedLocate.address}</h2>
+                <div className="-my-2">
+                  <h2>{selectedLocate.address}</h2>
+                </div>
+              </Popup>
+            </>
+          )}
+          {currentLocation && (
+            <>
+              <Marker
+                latitude={currentLocation.latitude}
+                longitude={currentLocation.longitude}
+                anchor="bottom"
+              >
+                <div className="marker-btn cursor-pointer shadow-lg">
+                  <FaDotCircle fontSize={viewState.zoom * 2} color="#13b9f0" />
+                </div>
+              </Marker>
+              <Popup
+                latitude={currentLocation.latitude}
+                longitude={currentLocation.longitude}
+                anchor="top"
+                closeOnClick={false}
+                closeButton={false}
+              >
+                <div className="-my-2">
+                  <h2>Vị trí hiện tại của bạn</h2>
+                </div>
               </Popup>
             </>
           )}

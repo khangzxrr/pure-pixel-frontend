@@ -39,7 +39,7 @@ export default function SideDepositForm({
 
       // Check if the value is between 10000 and 1000000
       if (numericValue < 10000 || numericValue > 1000000) {
-        setErrorMessage("Số tiền phải từ 10,000 đến 1,000,000 VND.");
+        setErrorMessage("Số tiền nạp phải từ 10,000 đến 1,000,000 VND.");
       } else {
         setErrorMessage(""); // Clear error message if value is valid
       }
@@ -65,7 +65,7 @@ export default function SideDepositForm({
 
   const confirm = (e) => {
     if (deposit < 10000 || deposit > 1000000) {
-      setErrorMessage("Số tiền phải từ 10,000 đến 1,000,000 VND.");
+      setErrorMessage("Số tiền nạp phải từ 10,000 đến 1,000,000 VND.");
       return;
     } else {
       createDeposit.mutate(deposit);
@@ -84,7 +84,7 @@ export default function SideDepositForm({
     mutationFn: (amount) => WalletApi.createDeposit({ amount: amount }),
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries("transactionList"); // Invalidate the wallet query to refetch the data
+      queryClient.invalidateQueries("transaction-list"); // Invalidate the wallet query to refetch the data
       queryClient.invalidateQueries("wallet"); // Invalidate the wallet query to refetch the data
       setTransactionId(data.transactionId);
       setQRCode(data.testQRCode);
@@ -204,7 +204,7 @@ export default function SideDepositForm({
             <div className="w-11/12 mt-4 flex justify-end">
               <Popconfirm
                 title="Xác nhận nạp tiền?"
-                description={`Bạn có chắc muốn nạp ${formattedDeposit} vào ví?`}
+                description={`Bạn có chắc muốn nạp ${formattedDeposit}đ vào ví?`}
                 onConfirm={confirm}
                 onCancel={cancel}
                 okText="Nạp"

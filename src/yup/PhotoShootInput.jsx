@@ -33,6 +33,5 @@ export const photoShootInput = yup.object().shape({
         );
       }
     ),
-  expect: yup.string(), // Validation for "expect"
-  locate: yup.string(), // Validation for "locate"
+  description: yup.string().max(1000, "Mô tả của gói quá dài "), // Limits description to 1000 characters
 });

@@ -13,12 +13,12 @@ export const PhotoshootPackageYup = yup.object({
       }
       return value;
     })
-    .typeError("Giá phải là số")
-    .required("Giá là bắt buộc")
-    .min(10000, "Giá ít nhất là 10.000đ") // Minimum price validation
-    .max(10000000000, "Giá phải ít hơn 10 tỷ đồng"), // Maximum price validation
+    .typeError("Giá gói phải là số")
+    .required("Giá gói là bắt buộc")
+    .min(10000, "Giá gói ít nhất là 10.000đ") // Minimum price validation
+    .max(100000000, "Giá gói phải ít hơn 100 triệu"), // Maximum price validation
   description: yup
     .string()
     .required("Vui lòng nhập mô tả.")
-    .max(1000, "Mô tả của bạn quá dài "), // Limits description to 1000 characters
+    .max(1000, "Mô tả của gói quá dài "), // Limits description to 1000 characters
 });

@@ -356,7 +356,8 @@ export default function CustomUpload() {
           visibility: photo.visibility,
           photoTags: photo.photoTags,
           ...(photo.exif.longitude &&
-            photo.exif.latitude && {
+            photo.exif.latitude &&
+            photo.exif.longitude && {
               gps: {
                 longitude: photo.exif.longitude,
                 latitude: photo.exif.latitude,
