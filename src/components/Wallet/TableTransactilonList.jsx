@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useColumnFilters from "../ComTable/utils";
-import { ConfigProvider, Pagination, Tooltip } from "antd";
+import { ConfigProvider, Dropdown, Menu, Pagination, Tooltip } from "antd";
 import ComDateConverter from "../ComDateConverter/ComDateConverter";
 import ComTable from "../ComTable/ComTable";
 import ComStatusWalletConverter from "./../ComStatusConverter/ComStatusWalletConverter";
@@ -12,45 +12,109 @@ import ComTypeWalletConverter from "../ComStatusConverter/ComTypeWalletConverter
 import ComNoteWalletConverter from "../ComStatusConverter/ComNoteWalletConventer";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
+import ComWalletAmountConverter from "../ComStatusConverter/ComAmountConverter";
 
-function formatCurrency(number) {
-  // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
-  if (typeof number === "number") {
-    return number.toLocaleString("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    });
-  }
-}
 export default function TableTransactilonList() {
   const limit = 10;
   const [page, setPage] = useState(1);
-  const [orderByAmount, setOrderByAmount] = useState("asc");
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
-  const [type, setType] = useState("");
+  const [types, setTypes] = useState("");
+  const [statuses, setStatuses] = useState("");
+  const [paymentMethods, setPaymentMethods] = useState("");
+
+  const {
+    data: transaction,
+    error,
+    isLoading,
+    isFetching,
+    isError,
+  } = useQuery({
+    queryKey: [
+      "transaction-list",
+      page,
+      types,
+      statuses,
+      paymentMethods,
+      orderByCreatedAt,
+    ], // Unique query key for caching
+    queryFn: () => {
+      return WalletApi.getTransaction({
+        limit,
+        page: page - 1,
+        types,
+        statuses,
+        paymentMethods,
+        orderByCreatedAt,
+      });
+    },
+    keepPreviousData: true,
+  });
+  const totalPages = transaction ? transaction.totalPage : 0;
+  console.log("transaction", transaction);
+
+  const handlePageClick = (pageNumber) => {
+    if (pageNumber !== page) {
+      setPage(pageNumber);
+    }
+  };
+  const filterTypes = [
+    {
+      key: "3",
+      label: (
+        <div
+          className={`${
+            types === "" ? "text-red-400" : ""
+          } border-b-[1px] border-gray-300 -mb-3 pb-2`}
+        >
+          Xem tất cả
+        </div>
+      ),
+      onClick: () => setTypes(""),
+    },
+    {
+      key: "1",
+      label: (
+        <div
+          className={`${
+            types === "" ? "text-red-400" : ""
+          } border-b-[1px] border-gray-300 -m-3 py-2 p  x-3`}
+        >
+          Nâng cấp tài khoản{" "}
+        </div>
+      ),
+      onClick: () => setTypes("UPGRADE_TO_PHOTOGRAPHER"),
+    },
+    {
+      key: "2",
+      label: "Nạp tiền",
+      onClick: () => setTypes("DEPOSIT"),
+    },
+    {
+      key: "3",
+      label: "Mua ảnh",
+      onClick: () => setTypes("IMAGE_BUY"),
+    },
+    {
+      key: "3",
+      label: "Bán ảnh",
+      onClick: () => setTypes("IMAGE_SELL"),
+    },
+    {
+      key: "3",
+      label: "Rút tiền",
+      onClick: () => setTypes("WITHDRAWAL"),
+    },
+    {
+      key: "3",
+      label: "Hoàn tiền",
+      onClick: () => setTypes("REFUND_FROM_BUY_IMAGE"),
+    },
+  ];
   const columns = [
     {
       title: (
         <div className="flex justify-between">
-          <button
-            onClick={() =>
-              orderByAmount === "asc"
-                ? setOrderByAmount("desc")
-                : setOrderByAmount("asc")
-            }
-          >
-            {orderByAmount === "asc" ? (
-              <Tooltip title="Sắp xếp giảm dần">
-                Số tiền
-                <CaretDownOutlined />
-              </Tooltip>
-            ) : (
-              <Tooltip title="Sắp xếp tăng dần">
-                Số tiền
-                <CaretUpOutlined />
-              </Tooltip>
-            )}
-          </button>
+          <p>Số tiền</p>
         </div>
       ),
       width: "15%",
@@ -59,36 +123,32 @@ export default function TableTransactilonList() {
       key: "amount",
       render: (_, record) => (
         <div>
-          <h1>
-            {record.status === "SUCCESS" && record.amount !== 0 ? (
-              record.type === "IMAGE_SELL" ||
-              record.type === "DEPOSIT" ||
-              record.type === "REFUND_FROM_BUY_IMAGE" ? (
-                <span className="text-green-400">
-                  +{formatCurrency(record.amount - record.fee)}
-                </span>
-              ) : (
-                <span className="text-red-400">
-                  -{formatCurrency(record.amount)}
-                </span>
-              )
-            ) : record.status === "PENDING" ? (
-              <span className="text-yellow-400">
-                {"  "}
-                {formatCurrency(record.amount)}
-              </span>
-            ) : (
-              <span className="text-gray-400">
-                {"  "}
-                {formatCurrency(record.amount)}
-              </span>
-            )}
-          </h1>
+          <ComWalletAmountConverter
+            type={record.type}
+            amount={record.amount}
+            paymentMethod={record.paymentMethod}
+            status={record.status}
+            fee={record.fee}
+          />
         </div>
       ),
     },
     {
-      title: "Loại",
+      title: (
+        <Dropdown
+          overlay={
+            <Menu
+              items={filterTypes.map((item) => ({
+                key: item.key,
+                label: <p onClick={item.onClick}>{item.label}</p>,
+              }))}
+            />
+          }
+          placement="bottom"
+        >
+          <p className="cursor-pointer">{types ? types : "Loại"}</p>
+        </Dropdown>
+      ),
       width: "15%",
       dataIndex: "type",
       key: "type",
@@ -157,25 +217,29 @@ export default function TableTransactilonList() {
 
     {
       title: (
-        <button
-          onClick={() =>
-            orderByCreatedAt === "desc"
-              ? setOrderByCreatedAt("asc")
-              : setOrderByCreatedAt("desc")
-          }
-        >
-          {orderByCreatedAt === "desc" ? (
-            <Tooltip title="Sắp xếp giảm dần">
-              Ngày cập nhật
-              <CaretDownOutlined />
-            </Tooltip>
-          ) : (
-            <Tooltip title="Sắp xếp tăng dần">
-              Ngày cập nhật
-              <CaretUpOutlined />
-            </Tooltip>
-          )}
-        </button>
+        <div className="flex justify-between">
+          <p className=" py-1"> Ngày cập nhật</p>
+          <p
+            onClick={() =>
+              orderByCreatedAt === "desc"
+                ? setOrderByCreatedAt("asc")
+                : setOrderByCreatedAt("desc")
+            }
+            className="cursor-pointer font-light border-[1px] px-2 py-1 rounded-md bg-[#1d1f22] hover:bg-opacity-70"
+          >
+            {orderByCreatedAt === "desc" ? (
+              <Tooltip title="Sắp xếp theo cũ nhất">
+                Từ mới đến cũ
+                <CaretDownOutlined />
+              </Tooltip>
+            ) : (
+              <Tooltip title="Sắp xếp theo mới nhất">
+                Từ cũ đến mới
+                <CaretUpOutlined />
+              </Tooltip>
+            )}
+          </p>
+        </div>
       ),
       width: "20%",
       dataIndex: "updatedAt",
@@ -183,33 +247,6 @@ export default function TableTransactilonList() {
       render: (updatedAt, record) => FormatDateTime(updatedAt),
     },
   ];
-  const {
-    data: transaction,
-    error,
-    isLoading,
-    isFetching,
-    isError,
-  } = useQuery({
-    queryKey: ["transaction-list", page, orderByAmount, orderByCreatedAt], // Unique query key for caching
-    queryFn: () => {
-      return WalletApi.getTransaction({
-        limit,
-        page: page - 1,
-        type,
-        orderByAmount,
-        orderByCreatedAt,
-      });
-    },
-    keepPreviousData: true,
-  });
-  const totalPages = transaction ? transaction.totalPage : 0;
-  console.log("transaction", transaction);
-
-  const handlePageClick = (pageNumber) => {
-    if (pageNumber !== page) {
-      setPage(pageNumber);
-    }
-  };
   return (
     <div>
       {!isFetching && totalPages > 1 && (
