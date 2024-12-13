@@ -18,8 +18,7 @@ const getPublicPhotos = async (
   orderByUpvote,
   watermark,
   selling,
-  photographerName,
-  title,
+  search,
   photographerId,
   cameraId,
   bookmarked,
@@ -32,6 +31,9 @@ const getPublicPhotos = async (
     page,
   };
 
+  if (search) {
+    params.search = search;
+  }
   if (categoryName) {
     params.categoryName = categoryName;
   }
@@ -46,12 +48,6 @@ const getPublicPhotos = async (
   }
   if (selling !== undefined && selling !== null) {
     params.selling = selling;
-  }
-  if (photographerName) {
-    params.photographerName = photographerName;
-  }
-  if (title) {
-    params.title = title;
   }
   if (photographerId) {
     params.photographerId = photographerId;
