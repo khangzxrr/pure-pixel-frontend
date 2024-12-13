@@ -9,6 +9,7 @@ import InsPhotoFilter from "./../Inspiration/InspirationPhoto/InsPhotoFilter";
 import PhotographerFilter from "../Photographer/PhotographerList/PhotographerFilter";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore";
+import { IoCloseSharp } from "react-icons/io5";
 const Sidebar = ({
   sideItems,
   trendItems,
@@ -59,8 +60,16 @@ const Sidebar = ({
     <div className="flex flex-col max-h-screen gap-3 w-full">
       {isUser && (
         <div className=" flex-grow">
-          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
+          <div className="flex justify-between px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">
             {nameUser || "User"}
+            {isSidebarOpen === true && (
+              <div
+                onClick={() => toggleSidebar(false)}
+                className="cursor-pointer mr-1 p-2 rounded-full hover:bg-[#1d1f22] transition duration-200"
+              >
+                <IoCloseSharp />
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -73,15 +82,31 @@ const Sidebar = ({
         //   />
         // </div>
         <div className=" flex-grow">
-          <div className="flex px-2 h-[50px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
+          <div className="flex justify-between px-2 h-[50px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
             Khám phá
+            {isSidebarOpen === true && (
+              <div
+                onClick={() => toggleSidebar(false)}
+                className="cursor-pointer mr-1 p-2 rounded-full hover:bg-[#1d1f22] transition duration-200"
+              >
+                <IoCloseSharp />
+              </div>
+            )}
           </div>
         </div>
       )}
       {isUpload && (
-        <div className=" ">
-          <div className="flex px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-2 outline-[#1d1f22] shadow-xl text-[#eee] items-center gap-3">
+        <div className="flex-grow">
+          <div className="flex justify-between px-2 h-[50px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
             Tải lên
+            {isSidebarOpen === true && (
+              <div
+                onClick={() => toggleSidebar(false)}
+                className="cursor-pointer mr-1 p-2 rounded-full hover:bg-[#1d1f22] transition duration-200"
+              >
+                <IoCloseSharp />
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -102,10 +127,18 @@ const Sidebar = ({
 
       {isOtherProfile && (
         <div className=" flex-grow">
-          <div className="flex px-2 h-[48px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
+          <div className="flex justify-between px-2 h-[48px] bg-[#36393f]  shadow-xl text-[#eee] items-center gap-3">
             <span className="truncate max-w-[200px]">
               {nameUserOther || "Hồ sơ"}
             </span>
+            {isSidebarOpen === true && (
+              <div
+                onClick={() => toggleSidebar(false)}
+                className="cursor-pointer mr-1 p-2 rounded-full hover:bg-[#1d1f22] transition duration-200"
+              >
+                <IoCloseSharp />
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -136,7 +169,7 @@ const Sidebar = ({
           </Link>
         ))}
         {isInspirationPage && (
-          <div className="flex flex-col mx-2 text-[#a3a3a3] gap-2 mt-2 mx-1 border-y-[1px] border-[#a3a3a3] py-2">
+          <div className="flex flex-col mx-4 text-[#a3a3a3] gap-2 mt-2  border-y-[1px] border-[#a3a3a3] py-2">
             <div>Bộ lọc ảnh</div>
             <InsPhotoFilter />
           </div>

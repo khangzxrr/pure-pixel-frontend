@@ -23,7 +23,7 @@ const SidebarLayout = ({
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
-
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
   const { data } = useQuery({
     queryKey: ["me"],
     queryFn: () => UserApi.getApplicationProfile(),
@@ -36,6 +36,25 @@ const SidebarLayout = ({
 
   const brandCamera = UseCameraStore((state) => state.brandCamera);
   const setNameCamera = UseCameraStore((state) => state.setNameCamera);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isLarge = window.innerWidth >= 1024;
+      setIsLargeScreen(isLarge);
+
+      // Nếu là màn hình lớn, đảm bảo sidebar luôn mở
+      if (isLarge) {
+        toggleSidebar(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Gọi một lần khi component mount
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [toggleSidebar]);
 
   useEffect(() => {
     if (location.pathname.includes("/camera/all")) {
@@ -69,8 +88,10 @@ const SidebarLayout = ({
         {/* left sidebar */}
         <div
           className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-72 ${
-            isSidebarOpen ? "w-60" : "w-0 overflow-hidden"
-          } lg:overflow-visible  absolute lg:relative z-30 h-screen`}
+            isLargeScreen || isSidebarOpen
+              ? "w-60 translate-x-0"
+              : "w-60 overflow-hidden -translate-x-full"
+          } lg:overflow-visible absolute lg:relative z-20 h-screen`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             {sidebarContent}
@@ -137,7 +158,7 @@ const SidebarLayout = ({
               : `overflow-y-auto custom-scrollbar`
           }`}
         >
-          <div className="sticky top-0 px-2 z-20 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3  w-full">
+          <div className="sticky top-0 px-2 z-10 flex justify-between items-center bg-[#36393f] bg-opacity-80 backdrop-blur-md h-[52px] py-3  w-full">
             <div className="flex items-center space-x-4">
               <div className="hover:bg-[#4e535e] p-1 rounded-full transition-colors duration-200">
                 <IoMenu
