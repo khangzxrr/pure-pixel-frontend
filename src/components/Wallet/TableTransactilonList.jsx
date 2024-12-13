@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import useColumnFilters from "../ComTable/utils";
-import { ConfigProvider, Dropdown, Menu, Pagination, Tooltip } from "antd";
+import {
+  ConfigProvider,
+  Divider,
+  Dropdown,
+  Menu,
+  Pagination,
+  Select,
+  Tooltip,
+} from "antd";
 import ComDateConverter from "../ComDateConverter/ComDateConverter";
 import ComTable from "../ComTable/ComTable";
 import ComStatusWalletConverter from "./../ComStatusConverter/ComStatusWalletConverter";
@@ -59,55 +67,188 @@ export default function TableTransactilonList() {
   };
   const filterTypes = [
     {
-      key: "3",
+      key: "1",
       label: (
         <div
           className={`${
-            types === "" ? "text-red-400" : ""
-          } border-b-[1px] border-gray-300 -mb-3 pb-2`}
+            types === ""
+              ? "bg-gray-500 text-white"
+              : "hover:bg-gray-400 text-gray-600 hover:text-white"
+          } py-1 px-2 -m-1 rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setTypes("")}
         >
           Xem tất cả
         </div>
       ),
-      onClick: () => setTypes(""),
     },
+    {
+      key: "2",
+      label: (
+        <div
+          className={`${
+            types === "UPGRADE_TO_PHOTOGRAPHER"
+              ? "bg-blue-500 text-white"
+              : "hover:bg-blue-400 text-blue-600 hover:text-white"
+          } py-1 px-2 -m-1 rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setTypes("UPGRADE_TO_PHOTOGRAPHER")}
+        >
+          <p className="text-sm">Nâng cấp tài khoản</p>
+        </div>
+      ),
+    },
+    {
+      key: "3",
+      label: (
+        <div
+          className={`${
+            types === "DEPOSIT"
+              ? "bg-green-500 text-white"
+              : "hover:bg-green-400 text-green-600 hover:text-white"
+          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setTypes("DEPOSIT")}
+        >
+          <p className="text-sm">Nạp tiền</p>
+        </div>
+      ),
+    },
+    {
+      key: "4",
+      label: (
+        <div
+          className={`${
+            types === "IMAGE_BUY"
+              ? "bg-yellow-500 text-white"
+              : "hover:bg-yellow-400 text-yellow-600 hover:text-white"
+          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setTypes("IMAGE_BUY")}
+        >
+          <p className="text-sm">Mua ảnh</p>
+        </div>
+      ),
+    },
+    {
+      key: "5",
+      label: (
+        <div
+          className={`${
+            types === "IMAGE_SELL"
+              ? "bg-orange-500 text-white"
+              : "hover:bg-orange-400 text-orange-600 hover:text-white"
+          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setTypes("IMAGE_SELL")}
+        >
+          <p className="text-sm">Bán ảnh</p>
+        </div>
+      ),
+    },
+    {
+      key: "6",
+      label: (
+        <div
+          className={`${
+            types === "WITHDRAWAL"
+              ? "bg-red-500 text-white"
+              : "hover:bg-red-400 text-red-600 hover:text-white"
+          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setTypes("WITHDRAWAL")}
+        >
+          <p className="text-sm">Rút tiền</p>
+        </div>
+      ),
+    },
+    {
+      key: "7",
+      label: (
+        <div
+          className={`${
+            types === "REFUND_FROM_BUY_IMAGE"
+              ? "bg-purple-500 text-white"
+              : "hover:bg-purple-400 text-purple-600 hover:text-white"
+          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setTypes("REFUND_FROM_BUY_IMAGE")}
+        >
+          <p className="text-sm">Hoàn tiền</p>
+        </div>
+      ),
+      value: "REFUND_FROM_BUY_IMAGE",
+    },
+  ];
+
+  const filterStatus = [
     {
       key: "1",
       label: (
         <div
           className={`${
-            types === "" ? "text-red-400" : ""
-          } border-b-[1px] border-gray-300 -m-3 py-2 p  x-3`}
+            status === ""
+              ? "hover:bg-blue-600 bg-blue-500 text-white"
+              : "hover:bg-blue-500 text-blue-600 hover:text-white"
+          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setStatuses("")}
         >
-          Nâng cấp tài khoản{" "}
+          <p className=" text-sm">Tất cả</p>
         </div>
       ),
-      onClick: () => setTypes("UPGRADE_TO_PHOTOGRAPHER"),
     },
     {
       key: "2",
-      label: "Nạp tiền",
-      onClick: () => setTypes("DEPOSIT"),
+      label: (
+        <div
+          className={`${
+            status === "SUCCESS"
+              ? "hover:bg-green-600 bg-green-500 text-white"
+              : "hover:bg-green-500 text-green-600 hover:text-white"
+          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setStatuses("SUCCESS")}
+        >
+          <p className=" text-sm">✓ Thành công</p>
+        </div>
+      ),
     },
     {
       key: "3",
-      label: "Mua ảnh",
-      onClick: () => setTypes("IMAGE_BUY"),
+      label: (
+        <div
+          className={`${
+            status === "PENDING"
+              ? "hover:bg-yellow-600 bg-yellow-500 text-white"
+              : "hover:bg-yellow-500 text-yellow-600 hover:text-white"
+          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setStatuses("PENDING")}
+        >
+          <p>◔ Đang chờ</p>
+        </div>
+      ),
     },
     {
-      key: "3",
-      label: "Bán ảnh",
-      onClick: () => setTypes("IMAGE_SELL"),
+      key: "4",
+      label: (
+        <div
+          className={`${
+            status === "CANCEL"
+              ? "hover:bg-red-600 bg-red-500 text-white"
+              : "hover:bg-red-500 text-red-600 hover:text-white"
+          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setStatuses("CANCEL")}
+        >
+          <p>x Đã hủy</p>
+        </div>
+      ),
     },
     {
-      key: "3",
-      label: "Rút tiền",
-      onClick: () => setTypes("WITHDRAWAL"),
-    },
-    {
-      key: "3",
-      label: "Hoàn tiền",
-      onClick: () => setTypes("REFUND_FROM_BUY_IMAGE"),
+      key: "5",
+      label: (
+        <div
+          className={`${
+            status === "FAILED"
+              ? "hover:bg-gray-600 bg-gray-500 text-white"
+              : "hover:bg-gray-500 text-gray-600 hover:text-white"
+          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => setStatuses("FAILED")}
+        >
+          <p>Thất bại</p>
+        </div>
+      ),
     },
   ];
   const columns = [
@@ -135,19 +276,25 @@ export default function TableTransactilonList() {
     },
     {
       title: (
-        <Dropdown
-          overlay={
-            <Menu
-              items={filterTypes.map((item) => ({
-                key: item.key,
-                label: <p onClick={item.onClick}>{item.label}</p>,
-              }))}
-            />
-          }
-          placement="bottom"
-        >
-          <p className="cursor-pointer">{types ? types : "Loại"}</p>
-        </Dropdown>
+        <div className="flex flex-col gap-2">
+          <p>Trạng thái</p>
+          <Select
+            className="w-4/5 text-gray-300 font-light border-[1px] border-gray-500 rounded-md bg-[#1d1f22] hover:bg-opacity-80 transition-all duration-300"
+            value={types}
+            options={[
+              { label: "Tất cả", value: "" },
+              { label: "Nâng cấp tài khoản", value: "UPGRADE_TO_PHOTOGRAPHER" },
+              { label: "Nạp tiền", value: "DEPOSIT" },
+              { label: "Mua ảnh", value: "IMAGE_BUY" },
+              { label: "Bán ảnh", value: "IMAGE_SELL" },
+              { label: "Rút tiền", value: "WITHDRAWAL" },
+              { label: "Hoàn tiền", value: "REFUND_FROM_BUY_IMAGE" },
+            ]}
+            onChange={(value) => {
+              setTypes(value);
+            }}
+          />
+        </div>
       ),
       width: "15%",
       dataIndex: "type",

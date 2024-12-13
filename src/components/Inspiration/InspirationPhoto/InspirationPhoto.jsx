@@ -25,28 +25,23 @@ const InspirationPhoto = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
-  const selectedPhotoCategory = UseCategoryStore(
-    (state) => state.selectedPhotoCategory
-  );
-  const filterByPhotoDate = UseCategoryStore(
-    (state) => state.filterByPhotoDate
-  );
-  const { isWatermarkChecked, isForSaleChecked } = UseCategoryStore();
-  const filterByUpVote = UseCategoryStore((state) => state.filterByUpVote);
-  const searchResult = UseCategoryStore((state) => state.searchResult);
-  const searchByPhotoTitle = UseCategoryStore(
-    (state) => state.searchByPhotoTitle
-  );
+  const {
+    searchByTags,
+    filterByIsFollowed,
+    selectedPhotoCategory,
+    filterByPhotoDate,
+    isWatermarkChecked,
+    isForSaleChecked,
+    filterByUpVote,
+    searchByPhotoTitle,
+  } = UseCategoryStore();
+
   const setNamePhotographer = UsePhotographerFilterStore(
     (state) => state.setNamePhotographer
   );
-  const setUserOtherId = UseUserOtherStore((state) => state.setUserOtherId);
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
-  const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
-  const searchByTags = UseCategoryStore((state) => state.searchByTags);
-  const filterByIsFollowed = UseCategoryStore(
-    (state) => state.filterByIsFollowed
-  );
+  const { setNameUserOther, setUserOtherId } = UseUserOtherStore();
+
   const popupShare = useModalState();
 
   const fetchPhotos = async ({ pageParam = 0 }) => {
@@ -58,8 +53,7 @@ const InspirationPhoto = () => {
     const isFollowed = filterByIsFollowed.param;
     const watermark = isWatermarkChecked;
     const selling = false;
-    const photographerName = searchResult;
-    const title = searchByPhotoTitle;
+    const search = searchByPhotoTitle;
     // const tag = Array.isArray(searchByTags) ? searchByTags[0] : searchByTags;
     const tag = searchByTags;
 
@@ -71,8 +65,7 @@ const InspirationPhoto = () => {
       orderByUpVote,
       watermark,
       selling,
-      photographerName,
-      title,
+      search,
       null,
       null,
       null,
@@ -91,7 +84,6 @@ const InspirationPhoto = () => {
         filterByUpVote,
         isWatermarkChecked,
         isForSaleChecked,
-        searchResult,
         searchByPhotoTitle,
         filterByIsFollowed,
         searchByTags,

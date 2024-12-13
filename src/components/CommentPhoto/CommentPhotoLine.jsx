@@ -62,7 +62,6 @@ export default function CommentPhotoLine({
   const viewUserProfile = () => {
     navigate(`/user/${value.user.id}`);
   };
-  console.log(userData.sub === value?.user?.id);
   const isBelongToUser = (userIdCheck) =>
     userData && userIdCheck && userData.sub === userIdCheck;
   const handleEdit = () => {
