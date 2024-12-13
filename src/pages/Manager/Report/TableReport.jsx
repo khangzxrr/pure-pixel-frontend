@@ -201,16 +201,7 @@ export const TableReport = forwardRef((props, ref) => {
               modalEdit.handleOpen();
               setSelectedData(record);
             }}
-            showModalDelete={() => {
-              ComConfirmDeleteModal(
-                `/upgrade-package`,
-                record.id,
-                `Bạn có chắc chắn muốn xóa?`,
-                reloadData,
-                notificationSuccess,
-                notificationError
-              );
-            }}
+           
             // extraMenuItems={
             //   record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
             // }
@@ -220,72 +211,8 @@ export const TableReport = forwardRef((props, ref) => {
       ),
     },
   ];
-  const extraMenuItems2 = [
-    {
-      label: "Mở lại báo cáo",
-      onClick: (e) => {
-        Modal.confirm({
-          title: "Xác nhận mở lại báo cáo",
-          content: "Bạn có chắc mở lại báo cáo?",
-          okText: "Mở lại",
-          okType: "primary",
-          cancelText: "Hủy",
-          onOk: () => {
-            patchData(`manager/report`, `${e.id}`, {
-              reportStatus: "OPEN",
-            })
-              .then((e) => {
-                console.log("11111", e);
-                notificationApi("success", "Thành công", "Đã mở lại báo cáo");
-
-                reloadData(pagination, filters, sorter);
-              })
-              .catch((error) => {
-                notificationApi("error", "Không thành công", "Lỗi");
-                console.log("error", error);
-              });
-          },
-        });
-      },
-    },
-  ];
-  const extraMenuItems = [
-    {
-      label: "Đóng báo cáo",
-      onClick: (e) => {
-        Modal.confirm({
-          title: "Xác nhận đã sử lý báo cáo",
-          content: "Bạn có chắc đã sử lý báo cáo?",
-          okText: "Đóng báo cáo",
-          okType: "primary",
-          cancelText: "Hủy",
-          onOk: () => {
-            patchData(`manager/report`, `${e.id}`, {
-              reportStatus: "CLOSED",
-            })
-              .then((e) => {
-                console.log("11111", e);
-                notificationApi("success", "Thành công", "Đã đóng báo cáo");
-
-                reloadData(pagination, filters, sorter);
-              })
-              .catch((error) => {
-                notificationApi("error", "Không thành công", "Lỗi");
-                console.log("error", error);
-              });
-          },
-        });
-      },
-    },
-  ];
-
-  const notificationSuccess = () => {
-    notificationApi("success", "thành công", "Đã thành công");
-  };
-  const notificationError = () => {
-    notificationApi("error", "Lỗi", "Lỗi");
-  };
-
+ 
+ 
   const reloadData = (pagination, filters, sorter) => {
     table.handleOpenLoading();
     const params = {};
