@@ -249,7 +249,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
   console.log("====================================");
   return (
     <div>
-      <div className="grid grid-cols-2 gap-4 pb-2">
+      <div className="grid grid-cols-3 gap-4 pb-2">
         {cardData.map((card, index) => (
           <ComCard
             key={index} // Sử dụng index làm key
