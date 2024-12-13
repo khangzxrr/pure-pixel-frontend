@@ -110,33 +110,31 @@ export default function UpgradePaymentModal() {
 
   // Polling logic: refetch the query every 3 seconds when the modal is open
   useEffect(() => {
-    // let interval;
-    // Polling logic
-    // if (isUpgradePaymentModal && transactionDetail) {
-    //   interval = setInterval(() => {
-    //     refetch();
-    //   }, 3000);
-    // }
-
     // Success and expiration logic
     if (isUpgradePaymentModal && transactionDetail) {
       console.log("transactionUpgrade", transactionDetail);
       if (transactionDetail.status === "SUCCESS") {
-        keycloak.updateToken(-1).then(() => {});
-        startFireworks();
-        // notificationApi(
-        //   "success",
-        //   "Nâng cấp gói thành công",
-        //   "Vui lòng kiểm tra lại giao lịch của bạn"
-        // );
-        setTimeout(() => {
-          stopFireworks();
-          setIsUpgradePaymentModal(false);
-          setIsDisable(false);
-          setDisableWalletPayment(false);
-          queryClient.invalidateQueries("upgrade-package-list");
-          queryClient.invalidateQueries("getTransactionById");
-          navigate("/profile/wallet");
+        //loop only navigate when getting new token
+        const updateTokenInterval = setInterval(() => {
+          keycloak.updateToken(-1).then((refreshed) => {
+            if (refreshed) {
+              clearInterval(updateTokenInterval);
+              startFireworks();
+              setTimeout(() => {
+                stopFireworks();
+                setIsUpgradePaymentModal(false);
+                setIsDisable(false);
+                setDisableWalletPayment(false);
+                queryClient.invalidateQueries({
+                  queryKey: "upgrade-package-list",
+                });
+                queryClient.invalidateQueries({
+                  queryKey: "getTransactionById",
+                });
+                navigate("/profile/wallet");
+              }, 1500);
+            }
+          });
         }, 3000);
       }
 
@@ -147,13 +145,10 @@ export default function UpgradePaymentModal() {
         notificationApi(
           "error",
           "Mã QR hết hiệu lực",
-          "Mã QR hết hiệu lực, bạn vui lòng thử lại sau"
+          "Mã QR hết hiệu lực, bạn vui lòng thử lại sau",
         );
       }
     }
-
-    // Cleanup function to stop polling when modal closes or component unmounts
-    // return () => clearInterval(interval);
   }, [isUpgradePaymentModal, transactionDetail, selectedUpgradePackage]);
 
   return (
