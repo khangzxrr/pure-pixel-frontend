@@ -7,6 +7,7 @@ import PhotoApi from "../../apis/PhotoApi";
 // REFERENCE TYPE:
 // "PHOTOGRAPHER_BOOKING_NEW_REQUEST"
 // "PHOTOGRAPHER_NEW_BOOKING_REVIEW"
+// "UPGRADE_PACKAGE"
 export default function PhotoNotification({ notification, onClose }) {
   const navigate = useNavigate();
   const photoId = notification.payload.id;
@@ -35,7 +36,7 @@ export default function PhotoNotification({ notification, onClose }) {
         break;
     }
   };
-  if (isError) {
+  if (error) {
     return "";
   }
   return (

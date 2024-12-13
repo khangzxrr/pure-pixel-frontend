@@ -120,7 +120,7 @@ const PhotosUser = () => {
               <LoadingSpinner />
             </div>
           }
-          endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
+          // endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
         >
           <div className="p-[5px]">
             <Masonry

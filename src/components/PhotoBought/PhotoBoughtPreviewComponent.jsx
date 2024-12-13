@@ -121,51 +121,55 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
             />
           </div>
         </div>
-        <div className="xl:w-1/3 overflow-y-auto  overflow-x-hidden custom-scrollbar2">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-1">
-              <img
-                src={photoDetail?.photographer?.avatar}
-                alt={photoDetail?.photographer?.name}
-                onClick={() =>
-                  navigate(`/user/${photoDetail?.photographer?.id}/selling`)
-                }
-                className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
-              />
-              <div>
-                <h2
-                  className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
+        <div className="xl:w-1/3">
+          <div className=" overflow-y-auto overflow-x-hidden custom-scrollbar2 h-4/5">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-1">
+                <img
+                  src={photoDetail?.photographer?.avatar}
+                  alt={photoDetail?.photographer?.name}
                   onClick={() =>
                     navigate(`/user/${photoDetail?.photographer?.id}/selling`)
                   }
-                  style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
-                >
-                  {photoDetail?.photographer?.name}
-                </h2>
-                <p className="text-sm text-gray-400">
-                  {calculateTimeFromNow(photoDetail?.createdAt)}
-                </p>
+                  className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
+                />
+                <div>
+                  <h2
+                    className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
+                    onClick={() =>
+                      navigate(`/user/${photoDetail?.photographer?.id}/selling`)
+                    }
+                    style={{
+                      wordBreak: "break-all",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {photoDetail?.photographer?.name}
+                  </h2>
+                  <p className="text-sm text-gray-400">
+                    {calculateTimeFromNow(photoDetail?.createdAt)}
+                  </p>
+                </div>
               </div>
             </div>
+
+            <div>
+              <h1
+                className="text-2xl font-medium mb-2"
+                style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+              >
+                {photoDetail?.title}
+              </h1>
+
+              <p
+                className="m-2 font-normal text-gray-200"
+                style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+              >
+                {photoDetail?.description}
+              </p>
+            </div>
+            <ExifList exifData={photoDetail?.exif} />
           </div>
-
-          <div>
-            <h1
-              className="text-2xl font-medium mb-2"
-              style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
-            >
-              {photoDetail?.title}
-            </h1>
-
-            <p
-              className="m-2 font-normal text-gray-200"
-              style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
-            >
-              {photoDetail?.description}
-            </p>
-          </div>
-          <ExifList exifData={photoDetail?.exif} />
-
           <div className="flex flex-col gap-2 mt-4">
             <h2 className="text-xl">Chọn kích thước để tải:</h2>
             <div className="flex flex-wrap gap-4 px-3">
