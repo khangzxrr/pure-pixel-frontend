@@ -25,6 +25,8 @@ const Explore = () => {
   const { isSidebarOpen, toggleSidebar } = UseSidebarStore();
   const [isVisible, setIsVisible] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+
   const { keycloak } = useKeycloak();
 
   const user = UserService.getTokenParsed();
@@ -73,6 +75,25 @@ const Explore = () => {
   };
 
   useEffect(() => {
+    const handleResize = () => {
+      const isLarge = window.innerWidth >= 1024;
+      setIsLargeScreen(isLarge);
+
+      // Nếu là màn hình lớn, đảm bảo sidebar luôn mở
+      if (isLarge) {
+        toggleSidebar(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Gọi một lần khi component mount
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [toggleSidebar]);
+
+  useEffect(() => {
     const mainDiv = document.getElementById("inspiration");
     mainDiv.addEventListener("scroll", handleScroll);
     return () => {
@@ -83,12 +104,15 @@ const Explore = () => {
   useEffect(() => {
     if (role?.includes("photographer")) setIsPhotographer(true);
   }, [data]);
+
   return (
     <div className="flex flex-grow h-screen ">
       <div className="flex w-full">
         <div
           className={`flex flex-col bg-[#2f3136] transition-all duration-200 lg:w-72 ${
-            isSidebarOpen ? "w-60" : "w-0 overflow-hidden"
+            isLargeScreen || isSidebarOpen
+              ? "w-60 translate-x-0"
+              : "w-60 overflow-hidden -translate-x-full"
           } lg:overflow-visible absolute lg:relative z-20 h-screen`}
         >
           {/* <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]"> */}
