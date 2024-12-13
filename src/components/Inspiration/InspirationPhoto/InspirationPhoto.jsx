@@ -171,7 +171,7 @@ const InspirationPhoto = () => {
               hasMore={hasNextPage}
               scrollThreshold={0.5}
               scrollableTarget="inspiration"
-              endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
+              // endMessage={<p className="text-center">Không còn ảnh nào nữa</p>}
             >
               <div className="p-[5px]">
                 <Masonry
