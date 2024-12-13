@@ -49,34 +49,34 @@ export default function DetailTransactionWithdrawal({
       },
     });
   };
-   const ErrorConfirmPay = async () => {
-     Modal.confirm({
-       title: "Xác nhận hủy rút tiền",
-       content: "Bạn có chắc hủy chuyển tiền cho người dùng?",
-       okText: "Xác nhận hủy",
-       okType: "primary",
-       cancelText: "Quay lại",
-       onOk: () => {
-         patchData(`/manager/transaction`, `${selectedData.id}`, {
-           status: "CANCEL",
-         })
-           .then((e) => {
-             console.log("11111", e);
-             notificationApi(
-               "success",
-               "Thành công",
-               "Đã xác nhận đã chuyển tiền"
-             );
-             onClose();
-             reloadData();
-           })
-           .catch((error) => {
-             notificationApi("error", "Không thành công", "Lỗi");
-             console.log("error", error);
-           });
-       },
-     });
-   };
+  const ErrorConfirmPay = async () => {
+    Modal.confirm({
+      title: "Xác nhận hủy rút tiền",
+      content: "Bạn có chắc hủy chuyển tiền cho người dùng?",
+      okText: "Xác nhận hủy",
+      okType: "primary",
+      cancelText: "Quay lại",
+      onOk: () => {
+        patchData(`/manager/transaction`, `${selectedData.id}`, {
+          status: "CANCEL",
+        })
+          .then((e) => {
+            console.log("11111", e);
+            notificationApi(
+              "success",
+              "Thành công",
+              "Đã xác nhận hủy rút tiền"
+            );
+            onClose();
+            reloadData();
+          })
+          .catch((error) => {
+            notificationApi("error", "Không thành công", "Lỗi");
+            console.log("error", error);
+          });
+      },
+    });
+  };
   return (
     <div>
       <div>
@@ -129,18 +129,18 @@ export default function DetailTransactionWithdrawal({
                   label: "Số tài khoản:",
                   value: (
                     <>
-                     <p>
+                      <p>
                         {
                           selectedData?.withdrawalTransaction?.bankInfo
                             ?.bankNumber
                         }
-                     </p>
-                    <p>
+                      </p>
+                      <p>
                         {
                           selectedData?.withdrawalTransaction?.bankInfo
                             ?.bankUsername
                         }
-                    </p>
+                      </p>
                     </>
                   ),
                 },
