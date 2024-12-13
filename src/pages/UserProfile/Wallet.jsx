@@ -110,7 +110,7 @@ export default function Wallet() {
                     </div>
                     <div className="w-1/6">
                       <Tooltip title="Ẩn số dư">
-                        <EyeInvisibleOutlined />
+                        <EyeOutlined />
                       </Tooltip>
                     </div>
                   </div>
@@ -122,7 +122,7 @@ export default function Wallet() {
                     <div className="w-5/6">******</div>
                     <div className="w-1/6">
                       <Tooltip title="Hiện số dư">
-                        <EyeOutlined />
+                        <EyeInvisibleOutlined />
                       </Tooltip>
                     </div>
                   </div>

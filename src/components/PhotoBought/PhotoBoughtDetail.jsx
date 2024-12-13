@@ -8,15 +8,20 @@ import PhotoBoughtPreviewComponent from "./PhotoBoughtPreviewComponent";
 const PhotoBoughtDetail = () => {
   const { boughtId } = useParams();
 
-  const { data: photoData, isLoading } = useQuery({
+  const {
+    data: photoData,
+    isLoading,
+    isPending,
+  } = useQuery({
     queryKey: ["photo-bought-detail", boughtId],
     queryFn: () => PhotoExchange.getPhotoBoughtDetail(boughtId),
   });
 
-  console.log("photoData", photoData);
-  if (isLoading) {
+  if (isLoading || isPending) {
     return <div>Loading...</div>;
   }
+
+  console.log("photoData", photoData);
 
   return (
     <PhotoBoughtPreviewComponent

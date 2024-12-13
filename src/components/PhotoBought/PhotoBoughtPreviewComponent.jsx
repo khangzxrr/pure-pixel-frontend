@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import formatPrice from "./../../utils/FormatPriceUtils";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
 import PhotoExchange from "../../apis/PhotoExchange";
@@ -8,6 +8,7 @@ import ExifList from "../Photographer/UploadPhoto/ExifList";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { LoadingOutlined } from "@ant-design/icons";
+import { use } from "react";
 const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
   console.log(
     "checkPhotoData",
@@ -17,10 +18,11 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
   const navigate = useNavigate();
   const photoDetail = photoData && photoData.photo;
   const photoBuys = photoData ? photoData.photoBuys : [];
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(photoBuys[0]);
+
   const [previewPhoto, setPreviewPhoto] = useState(photoBuys[0]?.previewUrl);
   const popup = useModalState();
-
+  console.log("checkPhotoDetail", photoBuys[0]?.previewUrl);
   const handleOnSizeChange = (photobuy) => {
     console.log(
       "photobuy",
@@ -86,7 +88,11 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
       message.error("Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.");
     }
   };
-
+  useEffect(() => {
+    if (!selectedSize && photoData && photoBuys.length > 0 && photoBuys[0]) {
+      setSelectedSize(photoBuys[0]);
+    }
+  }, [selectedSize, photoBuys]);
   // Hàm tính thời gian từ lúc đăng ảnh
   function calculateTimeFromNow(dateString) {
     const startDate = new Date(dateString);
@@ -115,67 +121,61 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
         <div className="xl:w-2/3 flex-shrink-0 flex  bg-[#505050] justify-center items-center">
           <div className=" p-4 rounded-lg flex justify-center items-center ">
             <img
-              src={previewPhoto}
+              src={previewPhoto ? previewPhoto : photoBuys[0]?.previewUrl}
               alt={photoDetail?.title}
               className=" w-auto h-full transform  scale-[0.95] max-h-[650px] border-4 border-black "
             />
           </div>
         </div>
         <div className="xl:w-1/3">
-          <div className=" overflow-y-auto overflow-x-hidden custom-scrollbar2 h-4/5">
-            <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center gap-1">
-                <img
-                  src={photoDetail?.photographer?.avatar}
-                  alt={photoDetail?.photographer?.name}
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-1">
+              <img
+                src={photoDetail?.photographer?.avatar}
+                alt={photoDetail?.photographer?.name}
+                onClick={() =>
+                  navigate(`/user/${photoDetail?.photographer?.id}/selling`)
+                }
+                className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
+              />
+              <div>
+                <h2
+                  className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
                   onClick={() =>
                     navigate(`/user/${photoDetail?.photographer?.id}/selling`)
                   }
-                  className="w-10 h-10 rounded-full cursor-pointer transition-transform duration-300 hover:scale-110 hover:shadow-lg"
-                />
-                <div>
-                  <h2
-                    className="font-semibold cursor-pointer text-blue-600 hover:text-blue-800 transition-colors duration-300"
-                    onClick={() =>
-                      navigate(`/user/${photoDetail?.photographer?.id}/selling`)
-                    }
-                    style={{
-                      wordBreak: "break-all",
-                      overflowWrap: "break-word",
-                    }}
-                  >
-                    {photoDetail?.photographer?.name}
-                  </h2>
-                  <p className="text-sm text-gray-400">
-                    {calculateTimeFromNow(photoDetail?.createdAt)}
-                  </p>
-                </div>
+                  style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+                >
+                  {photoDetail?.photographer?.name}
+                </h2>
+                <p className="text-sm text-gray-400">
+                  {calculateTimeFromNow(photoDetail?.createdAt)}
+                </p>
               </div>
             </div>
-
-            <div>
-              <h1
-                className="text-2xl font-medium mb-2"
-                style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
-              >
-                {photoDetail?.title}
-              </h1>
-
-              <p
-                className="m-2 font-normal text-gray-200"
-                style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
-              >
-                {photoDetail?.description}
-              </p>
-            </div>
-            <ExifList exifData={photoDetail?.exif} />
           </div>
+
+          <div>
+            <h1
+              className="m-2 text-xl font-medium mb-2"
+              style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+            >
+              {photoDetail?.title}
+            </h1>
+
+            <p
+              className="m-2 font-normal text-gray-200"
+              style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
+            >
+              {photoDetail?.description}
+            </p>
+          </div>
+          <ExifList exifData={photoDetail?.exif} />
+
           <div className="flex flex-col gap-2 mt-4">
             <h2 className="text-xl">Chọn kích thước để tải:</h2>
             <div className="flex flex-wrap gap-4 px-3">
               {photoBuys?.map((photoBySize, index) => {
-                console.log("check photo", selectedSize?.id);
-
                 return (
                   <button
                     key={photoBySize.id}
