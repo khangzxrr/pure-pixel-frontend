@@ -35,31 +35,25 @@ const UpgradePackageCard = ({
       ),
   });
 
-  //check for expired discount
-  const isAvailableUpdate = (() => {
-    if (!currentPackage?.createAt) return false; // Ensure createAt exists
-    const createdAtDate = new Date(currentPackage.createAt); // Convert createAt to a Date object
-    const currentDate = new Date(); // Get the current date
-    const diffInMs = currentDate - createdAtDate; // Difference in milliseconds
-    const diffInDays = diffInMs / (1000 * 60 * 60 * 24); // Convert milliseconds to days
-    return diffInDays > 7; // Check if the difference is more than 7 days
-  })();
+  // //check for expired discount
+  // const isAvailableUpdate = (() => {
+  //   if (!currentPackage?.createAt) return false; // Ensure createAt exists
+  //   const createdAtDate = new Date(currentPackage.createAt); // Convert createAt to a Date object
+  //   const currentDate = new Date(); // Get the current date
+  //   const diffInMs = currentDate - createdAtDate; // Difference in milliseconds
+  //   const diffInDays = diffInMs / (1000 * 60 * 60 * 24); // Convert milliseconds to days
+  //   return diffInDays > 7; // Check if the difference is more than 7 days
+  // })();
   //check if this is the current package
   const isCurrentPackage =
     currentPackage &&
     packageItem &&
     currentPackage.upgradePackageHistory.originalUpgradePackageId ===
       packageItem.id;
-  // console.log(
-  //   "isCurrentPackage",
-  //   isCurrentPackage,
-  //   tranferData,
-  //   currentPackage
-  // );
   const isLowestPackagePrice =
     currentPackage &&
     packageItem &&
-    currentPackage.upgradePackageHistory.price > packageItem.price;
+    currentPackage.upgradePackageHistory.price >= packageItem.price;
   const handleOpenPaymentModal = () => {
     setIsUpgradePaymentModal(true);
     setSelectedUpgradePackage({
@@ -101,7 +95,7 @@ const UpgradePackageCard = ({
         </div>
       )}
 
-      {!isAvailableUpdate && (
+      {!isLowestPackagePrice && (
         <div className="font-light text-sm">
           <s>{formatPrice(packageItem.price * packageItem.minOrderMonth)}</s>
         </div>

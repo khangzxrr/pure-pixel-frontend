@@ -23,6 +23,12 @@ const ECommerceLayout = () => {
     fromDate,
     toDate,
   ]);
+  const minStartDate = dayjs("2024-08-01").startOf("day"); // Start of August 2024
+  const maxStartDate = dayjs().endOf("day"); // Current date (end of today)
+
+  const disabledDate = (current) => {
+    return current && (current < minStartDate || current > maxStartDate);
+  };
 
   // const toDate = new Date();
   // const fromDate = new Date(toDate.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -87,6 +93,7 @@ const ECommerceLayout = () => {
                 new Date(endDate.$d),
               ]);
             }}
+            disabledDate={disabledDate}
           />
         </ConfigProvider>
         <button
