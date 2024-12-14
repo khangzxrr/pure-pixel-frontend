@@ -40,8 +40,8 @@ const PhotosUser = () => {
       null,
       false,
       null,
-      null,
       photographerId,
+      null,
       null
     );
     return response;

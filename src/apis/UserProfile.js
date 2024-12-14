@@ -40,7 +40,7 @@ const updateUserProfile = async (data) => {
   }
 
   // Append phone number if present
-  if (data?.phonenumber) {
+  if (data?.phonenumber || data?.phonenumber === "") {
     formData.append("phonenumber", data.phonenumber);
   }
 
