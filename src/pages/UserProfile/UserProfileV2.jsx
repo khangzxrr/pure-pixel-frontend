@@ -6,7 +6,7 @@ import {
   Image,
   UserCheck,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import PhotographerApi from "../../apis/PhotographerApi";
 import { useQuery } from "@tanstack/react-query";
@@ -15,12 +15,22 @@ import { useKeycloak } from "@react-keycloak/web";
 import { ConfigProvider, message, Modal } from "antd";
 import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
 import { notificationApi } from "../../Notification/Notification";
+import { MdOutlineReport } from "react-icons/md";
+import { useModalState } from "../../hooks/useModalState";
+import ComReport from "../../components/ComReport/ComReport";
 
 const UserProfileV2 = () => {
   const { userId } = useParams();
   const { keycloak } = useKeycloak();
   const meId = keycloak?.tokenParsed?.sub;
   const navigate = useNavigate();
+  const popupReport = useModalState();
+  useEffect(() => {
+    if (userId && userId === meId) {
+      navigate("/profile");
+    }
+  }, [userId]);
+
   const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
   const { data, isLoading } = useQuery({
     queryKey: ["user", userId],
@@ -92,7 +102,15 @@ const UserProfileV2 = () => {
           <LoginWarningModal onCloseLogin={handleCloseLoginWarning} />
         </Modal>
       </ConfigProvider>
-
+      {popupReport.isModalOpen && (
+        <ComReport
+          onclose={popupReport.handleClose}
+          tile="Báo cáo người dùng"
+          id={data?.photographer.id}
+          // reportType =USER, PHOTO, BOOKING, COMMENT;
+          reportType={"USER"}
+        />
+      )}
       <div className="min-h-screen">
         {/* Seller Profile Header */}
         <div className="relative">
@@ -177,6 +195,23 @@ const UserProfileV2 = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
+                <div
+                  className="relative"
+                  onMouseEnter={() => handleMouseEnter("report")}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() =>
+                    keycloak?.authenticated
+                      ? popupReport.handleOpen()
+                      : handleLoginWarning()
+                  }
+                >
+                  <MdOutlineReport className="text-3xl cursor-pointer hover:text-red-500" />
+                  {hoveredIcon === "report" && (
+                    <span className="absolute hover:cursor-pointer flex justify-center w-[70px] bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs rounded-md p-1">
+                      Báo cáo
+                    </span>
+                  )}
+                </div>
                 <div
                   onMouseEnter={() => handleMouseEnter("share")}
                   onMouseLeave={handleMouseLeave}
