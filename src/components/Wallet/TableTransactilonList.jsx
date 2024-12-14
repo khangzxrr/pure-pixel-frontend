@@ -21,6 +21,9 @@ import ComNoteWalletConverter from "../ComStatusConverter/ComNoteWalletConventer
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import { FormatDateTime } from "../../utils/FormatDateTimeUtils";
 import ComWalletAmountConverter from "../ComStatusConverter/ComAmountConverter";
+import TypesDropdown from "./TypesDropdown";
+import StatusDropdown from "./StatusDropdown";
+import SortDateDropdown from "./SortDateDropdown";
 
 export default function TableTransactilonList() {
   const limit = 10;
@@ -65,192 +68,7 @@ export default function TableTransactilonList() {
       setPage(pageNumber);
     }
   };
-  const filterTypes = [
-    {
-      key: "1",
-      label: (
-        <div
-          className={`${
-            types === ""
-              ? "bg-gray-500 text-white"
-              : "hover:bg-gray-400 text-gray-600 hover:text-white"
-          } py-1 px-2 -m-1 rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setTypes("")}
-        >
-          Xem tất cả
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <div
-          className={`${
-            types === "UPGRADE_TO_PHOTOGRAPHER"
-              ? "bg-blue-500 text-white"
-              : "hover:bg-blue-400 text-blue-600 hover:text-white"
-          } py-1 px-2 -m-1 rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setTypes("UPGRADE_TO_PHOTOGRAPHER")}
-        >
-          <p className="text-sm">Nâng cấp tài khoản</p>
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <div
-          className={`${
-            types === "DEPOSIT"
-              ? "bg-green-500 text-white"
-              : "hover:bg-green-400 text-green-600 hover:text-white"
-          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setTypes("DEPOSIT")}
-        >
-          <p className="text-sm">Nạp tiền</p>
-        </div>
-      ),
-    },
-    {
-      key: "4",
-      label: (
-        <div
-          className={`${
-            types === "IMAGE_BUY"
-              ? "bg-yellow-500 text-white"
-              : "hover:bg-yellow-400 text-yellow-600 hover:text-white"
-          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setTypes("IMAGE_BUY")}
-        >
-          <p className="text-sm">Mua ảnh</p>
-        </div>
-      ),
-    },
-    {
-      key: "5",
-      label: (
-        <div
-          className={`${
-            types === "IMAGE_SELL"
-              ? "bg-orange-500 text-white"
-              : "hover:bg-orange-400 text-orange-600 hover:text-white"
-          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setTypes("IMAGE_SELL")}
-        >
-          <p className="text-sm">Bán ảnh</p>
-        </div>
-      ),
-    },
-    {
-      key: "6",
-      label: (
-        <div
-          className={`${
-            types === "WITHDRAWAL"
-              ? "bg-red-500 text-white"
-              : "hover:bg-red-400 text-red-600 hover:text-white"
-          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setTypes("WITHDRAWAL")}
-        >
-          <p className="text-sm">Rút tiền</p>
-        </div>
-      ),
-    },
-    {
-      key: "7",
-      label: (
-        <div
-          className={`${
-            types === "REFUND_FROM_BUY_IMAGE"
-              ? "bg-purple-500 text-white"
-              : "hover:bg-purple-400 text-purple-600 hover:text-white"
-          } py-1 px-2 rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setTypes("REFUND_FROM_BUY_IMAGE")}
-        >
-          <p className="text-sm">Hoàn tiền</p>
-        </div>
-      ),
-      value: "REFUND_FROM_BUY_IMAGE",
-    },
-  ];
 
-  const filterStatus = [
-    {
-      key: "1",
-      label: (
-        <div
-          className={`${
-            status === ""
-              ? "hover:bg-blue-600 bg-blue-500 text-white"
-              : "hover:bg-blue-500 text-blue-600 hover:text-white"
-          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setStatuses("")}
-        >
-          <p className=" text-sm">Tất cả</p>
-        </div>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <div
-          className={`${
-            status === "SUCCESS"
-              ? "hover:bg-green-600 bg-green-500 text-white"
-              : "hover:bg-green-500 text-green-600 hover:text-white"
-          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setStatuses("SUCCESS")}
-        >
-          <p className=" text-sm">✓ Thành công</p>
-        </div>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <div
-          className={`${
-            status === "PENDING"
-              ? "hover:bg-yellow-600 bg-yellow-500 text-white"
-              : "hover:bg-yellow-500 text-yellow-600 hover:text-white"
-          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setStatuses("PENDING")}
-        >
-          <p>◔ Đang chờ</p>
-        </div>
-      ),
-    },
-    {
-      key: "4",
-      label: (
-        <div
-          className={`${
-            status === "CANCEL"
-              ? "hover:bg-red-600 bg-red-500 text-white"
-              : "hover:bg-red-500 text-red-600 hover:text-white"
-          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setStatuses("CANCEL")}
-        >
-          <p>x Đã hủy</p>
-        </div>
-      ),
-    },
-    {
-      key: "5",
-      label: (
-        <div
-          className={`${
-            status === "FAILED"
-              ? "hover:bg-gray-600 bg-gray-500 text-white"
-              : "hover:bg-gray-500 text-gray-600 hover:text-white"
-          } py-1 px-2  rounded-sm transition-colors duration-300 ease-in-out w-full`}
-          onClick={() => setStatuses("FAILED")}
-        >
-          <p>Thất bại</p>
-        </div>
-      ),
-    },
-  ];
   const columns = [
     {
       title: (
@@ -276,16 +94,7 @@ export default function TableTransactilonList() {
     },
     {
       title: (
-        <div className="flex flex-col gap-2">
-          <p>Trạng thái</p>
-          {/* <Dropdown
-            className="hover:cursor-pointer"
-            menu={{ items: filterStatus }}
-            trigger={["click"]}
-          >
-            {statuses === "" ? "Tất cả" : statuses}
-          </Dropdown> */}
-        </div>
+        <TypesDropdown types={types} setTypes={setTypes} setPage={setPage} />
       ),
       width: "15%",
       dataIndex: "type",
@@ -339,7 +148,13 @@ export default function TableTransactilonList() {
       ),
     },
     {
-      title: "Trạng thái",
+      title: (
+        <StatusDropdown
+          statuses={statuses}
+          setStatuses={setStatuses}
+          setPage={setPage}
+        />
+      ),
       width: "15%",
       dataIndex: "status",
       key: "status",
@@ -355,29 +170,12 @@ export default function TableTransactilonList() {
 
     {
       title: (
-        <div className="flex justify-between">
-          <p className=" py-1"> Ngày cập nhật</p>
-          <p
-            onClick={() =>
-              orderByCreatedAt === "desc"
-                ? setOrderByCreatedAt("asc")
-                : setOrderByCreatedAt("desc")
-            }
-            className="cursor-pointer font-light border-[1px] px-2 py-1 rounded-md bg-[#1d1f22] hover:bg-opacity-70"
-          >
-            {orderByCreatedAt === "desc" ? (
-              <Tooltip title="Sắp xếp theo cũ nhất">
-                Từ mới đến cũ
-                <CaretDownOutlined />
-              </Tooltip>
-            ) : (
-              <Tooltip title="Sắp xếp theo mới nhất">
-                Từ cũ đến mới
-                <CaretUpOutlined />
-              </Tooltip>
-            )}
-          </p>
-        </div>
+        // <div className="flex justify-between">
+
+        <SortDateDropdown
+          orderByCreatedAt={orderByCreatedAt}
+          setOrderByCreatedAt={setOrderByCreatedAt}
+        />
       ),
       width: "20%",
       dataIndex: "updatedAt",

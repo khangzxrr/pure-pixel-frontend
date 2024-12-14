@@ -3,7 +3,7 @@ import {
   PlusCircleOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { message, Upload, Tooltip, Switch } from "antd";
 import { useEffect, useState } from "react";
 import PhotoApi from "../../../apis/PhotoApi";
@@ -17,6 +17,7 @@ import { useNotification } from "../../../Notification/Notification";
 const { Dragger } = Upload;
 
 export default function CustomUpload() {
+  const queryClient = useQueryClient();
   const [isWatermarkAll, setIsWatermarkAll] = useState(false);
   const [disableUpload, setDisableUpload] = useState(false);
   const [isCheckToggleWatermark, setIsCheckToggleWatermark] = useState(false);
@@ -375,6 +376,7 @@ export default function CustomUpload() {
       await Promise.all(updatePromises);
 
       setDisableUpload(false);
+      queryClient.invalidateQueries("my-photo");
       navigate("/profile/my-photos");
       // Clear state after successful updates
       clearState();

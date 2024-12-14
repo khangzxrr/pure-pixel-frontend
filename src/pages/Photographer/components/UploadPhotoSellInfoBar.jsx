@@ -1,7 +1,7 @@
 import React, { useEffect, useImperativeHandle, useState } from "react";
 import useSellPhotoStore from "../../../states/UseSellPhotoState";
 import { CategoryApi } from "../../../apis/CategoryApi";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MapBoxApi from "../../../apis/MapBoxApi";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -28,6 +28,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
       reset(getDefaultPhoto(selectedPhoto));
     },
   }));
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { notificationApi } = useNotification();
 
@@ -143,6 +144,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
       await Promise.all(updatePromises);
       setDisableUpload(false);
       navigate("/profile/photo-selling");
+      queryClient.invalidateQueries("my-photo-selling");
       // Clear state after successful updates
       clearState();
       // Display success message
