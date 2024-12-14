@@ -46,7 +46,6 @@ const CameraPhoto = ({ nameCamera }) => {
       null,
       null,
       null,
-      null,
       cameraId
     );
     return response;

@@ -278,22 +278,13 @@ export default function TableTransactilonList() {
       title: (
         <div className="flex flex-col gap-2">
           <p>Trạng thái</p>
-          <Select
-            className="w-4/5 text-gray-300 font-light border-[1px] border-gray-500 rounded-md bg-[#1d1f22] hover:bg-opacity-80 transition-all duration-300"
-            value={types}
-            options={[
-              { label: "Tất cả", value: "" },
-              { label: "Nâng cấp tài khoản", value: "UPGRADE_TO_PHOTOGRAPHER" },
-              { label: "Nạp tiền", value: "DEPOSIT" },
-              { label: "Mua ảnh", value: "IMAGE_BUY" },
-              { label: "Bán ảnh", value: "IMAGE_SELL" },
-              { label: "Rút tiền", value: "WITHDRAWAL" },
-              { label: "Hoàn tiền", value: "REFUND_FROM_BUY_IMAGE" },
-            ]}
-            onChange={(value) => {
-              setTypes(value);
-            }}
-          />
+          {/* <Dropdown
+            className="hover:cursor-pointer"
+            menu={{ items: filterStatus }}
+            trigger={["click"]}
+          >
+            {statuses === "" ? "Tất cả" : statuses}
+          </Dropdown> */}
         </div>
       ),
       width: "15%",

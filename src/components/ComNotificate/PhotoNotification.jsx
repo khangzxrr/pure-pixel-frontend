@@ -21,7 +21,14 @@ export default function PhotoNotification({ notification, onClose }) {
     queryKey: ["photo-detail-nofi", photoId],
     queryFn: () => PhotoApi.getPhotoById(photoId),
   });
-
+  const referenceType =
+    photoDetail && photoDetail?.photoSellings[0]?.active
+      ? "PHOTO_SELL_COMMENT"
+      : notification.referenceType;
+  // console.log(
+  //   "photoDetail",
+  //   photoDetail && photoDetail.photoSellings[0].active
+  // );
   const handleNavigate = (referenceType) => {
     switch (referenceType) {
       case "PHOTO_BAN":
@@ -31,6 +38,9 @@ export default function PhotoNotification({ notification, onClose }) {
         break;
       case "PHOTO_COMMENT":
         navigate("/photo/" + photoId);
+        break;
+      case "PHOTO_SELL_COMMENT":
+        navigate("/explore/product-photo/" + photoId);
         break;
       default:
         break;
@@ -44,7 +54,7 @@ export default function PhotoNotification({ notification, onClose }) {
       className="border-b border-gray-500 px-1 py-2  hover:cursor-pointer hover:bg-gray-500 transition-colors duration-200"
       key={notification.id}
       onClick={() => {
-        handleNavigate(notification.referenceType);
+        handleNavigate(referenceType);
         onClose();
       }}
     >

@@ -28,7 +28,6 @@ const SellingUser = () => {
         null,
         selling,
         null,
-        null,
         userId,
         null
       ),

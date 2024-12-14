@@ -31,9 +31,6 @@ const getPublicPhotos = async (
     page,
   };
 
-  if (search) {
-    params.search = search;
-  }
   if (categoryName) {
     params.categoryName = categoryName;
   }
@@ -48,6 +45,9 @@ const getPublicPhotos = async (
   }
   if (selling !== undefined && selling !== null) {
     params.selling = selling;
+  }
+  if (search) {
+    params.search = search;
   }
   if (photographerId) {
     params.photographerId = photographerId;
