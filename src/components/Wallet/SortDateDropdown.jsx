@@ -14,7 +14,7 @@ export default function SortDateDropdown({
       label: (
         <div
           className={`${
-            orderByCreatedAt === "desc"
+            orderByCreatedAt === "asc"
               ? "hover:bg-gray-600 bg-gray-500 text-white"
               : "hover:bg-gray-500 text-gray-600 hover:text-white"
           } cursor-pointer px-2 py-1 rounded`}
@@ -28,7 +28,11 @@ export default function SortDateDropdown({
       key: "2",
       label: (
         <div
-          className="cursor-pointer px-2 py-1 hover:bg-gray-200 rounded"
+          className={`${
+            orderByCreatedAt === "desc"
+              ? "hover:bg-gray-600 bg-gray-500 text-white"
+              : "hover:bg-gray-500 text-gray-600 hover:text-white"
+          } cursor-pointer px-2 py-1 rounded`}
           onClick={() => setOrderByCreatedAt("desc")}
         >
           Sắp xếp theo mới nhất

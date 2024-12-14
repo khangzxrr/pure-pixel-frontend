@@ -95,11 +95,13 @@ const UpgradePackageCard = ({
         </div>
       )}
 
-      {!isLowestPackagePrice && (
-        <div className="font-light text-sm">
-          <s>{formatPrice(packageItem.price * packageItem.minOrderMonth)}</s>
-        </div>
-      )}
+      {!isLowestPackagePrice &&
+        currentPackage &&
+        currentPackage?.upgradePackageHistory?.originalUpgradePackageId && (
+          <div className="font-light text-sm">
+            <s>{formatPrice(packageItem.price * packageItem.minOrderMonth)}</s>
+          </div>
+        )}
 
       <div className="flex flex-col min-h-[250px] gap-2 mt-2">
         <div className="pb-2 border-b border-[#949494] text-sm font-normal">
