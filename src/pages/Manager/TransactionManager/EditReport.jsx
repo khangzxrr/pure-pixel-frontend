@@ -7,15 +7,15 @@ import ComInput from "../../../components/ComInput/ComInput";
 import ComSelect from "../../../components/ComInput/ComSelect";
 import { MonyNumber } from "../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
-import {  putData } from "../../../apis/api";
+import { putData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
 
 export default function EditReport({ selectedReport, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
-  console.log("====================================");
-  console.log(selectedReport);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(selectedReport);
+  // console.log("====================================");
 
   useEffect(() => {
     setValue("minOrderMonth", selectedReport.minOrderMonth);
@@ -42,7 +42,7 @@ export default function EditReport({ selectedReport, onClose, tableRef }) {
     name: "descriptions",
   });
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     setDisabled(true);
     const change = MonyNumber(
       data.price,
@@ -51,7 +51,7 @@ export default function EditReport({ selectedReport, onClose, tableRef }) {
       (value) => (data.price = value)
     );
     if (change !== null) {
-      putData("/upgrade-package", selectedReport.id,{
+      putData("/upgrade-package", selectedReport.id, {
         ...data,
         status: "ENABLED",
       })
@@ -59,7 +59,7 @@ export default function EditReport({ selectedReport, onClose, tableRef }) {
           notificationApi("success", "Thành công", "Đã tạo thành công");
           setDisabled(false);
           setTimeout(() => {
-            tableRef()
+            tableRef();
           }, 100);
           onClose();
         })

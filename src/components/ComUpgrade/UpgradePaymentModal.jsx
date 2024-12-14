@@ -113,7 +113,6 @@ export default function UpgradePaymentModal() {
   useEffect(() => {
     // Success and expiration logic
     if (isUpgradePaymentModal && transactionDetail) {
-      console.log("transactionUpgrade", transactionDetail);
       if (transactionDetail.status === "SUCCESS") {
         queryClient.invalidateQueries({
           queryKey: "upgrade-package-list",

@@ -23,12 +23,12 @@ export default function ComReport({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({
-      content: reason + details,
-      reportStatus: "OPEN",
-      reportType: reportType,
-      referenceId: id,
-    });
+    // console.log({
+    //   content: reason + details,
+    //   reportStatus: "OPEN",
+    //   reportType: reportType,
+    //   referenceId: id,
+    // });
     postData("/user/report", {
       content: reason + details,
       reportType: reportType,
@@ -48,7 +48,6 @@ export default function ComReport({
 
     // onclose();
     // Reset form
-   
   };
 
   return (

@@ -104,12 +104,10 @@ const updatePhotoshootPackage = async ({ packageId, data }) => {
   }
 
   if (data?.thumbnail) {
-    console.log("Thumbnail is valid:", data.thumbnail.size);
     const thumbnailUrl = await PhotoService.convertArrayBufferToObjectUrl(
       data.thumbnail
     );
     if (data.thumbnail instanceof File || data.thumbnail instanceof Blob) {
-      console.log("Thumbnail is a valid file or blob", thumbnailUrl);
       formData.append("thumbnail", data.thumbnail);
     } else {
       console.error(
@@ -119,14 +117,7 @@ const updatePhotoshootPackage = async ({ packageId, data }) => {
   }
 
   // Debugging FormData
-  for (const [key, value] of formData.entries()) {
-    console.log(`${key}:`, value);
-  }
-  console.log(
-    "thumbnailCheck",
-    data.thumbnail,
-    PhotoService.convertArrayBufferToObjectUrl(data.thumbnail)
-  );
+
   // Send the PATCH request to update the user's profile
   const response = await customHttp.patch(
     `/photographer/photoshoot-package/${packageId}`,
@@ -185,7 +176,6 @@ const deletePhotoshootPackageShowcase = async (
   return response.data;
 };
 const getAllPhotoshootPackages = async (limit, page, orderByCreateAt) => {
-  console.log("getAllPhotoshootPackages", limit, page, orderByCreateAt);
   const response = await http.get(
     `/photographer/photoshoot-package?limit=${limit}&page=${page}&orderByCreateAt=${orderByCreateAt}`
   );

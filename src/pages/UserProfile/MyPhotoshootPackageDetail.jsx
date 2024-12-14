@@ -19,7 +19,7 @@ const MyPhotoshootPackageDetail = () => {
       PhotoshootPackageApi.photographerFindById(photoshootPackageId),
     keepPreviousData: true,
   });
-  console.log("data", photoshootPackageId, photoshootPackage);
+  // console.log("data", photoshootPackageId, photoshootPackage);
 
   return (
     <div className="flex flex-col p-4 gap-4">

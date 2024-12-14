@@ -35,16 +35,16 @@ const reportDetails = {
 export default function DetailReport({ selected, tableRef, onClose }) {
   const { notificationApi } = useNotification();
 
-  console.log("====================================");
-  console.log(selected);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(selected);
+  // console.log("====================================");
 
   const closeReport = () => {
     patchData(`manager/report`, `${selected.id}`, {
       reportStatus: "CLOSED",
     })
       .then((e) => {
-        console.log("11111", e);
+        // console.log("11111", e);
         notificationApi("success", "Thành công", "Đã đóng báo cáo");
         tableRef();
         onClose();
@@ -57,7 +57,7 @@ export default function DetailReport({ selected, tableRef, onClose }) {
   const banPhoto = () => {
     postData(`/manager/photo/${selected?.referencedPhoto?.id}/ban`)
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         patchData(`manager/report`, `${selected.id}`, {
           reportStatus: "CLOSED",
         })
@@ -81,12 +81,12 @@ export default function DetailReport({ selected, tableRef, onClose }) {
   const banUser = () => {
     postData(`/user/${selected?.referencedUser?.id}/ban`)
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         patchData(`manager/report`, `${selected.id}`, {
           reportStatus: "CLOSED",
         })
           .then((e) => {
-            console.log("11111", e);
+            // console.log("11111", e);
             notificationApi("success", "Thành công", "Đã đóng báo cáo");
             tableRef();
             onClose();
@@ -217,7 +217,6 @@ export default function DetailReport({ selected, tableRef, onClose }) {
 
                 {/* Ảnh đại diện */}
                 <div className="absolute ">
-                   
                   <img
                     wrapperClassName="w-32 max-h-32 object-cover rounded-full border-4 border-white"
                     className="w-32 h-32 object-cover rounded-full border-4 border-white"
@@ -299,7 +298,7 @@ export default function DetailReport({ selected, tableRef, onClose }) {
                   className={" bg-red-600 "}
                   onClick={() => {
                     // update("ComPleted");
-                    banPhoto()
+                    banPhoto();
                     notificationApi("error", "Không thành công", "Chưa có api");
                   }}
                 >

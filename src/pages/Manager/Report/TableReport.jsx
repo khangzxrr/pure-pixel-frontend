@@ -201,7 +201,6 @@ export const TableReport = forwardRef((props, ref) => {
               modalEdit.handleOpen();
               setSelectedData(record);
             }}
-           
             // extraMenuItems={
             //   record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
             // }
@@ -211,8 +210,7 @@ export const TableReport = forwardRef((props, ref) => {
       ),
     },
   ];
- 
- 
+
   const reloadData = (pagination, filters, sorter) => {
     table.handleOpenLoading();
     const params = {};
@@ -247,18 +245,17 @@ export const TableReport = forwardRef((props, ref) => {
       params[sortField] = sortOrder;
     } else {
       params["orderByCreatedAt"] = "desc";
-      
     }
     // if (sorter && sorter.field && sorter.order) {
     //   params.sortBy = sorter.field;
     //   params.sortOrder = sorter.order === "ascend" ? "asc" : "desc";
     // }
     const urlParams = new URLSearchParams(params).toString();
-    console.log("====================================");
-    console.log(123, urlParams);
-    console.log(123, `/manager/report?${urlParams}`);
+    // console.log("====================================");
+    // console.log(123, urlParams);
+    // console.log(123, `/manager/report?${urlParams}`);
 
-    console.log("====================================");
+    // console.log("====================================");
     getData(`/manager/report?${new URLSearchParams(params)}`)
       .then((e) => {
         setData(e?.data?.objects);
@@ -278,9 +275,9 @@ export const TableReport = forwardRef((props, ref) => {
   }, [pagination]);
 
   const handleSearch = () => {};
-  console.log("====================================");
-  console.log(pagination);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(pagination);
+  // console.log("====================================");
 
   const handlePageClick = (pageNumber) => {
     if (pageNumber !== pagination.current) {

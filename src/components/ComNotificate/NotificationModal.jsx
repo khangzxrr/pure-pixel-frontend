@@ -31,7 +31,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
 
   const showUpNotification = (data) => {
     notificationApi("info", data.title, data.content);
-    console.log(data);
+    // console.log(data);
   };
 
   useEffect(() => {
@@ -137,7 +137,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
     onClose();
     toggleSidebar();
   };
-  console.log(notificationList);
+
   const renderContent = (notification) => {
     switch (notification.referenceType) {
       case "CUSTOMER_BOOKING_REQUEST":

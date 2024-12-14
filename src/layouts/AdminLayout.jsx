@@ -43,7 +43,7 @@ import UserProfileApi from "../apis/UserProfile";
 import UserService from "../services/Keycloak";
 const user = UserService.getTokenParsed();
 const roles = user?.resource_access?.purepixel?.roles || []; // Lấy danh sách vai trò
-console.log(roles);
+// console.log(roles);
 
 const navigation = [
   ...(!roles.includes("manager")

@@ -29,7 +29,6 @@ const CommentDropdownAction = ({ handleEdit, photo }) => {
       icon: <IoPencilOutline />,
       label: <p className="text-blue-500">Chỉnh sửa</p>,
       onClick: () => {
-        console.log("edit");
         handleEdit();
       },
     },
@@ -75,12 +74,12 @@ const CommentDropdownAction = ({ handleEdit, photo }) => {
                 </button>
                 <button
                   onClick={() => {
-                    console.log(
-                      "photoId",
-                      photo.photoId,
-                      "commentId",
-                      photo.id
-                    );
+                    // console.log(
+                    //   "photoId",
+                    //   photo.photoId,
+                    //   "commentId",
+                    //   photo.id
+                    // );
                     deleteCommentPhoto.mutate({
                       photoId: photo.photoId,
                       commentId: photo.id, // Pass as a single object

@@ -115,7 +115,7 @@ const ProductPhotoDetail = () => {
           const userId = userData.sub;
           if (photoSelling) {
             const photoSellHistories = photoSelling.photoSellHistories;
-            console.log("User bought pricetag:", photoSellHistories);
+            // console.log("User bought pricetag:", photoSellHistories);
 
             photoSellHistories.forEach((history) => {
               const boughtByUser = history.photoBuy.some(
@@ -212,7 +212,7 @@ const ProductPhotoDetail = () => {
   if (!data) {
     return <div className="min-h-screen text-white p-8">Loading...</div>;
   }
-  console.log("exif", data.exif);
+  // console.log("exif", data.exif);
   const photoSelling =
     data.photoSellings && data.photoSellings.length > 0
       ? data.photoSellings[0]
@@ -234,13 +234,13 @@ const ProductPhotoDetail = () => {
         photoBuy.photoSellHistory.width === selectedPricetag.width &&
         photoBuy.photoSellHistory.height === selectedPricetag.height
     );
-  console.log(
-    "photoBoughtDetail",
-    photoBoughtDetail && photoBoughtDetail.photoBuys,
-    // data && data.photoSellings[0].pricetags,
-    selectedPricetag,
-    isBought
-  );
+  // console.log(
+  //   "photoBoughtDetail",
+  //   photoBoughtDetail && photoBoughtDetail.photoBuys,
+  //   // data && data.photoSellings[0].pricetags,
+  //   selectedPricetag,
+  //   isBought
+  // );
   const handleConfirmPayment = () => {
     handleBuyNow(selectedPaymentMethod);
   };

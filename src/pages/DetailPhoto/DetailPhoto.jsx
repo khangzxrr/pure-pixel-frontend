@@ -135,7 +135,7 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
     enabled: !!currentPhoto?.id,
   });
 
-  console.log(currentPhoto);
+  // console.log(currentPhoto);
 
   useEffect(() => {
     if (!isPending && data !== currentPhoto) {
@@ -166,7 +166,7 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
   }, [currentPhoto]);
 
   const refreshPhoto = () => {
-    console.log(`trigger refresh`);
+    // console.log(`trigger refresh`);
 
     queryClient.invalidateQueries(["getPhotoDetail", currentPhoto.id]);
   };

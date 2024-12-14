@@ -61,7 +61,7 @@ export default function TableTransactilonList() {
     keepPreviousData: true,
   });
   const totalPages = transaction ? transaction.totalPage : 0;
-  console.log("transaction", transaction);
+  // console.log("transaction", transaction);
 
   const handlePageClick = (pageNumber) => {
     if (pageNumber !== page) {

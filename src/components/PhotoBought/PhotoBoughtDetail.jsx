@@ -21,8 +21,6 @@ const PhotoBoughtDetail = () => {
     return <div>Loading...</div>;
   }
 
-  console.log("photoData", photoData);
-
   return (
     <PhotoBoughtPreviewComponent
       photoData={photoData}

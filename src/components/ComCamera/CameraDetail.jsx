@@ -13,8 +13,6 @@ const CameraDetail = () => {
   const brandCamera = UseCameraStore((state) => state.brandCamera);
   const idCamera = UseCameraStore((state) => state.idCamera);
 
-  console.log(cameraId);
-
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["camera-detail", cameraId],
     queryFn: () => CameraApi.getCameraById(cameraId),

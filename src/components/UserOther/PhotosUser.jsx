@@ -139,7 +139,7 @@ const PhotosUser = () => {
                     className="w-full h-auto object-cover"
                     onClick={() => {
                       handleOnClick(photo);
-                      console.log("PtUser", photo.id);
+                      // console.log("PtUser", photo.id);
                     }}
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">

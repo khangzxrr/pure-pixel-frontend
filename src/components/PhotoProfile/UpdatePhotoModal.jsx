@@ -36,7 +36,7 @@ export default function UpdatePhotoModal() {
     selectedUpdatePhoto,
     updateSelectedUpdatePhotoField,
   } = useModalStore();
-  console.log("selectedUpdatePhoto", selectedUpdatePhoto);
+  // console.log("selectedUpdatePhoto", selectedUpdatePhoto);
   const [categories, setCategories] = useState([]);
   const [viewState, setViewState] = useState({
     latitude: selectedUpdatePhoto?.exif?.latitude ?? 10.762622,
@@ -91,7 +91,7 @@ export default function UpdatePhotoModal() {
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
-      console.log("datacheck", data);
+      // console.log("datacheck", data);
       updateSelectedUpdatePhotoField(
         "address",
         data.features[0].properties.full_address
@@ -122,7 +122,7 @@ export default function UpdatePhotoModal() {
 
     // // Check if longitude and latitude exist in the exif object
     if (updatedData.exif?.longitude && updatedData.exif?.latitude) {
-      console.log("check");
+      // console.log("check");
       updatedData.gps = {
         longitude: updatedData.exif.longitude,
         latitude: updatedData.exif.latitude,

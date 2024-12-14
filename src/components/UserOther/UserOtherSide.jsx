@@ -14,7 +14,7 @@ const UserOtherSide = () => {
   const userData = UserService.getTokenParsed();
   const { userId } = useParams();
 
-  console.log(userOtherId);
+  // console.log(userOtherId);
 
   const handleLogin = () => keycloak.login();
   const handleRegister = () => keycloak.register();
@@ -52,13 +52,13 @@ const UserOtherSide = () => {
     },
   ];
   useEffect(() => {
-    console.log("userId", userId, userOtherId);
+    // console.log("userId", userId, userOtherId);
     if (userId !== undefined) {
       setActiveItem(
         "UO2",
         "Hồ sơ",
         <IoPersonSharp />,
-        `/user/${userId}/photos`,
+        `/user/${userId}/photos`
       );
       setUserOtherId(userId);
     }

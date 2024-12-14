@@ -88,7 +88,7 @@ export default function DetailUser({ id, data }) {
   const getPhotos = async (page) => {
     try {
       const response = await getData(
-        `/photo/public?limit=9999&page=${page}&photographerId=${id}`,
+        `/photo/public?limit=9999&page=${page}&photographerId=${id}`
       );
       setNumberPhoto(response?.data.totalRecord);
 
@@ -98,7 +98,7 @@ export default function DetailUser({ id, data }) {
     }
   };
   const fetchMorePhotos = async () => {
-    console.log(123);
+    // console.log(123);
 
     const newProducts = await getPhotos(page + 1);
     if (newProducts.length === 0) {
@@ -110,7 +110,7 @@ export default function DetailUser({ id, data }) {
   };
 
   const handlePhotoOnClick = (photo) => {
-    console.log(photo);
+    // console.log(photo);
     navigate(`/photo/${photo.id}`);
   };
   return (

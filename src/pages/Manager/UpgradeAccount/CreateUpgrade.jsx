@@ -39,7 +39,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
     name: "descriptions",
   });
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     setDisabled(true);
     const change = MonyNumber(
       data.price,
@@ -79,9 +79,9 @@ export default function CreateUpgrade({ onClose, tableRef }) {
     }
   };
 
-  console.log("====================================");
-  console.log(errors.descriptions);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(errors.descriptions);
+  // console.log("====================================");
   return (
     <div>
       <div className="bg-white">
@@ -176,7 +176,6 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                 <div className="sm:col-span-2">
                   <div className="mt-2.5">
                     <ComTextArea
-                   
                       rows={5}
                       label={"Tóm tắt về gói"}
                       placeholder={"Vui lòng nhập bản tóm tắt "}

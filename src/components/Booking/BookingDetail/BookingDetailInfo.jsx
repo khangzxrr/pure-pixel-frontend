@@ -76,7 +76,6 @@ const BookingDetailInfo = ({ bookingDetail }) => {
         "Vui lòng trả ảnh cho khách để xác nhận thanh toán"
       );
     }
-    console.log("bookingDetail", bookingDetail.photos.length);
   };
   const updateBookingDetail = useMutation({
     mutationFn: ({ description, startDate, endDate }) => {
@@ -99,7 +98,6 @@ const BookingDetailInfo = ({ bookingDetail }) => {
   const downloadPhoto = useMutation({
     mutationFn: (bookingId) => CustomerBookingApi.downloadAllPhoto(bookingId),
     onSuccess: async (data) => {
-      console.log(data);
       try {
         // Create a URL for the Blob
         const href = URL.createObjectURL(data);
@@ -164,11 +162,9 @@ const BookingDetailInfo = ({ bookingDetail }) => {
   );
   expiredAt.setDate(expiredAt.getDate() + 30);
 
-  console.log("Expired At:", expiredAt.toISOString()); // Print the new date in ISO format
   // Calculate the difference in milliseconds
   const countTimeToDownload =
     updatedAt - currentDate + 30 * 24 * 60 * 60 * 1000; // Renderer callback with condition
-  console.log("Time difference in milliseconds:", countTimeToDownload);
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
