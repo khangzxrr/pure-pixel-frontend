@@ -1,9 +1,15 @@
 import http from "../configs/Http";
 
-const getPhotoBought = async (limit, page) => {
-  const response = await http.get(
-    `photo-exchange/me/photo-buy?limit=${limit}&page=${page}`
-  );
+const getPhotoBought = async (limit, page, orderByUpdatedAt) => {
+  const params = { limit, page };
+  if (orderByUpdatedAt) {
+    params.orderByUpdatedAt = orderByUpdatedAt;
+  }
+
+  const queryString = new URLSearchParams(params);
+
+  const url = `/photo-exchange/me/photo-buy?${queryString.toString()}`;
+  const response = await http.get(url);
   return response.data;
 };
 
