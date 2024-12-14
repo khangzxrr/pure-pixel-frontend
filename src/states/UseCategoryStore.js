@@ -1,7 +1,7 @@
 import { create } from "zustand";
 const UseCategoryStore = create((set) => ({
   selectedPhotoCategory: { name: "", param: "" },
-  filterByPhotoDate: { name: "", param: "" },
+  filterByPhotoDate: { name: "Mới nhất", param: "desc" },
   filterByUpVote: { name: "", param: "" },
   isWatermarkChecked: false,
   isForSaleChecked: false,

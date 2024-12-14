@@ -121,14 +121,6 @@ const InsPhotoFilter = () => {
                   </div>
                 </MenuItem>
               ))}
-              <MenuItem className="hover:cursor-pointer">
-                <div
-                  onClick={() => handleFilterByPhotoDate("", "")}
-                  className="block px-4 py-2 text-sm text-red-500 data-[focus]:bg-red-500 data-[focus]:text-[#eee] transition-colors duration-200 ease-in-out"
-                >
-                  Xoá bộ lọc
-                </div>
-              </MenuItem>
             </div>
           </MenuItems>
         </Menu>
