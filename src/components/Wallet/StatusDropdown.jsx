@@ -33,6 +33,12 @@ const getStatusLabel = (status) => {
           <p className="text-sm">x Thất bại</p>
         </div>
       );
+    case "EXPIRED":
+      return (
+        <div className={`${baseClass} text-gray-500`}>
+          <p className="text-sm">Hết hạn</p>
+        </div>
+      );
     default:
       return (
         <div className={`${baseClass} text-gray-400 `}>
@@ -122,8 +128,8 @@ export default function StatusDropdown({ statuses, setStatuses, setPage }) {
         <div
           className={`${
             statuses === "FAILED"
-              ? "hover:bg-gray-600 bg-red-500 text-white"
-              : "hover:bg-gray-500 text-red-600 hover:text-white"
+              ? "hover:bg-gray-600 bg-gray-500 text-white"
+              : "hover:bg-gray-500 text-gray-600 hover:text-white"
           } py-1 px-2  rounded transition-colors duration-300 ease-in-out w-full`}
           onClick={() => {
             setStatuses("FAILED");
@@ -131,6 +137,24 @@ export default function StatusDropdown({ statuses, setStatuses, setPage }) {
           }}
         >
           <p>Thất bại</p>
+        </div>
+      ),
+    },
+    {
+      key: "5",
+      label: (
+        <div
+          className={`${
+            statuses === "EXPIRED"
+              ? "hover:bg-gray-600 bg-gray-500 text-white"
+              : "hover:bg-gray-500 text-gray-600 hover:text-white"
+          } py-1 px-2  rounded transition-colors duration-300 ease-in-out w-full`}
+          onClick={() => {
+            setStatuses("EXPIRED");
+            setPage(1);
+          }}
+        >
+          <p>Hết hạn</p>
         </div>
       ),
     },

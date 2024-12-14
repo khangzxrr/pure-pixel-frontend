@@ -46,11 +46,6 @@ export default function UpgradePaymentModal() {
           mockQrCode: data.mockQrCode, // Update or add new properties
         });
       } else {
-        // notificationApi(
-        //   "success",
-        //   "Nâng cấp gói thành công",
-        //   "Vui lòng kiểm tra lại giao lịch của bạn"
-        // );
         //call keycloak update token method, with -1 minValidity it will update immediately
         keycloak.updateToken(-1).then(() => {});
         startFireworks();
@@ -113,6 +108,7 @@ export default function UpgradePaymentModal() {
   useEffect(() => {
     // Success and expiration logic
     if (isUpgradePaymentModal && transactionDetail) {
+      console.log("transactionUpgrade", transactionDetail);
       if (transactionDetail.status === "SUCCESS") {
         queryClient.invalidateQueries({
           queryKey: "upgrade-package-list",
