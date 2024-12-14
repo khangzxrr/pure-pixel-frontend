@@ -5,7 +5,7 @@ export default function calculateDateDifference(inputDate) {
   if (differenceInMs < 0) {
     return "vừa xong";
   }
-  console.log("differenceInMs", differenceInMs);
+  // console.log("differenceInMs", differenceInMs);
   const differenceInHours = differenceInMs / (1000 * 60 * 60);
 
   if (differenceInHours < 1 / 30) {

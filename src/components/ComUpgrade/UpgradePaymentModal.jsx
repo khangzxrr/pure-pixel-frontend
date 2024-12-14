@@ -61,6 +61,7 @@ export default function UpgradePaymentModal() {
           stopFireworks();
           queryClient.invalidateQueries("upgrade-package-list");
           queryClient.invalidateQueries("getTransactionById");
+          queryClient.invalidateQueries("check-migrate-package-fee");
           navigate("/profile/wallet");
         }, 3000);
       }
@@ -114,6 +115,15 @@ export default function UpgradePaymentModal() {
     if (isUpgradePaymentModal && transactionDetail) {
       console.log("transactionUpgrade", transactionDetail);
       if (transactionDetail.status === "SUCCESS") {
+        queryClient.invalidateQueries({
+          queryKey: "upgrade-package-list",
+        });
+        queryClient.invalidateQueries({
+          queryKey: "getTransactionById",
+        });
+        queryClient.invalidateQueries({
+          queryKey: "check-migrate-package-fee",
+        });
         //loop only navigate when getting new token
         const updateTokenInterval = setInterval(() => {
           keycloak.updateToken(-1).then((refreshed) => {
@@ -125,12 +135,7 @@ export default function UpgradePaymentModal() {
                 setIsUpgradePaymentModal(false);
                 setIsDisable(false);
                 setDisableWalletPayment(false);
-                queryClient.invalidateQueries({
-                  queryKey: "upgrade-package-list",
-                });
-                queryClient.invalidateQueries({
-                  queryKey: "getTransactionById",
-                });
+
                 navigate("/profile/wallet");
               }, 1500);
             }
@@ -145,7 +150,7 @@ export default function UpgradePaymentModal() {
         notificationApi(
           "error",
           "Mã QR hết hiệu lực",
-          "Mã QR hết hiệu lực, bạn vui lòng thử lại sau",
+          "Mã QR hết hiệu lực, bạn vui lòng thử lại sau"
         );
       }
     }

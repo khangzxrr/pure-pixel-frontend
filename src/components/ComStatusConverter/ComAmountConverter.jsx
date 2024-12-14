@@ -19,7 +19,7 @@ function ComWalletAmountConverter({
     <h1>
       {status === "SUCCESS" &&
       amount !== 0 &&
-      (type !== "UPGRADE_TO_PHOTOGRAPHER" || paymentMethod === "SEPAY") &&
+      (type !== "UPGRADE_TO_PHOTOGRAPHER" || paymentMethod !== "SEPAY") &&
       (type !== "IMAGE_BUY" || paymentMethod === "WALLET") ? (
         type === "IMAGE_SELL" ||
         type === "DEPOSIT" ||

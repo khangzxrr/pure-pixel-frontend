@@ -201,11 +201,11 @@ export default function UpdatePhotoModal() {
               className="h-[200px] md:h-full md:w-[400px] shadow-gray-600 shadow-xl drop-shadow-none z-0 mx-auto"
               alt={selectedUpdatePhoto.thumbnailPhotoUrl}
             />
-            {selectedUpdatePhoto.watermark && (
+            {/* {selectedUpdatePhoto.watermark && (
               <div className="absolute top-1/2 text-4xl  text-gray-700 z-10">
                 PXL
               </div>
-            )}
+            )} */}
           </div>
 
           <div className="col-span-10 md:col-span-5 w-full overflow-y-scroll custom-scrollbar">

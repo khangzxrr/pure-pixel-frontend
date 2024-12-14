@@ -8,9 +8,9 @@ function ComStatusWalletConverter({ children }) {
       case "PENDING":
         return <p className="text-yellow-600">◔ Đang chờ</p>;
       case "CANCEL":
-        return <p className="text-red-600">Đã hủy</p>;
+        return <p className="text-red-600">x Đã hủy</p>;
       case "FAILED":
-        return <p className="text-red-500">Thất bại</p>;
+        return <p className="text-red-500">x Thất bại</p>;
       case "EXPIRED":
         return <p className="text-gray-100">Hết hạn</p>;
       default:
