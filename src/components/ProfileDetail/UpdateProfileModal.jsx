@@ -45,18 +45,6 @@ export default function UpdateProfileModal({ userData }) {
     },
   });
 
-  useEffect(() => {
-    reset({
-      name: userData?.name || "",
-      quote: userData?.quote || "",
-      location: userData?.location || "",
-      mail: userData?.mail || "",
-      phonenumber: userData?.phonenumber || "",
-    });
-    setCoverPreview(userData?.cover || null);
-    setAvatarPreview(userData?.avatar || null);
-  }, [userData, isUpdateProfileModalVisible, reset]);
-
   const updateProfile = useMutation({
     mutationFn: (data) => UserProfileApi.updateUserProfile(data),
     onSuccess: () => {
@@ -90,17 +78,39 @@ export default function UpdateProfileModal({ userData }) {
   const onSubmit = (values) => {
     const data = {
       ...values,
-      name: values.name,
-      quote: values.quote,
-      mail: values.mail,
-      phonenumber: values.phonenumber,
-      location: values.location,
+      // name: values.name,
+      // quote: values.quote,
+      // mail: values.mail,
+      // phonenumber: values.phonenumber,
+      // location: values.location,
       cover: coverFile,
       avatar: avatarFile,
     };
+
+    // Remove all fields with falsy values
+    // Object.keys(data).forEach((key) => {
+    //   if (!data[key]) {
+    //     delete data[key];
+    //   }
+    // });
+
+    console.log(data);
+
+    // Call the mutation function with the updated data
     updateProfile.mutate(data);
   };
 
+  useEffect(() => {
+    reset({
+      name: userData?.name || "",
+      quote: userData?.quote || "",
+      location: userData?.location || "",
+      mail: userData?.mail || "",
+      phonenumber: userData?.phonenumber || "",
+    });
+    setCoverPreview(userData?.cover || null);
+    setAvatarPreview(userData?.avatar || null);
+  }, [userData, isUpdateProfileModalVisible, reset]);
   return (
     <ConfigProvider
       theme={{

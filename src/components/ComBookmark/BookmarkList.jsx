@@ -33,7 +33,6 @@ const BookmarkList = () => {
         null,
         null,
         null,
-        null,
         bookmark
       ),
     keepPreviousData: true,

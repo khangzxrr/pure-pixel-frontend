@@ -49,7 +49,6 @@ const PhotographerCard = ({ photographer, maxQuoteLength = 30 }) => {
         null,
         null,
         null,
-        null,
         photographer.id
       ),
     staleTime: 300000,
