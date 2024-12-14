@@ -57,7 +57,7 @@ const TablePhotographersList = ({ dataTopSeller }) => {
         // onChange={onChange}
         scroll={{
           x: 1020, // Chiều rộng để bảng cuộn ngang nếu nội dung vượt quá
-          y: "73vh", // Chiều cao cố định để bảng cuộn dọc
+          y: "50vh", // Chiều cao cố định để bảng cuộn dọc
         }}
         pagination={false}
         showSorterTooltip={{

@@ -11,8 +11,6 @@ import { useNavigate } from "react-router-dom";
 import formatPrice from "./../../utils/FormatPriceUtils";
 import { FormatDate } from "./../../utils/FormatDate";
 const TablePhotoshootOfPhotographer = ({ data }) => {
-  console.log(data);
-
   const navigate = useNavigate();
   const columns = [
     {

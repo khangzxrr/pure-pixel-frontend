@@ -143,7 +143,7 @@ const BookingCard = ({ booking, status }) => {
                   title="Xác nhận từ chối"
                   description="Bạn có chắc muốn từ chối lịch hẹn này không?"
                   onConfirm={handleDenyBooking}
-                  onCancel={() => console.log("Cancelled")}
+                  onCancel={() => {}}
                   okText="Từ chối"
                   cancelText="Hủy"
                 >

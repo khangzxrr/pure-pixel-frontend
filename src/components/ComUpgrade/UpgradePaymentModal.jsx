@@ -112,7 +112,6 @@ export default function UpgradePaymentModal() {
   useEffect(() => {
     // Success and expiration logic
     if (isUpgradePaymentModal && transactionDetail) {
-      console.log("transactionUpgrade", transactionDetail);
       if (transactionDetail.status === "SUCCESS") {
         //loop only navigate when getting new token
         const updateTokenInterval = setInterval(() => {
@@ -145,7 +144,7 @@ export default function UpgradePaymentModal() {
         notificationApi(
           "error",
           "Mã QR hết hiệu lực",
-          "Mã QR hết hiệu lực, bạn vui lòng thử lại sau",
+          "Mã QR hết hiệu lực, bạn vui lòng thử lại sau"
         );
       }
     }

@@ -32,7 +32,7 @@ export default function PhotoCard({ photo }) {
   const { mutateAsync: deletePhotoMutate, isPending: isPendingDeletePhoto } =
     deletePhoto;
   const handleRemove = async (photo) => {
-    console.log("photo", isPendingDeletePhoto, photo);
+    // console.log("photo", isPendingDeletePhoto, photo);
     const photoId = photo.response?.id;
     if (isPendingDeletePhoto) return;
     if (photoId && photo.status !== "error") {
@@ -46,7 +46,7 @@ export default function PhotoCard({ photo }) {
             //   setIsDeleting(false);
             // },
             onError: (error) => {
-              console.log("deletePhotoMutateError", error);
+              // console.log("deletePhotoMutateError", error);
               message.error("Chưa thể xóa ảnh");
             },
           }
@@ -192,7 +192,7 @@ export default function PhotoCard({ photo }) {
   };
   const uploadPhoto = useMutation({
     mutationFn: ({ file, onUploadProgress }) => {
-      console.log("uploadPhoto", file);
+      // console.log("uploadPhoto", file);
       return timeout(
         PhotoApi.uploadPhoto(file, onUploadProgress),
         3000 // 5-minute timeout
@@ -208,7 +208,7 @@ export default function PhotoCard({ photo }) {
     isPending: tryUploadPhotoPending,
   } = uploadPhoto; // Destructure the return value of the hook
   const tryUploadPhoto = async ({ file }) => {
-    console.log("tryUploadPhoto", file);
+    // console.log("tryUploadPhoto", file);
     try {
       const response = await tryUploadPhotoMutate({
         file,
@@ -219,17 +219,17 @@ export default function PhotoCard({ photo }) {
           updatePhotoPropertyByUid(photo.file.uid, "percent", percentCompleted);
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       setPhotoUploadResponse(photo.file.uid, response);
       updatePhotoPropertyByUid(photo.file.uid, "status", "done");
       updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
     } catch (e) {
       handleException(e?.response?.data?.message);
-      console.log("tryUploadPhoto error", e);
+      // console.log("tryUploadPhoto error", e);
     }
   };
   const reUploadPhoto = () => {
-    console.log("file", photo.file);
+    // console.log("file", photo.file);
     tryUploadPhoto({ file: photo.file });
   };
   return (

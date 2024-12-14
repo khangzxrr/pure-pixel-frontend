@@ -9,7 +9,7 @@ import { MonyNumber } from "../../../components/MonyNumber/MonyNumber";
 import { useNotification } from "../../../Notification/Notification";
 import { postData } from "../../../apis/api";
 import { Upgrade } from "../../../yup/Upgrade";
-import ComTextArea from '../../../components/ComInput/ComTextArea';
+import ComTextArea from "../../../components/ComInput/ComTextArea";
 
 export default function CreateUpgrade({ onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
@@ -39,7 +39,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
     name: "descriptions",
   });
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     setDisabled(true);
     const change = MonyNumber(
       data.price,
@@ -77,9 +77,9 @@ export default function CreateUpgrade({ onClose, tableRef }) {
     }
   };
 
-  console.log("====================================");
-  console.log(errors.descriptions);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(errors.descriptions);
+  // console.log("====================================");
   return (
     <div>
       <div className="bg-white">
@@ -171,7 +171,7 @@ export default function CreateUpgrade({ onClose, tableRef }) {
                     />
                   </div>
                 </div>
-           
+
                 {fields.map((description, index) => (
                   <div className="sm:col-span-2" key={index}>
                     <div className="mt-2.5">

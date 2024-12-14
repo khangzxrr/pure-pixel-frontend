@@ -35,7 +35,7 @@ const PackagesUser = () => {
   const packagesList = data?.pages
     ? data.pages.flatMap((page) => page.objects)
     : [];
-  console.log("packagesList", packagesList);
+  // console.log("packagesList", packagesList);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">

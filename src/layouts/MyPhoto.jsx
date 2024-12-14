@@ -10,9 +10,9 @@ const MyPhoto = () => {
   useEffect(() => {
     const roles = UserService.hasRole(["customer"]);
     setRoles(roles);
-    console.log("roles", UserService.getUserRoles());
+    // console.log("roles", UserService.getUserRoles());
   }, []);
-  console.log("roles", roles);
+  // console.log("roles", roles);
 
   return (
     <div className="grid grid-cols-12">

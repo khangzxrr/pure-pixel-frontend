@@ -31,11 +31,11 @@ export default function PhotoSellCard({ photo }) {
   const { mutateAsync: deletePhotoMutate, isPending: isPendingDeletePhoto } =
     deletePhoto;
   const handleRemove = async (photo) => {
-    console.log("photo", isPendingDeletePhoto, photo);
+    // console.log("photo", isPendingDeletePhoto, photo);
     const photoId = photo.response?.id;
     if (isPendingDeletePhoto) return;
     if (photoId && photo.status !== "error") {
-      console.log("deletephoto", photo);
+      // console.log("deletephoto", photo);
       removePhotoById(photo.response.id);
 
       try {
@@ -79,7 +79,7 @@ export default function PhotoSellCard({ photo }) {
       await PhotoApi.getAvailableResolutionsByPhotoId(photoId),
   });
   const tryUploadPhoto = async ({ file, onError, onSuccess }) => {
-    console.log("tryUploadPhoto", file);
+    // console.log("tryUploadPhoto", file);
     try {
       const response = await tryUploadPhotoMutate({
         file,
@@ -91,14 +91,14 @@ export default function PhotoSellCard({ photo }) {
           updatePhotoPropertyByUid(photo.file.uid, "percent", percentCompleted);
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       setPhotoUploadResponse(photo.file.uid, response);
       updatePhotoPropertyByUid(photo.file.uid, "status", "done");
       updatePhotoPropertyByUid(photo.file.uid, "percent", 100);
       try {
         const photoResolution =
           await getAvailableResolutionsByPhotoId.mutateAsync(response.id);
-        console.log("photoResolution", photoResolution);
+        // console.log("photoResolution", photoResolution);
         updatePhotoPropertyByUid(file.uid, "pricetags", photoResolution);
         setSelectedPhotoByUid(file.uid);
         onSuccess(response);
@@ -110,7 +110,7 @@ export default function PhotoSellCard({ photo }) {
     }
   };
   const reUploadPhoto = () => {
-    console.log("file", photo.file);
+    // console.log("file", photo.file);
     tryUploadPhoto({ file: photo.file });
   };
 

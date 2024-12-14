@@ -82,19 +82,17 @@ const AccountManagerPage = () => {
       params["orderByCreatedAt"] = "desc";
     }
 
-    console.log("====================================");
-
-    console.log(`/user?${new URLSearchParams(params)}`);
     getData(`/user?${new URLSearchParams(params)}`)
       .then((e) => {
-        setData(e?.data?.objects);
-        setTotalRecord(e?.data?.totalRecord);
-        console.log(e?.data?.objects);
+        const filteredData = e?.data?.objects?.filter(
+          (item) => !item.roles?.includes("admin")
+        );
+        setData(filteredData); // Cập nhật data sau khi đã lọc
+        setTotalRecord(e?.data?.totalRecord); // Đảm bảo cập nhật số lượng bản ghi sau khi lọc
 
         table.handleCloseLoading();
       })
       .catch((error) => {
-        console.error("Error fetching items:", error);
         table.handleCloseLoading();
 
         if (error?.status === 401) {
@@ -115,11 +113,11 @@ const AccountManagerPage = () => {
       render: (text, record) => (
         <div className="flex items-center gap-3">
           <img
-            src={record.avatar || "https://via.placeholder.com/40"} // URL avatar, thêm ảnh mặc định nếu không có
+            src={record?.avatar || "https://via.placeholder.com/40"} // URL avatar, thêm ảnh mặc định nếu không có
             alt="Avatar"
             className="w-9 h-9 rounded-full object-cover bg-[#eee]"
           />
-          <span>{record.name}</span>
+          <span>{record?.name}</span>
         </div>
       ),
     },
@@ -130,7 +128,11 @@ const AccountManagerPage = () => {
       // ...getColumnSearchProps("mail", "Email"),
       render: (text, record) => (
         <div className="flex items-center gap-3">
-          <span>{record.roles && record.roles[0]}</span>
+          <span>
+            {record?.roles && record?.roles[0] === "photographer"
+              ? "Nhiếp ảnh gia"
+              : "Khách hàng"}
+          </span>
         </div>
       ),
     },
@@ -141,9 +143,9 @@ const AccountManagerPage = () => {
       render: (text, record) => (
         <div className="flex items-center gap-3">
           <span
-            className={`${record.enabled ? "text-green-500" : "text-red-500"}`}
+            className={`${record?.enabled ? "text-green-500" : "text-red-500"}`}
           >
-            {record.enabled ? "Hoạt động" : "Tạm ngưng"}
+            {record?.enabled ? "Hoạt động" : "Tạm ngưng"}
           </span>
         </div>
       ),

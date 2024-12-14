@@ -84,7 +84,7 @@ export default function BookingModal({ photoPackage, onClose }) {
 
   const handleOk = (data) => {
     if (data.dateRange && data.dateRange.length === 2) {
-      console.log("Data:", data);
+      // console.log("Data:", data);
 
       const formattedDates = {
         startDate: dayjs(data.dateRange[0]).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
@@ -100,7 +100,7 @@ export default function BookingModal({ photoPackage, onClose }) {
         },
       });
 
-      console.log("Formatted Dates:", formattedDates);
+      // console.log("Formatted Dates:", formattedDates);
     } else {
       console.log("Date range is not properly selected.");
     }
@@ -116,7 +116,7 @@ export default function BookingModal({ photoPackage, onClose }) {
     return current && (current < minStartDate || current > maxStartDate);
   };
   const [startDateTime, setStartDateTime] = useState(null);
-  console.log("startDateTime", startDateTime, current.hour());
+  // console.log("startDateTime", startDateTime, current.hour());
   const disabledTime = (date) => {
     if (date.isSame(current, "day") && current.hour()) {
       // console.log("current.hour()", current.hour());

@@ -1,7 +1,7 @@
 import React from "react";
 
 const MyPhotoshootPackageDetailShowcase = ({ showcases }) => {
-  console.log("showcases", showcases);
+  // console.log("showcases", showcases);
 
   return (
     <div className="rounded-lg bg-[#292b2f] flex flex-col gap-2 p-2">

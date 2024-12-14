@@ -83,7 +83,7 @@ export default function SideWithdrawalForm({
   const createWithdrawal = useMutation({
     mutationFn: (data) => WalletApi.createWithdrawal(data),
     onSuccess: (data) => {
-      console.log(data);
+      // console.log(data);
       message.success("Yêu cầu rút tiền thành công");
       queryClient.invalidateQueries("transaction-list"); // Invalidate the wallet query to refetch the data
       queryClient.invalidateQueries("wallet"); // Invalidate the wallet query to refetch the data
@@ -123,7 +123,7 @@ export default function SideWithdrawalForm({
       message.error("Số dư không đủ để thực hiện giao dịch");
     } else {
       createWithdrawal.mutate(data);
-      console.log(data);
+      // console.log(data);
     }
   };
 
@@ -151,7 +151,7 @@ export default function SideWithdrawalForm({
   const onSubmit = (data) => {
     confirm(data); // Confirm the form submission with valid data
   };
-  console.log("errors", errors);
+  // console.log("errors", errors);
   return (
     <div
       ref={sideNavRef}

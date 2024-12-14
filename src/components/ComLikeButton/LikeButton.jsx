@@ -59,7 +59,7 @@ const LikeButton = ({ photoId, size = "size-7", reloadData }) => {
     if (!isLiked) {
       postData(`/photo/${photoId}/vote`, { isUpvote: true })
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           reloadData();
           setIsLiked(true);
         })

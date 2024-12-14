@@ -177,9 +177,9 @@ export const TableUpgrade = forwardRef((props, ref) => {
     getData("/upgrade-package?limit=9999&page=0")
       .then((e) => {
         setData(e?.data?.objects);
-        console.log("====================================");
-        console.log(e?.data);
-        console.log("====================================");
+        // console.log("====================================");
+        // console.log(e?.data);
+        // console.log("====================================");
         table.handleCloseLoading();
       })
       .catch((error) => {

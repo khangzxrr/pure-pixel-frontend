@@ -87,10 +87,10 @@ const SellUpload = () => {
 
       postData("/photo/upload", formData)
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           getData(`/photo/${data.id}/available-resolution`)
             .then((resolutions) => {
-              console.log(resolutions);
+              // console.log(resolutions);
               const sizeArray = resolutions.data || resolutions;
               newImageData[index] = {
                 ...element,
@@ -163,11 +163,11 @@ const SellUpload = () => {
           price: item.price,
         })),
       };
-      console.log("Payload:", payload);
+      // console.log("Payload:", payload);
 
       postData(`/photo/${data.id}/sell`, payload)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           submitCount++;
           if (submitCount === imageData.length) {
             message.success("Đã gửi tất cả dữ liệu thành công!");
@@ -289,7 +289,7 @@ const SellUpload = () => {
           {currentImageIndex !== null && (
             <div className="mt-6">
               <h3 className="text-lg font-semibold mb-4">
-                Nhập thông tin cho ảnh {" "}
+                Nhập thông tin cho ảnh{" "}
                 {imageData[currentImageIndex]?.file?.name ||
                   currentImageIndex + 1}
               </h3>
@@ -330,27 +330,29 @@ const SellUpload = () => {
                 />
               </div>
               <p className="text-white mb-2">Kích thước và giá:</p>
-              {imageData[currentImageIndex]?.qualities.map((quality, qIndex) => (
-                <div key={qIndex} className="flex items-center mb-2">
-                  <span className="mr-2 text-white">
-                    Kích thước {quality.size}
-                  </span>
-                  <input
-                    type="number"
-                    min="0"
-                    className="w-full bg-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Giá"
-                    value={quality.price}
-                    onChange={(e) =>
-                      handlePriceChange(
-                        e.target.value,
-                        qIndex,
-                        currentImageIndex
-                      )
-                    }
-                  />
-                </div>
-              ))}
+              {imageData[currentImageIndex]?.qualities.map(
+                (quality, qIndex) => (
+                  <div key={qIndex} className="flex items-center mb-2">
+                    <span className="mr-2 text-white">
+                      Kích thước {quality.size}
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      className="w-full bg-gray-700 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Giá"
+                      value={quality.price}
+                      onChange={(e) =>
+                        handlePriceChange(
+                          e.target.value,
+                          qIndex,
+                          currentImageIndex
+                        )
+                      }
+                    />
+                  </div>
+                )
+              )}
             </div>
           )}
         </div>

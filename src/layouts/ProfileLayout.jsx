@@ -13,7 +13,7 @@ export default function ProfileLayout() {
     queryKey: ["user-profile", userId],
     queryFn: () => UserProfileApi.getMyProfile(userId),
   });
-  console.log(userData);
+  // console.log(userData);
 
   return (
     <div className="flex">
