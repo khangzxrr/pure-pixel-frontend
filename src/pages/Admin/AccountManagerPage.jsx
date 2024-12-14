@@ -85,7 +85,7 @@ const AccountManagerPage = () => {
     getData(`/user?${new URLSearchParams(params)}`)
       .then((e) => {
         const filteredData = e?.data?.objects?.filter(
-          (item) => !item.roles?.includes("admin")
+          (item) => !item.roles?.includes("purepixel-admin")
         );
         setData(filteredData); // Cập nhật data sau khi đã lọc
         setTotalRecord(e?.data?.totalRecord); // Đảm bảo cập nhật số lượng bản ghi sau khi lọc

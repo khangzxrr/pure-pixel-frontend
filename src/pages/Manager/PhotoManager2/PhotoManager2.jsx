@@ -161,8 +161,8 @@ const PhotoManager2 = () => {
 
       render: (id) => (
         <div
-          className="hover:text-blue-500 hover:underline underline-offset-2 hover:cursor-pointer"
-          onClick={() => navigate(`/photo/${id}`)}
+        // className="hover:text-blue-500 hover:underline underline-offset-2 hover:cursor-pointer"
+        // // onClick={() => navigate(`/photo/${id}`)}
         >
           {id}
         </div>
