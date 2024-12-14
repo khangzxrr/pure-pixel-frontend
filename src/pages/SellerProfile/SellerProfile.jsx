@@ -27,7 +27,7 @@ function formatCurrency(number) {
 const SellerProfile = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 9;
   const selling = true;
   const orderByCreatedAt = "desc";
   const [inputValue, setInputValue] = useState("");
@@ -38,11 +38,14 @@ const SellerProfile = () => {
       PhotographerApi.getMyPhotos(
         itemsPerPage,
         page - 1,
-        orderByCreatedAt,
+        null,
         null,
         null,
         selling,
-        photoTitle.trim() || null
+        photoTitle.trim() || null,
+        null,
+        null,
+        "desc"
       ),
     keepPreviousData: true,
   });

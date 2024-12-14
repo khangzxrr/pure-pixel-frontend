@@ -55,7 +55,8 @@ const getMyPhotos = async (
   selling,
   title,
   photoType,
-  statuses
+  statuses,
+  orderByUpdatedAt
 ) => {
   const params = {
     limit,
@@ -85,6 +86,9 @@ const getMyPhotos = async (
   }
   if (statuses && statuses.length > 0 && statuses[0] !== "") {
     params.statuses = statuses[0];
+  }
+  if (orderByUpdatedAt) {
+    params.orderByUpdatedAt = orderByUpdatedAt;
   }
   const queryString = new URLSearchParams(params).toString();
   const url = `/photographer/me/photo?${queryString}`;

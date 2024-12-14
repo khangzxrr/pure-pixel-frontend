@@ -25,13 +25,13 @@ const TablePhotoshootOfPhotographer = ({ data }) => {
       width: 300,
       render: (text, record) => (
         <div className="flex items-center gap-2">
-          <div className="size-16 overflow-hidden">
+          {/* <div className="size-16 overflow-hidden">
             <img
               src={record.thumbnail}
               alt=""
               className="size-full object-cover"
             />
-          </div>
+          </div> */}
           {text}
         </div>
       ),
