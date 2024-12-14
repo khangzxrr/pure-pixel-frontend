@@ -50,12 +50,12 @@ const UpgradePackageCard = ({
     packageItem &&
     currentPackage.upgradePackageHistory.originalUpgradePackageId ===
       packageItem.id;
-  console.log(
-    "isCurrentPackage",
-    isCurrentPackage,
-    tranferData,
-    currentPackage
-  );
+  // console.log(
+  //   "isCurrentPackage",
+  //   isCurrentPackage,
+  //   tranferData,
+  //   currentPackage
+  // );
   const isLowestPackagePrice =
     currentPackage &&
     packageItem &&

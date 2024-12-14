@@ -30,16 +30,16 @@ const MyPhotoshootPackageCard = ({
       );
     },
     onSuccess: () => {
-      console.log("deletePhotoshootPackage success", page);
+      // console.log("deletePhotoshootPackage success", page);
       const updatedNumberOfRecord = numberOfRecord - 1;
-      console.log(
-        updatedNumberOfRecord,
-        itemsPerPage,
-        page,
-        Math.ceil(updatedNumberOfRecord / itemsPerPage) < page
-      );
+      // console.log(
+      //   updatedNumberOfRecord,
+      //   itemsPerPage,
+      //   page,
+      //   Math.ceil(updatedNumberOfRecord / itemsPerPage) < page
+      // );
       if (Math.ceil(updatedNumberOfRecord / itemsPerPage) < page) {
-        console.log(`move to previous page ${page - 1}`);
+        // console.log(`move to previous page ${page - 1}`);
         setPage(page - 1);
       }
       queryClient.invalidateQueries("findAllPhotoshootPackages");

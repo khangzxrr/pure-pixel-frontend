@@ -46,9 +46,9 @@ const MyPhotosLayout = () => {
           queryClient.invalidateQueries({ queryKey: ["my-photo"] });
 
           const updatedNumberOfRecord = numberOfRecord - 1;
-          console.log(page);
+          // console.log(page);
           if (Math.ceil(updatedNumberOfRecord / itemsPerPage) < page) {
-            console.log(`move to previous page ${page - 1}`);
+            // console.log(`move to previous page ${page - 1}`);
             setPage(page - 1);
           }
         },

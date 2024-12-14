@@ -117,17 +117,17 @@ export default function PhotoMap() {
       latitude: photo.exif.latitude,
     });
 
-    console.log(
-      "check selected photo",
-      page,
-      totalPage,
-      selectedIndex,
-      photoList.length - 1
-    );
+    // console.log(
+    //   "check selected photo",
+    //   page,
+    //   totalPage,
+    //   selectedIndex,
+    //   photoList.length - 1
+    // );
 
     // Check if selectedPhoto is the second-to-last element in photoList
     if (selectedIndex === photoList.length - 2 && page < totalPage) {
-      console.log("Next Page");
+      // console.log("Next Page");
       setPage(page + 1);
       setIsAddNewPhotoList(true);
       setIsStopped(true);
@@ -140,7 +140,7 @@ export default function PhotoMap() {
       refetch();
     }
   };
-  console.log("check selected photo", page, isAddNewPhotoList, isStopped);
+  // console.log("check selected photo", page, isAddNewPhotoList, isStopped);
   const handleMapMove = (event) => {
     setIsStopped(false);
     setViewState(event.viewState);
@@ -238,7 +238,7 @@ export default function PhotoMap() {
 
   useEffect(() => {
     if (isAddNewPhotoList && photos) {
-      console.log("add new photo list", photos);
+      // console.log("add new photo list", photos);
       addMultiplePhotosToList(photos.objects);
       setIsAddNewPhotoList(false);
       setTotalPage(photos.totalPage);

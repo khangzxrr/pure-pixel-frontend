@@ -47,7 +47,7 @@ export default function UpdateMapModal() {
 
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat;
-    console.log("Clicked on:", lng, lat);
+    // console.log("Clicked on:", lng, lat);
     searchByCoordinate.mutate({ longitude: lng, latitude: lat });
     setSelectedLocate({ latitude: lat, longitude: lng });
     setViewState((prev) => ({
@@ -78,7 +78,7 @@ export default function UpdateMapModal() {
 
   const handleRetrieve = (res) => {
     if (res && res.features && res.features.length > 0) {
-      console.log("Retrieved:", res.features[0]);
+      // console.log("Retrieved:", res.features[0]);
       const feature = res.features[0];
       const { coordinates } = feature.geometry;
       const { full_address } = feature.properties;

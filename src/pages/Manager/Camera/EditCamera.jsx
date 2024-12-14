@@ -8,7 +8,7 @@ import { useNotification } from "../../../Notification/Notification";
 import { patchData, putData } from "../../../apis/api";
 import "react-quill/dist/quill.snow.css";
 import ComTextArea from "../../../components/ComInput/ComTextArea";
-import { CameraYup } from './../../../yup/Camera';
+import { CameraYup } from "./../../../yup/Camera";
 
 export default function EditCamera({ selectedUpgrede, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
@@ -30,7 +30,7 @@ export default function EditCamera({ selectedUpgrede, onClose, tableRef }) {
     formState: { errors },
     control,
     setError,
-    setFocus
+    setFocus,
   } = methods;
 
   const onChange = (data) => {
@@ -38,9 +38,9 @@ export default function EditCamera({ selectedUpgrede, onClose, tableRef }) {
   };
 
   const onSubmit = (data) => {
- console.log('====================================');
- console.log(data);
- console.log('====================================');
+    //  console.log('====================================');
+    //  console.log(data);
+    //  console.log('====================================');
 
     setDisabled(true);
 
@@ -48,7 +48,7 @@ export default function EditCamera({ selectedUpgrede, onClose, tableRef }) {
     if (!image) {
       const formData = new FormData();
       //  formData.append("thumbnail", image);
-      
+
       formData.append("name", data.name);
       formData.append("description", data.description);
 
@@ -84,11 +84,11 @@ export default function EditCamera({ selectedUpgrede, onClose, tableRef }) {
         .catch((error) => {
           console.error(1111, error.response.data.statusCode);
           if (error?.response?.data?.statusCode) {
-            setFocus("name")
-              setError("name", { message: "Tên máy ảnh này đã tồn tại" });
+            setFocus("name");
+            setError("name", { message: "Tên máy ảnh này đã tồn tại" });
           }
           setDisabled(false);
-          
+
           notificationApi("error", "Không thành công", "Vui lòng thử lại");
         });
     }

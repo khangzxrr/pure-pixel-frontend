@@ -188,7 +188,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
               status: "SUCCESS",
             })
               .then((e) => {
-                console.log("11111", e);
+                // console.log("11111", e);
                 notificationApi("success", "Thành công", "Đã đổi trạng thái");
 
                 reloadData();
@@ -209,9 +209,9 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
     )
       .then((e) => {
         setData(e?.data?.objects);
-        console.log("====================================");
-        console.log(123213213, e?.data);
-        console.log("====================================");
+        // console.log("====================================");
+        // console.log(123213213, e?.data);
+        // console.log("====================================");
         table.handleCloseLoading();
       })
       .catch((error) => {
@@ -220,20 +220,19 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
           reloadData();
         }
       });
-    
-     getData("/admin/dashboard/balance")
-       .then((e) => {
-         setTotalWithdrawal(e?.data?.totalWithdrawal); 
-         setTotalBalance(e?.data?.totalBalance); 
-         console.log(2222, e?.data); 
-         
-       })
-       .catch((error) => {
-         console.error("Error fetching items:", error);
-         if (error?.status === 401) {
-           reloadData();
-         }
-       });
+
+    getData("/admin/dashboard/balance")
+      .then((e) => {
+        setTotalWithdrawal(e?.data?.totalWithdrawal);
+        setTotalBalance(e?.data?.totalBalance);
+        // console.log(2222, e?.data);
+      })
+      .catch((error) => {
+        // console.error("Error fetching items:", error);
+        if (error?.status === 401) {
+          reloadData();
+        }
+      });
   };
   useEffect(() => {
     setTimeout(() => {
@@ -244,9 +243,9 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
     { title: "Tổng số dư", value: totalBalance },
     { title: "Tổng số tiền rút", value: totalWithdrawal },
   ];
-  console.log("====================================");
-  console.log(data);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(data);
+  // console.log("====================================");
   return (
     <div>
       <div className="grid grid-cols-3 gap-4 pb-2">

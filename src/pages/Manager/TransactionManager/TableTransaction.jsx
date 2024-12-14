@@ -41,14 +41,14 @@ export const TableTransaction = forwardRef((props, ref) => {
   const modalDetail = useModalState();
   const modalEdit = useModalState();
   const { notificationApi } = useNotification();
-    const [totalRecord, setTotalRecord] = useState(0);
-  
+  const [totalRecord, setTotalRecord] = useState(0);
+
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 7,
   });
-    const [filters, setFilters] = useState({});
-    const [sorter, setSorter] = useState(null);
+  const [filters, setFilters] = useState({});
+  const [sorter, setSorter] = useState(null);
   const {
     getColumnSearchProps,
     getColumnPriceRangeProps,
@@ -266,82 +266,79 @@ export const TableTransaction = forwardRef((props, ref) => {
   //   }, 500);
   // }, []);
 
+  const reloadData = (pagination, filters, sorter) => {
+    table.handleOpenLoading();
+    const params = {};
 
-   
-    const reloadData = (pagination, filters, sorter) => {
-      table.handleOpenLoading();
-      const params = {};
-  
-      // Thêm các tham số phân trang vào params
-      if (pagination) {
-        params.limit = pagination.pageSize;
-        params.page = pagination.current - 1; // API của bạn có thể bắt đầu từ 0
-      }
-  
-      // Thêm các bộ lọc (filters) vào params nếu có
-      if (filters) {
-        Object.keys(filters).forEach((key) => {
-          const value = filters[key];
-          // Nếu giá trị là mảng (ví dụ: reportTypes), thêm từng phần tử vào params dưới dạng tham số riêng biệt
-          if (Array.isArray(value)) {
-            value.forEach((item) => {
-              params[key] = params[key] ? [...params[key], item] : [item];
-            });
-          } else if (value) {
-            // Nếu giá trị không phải là mảng, thêm trực tiếp vào params
-            params[key] = value;
-          }
-        });
-      }
-  
-      if (sorter && sorter.field && sorter.order) {
-        // Chuyển đổi tên trường và kiểu sắp xếp thành format bạn mong muốn
-        const sortField = sorter.field;
-        const sortOrder = sorter.order === "ascend" ? "asc" : "desc";
-        // Giả sử bạn muốn tham số sắp xếp theo định dạng "orderBy<FieldName>"
-        params[sortField] = sortOrder;
-      } else {
-        params["orderByCreatedAt"] = "desc";
-        
-      }
-      // if (sorter && sorter.field && sorter.order) {
-      //   params.sortBy = sorter.field;
-      //   params.sortOrder = sorter.order === "ascend" ? "asc" : "desc";
-      // }
-      const urlParams = new URLSearchParams(params).toString();
-      console.log("====================================");
-      console.log(123, urlParams);
-      console.log(123, `/manager/report?${urlParams}`);
-  
-      console.log("====================================");
-      getData(`/manager/transaction?${new URLSearchParams(params)}`)
-        .then((e) => {
-          setData(e?.data?.objects);
-          setTotalRecord(e?.data?.totalRecord);
+    // Thêm các tham số phân trang vào params
+    if (pagination) {
+      params.limit = pagination.pageSize;
+      params.page = pagination.current - 1; // API của bạn có thể bắt đầu từ 0
+    }
 
-          table.handleCloseLoading();
-        })
-        .catch((error) => {
-          console.error("Error fetching items:", error);
-          if (error?.status === 401) {
-            // reloadData(pagination, filters, sorter);
-          }
-        });
-    };
-    useEffect(() => {
-      reloadData(pagination, filters, sorter);
-    }, [pagination]);
-    const handlePageClick = (pageNumber) => {
-      if (pageNumber !== pagination.current) {
-        setPagination({
-          ...pagination,
-          current: pageNumber,
-        });
-      }
-    };
-  console.log("====================================");
-  console.log(data);
-  console.log("====================================");
+    // Thêm các bộ lọc (filters) vào params nếu có
+    if (filters) {
+      Object.keys(filters).forEach((key) => {
+        const value = filters[key];
+        // Nếu giá trị là mảng (ví dụ: reportTypes), thêm từng phần tử vào params dưới dạng tham số riêng biệt
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            params[key] = params[key] ? [...params[key], item] : [item];
+          });
+        } else if (value) {
+          // Nếu giá trị không phải là mảng, thêm trực tiếp vào params
+          params[key] = value;
+        }
+      });
+    }
+
+    if (sorter && sorter.field && sorter.order) {
+      // Chuyển đổi tên trường và kiểu sắp xếp thành format bạn mong muốn
+      const sortField = sorter.field;
+      const sortOrder = sorter.order === "ascend" ? "asc" : "desc";
+      // Giả sử bạn muốn tham số sắp xếp theo định dạng "orderBy<FieldName>"
+      params[sortField] = sortOrder;
+    } else {
+      params["orderByCreatedAt"] = "desc";
+    }
+    // if (sorter && sorter.field && sorter.order) {
+    //   params.sortBy = sorter.field;
+    //   params.sortOrder = sorter.order === "ascend" ? "asc" : "desc";
+    // }
+    const urlParams = new URLSearchParams(params).toString();
+    // console.log("====================================");
+    // console.log(123, urlParams);
+    // console.log(123, `/manager/report?${urlParams}`);
+
+    // console.log("====================================");
+    getData(`/manager/transaction?${new URLSearchParams(params)}`)
+      .then((e) => {
+        setData(e?.data?.objects);
+        setTotalRecord(e?.data?.totalRecord);
+
+        table.handleCloseLoading();
+      })
+      .catch((error) => {
+        console.error("Error fetching items:", error);
+        if (error?.status === 401) {
+          // reloadData(pagination, filters, sorter);
+        }
+      });
+  };
+  useEffect(() => {
+    reloadData(pagination, filters, sorter);
+  }, [pagination]);
+  const handlePageClick = (pageNumber) => {
+    if (pageNumber !== pagination.current) {
+      setPagination({
+        ...pagination,
+        current: pageNumber,
+      });
+    }
+  };
+  // console.log("====================================");
+  // console.log(data);
+  // console.log("====================================");
   return (
     <div>
       <ComTable

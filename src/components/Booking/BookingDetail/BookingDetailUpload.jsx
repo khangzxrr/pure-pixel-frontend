@@ -46,7 +46,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
 
       default:
         // message.error(`Lỗi không xác định, vui lòng thử lại`);
-        console.log(e);
+
         break;
     }
     // removePhotoByUid(file.uid);
@@ -105,7 +105,6 @@ export default function UploadBookingPhoto({ bookingDetail }) {
 
       updatePhotoPropertyByUid(file.uid, "status", "done");
 
-      console.log("response", response);
       setPhotoUploadResponse(file.uid, {
         id: response.id,
         reviewUrl: response.signedUrl.url,
@@ -113,7 +112,6 @@ export default function UploadBookingPhoto({ bookingDetail }) {
       });
       onSuccess();
     } catch (e) {
-      console.log(e);
       onError(e);
     }
   };

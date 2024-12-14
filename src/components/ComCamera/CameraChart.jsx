@@ -43,8 +43,6 @@ const CameraChart = () => {
     queryFn: fetchCameraChart,
   });
 
-  console.log(data);
-
   // Xử lý dữ liệu từ API
   const processData = (apiData) => {
     // Khởi tạo Set để đảm bảo ngày là duy nhất và mảng để lưu các camera

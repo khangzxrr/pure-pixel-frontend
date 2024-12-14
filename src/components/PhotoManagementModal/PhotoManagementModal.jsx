@@ -104,7 +104,7 @@ export default function PhotoManagementModal({ close, id, data }) {
       pricetags: pricetags,
     })
       .then((response) => {
-        console.log("Upload thành công:", response);
+        // console.log("Upload thành công:", response);
         message.success("Đã lưu thông tin thành công!");
         queryClient.invalidateQueries({ queryKey: ["my-photo"] });
         close();
@@ -126,9 +126,9 @@ export default function PhotoManagementModal({ close, id, data }) {
       });
   };
 
-  console.log("====================================");
-  console.log(data);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(data);
+  // console.log("====================================");
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN").format(amount);

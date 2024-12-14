@@ -226,7 +226,7 @@ export const TablePhoto = forwardRef((props, ref) => {
               reportStatus: "OPEN",
             })
               .then((e) => {
-                console.log("11111", e);
+                // console.log("11111", e);
                 notificationApi("success", "Thành công", "Đã mở lại báo cáo");
 
                 reloadData();
@@ -253,7 +253,7 @@ export const TablePhoto = forwardRef((props, ref) => {
           onOk: () => {
             deleteData(`manager/photo`, `${e.id}`)
               .then((e) => {
-                console.log("11111", e);
+                // console.log("11111", e);
                 notificationApi("success", "Thành công", "Đã xóa bài viết");
 
                 reloadData();
@@ -280,9 +280,9 @@ export const TablePhoto = forwardRef((props, ref) => {
     getData("/manager/photo?limit=9999&page=0")
       .then((e) => {
         setData(e?.data?.objects);
-        console.log("====================================");
-        console.log(e?.data);
-        console.log("====================================");
+        // console.log("====================================");
+        // console.log(e?.data);
+        // console.log("====================================");
         table.handleCloseLoading();
       })
       .catch((error) => {
@@ -298,9 +298,9 @@ export const TablePhoto = forwardRef((props, ref) => {
     }, 500);
   }, []);
 
-  console.log("====================================");
-  console.log(data);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(data);
+  // console.log("====================================");
   return (
     <div>
       <ComTable

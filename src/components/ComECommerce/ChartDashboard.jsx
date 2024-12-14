@@ -5,7 +5,6 @@ import ChartDashboardRevenue from "./ChartDashboardRevenue";
 const ChartDashboard = ({ dashBoardData }) => {
   const revenueFromSellingPhoto = dashBoardData?.revenueFromSellingPhoto;
   const revenueFromUpgradePackage = dashBoardData?.revenueFromUpgradePackage;
-  console.log(revenueFromSellingPhoto);
 
   return (
     <div className="px-5 grid lg:grid-cols-6 grid-cols-1 gap-8">

@@ -8,6 +8,7 @@ import ChartDashboardRevenue from "./ChartDashboardRevenue";
 import formatPrice from "./../../utils/FormatPriceUtils";
 import styles from "./CardDataStatsList.module.css";
 import CardBalance from "./CardBalance";
+import ChartDashboardTotalPhoto from "./ChartDashboardTotalPhoto";
 const CardDataStatsList = ({ data }) => {
   const [isOpenUserTotal, setIsOpenUserTotal] = React.useState(false);
   const [isOpenPhotoTotal, setIsOpenPhotoTotal] = React.useState(false);
@@ -22,12 +23,12 @@ const CardDataStatsList = ({ data }) => {
   const photoshootPackage = dashBoardData?.totalPhotoshootPackage;
   const totalRevenue = formatPrice(dashBoardData?.totalRevenue);
   const totalPhotoSelling = dashBoardData?.totalSellingPhoto;
-  const totalPhotoNotSelling = photoTotal - totalPhotoSelling;
+  const totalPhotoNotSelling = dashBoardData?.totalRawPhoto;
+  const totalBookingPhoto = dashBoardData?.totalBookingPhoto;
   const revenueFromSellingPhoto = dashBoardData?.revenueFromSellingPhoto;
   const revenueFromUpgradePackage = dashBoardData?.revenueFromUpgradePackage;
   const totalWithdrawal = dashBoardData?.totalWithdrawal;
   const totalBalance = dashBoardData?.totalBalance;
-  console.log(dashBoardData);
 
   const handleUserTotalModal = () => {
     setIsOpenUserTotal(!isOpenUserTotal);
@@ -97,12 +98,21 @@ const CardDataStatsList = ({ data }) => {
               <IoClose />
             </div>
             <div className=" p-5 w-[600px]">
-              <ChartDashboardRevenue
+              {/* <ChartDashboardRevenue
                 nameChart={"Thống kê tổng số ảnh RAW"}
                 param1={totalPhotoSelling}
                 nameParam1={"Tổng số ảnh bán"}
                 param2={totalPhotoNotSelling}
                 nameParam2={"Tổng số ảnh không bán"}
+              /> */}
+              <ChartDashboardTotalPhoto
+                nameChart={"Thống kê tổng số ảnh"}
+                nameParam1={"Tổng số ảnh bán"}
+                param1={totalPhotoSelling}
+                nameParam2={"Tổng số ảnh bình thường"}
+                param2={totalPhotoNotSelling}
+                nameParam3={"Tổng số ảnh gói dịch vụ"}
+                param3={totalBookingPhoto}
               />
             </div>
           </div>
@@ -145,7 +155,7 @@ const CardDataStatsList = ({ data }) => {
         <CardDataStats
           icon={<FiImage className="text-xl" />}
           dataCount={photoTotal}
-          label={"Tổng số ảnh RAW"}
+          label={"Tổng số ảnh"}
           onClick={handlePhotoTotalModal}
         />
         <CardDataStats

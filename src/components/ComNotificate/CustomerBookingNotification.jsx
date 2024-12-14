@@ -43,7 +43,6 @@ export default function CustomerBookingNotification({ notification, onClose }) {
       className="border-b border-gray-500 px-1 py-2  hover:cursor-pointer hover:bg-gray-500 transition-colors duration-200"
       key={notification.id}
       onClick={() => {
-        console.log(notification.referenceType);
         handleNavigate(notification.referenceType);
         onClose();
       }}

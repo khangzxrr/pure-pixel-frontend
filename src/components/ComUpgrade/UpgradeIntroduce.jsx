@@ -26,7 +26,6 @@ const UpgradeIntroduce = ({ currentPackage }) => {
   const currentDate = "2024-11-16";
 
   const percent = calculateProgressPercent(startDate, endDate, currentDate);
-  console.log(`Progress: ${percent}%`);
 
   return (
     <div className="flex flex-col bg-[#292b2f] min-h-[150px] rounded-lg items-center justify-center">

@@ -83,7 +83,7 @@ export default function SideDepositForm({
   const createDeposit = useMutation({
     mutationFn: (amount) => WalletApi.createDeposit({ amount: amount }),
     onSuccess: (data) => {
-      console.log(data);
+      // console.log(data);
       queryClient.invalidateQueries("transaction-list"); // Invalidate the wallet query to refetch the data
       queryClient.invalidateQueries("wallet"); // Invalidate the wallet query to refetch the data
       setTransactionId(data.transactionId);

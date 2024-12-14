@@ -99,7 +99,7 @@ export default function CreatePhotoshootPackage({
   const onShowcasesChange = async (info) => {
     try {
       const newFile = info.file;
-      console.log(newFile.status);
+      // console.log(newFile.status);
       // Add the new file to the current showcases list
       if (newFile.status !== "uploading") {
         setShowcases((prevShowcases) => {
@@ -111,7 +111,7 @@ export default function CreatePhotoshootPackage({
         const newUrl = await PhotoService.convertArrayBufferToObjectUrl(
           newFile.originFileObj
         );
-        console.log(newUrl);
+        // console.log(newUrl);
         setShowcasesUrl((prevUrls) =>
           Array.from(new Set([...prevUrls, newUrl]))
         );
@@ -156,7 +156,7 @@ export default function CreatePhotoshootPackage({
       console.log(error);
     }
   };
-  console.log("watch", watch("price"), showcasesUrl, showcases);
+  // console.log("watch", watch("price"), showcasesUrl, showcases);
 
   return (
     <form

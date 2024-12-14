@@ -21,7 +21,7 @@ export default function UploadPhoto() {
     getPhotoByUid(selectedPhoto) !== undefined
       ? getPhotoByUid(selectedPhoto)
       : getPhotoByUid(uidHashmap[0]);
-  console.log("photoData", photoData, selectedPhoto);
+  // console.log("photoData", photoData, selectedPhoto);
 
   return (
     <div className="">

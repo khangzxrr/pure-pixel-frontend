@@ -152,11 +152,11 @@ export default function UploadPhotoSell({ formRef }) {
 
         break;
     }
-    console.log("handleException", file.uid);
+    // console.log("handleException", file.uid);
   };
 
   const beforeUpload = async (file) => {
-    console.log("beforeUpload", file);
+    // console.log("beforeUpload", file);
 
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     const isLt150M = file.size / 1024 / 1024 < 150;
@@ -244,7 +244,7 @@ export default function UploadPhotoSell({ formRef }) {
   };
 
   const customRequest = async ({ file, onError, onSuccess }) => {
-    console.log("customRequest", file);
+    // console.log("customRequest", file);
     try {
       const response = await uploadPhoto.mutateAsync({
         file,
@@ -263,7 +263,7 @@ export default function UploadPhotoSell({ formRef }) {
       try {
         const photoResolution =
           await getAvailableResolutionsByPhotoId.mutateAsync(response.id);
-        console.log("photoResolution", photoResolution);
+        // console.log("photoResolution", photoResolution);
         updatePhotoPropertyByUid(
           file.uid,
           "pricetags",

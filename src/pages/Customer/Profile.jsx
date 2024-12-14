@@ -8,7 +8,7 @@ export default function Profile() {
     //handle infinity scroll takes 20 elements each time
     queryFn: () => UserApi.getApplicationProfile,
   });
-  console.log(result);
+  // console.log(result);
 
   // if (result[0]?.isLoading) {
   //   return <div>Loading keycloak profile...</div>;

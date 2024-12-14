@@ -24,7 +24,7 @@ const PhotoDetailLayout = () => {
   const userData = UserService.getTokenParsed();
   const userId = userData?.sub;
 
-  console.log(UserService.hasRole(["photographer"]));
+  // console.log(UserService.hasRole(["photographer"]));
 
   if (getPhotoById.isFetching) {
     return (
@@ -41,7 +41,7 @@ const PhotoDetailLayout = () => {
       </div>
     );
   }
-  console.log(getPhotoById.data);
+  // console.log(getPhotoById.data);
 
   const photographerId = getPhotoById.data?.photographer?.id;
   const titleT = getPhotoById.data?.title;

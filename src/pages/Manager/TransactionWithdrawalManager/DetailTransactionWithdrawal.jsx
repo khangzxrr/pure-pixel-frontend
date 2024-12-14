@@ -18,7 +18,7 @@ export default function DetailTransactionWithdrawal({
   reloadData,
   onClose,
 }) {
-  console.log(selectedData);
+  // console.log(selectedData);
   const { notificationApi } = useNotification();
 
   const ConfirmPay = async () => {
@@ -33,7 +33,7 @@ export default function DetailTransactionWithdrawal({
           status: "SUCCESS",
         })
           .then((e) => {
-            console.log("11111", e);
+            // console.log("11111", e);
             notificationApi(
               "success",
               "Thành công",
@@ -61,7 +61,7 @@ export default function DetailTransactionWithdrawal({
           status: "CANCEL",
         })
           .then((e) => {
-            console.log("11111", e);
+            // console.log("11111", e);
             notificationApi(
               "success",
               "Thành công",

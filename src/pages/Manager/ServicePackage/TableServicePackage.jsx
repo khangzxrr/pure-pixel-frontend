@@ -193,9 +193,9 @@ export const TableServicePackage = forwardRef((props, ref) => {
     getData("/photoshoot-package?limit=9999&page=0&orderByCreatedAt=desc")
       .then((e) => {
         setData(e?.data?.objects);
-        console.log("====================================");
-        console.log(e?.data);
-        console.log("====================================");
+        // console.log("====================================");
+        // console.log(e?.data);
+        // console.log("====================================");
         table.handleCloseLoading();
       })
       .catch((error) => {

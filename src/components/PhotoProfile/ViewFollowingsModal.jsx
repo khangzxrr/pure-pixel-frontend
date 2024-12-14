@@ -32,7 +32,7 @@ const ViewFollowingsModal = ({ onClose }) => {
         FollowApi.getAllFollowingMe(10, pageParam),
 
       getNextPageParam: (lastPage, allPages) => {
-        console.log(lastPage);
+        // console.log(lastPage);
 
         const totalRecords = lastPage.totalRecord; // Tổng số bản ghi từ API
         const totalPages = lastPage.totalPage; // Tổng số trang từ API
@@ -42,7 +42,7 @@ const ViewFollowingsModal = ({ onClose }) => {
     });
 
   const listFollowings = data?.pages.flatMap((page) => page.objects);
-  console.log(listFollowings);
+  // console.log(listFollowings);
 
   const unFollowMutation = useMutation({
     mutationFn: (followId) => FollowApi.unFollow(followId),
