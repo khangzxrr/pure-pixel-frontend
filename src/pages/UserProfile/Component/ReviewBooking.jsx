@@ -46,7 +46,7 @@ export default function ReviewBooking({ bookingId, userReview, role }) {
       addReviewForBooking.mutate({ star, description });
     }
   };
-  console.log("userReview", role === "photographer");
+  // console.log("userReview", role === "photographer");
   return (
     <ConfigProvider
       theme={{

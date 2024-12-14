@@ -22,7 +22,7 @@ export default function SellPhoto() {
     getPhotoByUid(selectedPhoto) !== undefined
       ? getPhotoByUid(selectedPhoto)
       : getPhotoByUid(uidHashmap[Object.keys(uidHashmap)[0]]);
-  console.log("photoData", photoData, selectedPhoto, uidHashmap);
+  // console.log("photoData", photoData, selectedPhoto, uidHashmap);
   useEffect(() => {
     if (
       photoArray &&

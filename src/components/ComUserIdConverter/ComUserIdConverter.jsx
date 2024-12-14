@@ -8,7 +8,6 @@ function ComUserIdConverter({ children }) {
     getData(`/user/${children}`)
       .then((e) => {
         setData(e?.data?.objects);
-        console.log(e?.data);
       })
       .catch((error) => {
         console.error("Error fetching items:", error);

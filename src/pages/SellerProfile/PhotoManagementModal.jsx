@@ -32,7 +32,7 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
     getData(`/photo/${id}/available-resolution`).then((resolutions) => {
       const sizeArray = resolutions.data || resolutions;
 
-      console.log(1111, data?.photoSellings[0].pricetags);
+      // console.log(1111, data?.photoSellings[0].pricetags);
 
       const updatedSizes = sizeArray.map((item) => {
         // Kiểm tra xem kích thước của item có trong pricetags hay không
@@ -52,9 +52,9 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
     });
   }, []);
 
-  console.log("====================================");
-  console.log(1111, data?.photoSellings[0].pricetags);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(1111, data?.photoSellings[0].pricetags);
+  // console.log("====================================");
   // const handlePriceChange = (index, value) => {
   //   const newSizes = sizes.map((size, i) => ({
   //     ...size,
@@ -130,9 +130,9 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
       });
   };
 
-  console.log("====================================");
-  console.log(data);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(data);
+  // console.log("====================================");
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN").format(amount);

@@ -21,8 +21,6 @@ export default function Package() {
   const CallApiUser = () => {
     getData(`/me/current-upgrade-package`)
       .then((e) => {
-        console.log("====================================");
-        console.log(e);
         setUserUpgrade(e.data.objects);
       })
       .catch((error) => {
@@ -31,7 +29,6 @@ export default function Package() {
     getData(`/upgrade-package?limit=10&page=0`)
       .then((e) => {
         setDataUpgrade(e.data.objects);
-        console.log(e.data);
       })
       .catch((error) => {
         console.log(error);
@@ -43,7 +40,6 @@ export default function Package() {
   const CallApiUpgrade = (data) => {
     postData(`/upgrade-order`, data)
       .then((e) => {
-        console.log(e);
         setDataBuy(e);
         modal.handleOpen();
       })

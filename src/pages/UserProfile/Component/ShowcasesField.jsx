@@ -109,7 +109,7 @@ export default function ShowcasesField({
   };
   // Add new showcases
   const customRequest = async ({ file, onError, onSuccess }) => {
-    console.log("customRequest", file);
+    // console.log("customRequest", file);
     try {
       const response = await addPhotoshootPackageShowcase.mutateAsync({
         photoshootPackageId: photoshootPackageId,

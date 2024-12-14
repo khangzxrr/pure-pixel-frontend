@@ -10,11 +10,11 @@ import { useMutation } from "@tanstack/react-query";
 import { LoadingOutlined } from "@ant-design/icons";
 import { use } from "react";
 const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
-  console.log(
-    "checkPhotoData",
-    photoData && photoData.photo,
-    photoData.photoBuys
-  );
+  // console.log(
+  //   "checkPhotoData",
+  //   photoData && photoData.photo,
+  //   photoData.photoBuys
+  // );
   const navigate = useNavigate();
   const photoDetail = photoData && photoData.photo;
   const photoBuys = photoData ? photoData.photoBuys : [];
@@ -22,13 +22,13 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
 
   const [previewPhoto, setPreviewPhoto] = useState(photoBuys[0]?.previewUrl);
   const popup = useModalState();
-  console.log("checkPhotoDetail", photoBuys[0]?.previewUrl);
+  // console.log("checkPhotoDetail", photoBuys[0]?.previewUrl);
   const handleOnSizeChange = (photobuy) => {
-    console.log(
-      "photobuy",
-      photobuy.photoSellHistory.originalPhotoSellId,
-      selectedSize?.photoSellHistory.originalPhotoSellId
-    );
+    // console.log(
+    //   "photobuy",
+    //   photobuy.photoSellHistory.originalPhotoSellId,
+    //   selectedSize?.photoSellHistory.originalPhotoSellId
+    // );
     setSelectedSize(photobuy);
     setPreviewPhoto(photobuy.previewUrl);
   };
@@ -42,7 +42,7 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
   const { mutateAsync: downloadPhotoMutateAsync, isPending: isDownloading } =
     downloadPhotoMutation;
   const handleDownload = async () => {
-    console.log("checkPhotoDetail", isDownloading);
+    // console.log("checkPhotoDetail", isDownloading);
 
     if (!selectedSize) {
       message.error("Vui lòng chọn một kích thước trước khi tải ảnh.");
@@ -50,7 +50,7 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
     }
 
     try {
-      console.log("selectedSize", selectedSize);
+      // console.log("selectedSize", selectedSize);
 
       await downloadPhotoMutateAsync(
         { id: photoBoughtId, photoBuyId: selectedSize.id },

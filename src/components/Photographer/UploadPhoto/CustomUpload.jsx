@@ -156,12 +156,9 @@ export default function CustomUpload() {
 
         break;
     }
-    console.log("handleException", file.uid);
   };
 
   const beforeUpload = async (file) => {
-    console.log("beforeUpload", file);
-
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     const isLt150M = file.size / 1024 / 1024 < 150;
 
@@ -253,7 +250,6 @@ export default function CustomUpload() {
   };
 
   const customRequest = async ({ file, onError, onSuccess }) => {
-    console.log("customRequest", file);
     try {
       const response = await uploadPhoto.mutateAsync({
         file,
@@ -327,8 +323,6 @@ export default function CustomUpload() {
       setIsCheckToggleWatermark(false);
       setIsWatermarkAll(false);
     }
-
-    console.log("Watermark field changed:", photoArray);
   }, [photoArray.map((item) => item.watermark).join(",")]); // Derive dependency
   const itemRender = () => {
     return "";
@@ -398,12 +392,12 @@ export default function CustomUpload() {
       message.error("Có lỗi xảy ra trong quá trình cập nhật!");
     }
   };
-  console.log(
-    "check data",
-    photoArray.some((photo) => photo.status === "done") &&
-      photoArray.every((photo) => photo.title !== "") &&
-      !disableUpload
-  );
+  // console.log(
+  //   "check data",
+  //   photoArray.some((photo) => photo.status === "done") &&
+  //     photoArray.every((photo) => photo.title !== "") &&
+  //     !disableUpload
+  // );
   return (
     <div className="h-full w-full overflow-hidden relative ">
       <div className={`w-full h-full grid grid-cols-7`}>

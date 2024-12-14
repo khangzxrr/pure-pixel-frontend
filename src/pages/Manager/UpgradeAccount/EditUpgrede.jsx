@@ -14,9 +14,9 @@ import ComTextArea from "../../../components/ComInput/ComTextArea";
 export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
-  console.log("====================================");
-  console.log(selectedUpgrede);
-  console.log("====================================");
+  // console.log("====================================");
+  // console.log(selectedUpgrede);
+  // console.log("====================================");
 
   useEffect(() => {
     setValue("minOrderMonth", selectedUpgrede.minOrderMonth);
@@ -46,7 +46,7 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
     name: "descriptions",
   });
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     setDisabled(true);
     const change = MonyNumber(
       data.price,

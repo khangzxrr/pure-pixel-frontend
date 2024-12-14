@@ -49,7 +49,7 @@ const SellerProfile = () => {
 
   const queryClient = useQueryClient();
   const callData = () => {
-    console.log(12321321);
+    // console.log(12321321);
 
     queryClient.invalidateQueries({
       queryKey: ["my-photo-selling"],

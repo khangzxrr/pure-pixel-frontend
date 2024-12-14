@@ -43,7 +43,7 @@ export default function UploadPhotoForm({ selectedPhoto }) {
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
-      console.log("address", data);
+      // console.log("address", data);
       setSelectedLocate({
         ...selectedLocate,
         address: data.features[0].properties.full_address,

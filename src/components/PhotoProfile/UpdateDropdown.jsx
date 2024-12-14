@@ -62,11 +62,11 @@ const UpdateDropdown = ({ photo, totalRecord, page, setPage }) => {
         setDeletePhotoId(photo.id);
         setIsDeletePhotoConfirmModal(true);
         setNumberOfRecord(totalRecord);
-        console.log(totalRecord);
+        // console.log(totalRecord);
       },
     },
   ];
-  console.log("photo", photo);
+  // console.log("photo", photo);
   return (
     <div>
       {modal.isModalOpen && (

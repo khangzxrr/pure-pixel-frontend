@@ -30,7 +30,7 @@ const CustomerBookingDetail = () => {
 
   useEffect(() => {
     async function notificationBookingDetailEventHandler(data) {
-      console.log(data);
+      // console.log(data);
 
       if (data?.referenceType === "BOOKING") {
         await queryClient.invalidateQueries({
@@ -44,14 +44,14 @@ const CustomerBookingDetail = () => {
     }
 
     if (socket?.connected) {
-      console.log(`listen to notification event in CustomerBookingDetail`);
+      // console.log(`listen to notification event in CustomerBookingDetail`);
       socket.on("notification-event", notificationBookingDetailEventHandler);
     }
 
     return () => {
       if (socket) {
         socket.off("notification-event", notificationBookingDetailEventHandler);
-        console.log(`remove`);
+        // console.log(`remove`);
       }
     };
   }, [socket]);
@@ -69,7 +69,7 @@ const CustomerBookingDetail = () => {
   const downloadPhoto = useMutation({
     mutationFn: (bookingId) => CustomerBookingApi.downloadAllPhoto(bookingId),
     onSuccess: async (data) => {
-      console.log(data);
+      // console.log(data);
       try {
         // Create a URL for the Blob
         const href = URL.createObjectURL(data);
@@ -145,7 +145,7 @@ const CustomerBookingDetail = () => {
   const handleDownload = async (photo) => {
     if (photo && photo.signedUrl?.url) {
       try {
-        console.log("photo", photo, photo.signedUrl.url);
+        // console.log("photo", photo, photo.signedUrl.url);
 
         // Fetch the image data as a Blob
         const response = await fetch(photo.signedUrl.url);
@@ -190,11 +190,11 @@ const CustomerBookingDetail = () => {
   );
   expiredAt.setDate(expiredAt.getDate() + 30);
 
-  console.log("Expired At:", expiredAt.toISOString()); // Print the new date in ISO format
+  // console.log("Expired At:", expiredAt.toISOString()); // Print the new date in ISO format
   // Calculate the difference in milliseconds
   const countTimeToDownload =
     updatedAt - currentDate + 30 * 24 * 60 * 60 * 1000; // Renderer callback with condition
-  console.log("Time difference in milliseconds:", countTimeToDownload);
+  // console.log("Time difference in milliseconds:", countTimeToDownload);
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
@@ -235,7 +235,7 @@ const CustomerBookingDetail = () => {
     }
   }, [bookingDetail]);
 
-  console.log("Booking Detail:", selectedPhoto);
+  // console.log("Booking Detail:", selectedPhoto);
   if (isPending) {
     return <div>Đang tải thông tin lịch hẹn...</div>;
   }

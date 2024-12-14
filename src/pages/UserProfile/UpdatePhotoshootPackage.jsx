@@ -118,7 +118,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
   const { isLoading: isLoadingUpdatePhotoshootPackage } =
     updatePhotoshootPackage;
   const onThumbnailChange = async (info) => {
-    console.log("image crop", info.file.originFileObj.size, thumbnail.size);
+    // console.log("image crop", info.file.originFileObj.size, thumbnail.size);
     return false;
   };
   const beforeUpload = async (file) => {

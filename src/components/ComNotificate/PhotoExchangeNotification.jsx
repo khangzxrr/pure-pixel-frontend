@@ -26,7 +26,6 @@ export default function PhotoExchangeNotification({ notification, onClose }) {
       ? photoDetail?.photoBuys[0]?.previewUrl
       : photoDetail?.photo?.signedUrl?.thumbnail;
 
-  console.log("photoDetail", photoDetail, notification.referenceType);
   const handleNavigate = (referenceType) => {
     switch (referenceType) {
       case "PHOTOGRAPHER_PHOTO_SELL":

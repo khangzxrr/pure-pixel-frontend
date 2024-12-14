@@ -4,8 +4,6 @@ import calculateDateDifference from "../../utils/calculateDateDifference";
 import { Rate } from "antd";
 
 const BookingPackageReviewCard = ({ review, photoshootPackage }) => {
-  console.log("review", review);
-
   return (
     <div className="w-full flex flex-col bg-[#36393f] rounded-lg gap-2 p-2">
       <div className="flex gap-1 items-center pt-2">

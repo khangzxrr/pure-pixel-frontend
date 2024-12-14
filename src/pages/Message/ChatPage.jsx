@@ -32,7 +32,7 @@ export default function ChatPage() {
       members: [keycloak.tokenParsed.sub, conversationToUserId],
     });
 
-    console.log(channel);
+    // console.log(channel);
 
     setActiveChannel(channel);
   }

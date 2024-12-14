@@ -146,7 +146,7 @@ export default function MapBoxModal() {
 
   const handleOk = async () => {
     if (selectedLocate) {
-      console.log("Selected location:", selectedLocate);
+      // console.log("Selected location:", selectedLocate);
       // Update photo properties with new location data
       await updatePhotoPropertyByUid(
         selectedPhoto,
@@ -175,7 +175,7 @@ export default function MapBoxModal() {
   };
 
   const handleRetrieve = (res) => {
-    console.log("Selected location:", res);
+    // console.log("Selected location:", res);
 
     if (res && res.features && res.features.length > 0) {
       const feature = res.features[0];
