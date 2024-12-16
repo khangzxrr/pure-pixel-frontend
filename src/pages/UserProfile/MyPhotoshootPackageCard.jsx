@@ -10,6 +10,7 @@ import { Popconfirm, Tooltip } from "antd";
 import PhotoshootPackageApi from "../../apis/PhotoshootPackageApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useModalStore from "../../states/UseModalStore";
+import { PiWarningCircleFill, PiWarningOctagonFill } from "react-icons/pi";
 const MyPhotoshootPackageCard = ({
   packageDetail,
   page,
@@ -21,6 +22,7 @@ const MyPhotoshootPackageCard = ({
     setIsUpdatePhotoshootPackageModal,
     setSelectedUpdatePhotoshootPackage,
   } = useModalStore();
+
   const queryClient = useQueryClient();
   const deletePhotoshootPackage = useMutation({
     mutationFn: async (data) => {
@@ -56,12 +58,18 @@ const MyPhotoshootPackageCard = ({
     deletePhotoshootPackage;
   return (
     <div className="flex flex-col gap-2 rounded-lg bg-[#36393f] group hover:cursor-pointer">
-      <div className="h-[250px] overflow-hidden rounded-t-lg">
+      <div className="relative h-[250px] overflow-hidden rounded-t-lg">
         <img
           src={packageDetail.thumbnail}
           alt="demo"
           className="size-full object-cover  group-hover:scale-125 transition-all duration-300 ease-in-out"
         />
+        {packageDetail.status === "DISABLED" && (
+          <div className="absolute gap-2 flex items-center justify-center animate-pulse bottom-0 left-0 w-full bg-red-500 p-2">
+            <PiWarningOctagonFill className="text-2xl" /> Gói dịch vụ này đang
+            bị vô hiệu hóa
+          </div>
+        )}
       </div>
       <div className="flex flex-col gap-1 px-2">
         <div className=" text-2xl flex flex-row justify-between">
@@ -102,26 +110,40 @@ const MyPhotoshootPackageCard = ({
               </Tooltip>
             </Popconfirm>
 
-            <Tooltip title="Cập nhật gói" color="blue" placement="top">
-              <div
-                className="text-lg hover:opacity-80 px-2 py-1 rounded-lg"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsUpdatePhotoshootPackageModal(true);
-                  setSelectedUpdatePhotoshootPackage(packageDetail.id);
-                }}
+            {packageDetail.status === "ENABLED" ? (
+              <Tooltip title="Cập nhật gói" color="blue" placement="top">
+                <div
+                  className="text-lg hover:opacity-80 px-2 py-1 rounded-lg"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsUpdatePhotoshootPackageModal(true);
+                    setSelectedUpdatePhotoshootPackage(packageDetail.id);
+                  }}
+                >
+                  <EditOutlined className="text-blue-500 hover:text-blue-600" />
+                </div>
+              </Tooltip>
+            ) : (
+              <Tooltip
+                title="Gói chụp bị vô hiệu hóa"
+                color="gray"
+                placement="top"
               >
-                <EditOutlined className="text-blue-500 hover:text-blue-600" />
-              </div>
-            </Tooltip>
+                <div className="text-lg hover:opacity-80 px-2 py-1 rounded-lg">
+                  <EditOutlined className="text-gray-500 " />
+                </div>
+              </Tooltip>
+            )}
           </div>
         </div>
         <div className="font-normal underline underline-offset-2">
           {formatPrice(packageDetail.price)}
         </div>
         <div className="flex flex-col mt-2">
-          <div className="font-semibold">Mô tả chung</div>
+          <div className="flex items-center gap-2 font-semibold">
+            Mô tả chung
+          </div>
           <p className=" font-normal text-gray-200">
             {packageDetail.description}
           </p>

@@ -1,8 +1,37 @@
-import React from 'react'
-import ComDateConverter from '../../../components/ComDateConverter/ComDateConverter';
-import { Image } from 'antd';
+import React from "react";
+import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
+import { Image } from "antd";
+import { FaLock, FaLockOpen } from "react-icons/fa";
+import { useMutation } from "@tanstack/react-query";
+import { PhotoshootPackageManager } from "../../../apis/PhotoshootPackageManager";
+import { notificationApi } from "../../../Notification/Notification";
 
-export default function DetailServicePackage({ selected }) {
+export default function DetailServicePackage({ selected, reload }) {
+  const [status, setStatus] = React.useState(selected?.status);
+
+  const banPhoto = useMutation({
+    mutationFn: () =>
+      PhotoshootPackageManager.disablePhotoshootPackage(selected?.id),
+    onSuccess: () => {
+      notificationApi("success", "Đã khóa", "Đã khóa gói dịch vụ");
+      setStatus("DISABLED");
+    },
+    onError: (error) => {
+      notificationApi("error", "Khóa thất bạt", error?.response?.data?.message);
+    },
+  });
+
+  const unBanPhotoshoot = useMutation({
+    mutationFn: () =>
+      PhotoshootPackageManager.enablePhotoshootPackage(selected?.id),
+    onSuccess: () => {
+      notificationApi("success", "Đã mở khóa", "Đã mở khóa gói dịch vụ");
+      setStatus("ENABLED");
+    },
+    onError: (error) => {
+      notificationApi("error", "Khóa thất bại", error?.response?.data?.message);
+    },
+  });
   function formatCurrency(number) {
     // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
     if (typeof number === "number") {
@@ -12,6 +41,16 @@ export default function DetailServicePackage({ selected }) {
       });
     }
   }
+
+  const handleBanPhotoshootPackage = () => {
+    banPhoto.mutate();
+    reload();
+  };
+
+  const handleUnBanPhotoshootPackage = () => {
+    unBanPhotoshoot.mutate();
+    reload();
+  };
   return (
     <div>
       <div className="bg-white">
@@ -82,6 +121,23 @@ export default function DetailServicePackage({ selected }) {
             </tr>
           </tbody>
         </table>
+        <div className="flex justify-center my-2">
+          {status === "ENABLED" ? (
+            <button
+              onClick={() => handleBanPhotoshootPackage()}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
+            >
+              <FaLockOpen /> Khóa gói dịch vụ
+            </button>
+          ) : (
+            <button
+              onClick={() => handleUnBanPhotoshootPackage()}
+              className="bg-gray-500 flex items-center gap-2 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            >
+              <FaLock /> Đã khóa gói dịch vụ
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

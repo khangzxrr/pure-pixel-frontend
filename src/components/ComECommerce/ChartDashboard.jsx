@@ -3,15 +3,15 @@ import ChartDashboardUpgradePackage from "./ChartDashboardUpgradePackage";
 import ChartDashboardRevenue from "./ChartDashboardRevenue";
 
 const ChartDashboard = ({ dashBoardData }) => {
-  const revenueFromSellingPhoto = dashBoardData?.revenueFromSellingPhoto;
-  const revenueFromUpgradePackage = dashBoardData?.revenueFromUpgradePackage;
+  // const revenueFromSellingPhoto = dashBoardData?.revenueFromSellingPhoto;
+  // const revenueFromUpgradePackage = dashBoardData?.revenueFromUpgradePackage;
 
   return (
     <div className="px-5 grid lg:grid-cols-6 grid-cols-1 gap-8">
-      <div className="col-span-4 bg-[#32353b]  rounded-sm">
+      <div className="col-span-6 bg-[#32353b]  rounded-sm">
         <ChartDashboardUpgradePackage dashBoardData={dashBoardData} />
       </div>
-      <div className="lg:col-span-2 col-span-4 bg-[#32353b]  rounded-sm">
+      {/* <div className="lg:col-span-2 col-span-4 bg-[#32353b]  rounded-sm">
         <ChartDashboardRevenue
           nameChart={"Thống kê tổng doanh thu"}
           nameParam1={"Doanh thu bán ảnh"}
@@ -21,7 +21,7 @@ const ChartDashboard = ({ dashBoardData }) => {
           isMoney={true}
           isRevenue={true}
         />
-      </div>
+      </div> */}
     </div>
   );
 };
