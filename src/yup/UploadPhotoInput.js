@@ -2,7 +2,14 @@ import * as yup from "yup";
 
 export const uploadPhotoInputSchema = yup.object().shape({
   title: yup.string().required("Yêu cầu nhập tiêu đề"),
-  description: yup.string().max(1000, "Mô tả của bạn quá dài"),
+  description: yup
+    .string()
+    .max(1000, "Mô tả của bạn quá dài")
+    .test(
+      "no-phonenumber",
+      "Mô tả không được chứa số điện thoại",
+      (value) => !value || !/(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value) // Regex for phone numbers
+    ),
   categoryIds: yup.array().of(yup.string()).optional(), // Make photoType optional
   photoTags: yup.array().of(yup.string()).optional(), // Make photoTags optional
   location: yup.string().optional(), // Optional if location is not required

@@ -3,7 +3,11 @@ import { FaEdit } from "react-icons/fa";
 import formatPrice from "../../utils/FormatPriceUtils";
 import calculateDateDifference from "../../utils/calculateDateDifference";
 
-const MyPhotoshootPackageDetailInfo = ({ photoshootPackage }) => {
+const MyPhotoshootPackageDetailInfo = ({
+  photoshootPackage,
+  setIsUpdatePhotoshootPackageModal,
+  setSelectedUpdatePhotoshootPackage,
+}) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 rounded-lg gap-5 bg-[#292b2f] overflow-hidden">
       <div className="h-[500px] overflow-hidden">
@@ -22,7 +26,15 @@ const MyPhotoshootPackageDetailInfo = ({ photoshootPackage }) => {
               {photoshootPackage.subtitle}
             </div>
           </div>
-          <button className="font-normal flex items-center gap-2 px-2 py-1 bg-[#eee] text-[#3975ce] rounded-md">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsUpdatePhotoshootPackageModal(true);
+              setSelectedUpdatePhotoshootPackage(photoshootPackage.id);
+            }}
+            className="font-normal flex items-center gap-2 px-2 py-1 bg-[#19191b] text-[#5699ff] rounded-md hover:opacity-80"
+          >
             <FaEdit className="size-5" />
             Chỉnh sửa
           </button>

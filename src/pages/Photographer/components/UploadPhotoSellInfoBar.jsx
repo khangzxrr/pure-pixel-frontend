@@ -419,7 +419,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
                     !isDisableUpdatePhoto && (
                       <div className="bg-[#292b2f] p-4 rounded-md">
                         <h3 className="text-lg text-gray-100">
-                          Chỉnh giá theo Kích thước
+                          Chỉnh giá theo kích thước
                         </h3>
 
                         {errors.pricetags && (
