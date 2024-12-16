@@ -9,11 +9,16 @@ const getPackagesByPhotographerId = async (photographerId, limit, page) => {
   return response.data;
 };
 
-const findAll = async (limit, page) => {
+const findAll = async (limit, page, orderByCreateAt) => {
   const params = {
     limit,
     page,
   };
+
+  if (orderByCreateAt) {
+    params.orderByCreateAt = orderByCreateAt;
+  }
+
   const queryString = new URLSearchParams(params).toString();
   const url = `/photoshoot-package?${queryString}`;
   const response = await http.get(url);

@@ -129,6 +129,11 @@ const AccountManagerPage = () => {
       title: "Quyền",
       dataIndex: "roles",
       // ...getColumnSearchProps("mail", "Email"),
+      // filters: [
+      //   { text: "Nhiếp ảnh gia", value: "photographer" },
+      //   { text: "Khách hàng", value: "customer" },
+      // ],
+      // onFilter: (value, record) => record.roles[0]?.includes(value),
       render: (text, record) => (
         <div className="flex items-center gap-3">
           <span>
