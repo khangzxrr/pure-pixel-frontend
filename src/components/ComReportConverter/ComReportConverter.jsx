@@ -8,14 +8,15 @@ function ComReportConverter({ children }) {
       case "PHOTO":
         return (
           <>
-            <div className=" flex items-center justify-center overflow-hidden">
+            {/* <div className=" flex items-center justify-center overflow-hidden">
               <Image
                 wrapperClassName=" w-20 h-20object-cover object-center flex items-center justify-center "
                 src={data?.referencedPhoto?.signedUrl?.thumbnail}
                 alt={data?.referencedPhoto?.signedUrl?.thumbnail}
                 preview={{ mask: "Xem ảnh" }}
               />
-            </div>
+            </div> */}
+            <p> {data?.referencedPhoto?.title}</p>
             {/* ID:
             <Link
               to={`/photo/${data?.referencedPhoto?.id}`}
@@ -40,12 +41,7 @@ function ComReportConverter({ children }) {
               )} */}
               {/* <p>ID:{data?.referencedUser?.id}</p> */}
             </div>
-            <div>
-              Tài khoản:
-              <Link to={`/user/${data?.referencedUser?.id}/photos`}>
-                {data?.referencedUser?.name}
-              </Link>
-            </div>
+            <div>{data?.referencedUser?.name}</div>
           </>
         );
       case "BOOKING":

@@ -30,7 +30,7 @@ export default function ComReport({
     //   referenceId: id,
     // });
     postData("/user/report", {
-      content: reason + details,
+      content: reason + " " + details,
       reportType: reportType,
       referenceId: id,
     })

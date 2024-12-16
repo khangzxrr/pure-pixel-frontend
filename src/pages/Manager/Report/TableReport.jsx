@@ -64,15 +64,15 @@ export const TableReport = forwardRef((props, ref) => {
     getColumnApprox,
   } = useColumnFilters();
   const columns = [
-    {
-      title: "Id",
-      width: 120,
-      fixed: "left",
-      dataIndex: "id",
-      key: "id",
-      // sorter: (a, b) => a?.id?.localeCompare(b?.id),
-      ...getColumnSearchProps("id", "Id"),
-    },
+    // {
+    //   title: "Id",
+    //   width: 120,
+    //   fixed: "left",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   // sorter: (a, b) => a?.id?.localeCompare(b?.id),
+    //   ...getColumnSearchProps("id", "Id"),
+    // },
     {
       title: "Người báo cáo",
       width: 120,
@@ -82,18 +82,15 @@ export const TableReport = forwardRef((props, ref) => {
       // sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
       // ...getColumnSearchProps("user.name", "Người báo cáo"),
       render: (_, record) => (
-        <div className=" gap-2 items-center ">
+        <div className=" flex items-center gap-3">
           {record?.user?.avatar && (
-            <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
-              <Image
-                wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
-                src={record?.user?.avatar}
-                alt={record?.user?.avatar}
-                preview={{ mask: "Xem ảnh" }}
-              />
-            </div>
+            <img
+              src={record?.user?.avatar || "https://via.placeholder.com/40"} // URL avatar, thêm ảnh mặc định nếu không có
+              alt="Avatar"
+              className="w-9 h-9 rounded-full object-cover bg-[#eee]"
+            />
           )}
-          <p>{record?.user?.name}</p>
+          <span>{record?.user?.name}</span>
         </div>
       ),
     },
@@ -108,25 +105,6 @@ export const TableReport = forwardRef((props, ref) => {
         <div>
           {/* {render?.contract?.signingDate} */}
           <ComDateConverter time>{render?.createdAt}</ComDateConverter>
-        </div>
-      ),
-    },
-    {
-      title: "Thể loại báo cáo",
-      width: 100,
-      dataIndex: "reportTypes",
-      key: "reportTypes",
-      filters: [
-        { text: "Hình ảnh", value: "PHOTO" },
-        { text: "Người dùng", value: "USER" },
-        // { text: "Dịch vụ", value: "BOOKING" },
-        // { text: "Bình luận", value: "COMMENT" },
-      ],
-      onFilter: (value, record) => record.reportType === value,
-      // sorter: (a, b) => a?.reportTypes?.localeCompare(b?.reportTypes),
-      render: (_, record) => (
-        <div>
-          <ComReportTypeConverter>{record?.reportType}</ComReportTypeConverter>
         </div>
       ),
     },
@@ -151,18 +129,28 @@ export const TableReport = forwardRef((props, ref) => {
         </div>
       ),
     },
-
     {
-      title: "Nội dung",
-      width: 150,
-      dataIndex: "search",
-      key: "search",
-      // sorter: (a, b) => a?.content?.localeCompare(b?.content),
-      ...getColumnSearchProps("content", "Nội dung"),
+      title: "Thể loại báo cáo",
+      width: 100,
+      dataIndex: "reportTypes",
+      key: "reportTypes",
+      filters: [
+        { text: "Hình ảnh", value: "PHOTO" },
+        { text: "Người dùng", value: "USER" },
+        // { text: "Dịch vụ", value: "BOOKING" },
+        // { text: "Bình luận", value: "COMMENT" },
+      ],
+      onFilter: (value, record) => record.reportType === value,
+      // sorter: (a, b) => a?.reportTypes?.localeCompare(b?.reportTypes),
+      render: (_, record) => (
+        <div>
+          <ComReportTypeConverter>{record?.reportType}</ComReportTypeConverter>
+        </div>
+      ),
     },
 
     {
-      title: "Bài báo cáo",
+      title: "Nội dung bị báo cáo",
       width: 180,
       dataIndex: "maxPackageCount",
       key: "maxPackageCount",
@@ -173,17 +161,26 @@ export const TableReport = forwardRef((props, ref) => {
       ),
     },
     {
-      title: "Người báo bị cáo",
-      width: 120,
-      // fixed: "left",
-      dataIndex: "userReport",
-      key: "userReport",
-      render: (_, record) => (
-        <div>
-          <ComReportConverterUser>{record}</ComReportConverterUser>
-        </div>
-      ),
+      title: "Nội dung",
+      width: 150,
+      dataIndex: "search",
+      key: "search",
+      // sorter: (a, b) => a?.content?.localeCompare(b?.content),
+      ...getColumnSearchProps("content", "Nội dung"),
     },
+
+    // {
+    //   title: "Người bị báo cáo",
+    //   width: 120,
+    //   // fixed: "left",
+    //   dataIndex: "userReport",
+    //   key: "userReport",
+    //   render: (_, record) => (
+    //     <div>
+    //       <ComReportConverterUser>{record}</ComReportConverterUser>
+    //     </div>
+    //   ),
+    // },
     {
       title: "Thao tác",
       key: "operation",
