@@ -217,9 +217,8 @@ export default function PhotoManagementModal({ close, id, data }) {
 
                 {/* Price Settings */}
                 <div className="space-y-4">
-                  <h3 className="text-lg text-gray-100">
-                    Chỉnh giá theo Kích thước
-                  </h3>
+                  <h3 className="text-lg text-gray-100"></h3>Chỉnh giá theo kích
+                  thước
                   {errors.sizes && (
                     <p className="text-red-500 text-sm mt-1">{errors.sizes}</p>
                   )}

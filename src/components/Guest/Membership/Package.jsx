@@ -288,7 +288,8 @@ export default function Package() {
             </div>
             <div className="mt-4 flex justify-center">
               <img
-                src={dataBuy?.mockQrcode}
+                // src={dataBuy?.mockQrcode} //test code
+                src={dataBuy?.paymentQrcodeUrl} //product code
                 alt="QR Code"
                 className="w-48 h-48"
               />

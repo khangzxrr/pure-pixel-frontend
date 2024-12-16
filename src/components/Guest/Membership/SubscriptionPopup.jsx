@@ -22,7 +22,8 @@ const SubscriptionPopup = ({ onClose, dataBuy, selectUpgrade }) => {
             <h3 className="text-xl font-semibold mb-4">Thanh toán:</h3>
             <div className="space-y-4 flex justify-center items-center">
               <img
-                src={dataBuy?.mockQrcode}
+                // src={dataBuy?.mockQrcode} // test qr code
+                src={dataBuy?.paymentUrl} // production qr code
                 alt="QR Code"
                 className="w-48 h-48"
               />

@@ -87,7 +87,9 @@ export default function SideDepositForm({
       queryClient.invalidateQueries("transaction-list"); // Invalidate the wallet query to refetch the data
       queryClient.invalidateQueries("wallet"); // Invalidate the wallet query to refetch the data
       setTransactionId(data.transactionId);
-      setQRCode(data.testQRCode);
+      // setQRCode(data.testQRCode); // For testing purposes
+      setQRCode(data.paymentUrl); // Use this for production
+
       setIsQRCodeVisible(true);
       setDeposit(0);
       setSelectDeposit(0);

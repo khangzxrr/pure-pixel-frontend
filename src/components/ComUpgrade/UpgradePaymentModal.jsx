@@ -43,7 +43,8 @@ export default function UpgradePaymentModal() {
         setSelectedUpgradePackage({
           ...selectedUpgradePackage, // Keep existing properties
           transactionId: data.serviceTransaction.transaction.id, // Update or add new properties
-          mockQrCode: data.mockQrCode, // Update or add new properties
+          // mockQrCode: data.mockQrCode, // test code
+          mockQrCode: data.paymentUrl, // product code
         });
       } else {
         //call keycloak update token method, with -1 minValidity it will update immediately

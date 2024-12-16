@@ -24,6 +24,7 @@ import ComWalletAmountConverter from "../ComStatusConverter/ComAmountConverter";
 import TypesDropdown from "./TypesDropdown";
 import StatusDropdown from "./StatusDropdown";
 import SortDateDropdown from "./SortDateDropdown";
+import PaymentMethodDropdown from "./PaymentMethodDropdown";
 
 export default function TableTransactilonList() {
   const limit = 10;
@@ -117,7 +118,13 @@ export default function TableTransactilonList() {
       ),
     },
     {
-      title: "Thanh toán bằng",
+      title: (
+        <PaymentMethodDropdown
+          paymentMethods={paymentMethods}
+          setPaymentMethods={setPaymentMethods}
+          setPage={setPage}
+        />
+      ),
       width: "15%",
       dataIndex: "method",
       key: "method",
