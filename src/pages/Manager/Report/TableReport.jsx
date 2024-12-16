@@ -32,6 +32,7 @@ import {
 import { FaSearch } from "react-icons/fa";
 import ComReportConverterUser from "../../../components/ComReportConverter/ComReportConverterUser";
 import RefreshButton from "../../../components/ComButton/RefreshButton";
+import BookingReport from "./BookingReport";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -138,7 +139,7 @@ export const TableReport = forwardRef((props, ref) => {
       filters: [
         { text: "Hình ảnh", value: "PHOTO" },
         { text: "Người dùng", value: "USER" },
-        // { text: "Dịch vụ", value: "BOOKING" },
+        { text: "Dịch vụ", value: "BOOKING" },
         // { text: "Bình luận", value: "COMMENT" },
       ],
       onFilter: (value, record) => record.reportType === value,
@@ -195,10 +196,10 @@ export const TableReport = forwardRef((props, ref) => {
               modalDetail.handleOpen();
               setSelectedData(record);
             }}
-            showModalEdit={() => {
-              modalEdit.handleOpen();
-              setSelectedData(record);
-            }}
+            // showModalEdit={() => {
+            //   modalEdit.handleOpen();
+            //   setSelectedData(record);
+            // }}
             // extraMenuItems={
             //   record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
             // }
@@ -349,15 +350,25 @@ export const TableReport = forwardRef((props, ref) => {
         onClose={modalDetail?.handleClose}
         width={800}
       >
-        <DetailReport
-          selected={selectedData}
-          tableRef={() => {
-            reloadData(pagination, filters, sorter);
-          }}
-          onClose={modalDetail?.handleClose}
-        />
+        {selectedData && selectedData?.reportType === "BOOKING" ? (
+          <BookingReport
+            selectedData={selectedData}
+            tableRef={() => {
+              reloadData(pagination, filters, sorter);
+            }}
+            onClose={modalDetail?.handleClose}
+          />
+        ) : (
+          <DetailReport
+            selected={selectedData}
+            tableRef={() => {
+              reloadData(pagination, filters, sorter);
+            }}
+            onClose={modalDetail?.handleClose}
+          />
+        )}
       </ComModal>
-      <ComModal
+      {/* <ComModal
         isOpen={modalEdit?.isModalOpen}
         onClose={modalEdit?.handleClose}
         width={800}
@@ -367,7 +378,7 @@ export const TableReport = forwardRef((props, ref) => {
           // tableRef={reloadData}
           onClose={modalEdit?.handleClose}
         />
-      </ComModal>
+      </ComModal> */}
     </div>
   );
 });
