@@ -8,7 +8,7 @@ const RefreshButton = ({ onClick }) => {
       title="Làm mới"
       className="bg-blue-500 group font-semibold  text-[#eee] p-1 rounded-md"
     >
-      <FiRefreshCw className=" text-2xl" />
+      <FiRefreshCw className="text-2xl" />
     </button>
   );
 };
