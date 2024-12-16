@@ -152,7 +152,7 @@ export const TableReport = forwardRef((props, ref) => {
     },
 
     {
-      title: "Nội dung bị báo cáo",
+      title: "Đối tượng bị báo cáo",
       width: 180,
       dataIndex: "maxPackageCount",
       key: "maxPackageCount",

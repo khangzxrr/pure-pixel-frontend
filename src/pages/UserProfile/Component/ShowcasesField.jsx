@@ -21,9 +21,13 @@ export default function ShowcasesField({
         newShowcasePhoto: newShowcasePhoto,
       }),
     onSuccess: (data) => {
-      invalidateQuery(["findAllPhotoshootPackages", page]);
+      queryClient.invalidateQueries(["findAllPhotoshootPackages"]);
     },
   });
+  const {
+    mutateAsync: addPhotoshootPackageShowcaseMutate,
+    isPending: addPhotoPending,
+  } = addPhotoshootPackageShowcase;
   const onShowcasesChange = async (info) => {
     try {
       const newFile = info.file;
@@ -37,9 +41,9 @@ export default function ShowcasesField({
         );
         return;
       }
-
+      console.log("newFile.status", newFile.status);
       // Add the new file to the current showcases list
-      if (newFile.status !== "uploading") {
+      if (newFile.status === "done") {
         setShowcases((prevShowcases) => {
           const updatedShowcases = [...prevShowcases, newFile.originFileObj];
           return updatedShowcases;
@@ -52,6 +56,8 @@ export default function ShowcasesField({
         setShowcasesUrl((prevUrls) =>
           Array.from(new Set([...prevUrls, { photoUrl: newUrl }]))
         );
+      } else if (newFile.status === "uploading") {
+        console.log("uploading");
       } else {
         return;
       }
@@ -70,7 +76,7 @@ export default function ShowcasesField({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["package-detail-by-photographer"],
+        queryKey: ["photoshoot-package-showcases-by-photographer"],
       });
     },
     onError: (error) => {
@@ -85,14 +91,6 @@ export default function ShowcasesField({
   });
 
   const deletePhotoFromShowcases = async (index) => {
-    // Remove the image from showcases
-    const updatedShowcases = showcases.filter((_, i) => i !== index);
-    setShowcases(updatedShowcases);
-
-    // Remove the URL from showcasesUrl
-    const updatedShowcasesUrl = showcasesUrl.filter((_, i) => i !== index);
-    setShowcasesUrl(updatedShowcasesUrl);
-
     const deletedShowcaseId = showcasesUrl[index].id;
     if (deletedShowcaseId) {
       try {
@@ -100,6 +98,13 @@ export default function ShowcasesField({
           showcaseId: deletedShowcaseId,
           photoshootPackageId: photoshootPackageId,
         });
+        // Remove the image from showcases
+        const updatedShowcases = showcases.filter((_, i) => i !== index);
+        setShowcases(updatedShowcases);
+
+        // Remove the URL from showcasesUrl
+        const updatedShowcasesUrl = showcasesUrl.filter((_, i) => i !== index);
+        setShowcasesUrl(updatedShowcasesUrl);
       } catch (error) {
         console.error("Error deleting showcase:", error);
       }
@@ -111,7 +116,7 @@ export default function ShowcasesField({
   const customRequest = async ({ file, onError, onSuccess }) => {
     // console.log("customRequest", file);
     try {
-      const response = await addPhotoshootPackageShowcase.mutateAsync({
+      const response = await addPhotoshootPackageShowcaseMutate({
         photoshootPackageId: photoshootPackageId,
         newShowcasePhoto: file,
       });

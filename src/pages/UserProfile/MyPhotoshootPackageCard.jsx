@@ -40,7 +40,7 @@ const MyPhotoshootPackageCard = ({
       //   page,
       //   Math.ceil(updatedNumberOfRecord / itemsPerPage) < page
       // );
-      if (Math.ceil(updatedNumberOfRecord / itemsPerPage) < page) {
+      if (Math.ceil(updatedNumberOfRecord / itemsPerPage) < page && page > 1) {
         // console.log(`move to previous page ${page - 1}`);
         setPage(page - 1);
       }

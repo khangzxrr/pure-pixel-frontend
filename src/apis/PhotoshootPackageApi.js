@@ -137,7 +137,13 @@ const updatePhotoshootPackage = async ({ packageId, data }) => {
   // Return the response data from the server
   return response.data;
 };
-
+//get current showcase photos
+const getPhotoshootPackageShowcase = async (photoshootPackageId) => {
+  const response = await http.get(
+    `/photographer/photoshoot-package-showcase/photoshoot-package/${photoshootPackageId}?limit=20&page=0`
+  );
+  return response.data;
+};
 // Add showcase photo
 const addPhotoshootPackageShowcase = async (photoshootPackageId, data) => {
   try {
@@ -194,6 +200,7 @@ const PhotoshootPackageApi = {
   deletePhotoshootPackage,
   photographerFindById,
   createPhotoshootPackage,
+  getPhotoshootPackageShowcase,
   addPhotoshootPackageShowcase,
   deletePhotoshootPackageShowcase,
   updatePhotoshootPackage,
