@@ -15,6 +15,7 @@ import CameraApi from "../apis/CameraApi";
 import ChartDashboardRevenue from "../components/ComECommerce/ChartDashboardRevenue";
 import ChartTotalUsedCameraByBrand from "../components/ComECommerce/ChartTotalUsedCameraByBrand";
 import { FiRefreshCw } from "react-icons/fi";
+import ChartDashboardDonut from "../components/ComECommerce/ChartDashboardDonut";
 const { RangePicker } = DatePicker;
 
 const ECommerceLayout = () => {
@@ -139,6 +140,8 @@ const ECommerceLayout = () => {
         !isFetchingTop && (
           <div className="flex flex-col gap-8 ">
             <CardDataStatsList data={data} />
+
+            <ChartDashboardDonut dashBoardData={data} />
             <ChartDashboard dashBoardData={data} />
             <Table dataTopSeller={TopSeller} />
             <div className="grid grid-cols-1 lg:grid-cols-8 gap-8 px-5">

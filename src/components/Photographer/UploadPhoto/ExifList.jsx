@@ -1,15 +1,31 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const ExifList = ({ exifData }) => {
+const ExifList = ({ exifData, cameraId, onClose }) => {
+  const navigate = useNavigate();
   const [showFull, setShowFull] = useState(false);
 
   // Check if exifData is undefined or null
   if (!exifData) {
     return <div className="text-[#d7d7d8]">Không có dữ liệu của tấm ảnh</div>;
   }
-
+  console.log("check", cameraId && cameraId);
   const fields = [
-    { label: "Mẫu máy", value: exifData.Model },
+    {
+      label: "Mẫu máy",
+      value: cameraId ? (
+        <p
+        // className="text-blue-500 underline cursor-pointer"
+        // onClick={() => {
+        //   navigate(`/explore/camera-model/${cameraId}`);
+        // }}
+        >
+          {exifData.Model}
+        </p>
+      ) : (
+        <p>{exifData.Model}</p>
+      ),
+    },
     { label: "Hãng sản xuất", value: exifData.Make },
     { label: "Loại ống kính", value: exifData.LensModel },
     { label: "Hướng chụp", value: exifData.Orientation },
