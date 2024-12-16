@@ -2,7 +2,7 @@ import React from "react";
 import CardDataStatsList from "../components/ComECommerce/CardDataStatsList";
 import ChartDashboard from "../components/ComECommerce/ChartDashboard";
 import Table from "../components/ComECommerce/Table";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AdminApi from "../apis/AdminApi";
 import LoadingOval from "../components/LoadingSpinner/LoadingOval";
 import { ConfigProvider, DatePicker, Space } from "antd";
@@ -14,9 +14,11 @@ import TableCameraList from "../components/ComECommerce/TableCameraList";
 import CameraApi from "../apis/CameraApi";
 import ChartDashboardRevenue from "../components/ComECommerce/ChartDashboardRevenue";
 import ChartTotalUsedCameraByBrand from "../components/ComECommerce/ChartTotalUsedCameraByBrand";
+import { FiRefreshCw } from "react-icons/fi";
 const { RangePicker } = DatePicker;
 
 const ECommerceLayout = () => {
+  const queryClient = useQueryClient();
   const { fromDate, toDate, setFromDateState, setToDateState } =
     UseECommerceStore();
   const [arrayDatePicker, setArrayDatePicker] = React.useState([
@@ -34,7 +36,7 @@ const ECommerceLayout = () => {
   // const fromDate = new Date(toDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
   // const fromDateCustomize = "2024-10-01T01:30:14.761+07:00";
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery({
     queryKey: ["dashboard", fromDate, toDate],
     queryFn: () =>
       AdminApi.getDashboard(fromDate.toISOString(), toDate.toISOString()),
@@ -45,6 +47,8 @@ const ECommerceLayout = () => {
     isLoading: isLoadingTop,
     isError: isErrorTop,
     error: errorTop,
+    isFetching: isFetchingTop,
+    refetch: refetchTop,
   } = useQuery({
     queryKey: ["top-seller-dashboard", fromDate, toDate],
     queryFn: () =>
@@ -59,6 +63,8 @@ const ECommerceLayout = () => {
     isLoading: isLoadingTopCamera,
     isError: isErrorTopCamera,
     error: errorTopCamera,
+    isFetched: isFetchedTopCamera,
+    refetch: refetchTopCamera,
   } = useQuery({
     queryKey: ["top-camera-dashboard", fromDate, toDate],
     queryFn: () => CameraApi.getTopCameras(10),
@@ -68,6 +74,12 @@ const ECommerceLayout = () => {
     setFromDateState(arrayDatePicker[0]);
     setToDateState(arrayDatePicker[1]);
   };
+
+  const handleRefresh = () => {
+    refetchTop();
+    refetch();
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className=" flex justify-end items-center gap-2 mr-5">
@@ -98,34 +110,50 @@ const ECommerceLayout = () => {
         </ConfigProvider>
         <button
           onClick={() => handleOnClickDatePicker()}
-          className="bg-[#eee] font-semibold text-[#202225] px-2 py-1 rounded-md"
+          className="bg-[#eee] font-semibold hover:bg-[#999] text-[#202225] px-5 py-1 rounded-md"
         >
           Xác nhận
         </button>
+        <button
+          onClick={() => handleRefresh()}
+          title="Làm mới"
+          className="bg-blue-500 group font-semibold  text-[#eee] p-1 rounded-md"
+        >
+          <FiRefreshCw className=" text-2xl" />
+        </button>
       </div>
-      {(isLoading || isLoadingTop || isLoadingTopCamera) && (
+
+      {(isLoading ||
+        isLoadingTop ||
+        isLoadingTopCamera ||
+        isFetching ||
+        isFetchingTop) && (
         <div className="flex items-center justify-center h-[200px]">
           <LoadingOval />
         </div>
       )}
-      {!isLoading && !isLoadingTop && !isLoadingTopCamera && (
-        <div className="flex flex-col gap-8 ">
-          <CardDataStatsList data={data} />
-          <ChartDashboard dashBoardData={data} />
-          <Table dataTopSeller={TopSeller} />
-          <div className="grid grid-cols-1 lg:grid-cols-8 gap-8 px-5">
-            <div className="col-span-5 ">
-              <TableCameraList dataCamera={TopCamera} />
-            </div>
+      {!isLoading &&
+        !isLoadingTop &&
+        !isLoadingTopCamera &&
+        !isFetching &&
+        !isFetchingTop && (
+          <div className="flex flex-col gap-8 ">
+            <CardDataStatsList data={data} />
+            <ChartDashboard dashBoardData={data} />
+            <Table dataTopSeller={TopSeller} />
+            <div className="grid grid-cols-1 lg:grid-cols-8 gap-8 px-5">
+              <div className="col-span-5 ">
+                <TableCameraList dataCamera={TopCamera} />
+              </div>
 
-            <div className="col-span-5 lg:col-span-3">
-              <div className="bg-[#32353b]  rounded-sm">
-                <ChartTotalUsedCameraByBrand />
+              <div className="col-span-5 lg:col-span-3">
+                <div className="bg-[#32353b]  rounded-sm">
+                  <ChartTotalUsedCameraByBrand />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

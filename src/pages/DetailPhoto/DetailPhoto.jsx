@@ -337,28 +337,26 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                 ref={ref}
                 className="z-0 flex justify-center items-center md:h-screen h-[50vh] relative"
               >
-                {/* {currentPhoto?.blurHash && (
+                {currentPhoto?.blurHash && (
                   <Blurhash
                     className="absolute"
                     hash={currentPhoto.blurHash}
                     height={height}
                     width={blurhashWidth}
                   />
-                )} */}
+                )}
 
                 <img
                   src={
-                    // isOriginalPhotoLoaded
-                    currentPhoto?.signedUrl?.url
-                    // : currentPhoto?.signedUrl?.thumbnail
+                    isOriginalPhotoLoaded ? currentPhoto?.signedUrl?.url : ""
                   }
-                  // initial={{ opacity: 0 }}
-                  // animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
-                  // transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
+                  transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
                   className="h-auto max-h-screen absolute w-auto"
-                  // lazy="lazy"
+                  lazy="lazy"
                 />
-                {/* <img
+                <img
                   ref={imageRef}
                   src={
                     !isOriginalPhotoLoaded
@@ -367,7 +365,7 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                   }
                   // alt={currentPhoto.title}
                   className="w-0 h-0"
-                /> */}
+                />
               </div>
 
               <button

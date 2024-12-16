@@ -24,6 +24,7 @@ import { Link } from "react-router-dom";
 import ComTypeWalletConverter from "../../../components/ComStatusConverter/ComTypeWalletConverter";
 import { FaWallet } from "react-icons/fa";
 import ComStatusWalletConverter from "../../../components/ComStatusConverter/ComStatusWalletConverter";
+import RefreshButton from "../../../components/ComButton/RefreshButton";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -95,11 +96,11 @@ export const TableTransaction = forwardRef((props, ref) => {
       // sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
       // ...getColumnSearchProps("user.name", "Người báo cáo"),
       render: (_, record) => (
-        <div className=" gap-2 items-center ">
+        <div className=" flex gap-2 items-center ">
           {record?.user?.avatar && (
-            <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
+            <div className="size-10 flex items-center justify-center overflow-hidden rounded-full">
               <Image
-                wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
+                wrapperClassName=" w-10 bg-[#eee] h-10 object-cover object-center flex items-center justify-center "
                 src={record?.user?.avatar}
                 alt={record?.user?.avatar}
                 preview={{ mask: "Xem ảnh" }}
@@ -157,7 +158,7 @@ export const TableTransaction = forwardRef((props, ref) => {
         <div>
           <h1>
             {record.paymentMethod === "SEPAY" && (
-              <div className="flex flex-row justify-center">
+              <div className="flex ">
                 <img
                   src="https://sepay.vn/assets/img/logo/sepay-820x820-blue-icon.png"
                   alt="sepay"
@@ -167,7 +168,7 @@ export const TableTransaction = forwardRef((props, ref) => {
               </div>
             )}
             {record.paymentMethod === "WALLET" && (
-              <div className="flex flex-row justify-center">
+              <div className="flex ">
                 <FaWallet className="text-3xl" />
                 <p className="ml-3 font-normal">Ví</p>
               </div>
@@ -341,6 +342,11 @@ export const TableTransaction = forwardRef((props, ref) => {
   // console.log("====================================");
   return (
     <div>
+      <div className="flex items-center justify-end mb-2">
+        <RefreshButton
+          onClick={() => reloadData(pagination, filters, sorter)}
+        />
+      </div>
       <ComTable
         y={"65vh"}
         columns={columns}

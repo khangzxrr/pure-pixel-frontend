@@ -128,7 +128,7 @@ const UpdateUserDetail = ({ userDetail, onClose, loading }) => {
         </div>
       </div>
       <label class="inline-flex gap-2 items-center cursor-pointer">
-        <span class=" text-sm font-medium text-gray-900 dark:text-gray-300">
+        <span class=" text-sm font-medium  text-gray-300">
           Kích hoạt/Hủy kích hoạt tài khoản
         </span>
         <input
