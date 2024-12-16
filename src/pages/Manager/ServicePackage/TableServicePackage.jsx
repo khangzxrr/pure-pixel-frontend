@@ -50,7 +50,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
       fixed: "left",
       dataIndex: "id",
       key: "id",
-      sorter: (a, b) => a?.id?.localeCompare(b?.id),
+      // sorter: (a, b) => a?.id?.localeCompare(b?.id),
       ...getColumnSearchProps("id", "Id"),
     },
     {
@@ -63,24 +63,24 @@ export const TableServicePackage = forwardRef((props, ref) => {
       ...getColumnSearchProps("title", "Tên gói chụp"),
     },
 
-    {
-      title: "Hình ảnh",
-      dataIndex: "thumbnail",
-      key: "thumbnail",
-      width: 80,
-      render: (_, record) => (
-        <>
-          <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
-            <Image
-              wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
-              src={record?.thumbnail}
-              alt={record?.thumbnail}
-              preview={{ mask: "Xem ảnh" }}
-            />
-          </div>
-        </>
-      ),
-    },
+    // {
+    //   title: "Hình ảnh",
+    //   dataIndex: "thumbnail",
+    //   key: "thumbnail",
+    //   width: 80,
+    //   render: (_, record) => (
+    //     <>
+    //       <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
+    //         <Image
+    //           wrapperClassName=" w-full h-full object-cover object-center flex items-center justify-center "
+    //           src={record?.thumbnail}
+    //           alt={record?.thumbnail}
+    //           preview={{ mask: "Xem ảnh" }}
+    //         />
+    //       </div>
+    //     </>
+    //   ),
+    // },
     {
       title: "Giá Tiền",
       width: 100,
@@ -117,11 +117,11 @@ export const TableServicePackage = forwardRef((props, ref) => {
       sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
       ...getColumnSearchProps("user.name", "Người báo cáo"),
       render: (_, record) => (
-        <div className=" gap-2 items-center ">
+        <div className="flex gap-2 items-center ">
           {record?.user?.avatar && (
-            <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
+            <div className="size-10 flex items-center justify-center rounded-full overflow-hidden">
               <Image
-                wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
+                wrapperClassName="w-full h-full object-cover object-center flex items-center justify-center "
                 src={record?.user?.avatar}
                 alt={record?.user?.avatar}
                 preview={{ mask: "Xem ảnh" }}

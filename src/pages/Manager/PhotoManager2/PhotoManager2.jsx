@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   ConfigProvider,
+  Image,
   message,
   Modal,
   notification,
@@ -173,13 +174,18 @@ const PhotoManager2 = () => {
       title: "Hình ảnh",
       dataIndex: "img",
       render: (_, data) => (
+        <div className="flex justify-center items-center">
+          {data?.signedUrl?.thumbnail && (
+            <div className="size-20 overflow-hidden ">
+              <Image
+                wrapperClassName="w-full h-full object-cover object-center flex items-center justify-center "
+                src={data?.signedUrl?.thumbnail}
+                alt="Photo Thumbnail"
+              />
+            </div>
+          )}
+        </div>
         // Assuming photoUrl is the URL to the image thumbnail
-        <img
-          src={data?.signedUrl?.thumbnail}
-          alt="Photo Thumbnail"
-          width="50"
-          height="50"
-        />
       ),
       // defaultSortOrder: "descend",
       // sorter: (a, b) => a.age - b.age,
@@ -203,6 +209,11 @@ const PhotoManager2 = () => {
     {
       title: "Loại ảnh",
       dataIndex: "photoType",
+      filters: [
+        { text: "RAW", value: "RAW" },
+        { text: "BOOKING", value: "BOOKING" },
+      ],
+      onFilter: (value, record) => record.photoType === value,
     },
     {
       title: "Trạng thái",
@@ -225,15 +236,17 @@ const PhotoManager2 = () => {
       ),
     },
     {
-      title: "Danh mục",
-      dataIndex: "categories",
-      render: (categories) => (
-        <div>
-          {categories?.map((category) => (
-            <div key={category.id} className="text-[#eee] text-sm">
-              {category.name}
-            </div>
-          ))}
+      title: "Quyền riêng tư",
+      dataIndex: "visibility",
+      filters: [
+        { text: "Công khai", value: "PUBLIC" },
+        { text: "Riêng tư", value: "PRIVATE" },
+      ],
+      onFilter: (value, record) => record.visibility === value,
+      render: (_, data) => (
+        <div className="">
+          {data?.visibility === "PUBLIC" && "Công khai"}
+          {data?.visibility === "PRIVATE" && "Riêng tư"}
         </div>
       ),
     },

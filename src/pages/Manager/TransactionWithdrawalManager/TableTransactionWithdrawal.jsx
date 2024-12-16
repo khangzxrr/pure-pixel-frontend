@@ -63,15 +63,6 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
       ...getColumnSearchProps("id", "ID giao dịch"),
     },
     {
-      title: "Số tiền",
-      width: 50,
-      dataIndex: "amount",
-      key: "amount",
-      sorter: (a, b) => a.amount - b.amount,
-      ...getColumnPriceRangeProps("amount", "Giá Tiền"),
-      render: (_, record) => <div>{formatCurrency(record.amount)}</div>,
-    },
-    {
       title: "Người yêu cầu",
       width: 80,
       dataIndex: "name",
@@ -87,6 +78,15 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
           <span>{record?.user?.name}</span>
         </div>
       ),
+    },
+    {
+      title: "Số tiền",
+      width: 50,
+      dataIndex: "amount",
+      key: "amount",
+      sorter: (a, b) => a.amount - b.amount,
+      ...getColumnPriceRangeProps("amount", "Giá Tiền"),
+      render: (_, record) => <div>{formatCurrency(record.amount)}</div>,
     },
     {
       title: "Số dư ví",
