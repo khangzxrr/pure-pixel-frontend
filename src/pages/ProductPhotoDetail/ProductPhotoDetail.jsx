@@ -262,7 +262,9 @@ const ProductPhotoDetail = () => {
             setTransactionId(
               response?.userToUserTransaction?.fromUserTransaction?.id
             );
-            setQrCodeUrl(response.mockQrCode);
+            // setQrCodeUrl(response.mockQrCode); //test qr code
+            setQrCodeUrl(response.paymentUrl); //production qr code
+
             setPaymentStatus("PENDING");
           } else if (paymentMethod === "WALLET") {
             modal?.handleClose();
