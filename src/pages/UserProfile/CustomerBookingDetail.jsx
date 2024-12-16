@@ -476,7 +476,7 @@ const CustomerBookingDetail = () => {
                             ? "border-4 border-gray-300 transition duration-300"
                             : ""
                         }`}
-                        alt="Ban Thao"
+                        alt="Bản Thảo"
                         onClick={() => setSelectedPhoto(photo)}
                       />
                       {bookingDetail.status === "SUCCESSED" && (

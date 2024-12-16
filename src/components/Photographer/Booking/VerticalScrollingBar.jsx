@@ -23,7 +23,7 @@ export default function VerticalScrollingBar() {
                 ? "border-4 border-white transition duration-300"
                 : ""
             }`}
-            alt="Ban Thao"
+            alt="Bản Thảo"
             onClick={() => handleSelect(photo)}
           />
           {photo.status !== "done" && (
