@@ -95,6 +95,18 @@ export const TableCamera = forwardRef((props, ref) => {
       ),
     },
     {
+      title: "Số người sử dụng",
+      dataIndex: "userCount",
+      width: 60,
+      sorter: (a, b) => a.userCount - b.userCount,
+    },
+    {
+      title: "Tổng số ảnh",
+      dataIndex: "photoCount",
+      width: 50,
+      sorter: (a, b) => a.photoCount - b.photoCount,
+    },
+    {
       title: "Thao tác",
       key: "operation",
       fixed: "right",
