@@ -337,14 +337,14 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                 ref={ref}
                 className="z-0 flex justify-center items-center md:h-screen h-[50vh] relative"
               >
-                {currentPhoto?.blurHash && (
+                {/* {currentPhoto?.blurHash && (
                   <Blurhash
                     className="absolute"
                     hash={currentPhoto.blurHash}
                     height={height}
                     width={blurhashWidth}
                   />
-                )}
+                )} */}
 
                 <img
                   src={
