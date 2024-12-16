@@ -16,7 +16,12 @@ function ComReportConverter({ children }) {
                 preview={{ mask: "Xem ảnh" }}
               />
             </div> */}
-            <p> {data?.referencedPhoto?.title}</p>
+            <p>
+              Ảnh{" "}
+              <span className="font-semibold text-white">
+                {data?.referencedPhoto?.title}
+              </span>
+            </p>
             {/* ID:
             <Link
               to={`/photo/${data?.referencedPhoto?.id}`}
@@ -41,11 +46,23 @@ function ComReportConverter({ children }) {
               )} */}
               {/* <p>ID:{data?.referencedUser?.id}</p> */}
             </div>
-            <div>{data?.referencedUser?.name}</div>
+            <div>
+              Người dùng{" "}
+              <span className="font-semibold text-white">
+                {data?.referencedUser?.name}
+              </span>
+            </div>
           </>
         );
       case "BOOKING":
-        return "BOOKING";
+        return (
+          <div>
+            Gói chụp{" "}
+            <span className="font-semibold text-white">
+              {data?.referencedBooking?.photoshootPackageHistory?.title}
+            </span>
+          </div>
+        );
       case "COMMENT":
         return "Bình luận";
       case "other":
