@@ -57,7 +57,7 @@ const Sidebar = ({
   );
 
   return (
-    <div className="flex flex-col max-h-screen gap-3 w-full">
+    <div className="flex flex-col max-h-screen gap-3 w-full z-30">
       {isUser && (
         <div className=" flex-grow">
           <div className="flex justify-between px-2 h-[50px] bg-[#36393f] outline outline-bottom outline-1 outline-[#202225] shadow-xl text-[#eee] items-center gap-3">

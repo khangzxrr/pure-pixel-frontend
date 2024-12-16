@@ -17,12 +17,16 @@ import ReviewBooking from "./Component/ReviewBooking";
 import calculateDateDifference from "../../utils/calculateDateDifference";
 import useNotificationStore from "../../states/UseNotificationStore";
 import Countdown from "react-countdown";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
+import ReportBookingModal from "../../components/ComReport/ReportBookingModal";
+import { useModalState } from "../../hooks/useModalState";
 
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
+  const popupReport = useModalState();
   const queryClient = useQueryClient();
 
   const { socket } = useNotificationStore();
@@ -222,6 +226,9 @@ const CustomerBookingDetail = () => {
       });
     }
   };
+  const reportBooking = () => {
+    popupReport.handleOpen();
+  };
   useEffect(() => {
     if (selectedPhoto) {
       scrollToPhoto(selectedPhoto);
@@ -326,6 +333,16 @@ const CustomerBookingDetail = () => {
                 <ChatButton
                   userId={bookingDetail.originalPhotoshootPackage.user.id}
                 />
+                <Tooltip title="Báo cáo gói chụp">
+                  <AiOutlineExclamationCircle
+                    className="w-5 h-5 ml-2 hover:opacity-80 z-20 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent default behavior (if applicable)
+                      e.stopPropagation();
+                      reportBooking(bookingId);
+                    }}
+                  />
+                </Tooltip>
               </div>
               <div className="flex flex-col mt-2 gap-1">
                 <div>Ghi chú</div>
@@ -481,6 +498,16 @@ const CustomerBookingDetail = () => {
             </div>
           </div>
         </div>
+      )}
+      {popupReport.isModalOpen && (
+        <ReportBookingModal
+          visible={popupReport.isModalOpen}
+          onClose={popupReport.handleClose}
+          tile="Báo cáo bài viết"
+          id={bookingId}
+          // reportType =USER, PHOTO, BOOKING, COMMENT;
+          reportType={"BOOKING"}
+        />
       )}
     </div>
   );

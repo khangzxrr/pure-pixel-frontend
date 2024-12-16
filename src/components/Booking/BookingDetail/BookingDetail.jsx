@@ -6,9 +6,12 @@ import BookingDetailInfo from "./BookingDetailInfo";
 import BookingDetailUpload from "./BookingDetailUpload";
 import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { useModalState } from "../../../hooks/useModalState";
+import ReportBookingModal from "../../ComReport/ReportBookingModal";
 
 const BookingDetail = () => {
   const { bookingId } = useParams();
+  const popupReport = useModalState();
 
   const {
     setSelectedPhotoByUid,
@@ -48,10 +51,16 @@ const BookingDetail = () => {
   }
   const selectedPhotoData = getPhotoByUid(selectedPhoto);
 
+  const reportBooking = () => {
+    popupReport.handleOpen();
+  };
   return (
     <div className="grid grid-cols-1 md:grid-cols-8 overflow-hidden">
       <div className="md:col-span-3 flex h-[95vh] overflow-y-scroll custom-scrollbar">
-        <BookingDetailInfo bookingDetail={bookingDetail} />
+        <BookingDetailInfo
+          bookingDetail={bookingDetail}
+          reportBooking={reportBooking}
+        />
       </div>
       <div className="md:col-span-5 flex flex-col h-screen ">
         <div
@@ -85,6 +94,16 @@ const BookingDetail = () => {
           <BookingDetailUpload bookingDetail={bookingDetail} />
         </div>
       </div>
+      {popupReport.isModalOpen && (
+        <ReportBookingModal
+          visible={popupReport.isModalOpen}
+          onClose={popupReport.handleClose}
+          tile="Báo cáo bài viết"
+          id={bookingId}
+          // reportType =USER, PHOTO, BOOKING, COMMENT;
+          reportType={"BOOKING"}
+        />
+      )}
     </div>
   );
 };
