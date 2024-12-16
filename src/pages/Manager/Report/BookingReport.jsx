@@ -33,7 +33,7 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
   console.log("bookingDetail", bookingDetail);
   console.log("selectedData", selectedData);
   return (
-    <div className=" text-gray-800 p-6   max-w-3xl mx-auto">
+    <div className=" text-gray-800 p-6 flex flex-col gap-3  max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 flex items-center">
         <Flag className="mr-2 text-red-500" />
         Chi tiết báo cáo
@@ -152,26 +152,86 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
           </div>
         </div>
       </div>
-      <List
-        header={<strong>Các mục trong hóa đơn</strong>}
+      <div className="flex flex-col border bg-[#f3f4f6]  rounded-lg overflow-y-auto">
+        <div className="bg-[#f3f4f6] border-b border-gray-300 p-4 rounded-t-lg flex items-center justify-center font-bold text-xl">
+          Hóa đơn
+        </div>
+        {billItems?.map((item, index) => (
+          <div
+            key={item?.id} // Thêm `key` để tránh cảnh báo React
+            className={`flex flex-col gap-2 p-3 ${
+              index !== billItems.length - 1 ? "border-b border-gray-300" : ""
+            }`}
+          >
+            <div className="flex items-center justify-between ">
+              <div className="items-center text-gray-500">
+                Tiêu đề:{" "}
+                <span className="text-[#202225] font-bold"> {item?.title}</span>
+              </div>
+              <div>
+                {item?.type === "INCREASE" ? (
+                  <div className="text-green-500">
+                    +{item?.price.toLocaleString()} VND
+                  </div>
+                ) : (
+                  <div className="text-red-500">
+                    -{item?.price.toLocaleString()} VND
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className=" px-3">
+          <div className="flex items-center justify-between border-t border-gray-300 py-3">
+            <div className="text-gray-500 font-bold">Tổng cộng: </div>
+            <div className="flex items-center text-xl font-bold ">
+              {totalBillItem?.toLocaleString()} VND
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <List
+        header={<div className="text-lg font-semibold">Hóa đơn</div>}
         bordered
         dataSource={billItems}
         renderItem={(item) => (
           <List.Item>
-            <Descriptions column={1} size="small">
-              <Descriptions.Item label="Tiêu đề">
-                {item?.title}
-              </Descriptions.Item>
-              <Descriptions.Item label="Loại">
-                {item?.type === "INCREASE" ? "Tăng" : "Giảm"}
-              </Descriptions.Item>
-              <Descriptions.Item label="Giá">
-                {item?.price.toLocaleString()} VND
-              </Descriptions.Item>
+            <Descriptions column={2} size="small">
+              <div className="flex flex-col">
+                <div className="flex items-center justify-between w-full">
+                  <div>
+                    <Descriptions.Item label="Tiêu đề">
+                      {item?.title}
+                    </Descriptions.Item>
+                  </div>
+                  <div>
+                    {item?.type === "INCREASE" ? (
+                      <div className="text-green-500">
+                        <Descriptions.Item label="Giá">
+                          +{item?.price.toLocaleString()} VND
+                        </Descriptions.Item>
+                      </div>
+                    ) : (
+                      <div className="text-red-500">
+                        <Descriptions.Item label="Giá">
+                          -{item?.price.toLocaleString()} VND
+                        </Descriptions.Item>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <Descriptions.Item label="Loại">
+                    {totalBillItem}
+                  </Descriptions.Item>
+                </div>
+              </div>
             </Descriptions>
           </List.Item>
         )}
-      />
+      /> */}
+
       <div>
         <h3 className="text-lg font-semibold">Danh sách ảnh</h3>
         <div
