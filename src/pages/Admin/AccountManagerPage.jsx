@@ -22,10 +22,13 @@ import { useTableState } from "../../hooks/useTableState";
 import { getData } from "../../apis/api";
 import ComMenuButonTable from "../../components/ComMenuButonTable/ComMenuButonTable";
 import ComDateConverter from "../../components/ComDateConverter/ComDateConverter";
+import AccountDetail from "../../components/ComInputModal/AccountDetail";
+import RefreshButton from "../../components/ComButton/RefreshButton";
 
 const AccountManagerPage = () => {
   const [isOpenUpdateModal, setIsOpenUpdateModal] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState(null);
+  const [isOpenDetailModal, setIsOpenDetailModal] = useState(false);
   const [page, setPage] = useState(1);
   const itemsPerPage = 10;
   const table = useTableState();
@@ -208,13 +211,16 @@ const AccountManagerPage = () => {
               // setSelectedData(record);
               handleOpenUpdateModal(record);
             }}
+            showModalDetails={() => {
+              handleOpenDetailModal(record);
+            }}
             // showModalDelete={() => {
             //   handleOpenDeleteModal(record.id);
             // }}
             // extraMenuItems={
             //   record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
             // }
-            excludeDefaultItems={["details", "delete"]}
+            excludeDefaultItems={["delete"]}
           />
         </div>
       ),
@@ -224,6 +230,19 @@ const AccountManagerPage = () => {
   const handleOpenUpdateModal = (account) => {
     setIsOpenUpdateModal(true);
     setSelectedAccount(account);
+  };
+
+  const handleOpenDetailModal = (account) => {
+    setIsOpenDetailModal(true);
+    setSelectedAccount(account);
+  };
+
+  const handleCloseDetailModal = () => {
+    setIsOpenDetailModal(false);
+    setSelectedAccount(null);
+    queryClient.invalidateQueries({
+      queryKey: ["user-detail-manager"],
+    });
   };
 
   const handleCloseUpdateModal = () => {
@@ -243,6 +262,12 @@ const AccountManagerPage = () => {
   };
   return (
     <>
+      <div className="flex items-center justify-end mb-2">
+        <RefreshButton
+          onClick={() => reloadData(pagination, filters, sorter)}
+        />
+      </div>
+
       <ConfigProvider
         theme={{
           components: {
@@ -254,6 +279,20 @@ const AccountManagerPage = () => {
           },
         }}
       >
+        <Modal
+          title="Thông tin chi tiết tài khoản"
+          visible={isOpenDetailModal}
+          onCancel={handleCloseDetailModal}
+          footer={null}
+          width={900}
+          centered={true}
+          className="custom-close-icon"
+        >
+          <AccountDetail
+            account={selectedAccount}
+            onClose={handleCloseDetailModal}
+          />
+        </Modal>
         <Modal
           title="Chỉnh sửa thông tin tài khoản"
           visible={isOpenUpdateModal} // Use state from Zustand store

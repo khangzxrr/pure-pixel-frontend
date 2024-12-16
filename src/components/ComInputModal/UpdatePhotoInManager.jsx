@@ -7,12 +7,14 @@ import ManagerPhotoApi from "../../apis/ManagerPhotoApi";
 import { message } from "antd";
 import { notificationApi } from "../../Notification/Notification";
 import LoadingOval from "../LoadingSpinner/LoadingOval";
+import { FormatDate } from "./../../utils/FormatDate";
 const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
   const [isBanned, setIsBanned] = useState("");
   const [isWatermark, setIsWatermark] = useState(false);
   const [isVisibility, setIsVisibility] = useState(photo?.visibility);
   const [title, setTitle] = useState(photo?.title);
   const [description, setDescription] = useState(photo?.description);
+  const [createdAt, setCreatedAt] = useState(photo?.createdAt);
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
 
@@ -68,6 +70,7 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
       setIsBanned(photo.status);
       setIsWatermark(photo.watermark);
       setIsVisibility(photo.visibility);
+      setCreatedAt(photo.createdAt);
     }
   }, [photo]);
 
@@ -131,15 +134,25 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2 pb-3 border-b">
-            <div className="size-[30px] rounded-full overflow-hidden">
-              <img
-                src={photo?.photographer?.avatar}
-                alt=""
-                className="w-full h-full object-cover bg-[#eee]"
-              />
+          <div className="flex items-center justify-between pb-3 border-b">
+            <div className="flex items-center gap-2">
+              <div className="size-[30px] rounded-full overflow-hidden">
+                <img
+                  src={photo?.photographer?.avatar}
+                  alt=""
+                  className="w-full h-full object-cover bg-[#eee]"
+                />
+              </div>
+              <div>{photo?.photographer?.name}</div>
             </div>
-            <div>{photo?.photographer?.name}</div>
+            <div className="flex items-center gap-3 mx-5">
+              <div className="flex items-center gap-2  text-blue-500 ">
+                <TbEdit className="size-4" /> Được chỉnh sửa
+              </div>
+              <div className="flex items-center gap-2 text-red-500 ">
+                <TbEditOff className="size-4" /> Không được chỉnh sửa
+              </div>
+            </div>
           </div>
           <div className="flex flex-col  px-4 bg-[#36393f] rounded-md py-4">
             {/* Tiêu đề */}
@@ -215,7 +228,7 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
             </div>
 
             {/* Quyền riêng tư */}
-            <div className="grid grid-cols-2 items-center py-2">
+            <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
               <div className="text-gray-400 flex items-center gap-1">
                 <TbEditOff className="text-red-500 size-4" />
                 Quyền riêng tư:{" "}
@@ -224,8 +237,16 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
                 {isVisibility === "PUBLIC" ? "Công khai" : "Riêng tư"}
               </div>
             </div>
-
-            <div className="flex items-center py-2 border-b border-gray-500">
+            <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
+              <div className="text-gray-400 flex items-center gap-1">
+                <TbEditOff className="text-red-500 size-4" />
+                Ngày tạo:
+              </div>
+              <div className="text-[#eee] font-bold">
+                {FormatDate(photo?.createdAt)}
+              </div>
+            </div>
+            <div className="flex items-center py-2 ">
               <div className="flex justify-end items-center mx-3 w-full">
                 {isBanned === "BAN" ? (
                   <button

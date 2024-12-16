@@ -25,38 +25,16 @@ export default function ComCard({ title, value, icon, onClick, isSelected }) {
     >
       <p className="text-lg text-[#b9b3b3]">{title}</p>
       <div className="flex items-center justify-between w-full cursor-pointer text-[#dddddd] hover:text-white p-2">
-        {isBalanceVisible ? (
-          <div
-            className="w-full flex flex-row justify-between"
-            onClick={toggleBalanceVisibility}
-          >
-            <div className="w-5/6">
-              {value
-                ? Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(value)
-                : 0}
-            </div>
-            <div className="w-1/6">
-              <Tooltip title="Ẩn số dư">
-                <EyeOutlined />
-              </Tooltip>
-            </div>
+        <div className="w-full flex flex-row justify-between">
+          <div className="w-5/6">
+            {value
+              ? Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(value)
+              : 0}
           </div>
-        ) : (
-          <div
-            className="w-full flex flex-row justify-between"
-            onClick={toggleBalanceVisibility}
-          >
-            <div className="w-5/6">******</div>
-            <div className="w-1/6">
-              <Tooltip title="Hiện số dư">
-                <EyeInvisibleOutlined />
-              </Tooltip>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

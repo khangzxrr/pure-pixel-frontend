@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { FaSearch } from "react-icons/fa";
 import ComReportConverterUser from "../../../components/ComReportConverter/ComReportConverterUser";
+import RefreshButton from "../../../components/ComButton/RefreshButton";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -286,6 +287,11 @@ export const TableReport = forwardRef((props, ref) => {
   };
   return (
     <div>
+      <div className="flex justify-end items-center mb-2">
+        <RefreshButton
+          onClick={() => reloadData(pagination, filters, sorter)}
+        />
+      </div>
       {/* <div className="flex justify-end">
         <ComFilters
           filterSections={filterSections}
