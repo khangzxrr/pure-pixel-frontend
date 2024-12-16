@@ -27,9 +27,11 @@ import calculateDateDifference from "../../../utils/calculateDateDifference";
 import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
 import Countdown from "react-countdown";
 import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
+
 dayjs.locale("vi");
 
-const BookingDetailInfo = ({ bookingDetail }) => {
+const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
   const { bookingId } = useParams();
   const { photoArray } = useBookingPhotoStore();
   const [isEdit, setIsEdit] = useState(false);
@@ -266,6 +268,16 @@ const BookingDetailInfo = ({ bookingDetail }) => {
                 onClick={(event) => {
                   event.preventDefault();
                   navigate(`/message?to=${bookingDetail.user.id}`);
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="Báo cáo gói chụp">
+              <AiOutlineExclamationCircle
+                className="w-5 h-5 ml-2 hover:opacity-80 z-20 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default behavior (if applicable)
+                  e.stopPropagation();
+                  reportBooking();
                 }}
               />
             </Tooltip>

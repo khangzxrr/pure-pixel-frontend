@@ -1,4 +1,4 @@
-import { Calendar, MessageCircleMore } from "lucide-react";
+import { Calendar, Icon, MessageCircleMore } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import formatPrice from "../../../utils/FormatPriceUtils";
@@ -9,10 +9,14 @@ import {
 } from "@tanstack/react-query";
 import { PhotographerBookingApi } from "../../../apis/PhotographerBookingApi";
 import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
-import { Popconfirm, Tooltip } from "antd";
+import { Dropdown, Popconfirm, Tooltip } from "antd";
 import { useNotification } from "../../../Notification/Notification";
 import ChatButton from "../../ChatButton/ChatButton";
 import calculateDateDifference from "../../../utils/calculateDateDifference";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { BsThreeDots } from "react-icons/bs";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
+
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
   { label: "Chờ xác nhận", value: "REQUESTED", color: "#FFA500" }, // Orange
@@ -30,7 +34,7 @@ const getStatusName = (status) => {
   const statusInfo = statuses.find((s) => s.value === status);
   return statusInfo ? statusInfo.label : "Chưa xác định";
 };
-const BookingCard = ({ booking, status }) => {
+const BookingCard = ({ booking, status, reportBooking }) => {
   const queryClient = useQueryClient();
   const { notificationApi } = useNotification();
   const navigate = useNavigate();
@@ -69,6 +73,9 @@ const BookingCard = ({ booking, status }) => {
 
   return (
     <>
+      {/* {popupReport.isModalOpen && ( */}
+
+      {/* )} */}
       <div
         onClick={() => handleBookingOnClick()}
         className="flex flex-col group h-auto  bg-[#36393f] rounded-lg overflow-hidden pb-2"
@@ -110,6 +117,16 @@ const BookingCard = ({ booking, status }) => {
             <div className="text-sm ">{booking.user.name}</div>
 
             <ChatButton userId={booking.user.id} />
+            <Tooltip title="Báo cáo gói chụp">
+              <AiOutlineExclamationCircle
+                className="w-5 h-5 ml-2 hover:opacity-80 z-20"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default behavior (if applicable)
+                  e.stopPropagation();
+                  reportBooking(booking.id);
+                }}
+              />
+            </Tooltip>
           </div>
           <div className="flex flex-col gap-1 mt-2">
             <div>Ghi chú:</div>

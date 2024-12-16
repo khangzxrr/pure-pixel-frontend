@@ -91,7 +91,7 @@ const SidebarLayout = ({
             isLargeScreen || isSidebarOpen
               ? "w-60 translate-x-0"
               : "w-60 overflow-hidden -translate-x-full"
-          } lg:overflow-visible absolute lg:relative z-20 h-screen`}
+          } lg:overflow-visible absolute lg:relative z-30 h-screen`}
         >
           <div className="flex-grow overflow-y-auto overflow-x-hidden scrollbar scrollbar-width:thin scrollbar-thumb-[#a3a3a3] scrollbar-track-[#36393f]">
             {sidebarContent}
