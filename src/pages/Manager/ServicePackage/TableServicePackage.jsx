@@ -174,7 +174,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
               );
             }}
             // extraMenuItems={extraMenuItems}
-            excludeDefaultItems={["edit"]}
+            excludeDefaultItems={["edit", "delete"]}
           />
         </div>
       ),
@@ -191,7 +191,9 @@ export const TableServicePackage = forwardRef((props, ref) => {
   }));
   const reloadData = () => {
     table.handleOpenLoading();
-    getData("/photoshoot-package?limit=9999&page=0&orderByCreatedAt=desc")
+    getData(
+      "manager/photoshoot-package?limit=9999&page=0&orderByCreatedAt=desc"
+    )
       .then((e) => {
         setData(e?.data?.objects);
         // console.log("====================================");
@@ -224,7 +226,7 @@ export const TableServicePackage = forwardRef((props, ref) => {
         onClose={modalDetail?.handleClose}
         width={800}
       >
-        <DetailServicePackage selected={selectedData} />
+        <DetailServicePackage selected={selectedData} reload={reloadData} />
       </ComModal>
       <ComModal
         isOpen={modalEdit?.isModalOpen}

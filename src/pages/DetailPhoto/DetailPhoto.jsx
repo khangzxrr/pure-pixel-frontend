@@ -627,7 +627,11 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
 
                 {currentPhoto?.exif && (
                   <div className="space-y-2 mb-6">
-                    <ExifList exifData={currentPhoto?.exif} />
+                    <ExifList
+                      exifData={currentPhoto?.exif}
+                      cameraId={currentPhoto?.camera?.id}
+                      onClose={handleGoBack}
+                    />
                   </div>
                 )}
                 {currentPhoto?.exif?.longitude &&
