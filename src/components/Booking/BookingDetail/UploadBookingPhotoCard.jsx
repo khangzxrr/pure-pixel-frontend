@@ -75,7 +75,7 @@ export default function UploadBookingPhotoCard({ enableUpdate, photo, index }) {
             ? "border-4 border-gray-300 transition duration-300"
             : ""
         }`}
-        alt="Ban Thao"
+        alt="Bản Thảo"
         onClick={() => handleSelect(photo)}
       />
       {photo.status !== "done" && (
