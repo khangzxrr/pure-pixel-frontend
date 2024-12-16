@@ -11,6 +11,9 @@ import ChatButton from "../../components/ChatButton/ChatButton";
 import { customTheme } from "../../components/Booking/BookingRequestList";
 import calculateDateDifference from "../../utils/calculateDateDifference";
 import useNotificationStore from "../../states/UseNotificationStore";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { useModalState } from "../../hooks/useModalState";
+import ReportBookingModal from "../../components/ComReport/ReportBookingModal";
 
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
@@ -33,6 +36,8 @@ export default function CustomerBooking() {
   const limit = 8;
   const [page, setPage] = useState(1);
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
+  const [selectedBooking, setSelectedBooking] = useState("");
+  const popupReport = useModalState();
 
   const isSelectedStatus = (value) => {
     return status === value;
@@ -52,7 +57,10 @@ export default function CustomerBooking() {
         orderByCreatedAt
       ),
   });
-
+  const reportBooking = (bookingId) => {
+    setSelectedBooking(bookingId);
+    popupReport.handleOpen();
+  };
   return (
     <div className="flex flex-col gap-2 p-4">
       <div className="flex flex-col gap-2">
@@ -166,6 +174,16 @@ export default function CustomerBooking() {
                     <ChatButton
                       userId={booking.originalPhotoshootPackage.user.id}
                     />
+                    <Tooltip title="Báo cáo gói chụp">
+                      <AiOutlineExclamationCircle
+                        className="w-5 h-5 ml-2 hover:opacity-80 z-20"
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevent default behavior (if applicable)
+                          e.stopPropagation();
+                          reportBooking(booking.id);
+                        }}
+                      />
+                    </Tooltip>
                   </div>
 
                   <div className="flex flex-col gap-1 mt-2">
@@ -201,6 +219,16 @@ export default function CustomerBooking() {
             Không có gói buổi chụp nào!
           </div>
         ))}
+      {popupReport.isModalOpen && (
+        <ReportBookingModal
+          visible={popupReport.isModalOpen}
+          onClose={popupReport.handleClose}
+          tile="Báo cáo bài viết"
+          id={selectedBooking}
+          // reportType =USER, PHOTO, BOOKING, COMMENT;
+          reportType={"BOOKING"}
+        />
+      )}
     </div>
   );
 }

@@ -5,6 +5,8 @@ import BookingCard from "./BookingRequestState/BookingCard";
 import { ConfigProvider, Pagination, Select } from "antd";
 import { FiCameraOff } from "react-icons/fi";
 import useNotificationStore from "../../states/UseNotificationStore";
+import { useModalState } from "../../hooks/useModalState";
+import ReportBookingModal from "../ComReport/ReportBookingModal";
 
 const statuses = [
   { label: "Tất cả", value: "", color: "#FFC107" }, // Yellow
@@ -46,6 +48,8 @@ const BookingRequestList = () => {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("");
   const [orderByCreatedAt, setOrderByCreatedAt] = useState("desc");
+  const popupReport = useModalState();
+  const [selectedBooking, setSelectedBooking] = useState("");
   const isSelectedStatus = (value) => status === value;
 
   const handlePageClick = (pageNumber) => {
@@ -64,11 +68,14 @@ const BookingRequestList = () => {
         orderByCreatedAt
       ),
   });
+  const reportBooking = (bookingId) => {
+    setSelectedBooking(bookingId);
+    popupReport.handleOpen();
+  };
   return (
     <div className="flex flex-col gap-2 p-4">
       <div className="flex flex-col gap-2">
         <span className="text-xl">Danh sách lịch hẹn chụp cho khách</span>
-
         <div className="flex flex-col md:flex-row md:justify-between items-end md:items-center border-b-2 text-sm font-medium border-[#818181] pb-2 mb-2">
           <ConfigProvider theme={customTheme}>
             <div className="flex gap-3 text-sm">
@@ -131,6 +138,7 @@ const BookingRequestList = () => {
                 booking={booking}
                 textStateColor={"text-yellow-500"}
                 status={booking.status}
+                reportBooking={reportBooking}
               />
             ))
           ) : (
@@ -140,6 +148,16 @@ const BookingRequestList = () => {
             </div>
           )}
         </div>
+      )}
+      {popupReport.isModalOpen && (
+        <ReportBookingModal
+          visible={popupReport.isModalOpen}
+          onClose={popupReport.handleClose}
+          tile="Báo cáo bài viết"
+          id={selectedBooking}
+          // reportType =USER, PHOTO, BOOKING, COMMENT;
+          reportType={"BOOKING"}
+        />
       )}
     </div>
   );
