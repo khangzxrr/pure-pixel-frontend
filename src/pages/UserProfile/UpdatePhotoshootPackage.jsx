@@ -41,7 +41,18 @@ export default function UpdatePhotoshootPackage({ onClose }) {
       ),
     keepPreviousData: true,
   });
-
+  const { data: photoshootPackageShowcases } = useQuery({
+    queryKey: [
+      "photoshoot-package-showcases-by-photographer",
+      selectedUpdatePhotoshootPackage,
+    ],
+    queryFn: () =>
+      PhotoshootPackageApi.getPhotoshootPackageShowcase(
+        selectedUpdatePhotoshootPackage
+      ),
+    keepPreviousData: true,
+  });
+  console.log(photoshootPackageShowcases && photoshootPackageShowcases);
   const { notificationApi } = useNotification();
   const [thumbnail, setThumbnail] = useState();
   const [thumbnailUrl, setThumbnailUrl] = useState(
@@ -49,7 +60,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
   );
   const [showcases, setShowcases] = useState([]);
   const [showcasesUrl, setShowcasesUrl] = useState(
-    photoshootPackage ? photoshootPackage.showcase : []
+    photoshootPackageShowcases ? photoshootPackageShowcases.objects : []
   );
   const queryClient = useQueryClient();
   const {
