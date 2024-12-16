@@ -16,6 +16,7 @@ import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/Com
 import ComModal from "../../../components/ComModal/ComModal";
 import DetailUpgrede from "./DetailUpgrede";
 import EditCamera from "./EditCamera";
+import RefreshButton from "../../../components/ComButton/RefreshButton";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -155,6 +156,10 @@ export const TableCamera = forwardRef((props, ref) => {
   }, []);
   return (
     <div>
+      <div className="flex items-center justify-end mb-2">
+        <RefreshButton onClick={reloadData} />
+      </div>
+
       <ComTable
         y={"65vh"}
         x={1020}

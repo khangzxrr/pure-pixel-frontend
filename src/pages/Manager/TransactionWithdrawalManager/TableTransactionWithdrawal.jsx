@@ -25,6 +25,7 @@ import ComTypeWalletConverter from "../../../components/ComStatusConverter/ComTy
 import { FaWallet } from "react-icons/fa";
 import ComStatusWalletConverter from "../../../components/ComStatusConverter/ComStatusWalletConverter";
 import ComCard from "./../../../components/ComCard/ComCard";
+import RefreshButton from "../../../components/ComButton/RefreshButton";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -255,7 +256,11 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
             {...card}
           />
         ))}
+        <div className="flex items-end justify-end">
+          <RefreshButton onClick={() => reloadData()} />
+        </div>
       </div>
+
       <ComTable
         y={"65vh"}
         columns={columns}

@@ -22,6 +22,7 @@ import { useTableState } from "../../../hooks/useTableState";
 import { getData } from "../../../apis/api";
 import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButonTable";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
+import RefreshButton from "../../../components/ComButton/RefreshButton";
 
 const PhotoManager2 = () => {
   const queryClient = useQueryClient();
@@ -272,7 +273,7 @@ const PhotoManager2 = () => {
             // extraMenuItems={
             //   record?.reportStatus === "OPEN" ? extraMenuItems : extraMenuItems2
             // }
-            excludeDefaultItems={["details"]}
+            excludeDefaultItems={["details", "delete"]}
           />
         </div>
       ),
@@ -344,6 +345,11 @@ const PhotoManager2 = () => {
   };
   return (
     <>
+      <div className="flex items-center justify-end mb-2">
+        <RefreshButton
+          onClick={() => reloadData(pagination, filters, sorter)}
+        />
+      </div>
       <ConfigProvider
         theme={{
           components: {
