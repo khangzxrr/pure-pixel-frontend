@@ -128,17 +128,14 @@ export default function DetailReport({ selected, tableRef, onClose }) {
           <div className="bg-gray-100 p-4 rounded-lg">
             <div className="flex items-center mb-2">
               <User className="mr-2 text-gray-600" />
-              <span className="font-semibold">Người dùng báo cáo</span>
+              <span className="font-semibold">Người báo cáo</span>
             </div>
-            <div className=" flex gap-4">
-              <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
-                <Image
-                  wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
-                  src={selected?.user?.avatar}
-                  alt={selected?.user?.avatar}
-                  preview={{ mask: "Xem ảnh" }}
-                />
-              </div>
+            <div className=" flex gap-4 items-center">
+              <img
+                className="w-9 h-9 rounded-full object-cover bg-[#eee]"
+                src={selected?.user?.avatar}
+                alt={selected?.user?.avatar}
+              />
               <span>{selected?.user?.name}</span>
             </div>
           </div>
@@ -156,101 +153,6 @@ export default function DetailReport({ selected, tableRef, onClose }) {
             </div> */}
           </div>
         </div>
-
-        {/* Reported Content and Image */}
-        <div className="bg-gray-100 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3">Nội dung báo cáo</h3>
-          <div className="mb-4">
-            {selected?.reportType === "PHOTO" && (
-              <>
-                <>
-                  <div className="relative w-full h-48">
-                    <Image
-                      className="object-cover w-full h-full"
-                      src={selected?.referencedPhoto?.photographer?.cover} // Nếu không có cover, dùng ảnh mặc định
-                      alt="Cover Image"
-                      layout="fill"
-                    />
-                  </div>
-
-                  {/* Ảnh đại diện */}
-                  <div className="absolute  ">
-                    <img
-                      wrapperClassName="w-32 max-h-32 object-cover rounded-full border-4 border-white"
-                      className="w-32 h-32 object-cover rounded-full border-4 border-white"
-                      src={selected?.referencedPhoto?.photographer?.avatar} // Nếu không có avatar, dùng ảnh mặc định
-                      alt={selected?.referencedPhoto?.photographer?.name}
-                      preview={{ mask: "Xem ảnh" }}
-                    />
-                  </div>
-                </>
-                <div className="mt-36 p-4">
-                  <p className="text-2xl font-semibold">
-                    {selected?.referencedPhoto?.photographer?.name}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {selected?.referencedPhoto?.photographer?.quote}
-                  </p>
-                </div>
-
-                <p className="p-4 font-semibold">
-                  Tên bài viết :{selected?.referencedPhoto?.title}
-                </p>
-                <img
-                  src={selected?.referencedPhoto?.signedUrl?.url}
-                  alt="Reported post image"
-                  className="w-full h-auto rounded-lg mb-2"
-                />
-              </>
-            )}
-            {selected?.reportType === "USER" && (
-              <>
-                {/* Ảnh cover */}
-                <div className="relative w-full h-48">
-                  <Image
-                    className="object-cover w-full h-full"
-                    src={selected?.referencedUser?.cover} // Nếu không có cover, dùng ảnh mặc định
-                    alt="Cover Image"
-                    layout="fill"
-                  />
-                </div>
-
-                {/* Ảnh đại diện */}
-                <div className="absolute ">
-                  <img
-                    wrapperClassName="w-32 max-h-32 object-cover rounded-full border-4 border-white"
-                    className="w-32 h-32 object-cover rounded-full border-4 border-white"
-                    src={selected?.referencedUser?.avatar} // Nếu không có avatar, dùng ảnh mặc định
-                    alt={selected?.referencedUser?.name}
-                    preview={{ mask: "Xem ảnh" }}
-                  />
-                </div>
-
-                {/* Thông tin người dùng */}
-                <div className="mt-36 p-4">
-                  <p className="text-2xl font-semibold">
-                    {selected?.referencedUser?.name}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {selected?.referencedUser?.quote}
-                  </p>
-                  <div className="mt-4">
-                    <p>Email: {selected?.referencedUser?.mail}</p>
-                    <p>
-                      Số điện thoại: {selected?.referencedUser?.phonenumber}
-                    </p>
-                    <p>Địa chỉ: {selected?.referencedUser?.location}</p>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-          <p className="text-2xl font-normal">Nội dung báo cáo:</p>
-          <p className="text-gray-700 bg-white p-3 rounded border border-gray-200">
-            {selected.content}
-          </p>
-        </div>
-
         {/* Report Status */}
         <div className="bg-gray-100 p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-3">Trạng thái báo cáo </h3>
@@ -272,6 +174,62 @@ export default function DetailReport({ selected, tableRef, onClose }) {
             )}
           </div>
         </div>
+        {/* Reported Content and Image */}
+        <div className="bg-gray-100 p-4 rounded-lg">
+          {/* <h3 className="text-lg font-semibold mb-3">Nội dung báo cáo</h3> */}
+          <div className="mb-4">
+            {selected?.reportType === "PHOTO" && (
+              <>
+                <p className="font-semibold mb-4">Chủ sở hữu</p>
+                <div className=" flex gap-4 items-center mb-4">
+                  <img
+                    className="w-9 h-9 rounded-full object-cover bg-[#eee]"
+                    src={selected?.referencedPhoto?.photographer?.avatar}
+                    alt={selected?.referencedPhoto?.photographer?.avatar}
+                  />
+                  <span>{selected?.referencedPhoto?.photographer?.name}</span>
+                </div>
+                <p className=" mb-4 font-semibold">
+                  Tên ảnh: {selected?.referencedPhoto?.title}
+                </p>
+                <img
+                  src={selected?.referencedPhoto?.signedUrl?.url}
+                  alt="Reported post image"
+                  className="w-full h-auto rounded-lg mb-2"
+                />
+              </>
+            )}
+            {selected?.reportType === "USER" && (
+              <>
+                {/* Ảnh cover */}
+                <p className=" mb-4 font-semibold">Người bị báo cáo</p>
+
+                {/* Thông tin người dùng */}
+                <div className=" flex gap-4 items-center mb-4">
+                  <img
+                    className="w-9 h-9 rounded-full object-cover bg-[#eee]"
+                    src={selected?.referencedUser?.avatar}
+                    alt={selected?.referencedUser?.avatar}
+                  />
+                  <span>{selected?.referencedUser?.name}</span>
+                </div>
+                <p className="text-sm text-gray-600">
+                  {selected?.referencedUser?.quote}
+                </p>
+                <div className="mt-4">
+                  <p>Email: {selected?.referencedUser?.mail}</p>
+                  <p>Số điện thoại: {selected?.referencedUser?.phonenumber}</p>
+                  <p>Địa chỉ: {selected?.referencedUser?.location}</p>
+                </div>
+              </>
+            )}
+          </div>
+          <p className="text-2xl font-normal">Nội dung báo cáo:</p>
+          <p className="text-gray-700 bg-white p-3 rounded border border-gray-200">
+            {selected.content}
+          </p>
+        </div>
+
         <div className="flex m-1 gap-3">
           {selected.reportStatus === "OPEN" ? (
             <>
