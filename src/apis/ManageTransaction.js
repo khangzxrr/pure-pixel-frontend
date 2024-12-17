@@ -20,8 +20,18 @@ const acceptWithdrawal = async (transactionId, photo) => {
   );
   return response.data;
 };
+const denyWithdrawal = async (transactionId, failReason) => {
+  const response = await http.patch(
+    `/manager/transaction/${transactionId}/withdrawal/deny`,
+    {
+      failReason,
+    }
+  );
+  return response.data;
+};
 
 const ManageTracsaction = {
   acceptWithdrawal,
+  denyWithdrawal,
 };
 export default ManageTracsaction;

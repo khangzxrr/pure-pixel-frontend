@@ -21,62 +21,6 @@ export default function DetailTransactionWithdrawal({
   console.log(selectedData);
   const { notificationApi } = useNotification();
 
-  const ConfirmPay = async () => {
-    Modal.confirm({
-      title: "Xác nhận đã chuyển tiền",
-      content: "Bạn có chắc đã chuyển tiền cho người dùng?",
-      okText: "Xác nhận đã chuyển",
-      okType: "primary",
-      cancelText: "Hủy",
-      onOk: () => {
-        patchData(`/manager/transaction`, `${selectedData.id}`, {
-          status: "SUCCESS",
-        })
-          .then((e) => {
-            // console.log("11111", e);
-            notificationApi(
-              "success",
-              "Thành công",
-              "Đã xác nhận đã chuyển tiền"
-            );
-            onClose();
-            reloadData();
-          })
-          .catch((error) => {
-            notificationApi("error", "Không thành công", "Lỗi");
-            console.log("error", error);
-          });
-      },
-    });
-  };
-  const ErrorConfirmPay = async () => {
-    Modal.confirm({
-      title: "Xác nhận hủy rút tiền",
-      content: "Bạn có chắc hủy chuyển tiền cho người dùng?",
-      okText: "Xác nhận hủy",
-      okType: "primary",
-      cancelText: "Quay lại",
-      onOk: () => {
-        patchData(`/manager/transaction`, `${selectedData.id}`, {
-          status: "CANCEL",
-        })
-          .then((e) => {
-            // console.log("11111", e);
-            notificationApi(
-              "success",
-              "Thành công",
-              "Đã xác nhận hủy rút tiền"
-            );
-            onClose();
-            reloadData();
-          })
-          .catch((error) => {
-            notificationApi("error", "Không thành công", "Lỗi");
-            console.log("error", error);
-          });
-      },
-    });
-  };
   return (
     <div>
       <div>
@@ -130,7 +74,15 @@ export default function DetailTransactionWithdrawal({
                     </>
                   ),
                 },
-                { label: "Ghi chú:", value: selectedData?.notes },
+                // Conditionally add this row if status === "CANCEL"
+                ...(selectedData?.status === "CANCEL"
+                  ? [
+                      {
+                        label: "Lý do hủy:",
+                        value: selectedData?.withdrawalTransaction?.failReason,
+                      },
+                    ]
+                  : []),
               ].map((item, index) => (
                 <tr key={index} className="border-b">
                   <td className="px-4 py-2 text-gray-600 font-medium">
@@ -141,21 +93,23 @@ export default function DetailTransactionWithdrawal({
               ))}
             </tbody>
           </table>
-          <div className="flex flex-col justify-center items-center border w-full rounded-lg my-2 min-h-[200px] bg-gray-500 py-3">
-            {selectedData?.withdrawalTransaction?.successPhotoUrl ? (
-              <div className="w-1/3 flex justify-center items-center overflow-hidden">
-                <Image
-                  src={selectedData?.withdrawalTransaction?.successPhotoUrl}
-                  className="w-full h-full object-contain"
-                  preview={true}
-                />
-              </div>
-            ) : (
-              <div className="text-white w-full text-center font-bold text-xl">
-                Yêu cầu này chưa có minh chứng rút tiền
-              </div>
-            )}
-          </div>
+          {selectedData.status === "SUCCESS" && (
+            <div className="flex flex-col justify-center items-center border w-full rounded-lg my-2 min-h-[200px] bg-gray-500 py-3">
+              {selectedData?.withdrawalTransaction?.successPhotoUrl ? (
+                <div className="w-1/3 flex justify-center items-center overflow-hidden">
+                  <Image
+                    src={selectedData?.withdrawalTransaction?.successPhotoUrl}
+                    className="w-full h-full object-contain"
+                    preview={true}
+                  />
+                </div>
+              ) : (
+                <div className="text-white w-full text-center font-bold text-xl">
+                  Yêu cầu này chưa có minh chứng rút tiền
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex gap-10 mt-10">
             <ComButton
@@ -164,22 +118,6 @@ export default function DetailTransactionWithdrawal({
             >
               Đóng
             </ComButton>
-            {selectedData.status === "PENDING" && (
-              <ComButton
-                className={" bg-[#042d7e] mx-10 w-full"}
-                onClick={() => ConfirmPay()}
-              >
-                Đã chuyển cho khách hàng
-              </ComButton>
-            )}
-            {selectedData.status === "PENDING" && (
-              <ComButton
-                className={" bg-[#042d7e] mx-10 w-full"}
-                onClick={() => ErrorConfirmPay()}
-              >
-                Hủy rút tiền
-              </ComButton>
-            )}
           </div>
         </div>
       </div>
