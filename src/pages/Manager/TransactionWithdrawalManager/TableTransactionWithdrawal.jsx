@@ -146,67 +146,21 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
       width: 30,
       render: (_, record) => (
         <>
-          {record.status === "PENDING" ? (
-            <div className="flex items-center flex-col">
-              <ComMenuButonTable
-                record={record}
-                extraMenuItems={extraMenuItems}
-                showModalDetails={() => {
-                  modalDetail.handleOpen();
-                  setSelectedData(record);
-                }}
-                excludeDefaultItems={["edit", "delete"]}
-              />
-            </div>
-          ) : (
-            <div className="flex items-center flex-col">
-              <ComMenuButonTable
-                record={record}
-                showModalDetails={() => {
-                  modalDetail.handleOpen();
-                  setSelectedData(record);
-                }}
-                // extraMenuItems={extraMenuItems}
-                excludeDefaultItems={["edit", "delete"]}
-              />
-            </div>
-          )}
+          <div className="flex items-center flex-col">
+            <ComMenuButonTable
+              record={record}
+              showModalDetails={() => {
+                modalDetail.handleOpen();
+                setSelectedData(record);
+              }}
+              excludeDefaultItems={["edit", "delete"]}
+            />
+          </div>
         </>
       ),
     },
   ];
 
-  const extraMenuItems = [
-    {
-      label: "Xác nhận đã chuyển tiền",
-      onClick: (e) => {
-        // Modal.confirm({
-        //   title: "Xác nhận đã chuyển tiền",
-        //   content: "Bạn có chắc đã chuyển tiền cho người dùng?",
-        //   okText: "Đóng báo cáo",
-        //   okType: "primary",
-        //   cancelText: "Hủy",
-        //   onOk: () => {
-        //     patchData(`manager/transaction`, `${e.id}`, {
-        //       status: "SUCCESS",
-        //     })
-        //       .then((e) => {
-        //         // console.log("11111", e);
-        //         notificationApi("success", "Thành công", "Đã đổi trạng thái");
-
-        //         reloadData();
-        //       })
-        //       .catch((error) => {
-        //         notificationApi("error", "Không thành công", "Lỗi");
-        //         console.log("error", error);
-        //       });
-        //   },
-        // });
-        setSelectedData(e);
-        modalWithDrawal.handleOpen();
-      },
-    },
-  ];
   const reloadData = () => {
     table.handleOpenLoading();
     getData(
@@ -277,33 +231,19 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
         onClose={modalDetail?.handleClose}
         width={800}
       >
-        <DetailTransactionWithdrawal
-          selectedData={selectedData}
-          reloadData={reloadData}
-          onClose={modalDetail?.handleClose}
-        />
-      </ComModal>
-      <ComModal
-        isOpen={modalEdit?.isModalOpen}
-        onClose={modalEdit?.handleClose}
-        width={800}
-      >
-        <EditUpgrede
-          selectedData={selectedData}
-          tableRef={reloadData}
-          onClose={modalEdit?.handleClose}
-        />
-      </ComModal>
-      <ComModal
-        isOpen={modalWithDrawal?.isModalOpen}
-        onClose={modalWithDrawal?.handleClose}
-        width={800}
-      >
-        <WithdrawalProcessingModal
-          selectedData={selectedData}
-          tableRef={reloadData}
-          onClose={modalWithDrawal?.handleClose}
-        />
+        {selectedData.status === "PENDING" ? (
+          <WithdrawalProcessingModal
+            selectedData={selectedData}
+            tableRef={reloadData}
+            onClose={modalDetail?.handleClose}
+          />
+        ) : (
+          <DetailTransactionWithdrawal
+            selectedData={selectedData}
+            reloadData={reloadData}
+            onClose={modalDetail?.handleClose}
+          />
+        )}
       </ComModal>
     </div>
   );
