@@ -241,7 +241,7 @@ export default function CustomUpload() {
 
       setSelectedPhotoByUid(file.uid);
     } catch (e) {
-      console.log("beforeUpload error", e);
+      // console.log("beforeUpload error", e);
 
       handleException(file, e);
       return false;

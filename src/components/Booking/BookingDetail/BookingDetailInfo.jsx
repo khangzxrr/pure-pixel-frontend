@@ -13,7 +13,6 @@ import { FormatDateTime } from "../../../utils/FormatDateTimeUtils";
 import { ConfigProvider, DatePicker, Popconfirm, Tooltip } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { photoShootInput } from "../../../yup/PhotoShootInput";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import "./BookingDetail.css";
@@ -28,9 +27,25 @@ import { CustomerBookingApi } from "../../../apis/CustomerBookingApi";
 import Countdown from "react-countdown";
 import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { PhotoShootUpdateInput } from "../../../yup/PhotoShootUpdateInput";
 
 dayjs.locale("vi");
-
+const statusRender = (status) => {
+  switch (status) {
+    case "REQUESTED":
+      return <p className="text-[#FFA500]">Đang yêu cầu</p>;
+    case "ACCEPTED":
+      return <p className="text-[#007BFF]">Đang thực hiện</p>;
+    case "SUCCESSED":
+      return <p className="text-[#28A745]">Đã hoàn thành</p>;
+    case "DENIED":
+      return <p className="text-[#DC3545]">Yêu cầu đã bị từ chối</p>;
+    case "FAILED":
+      return <p className="text-[#eee]">Yêu cầu đã bị hủy</p>;
+    default:
+      return <p className="text-[#FFA500]">{status}</p>;
+  }
+};
 const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
   const { bookingId } = useParams();
   const { photoArray } = useBookingPhotoStore();
@@ -45,7 +60,7 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
     register,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(photoShootInput),
+    resolver: yupResolver(PhotoShootUpdateInput),
     defaultValues: {
       description: bookingDetail.description,
       // dateRange: [
@@ -189,6 +204,7 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
       );
     }
   };
+  console.log("errors", errors);
   return (
     <div className="flex flex-col gap-1  w-full">
       <div className="flex flex-col gap-2 m-2 bg-[#2d2f34] rounded-lg">
@@ -220,18 +236,8 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
             <div className="text-xl font-bold">
               {bookingDetail.photoshootPackageHistory.title}
             </div>
-            <div
-              className={`${
-                bookingDetail.status === "ACCEPTED"
-                  ? "text-blue-500"
-                  : bookingDetail.status === "SUCCESSED"
-                  ? "text-green-500"
-                  : "text-yellow-500"
-              } font-normal text-sm text-blue-500`}
-            >
-              {bookingDetail.status === "ACCEPTED" ? (
-                "Đang thực hiện"
-              ) : bookingDetail.status === "SUCCESSED" ? (
+            <div className={` font-normal text-sm text-blue-500`}>
+              {bookingDetail.status === "SUCCESSED" ? (
                 isDownloading ? (
                   <p className="flex items-center gap-1 text-yellow-500">
                     Ảnh đang được tải về...
@@ -247,7 +253,7 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
                   </Tooltip>
                 )
               ) : (
-                "Chờ xác nhận"
+                statusRender(bookingDetail.status)
               )}{" "}
             </div>
           </div>
@@ -338,7 +344,7 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
                       </Tooltip>
                     </div>
                     <p>Ghi chú</p>
-                    <input
+                    <textarea
                       {...register("description")}
                       type="text"
                       className={`m-2 w-full text-[#d7d7d8] bg-[#292b2f] hover:bg-[#292b2f] focus:bg-[#292b2f] px-2 py-1 border-[1px] text-sm font-normal focus:outline-none focus:border-[#e0e0e0] hover:border-[#e0e0e0] placeholder:text-[#d7d7d8] rounded-md ${

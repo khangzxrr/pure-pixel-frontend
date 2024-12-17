@@ -70,7 +70,7 @@ export default function EditUpgrede({ selectedUpgrede, onClose, tableRef }) {
           onClose();
         })
         .catch((error) => {
-          console.log(111, error.response);
+          console.log(111, error?.response);
           setDisabled(false);
           if (error?.data?.statusCode === 400) {
             setError("name", { message: "Tên gói này đã tồn tại" });

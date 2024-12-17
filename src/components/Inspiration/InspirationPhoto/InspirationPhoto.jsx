@@ -17,6 +17,7 @@ import { useModalState } from "../../../hooks/useModalState";
 import UseUserOtherStore from "./../../../states/UseUserOtherStore";
 
 import LazyThumbnail from "../../ComLazyPhoto/LazyThumbnail";
+import useBeforeRouteDetailPhoto from "../../../states/UseBeforeRouteDetailPhoto";
 
 const InspirationPhoto = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const InspirationPhoto = () => {
     filterByUpVote,
     searchByPhotoTitle,
   } = UseCategoryStore();
-
+  const { setBeforeRoute } = useBeforeRouteDetailPhoto();
   const setNamePhotographer = UsePhotographerFilterStore(
     (state) => state.setNamePhotographer
   );
@@ -110,6 +111,7 @@ const InspirationPhoto = () => {
   };
 
   const handleOnClick = (photo) => {
+    setBeforeRoute("/explore/inspiration");
     setSelectedImage(photo);
   };
 

@@ -7,7 +7,7 @@ export default function TableSkeleton({ col, row, isPagination }) {
   const calcWidth = () => {
     return `${(1 / cols) * 100}%`;
   };
-  console.log(calcWidth());
+  // console.log(calcWidth());
   return (
     <>
       {/* {isPagination && (

@@ -105,7 +105,11 @@ export default function PhotoManagementModal({ close, id, data }) {
     })
       .then((response) => {
         // console.log("Upload thành công:", response);
-        message.success("Đã lưu thông tin thành công!");
+        notificationApi(
+          "success",
+          "Đăng bán ảnh thành công",
+          "Đã đăng bán ảnh thành công!"
+        );
         queryClient.invalidateQueries({ queryKey: ["my-photo"] });
         close();
       })
@@ -162,7 +166,7 @@ export default function PhotoManagementModal({ close, id, data }) {
                 <div className="space-y-4">
                   <h3 className="text-lg text-gray-100">Thông tin bức ảnh</h3>
 
-                  <div className="space-y-4">
+                  {/* <div className="space-y-4">
                     <div>
                       <label className="block text-sm text-gray-400 mb-1">
                         Tựa đề
@@ -209,8 +213,11 @@ export default function PhotoManagementModal({ close, id, data }) {
                         </p>
                       )}
                     </div>
-                  </div>
-
+                  </div> */}
+                  <p>{photoInfo?.title}</p>
+                  <p className="font-normal text-sm text-gray-300">
+                    {photoInfo?.description}
+                  </p>
                   {/* Camera Specifications */}
                   <ExifList exifData={data.exif} />
                 </div>

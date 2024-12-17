@@ -5,7 +5,10 @@ import { IoPencilOutline } from "react-icons/io5";
 import { CgRemove } from "react-icons/cg";
 import PhotoApi from "../../apis/PhotoApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNotification } from "../../Notification/Notification";
+import {
+  notificationApi,
+  useNotification,
+} from "../../Notification/Notification";
 import useModalStore from "../../states/UseModalStore";
 import { useModalState } from "../../hooks/useModalState";
 import PhotoManagementModal from "./PhotoManagementModal";
@@ -46,13 +49,21 @@ const DropdownSeller = ({ photo, callData }) => {
   const handleDeletePhoto = () => {
     postData(`/photo/${photo.id}/stop-selling`)
       .then((e) => {
-        message.success("Xóa ảnh thành công!");
+        notificationApi(
+          "success",
+          "Ngưng bán thành công",
+          "Đã ngưng bán ảnh thành công"
+        );
         callData();
         modalDelete.handleClose();
         queryClient.invalidateQueries("my-photo");
       })
       .catch((error) => {
-        message.error("Xóa ảnh không thành công!");
+        notificationApi(
+          "error",
+          "Thao tác thất bại",
+          "Ngưng bán ảnh thất bại, vui lòng thử lại sau"
+        );
         console.log(error);
       });
   };

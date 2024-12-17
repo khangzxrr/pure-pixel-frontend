@@ -20,7 +20,22 @@ import Countdown from "react-countdown";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import ReportBookingModal from "../../components/ComReport/ReportBookingModal";
 import { useModalState } from "../../hooks/useModalState";
-
+const statusRender = (status) => {
+  switch (status) {
+    case "REQUESTED":
+      return <p className="text-[#FFA500]">Đang yêu cầu</p>;
+    case "ACCEPTED":
+      return <p className="text-[#007BFF]">Đang thực hiện</p>;
+    case "SUCCESSED":
+      return <p className="text-[#28A745]">Đã hoàn thành</p>;
+    case "DENIED":
+      return <p className="text-[#DC3545]">Yêu cầu đã bị từ chối</p>;
+    case "FAILED":
+      return <p className="text-[#eee]">Yêu cầu đã bị hủy</p>;
+    default:
+      return <p className="text-[#FFA500]">{status}</p>;
+  }
+};
 const CustomerBookingDetail = () => {
   const { bookingId } = useParams();
   const [isDownloading, setIsDownloading] = useState(false);
@@ -286,18 +301,8 @@ const CustomerBookingDetail = () => {
                 <div className="text-xl font-bold">
                   {bookingDetail.photoshootPackageHistory.title}
                 </div>
-                <div
-                  className={`${
-                    bookingDetail.status === "ACCEPTED"
-                      ? "text-blue-500"
-                      : bookingDetail.status === "SUCCESSED"
-                      ? "text-green-500"
-                      : "text-yellow-500"
-                  } font-normal text-sm`}
-                >
-                  {bookingDetail.status === "ACCEPTED" ? (
-                    "Đang thực hiện"
-                  ) : bookingDetail.status === "SUCCESSED" ? (
+                <div className={` font-normal text-sm`}>
+                  {bookingDetail.status === "SUCCESSED" ? (
                     isDownloading ? (
                       <p className="flex items-center gap-1 text-yellow-500">
                         Ảnh đang được tải về...
@@ -313,7 +318,7 @@ const CustomerBookingDetail = () => {
                       </Tooltip>
                     )
                   ) : (
-                    "Chờ xác nhận"
+                    statusRender(bookingDetail.status)
                   )}
                 </div>
               </div>
