@@ -4,7 +4,6 @@ import ChartDashboardRevenue from "./ChartDashboardRevenue";
 const ChartDashboardDonut = ({ dashBoardData }) => {
   const revenueFromSellingPhoto = dashBoardData?.revenueFromSellingPhoto;
   const revenueFromUpgradePackage = dashBoardData?.revenueFromUpgradePackage;
-  console.log(dashBoardData);
 
   const totalSize = dashBoardData?.totalSize;
   const totalPhotoSize = dashBoardData?.totalPhotoSize;

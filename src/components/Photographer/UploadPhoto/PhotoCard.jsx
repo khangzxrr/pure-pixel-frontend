@@ -199,7 +199,7 @@ export default function PhotoCard({ photo }) {
       );
     },
     onError: (e) => {
-      console.log("uploadPhoto error", e.response);
+      console.log("uploadPhoto error", e?.response);
       // handleException(photo.file, e);
     },
   });

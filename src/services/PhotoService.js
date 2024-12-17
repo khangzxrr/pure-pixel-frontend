@@ -27,12 +27,12 @@ const exifOptions = {
 // Function to extract EXIF data from a file (returns a Promise)
 
 const getExifData = async (file) => {
-  console.log("getExifData called with file:", file);
+  // console.log("getExifData called with file:", file);
 
   try {
     // Ensure the file type is supported before parsing
     if (file.type !== "image/jpeg" && file.type !== "image/png") {
-      console.error("Unsupported file type:", file.type);
+      // console.error("Unsupported file type:", file.type);
       throw new Error(
         "Unsupported file format. Only JPEG and PNG are supported."
       );
@@ -40,11 +40,11 @@ const getExifData = async (file) => {
 
     // Attempt to parse EXIF data
     const exifData = await exifr.parse(file, exifOptions);
-    console.log("EXIF data parsed successfully:", exifData);
+    // console.log("EXIF data parsed successfully:", exifData);
 
     return exifData;
   } catch (error) {
-    console.log("Error stack:", error.stack);
+    // console.log("Error stack:", error.stack);
     if (error.message === "Unknown file format") {
       notificationApi(
         "error",

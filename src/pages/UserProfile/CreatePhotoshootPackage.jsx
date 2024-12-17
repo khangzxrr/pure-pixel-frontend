@@ -79,7 +79,7 @@ export default function CreatePhotoshootPackage({
     isPending: isCreatePhotoshootPending,
   } = createPhotoShootPackage;
   const onThumbnailChange = async (info) => {
-    console.log("image crop", info.file.originFileObj.size, thumbnail.size);
+    // console.log("image crop", info.file.originFileObj.size, thumbnail.size);
     return false;
   };
   const beforeUpload = async (file) => {

@@ -19,8 +19,6 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
 
-  console.log(photo);
-
   const updatePhoto = useMutation({
     mutationFn: (updateBody) =>
       ManagerPhotoApi.updatePhoto(photo.id, updateBody),

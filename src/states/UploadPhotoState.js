@@ -107,7 +107,7 @@ const useUploadPhotoStore = create(
       }),
     addPhoto: (uid, payload) =>
       set((state) => {
-        console.log("addPhoto", payload);
+        // console.log("addPhoto", payload);
         const index = state.photoArray.length;
 
         state.uidHashmap[uid] = index;
@@ -162,7 +162,7 @@ const useUploadPhotoStore = create(
         const index = state.photoIdHashmap[photoId];
 
         if (index === -1) return state; // Exit if photoId not found
-        console.log("removePhotoById", index, photoId);
+        // console.log("removePhotoById", index, photoId);
         const uid = state.photoArray[index].file.uid;
 
         // Remove photo from photoArray

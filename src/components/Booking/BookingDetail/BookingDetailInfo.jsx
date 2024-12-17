@@ -93,12 +93,11 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
     },
   });
   const handleOk = (data) => {
-    console.log(data);
+    // console.log(data);
     updateBookingDetail.mutate({
       description: data.description,
     });
   };
-  console.log("errors", errors);
   const downloadPhoto = useMutation({
     mutationFn: (bookingId) => CustomerBookingApi.downloadAllPhoto(bookingId),
     onSuccess: async (data) => {

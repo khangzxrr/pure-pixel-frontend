@@ -52,7 +52,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
       ),
     keepPreviousData: true,
   });
-  console.log(photoshootPackageShowcases && photoshootPackageShowcases);
+  // console.log(photoshootPackageShowcases && photoshootPackageShowcases);
   const { notificationApi } = useNotification();
   const [showcases, setShowcases] = useState([]);
   const [showcasesUrl, setShowcasesUrl] = useState(
