@@ -156,20 +156,27 @@ const PhotoManager2 = () => {
     setSelectedPhoto(null);
   };
   const columns = [
-    {
-      title: "ID ảnh",
-      dataIndex: "id",
-      width: 300,
-      ...getColumnSearchProps("id", "Tên ảnh"),
+    // {
+    //   title: "ID ảnh",
+    //   dataIndex: "id",
+    //   width: 300,
+    //   ...getColumnSearchProps("id", "Tên ảnh"),
 
-      render: (id) => (
-        <div
-        // className="hover:text-blue-500 hover:underline underline-offset-2 hover:cursor-pointer"
-        // // onClick={() => navigate(`/photo/${id}`)}
-        >
-          {id}
-        </div>
-      ),
+    //   render: (id) => (
+    //     <div
+    //     // className="hover:text-blue-500 hover:underline underline-offset-2 hover:cursor-pointer"
+    //     // // onClick={() => navigate(`/photo/${id}`)}
+    //     >
+    //       {id}
+    //     </div>
+    //   ),
+    // },
+    {
+      title: "Tên ảnh",
+      dataIndex: "title",
+      ...getColumnSearchProps("title", "Tên ảnh"),
+
+      render: (title) => <div className="">{title}</div>,
     },
     {
       title: "Hình ảnh",
@@ -191,13 +198,7 @@ const PhotoManager2 = () => {
       // defaultSortOrder: "descend",
       // sorter: (a, b) => a.age - b.age,
     },
-    {
-      title: "Tên ảnh",
-      dataIndex: "title",
-      ...getColumnSearchProps("title", "Tên ảnh"),
 
-      render: (title) => <div className="">{title}</div>,
-    },
     {
       title: "Người dùng",
       dataIndex: "photographerName",

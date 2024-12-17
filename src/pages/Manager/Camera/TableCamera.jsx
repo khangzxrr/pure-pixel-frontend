@@ -42,15 +42,15 @@ export const TableCamera = forwardRef((props, ref) => {
     getColumnFilterProps,
   } = useColumnFilters();
   const columns = [
-    {
-      title: "Id",
-      width: 100,
-      fixed: "left",
-      dataIndex: "id",
-      key: "id",
-      sorter: (a, b) => a?.id?.localeCompare(b?.id),
-      ...getColumnSearchProps("id", "Id"),
-    },
+    // {
+    //   title: "Id",
+    //   width: 100,
+    //   fixed: "left",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   sorter: (a, b) => a?.id?.localeCompare(b?.id),
+    //   ...getColumnSearchProps("id", "Id"),
+    // },
     {
       title: "Tên",
       width: 100,
