@@ -48,10 +48,10 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
     resolver: yupResolver(photoShootInput),
     defaultValues: {
       description: bookingDetail.description,
-      dateRange: [
-        bookingDetail.startDate ? dayjs(bookingDetail.startDate) : dayjs(),
-        bookingDetail.endDate ? dayjs(bookingDetail.endDate) : dayjs(),
-      ],
+      // dateRange: [
+      //   bookingDetail.startDate ? dayjs(bookingDetail.startDate) : dayjs(),
+      //   bookingDetail.endDate ? dayjs(bookingDetail.endDate) : dayjs(),
+      // ],
     },
   });
   const setBookingPaidMutation = useMutation({
@@ -93,10 +93,12 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
     },
   });
   const handleOk = (data) => {
+    console.log(data);
     updateBookingDetail.mutate({
       description: data.description,
     });
   };
+  console.log("errors", errors);
   const downloadPhoto = useMutation({
     mutationFn: (bookingId) => CustomerBookingApi.downloadAllPhoto(bookingId),
     onSuccess: async (data) => {
@@ -271,16 +273,18 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
                 }}
               />
             </Tooltip>
-            <Tooltip title="Báo cáo gói chụp">
-              <AiOutlineExclamationCircle
-                className="w-5 h-5 ml-2 hover:opacity-80 z-20 cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault(); // Prevent default behavior (if applicable)
-                  e.stopPropagation();
-                  reportBooking();
-                }}
-              />
-            </Tooltip>
+            {bookingDetail.status === "ACCEPTED" && (
+              <Tooltip title="Báo cáo gói chụp">
+                <AiOutlineExclamationCircle
+                  className="w-5 h-5 ml-2 hover:opacity-80 z-20 cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default behavior (if applicable)
+                    e.stopPropagation();
+                    reportBooking();
+                  }}
+                />
+              </Tooltip>
+            )}
           </div>
           {bookingDetail && (
             <div className="flex flex-col mt-2 gap-1">
@@ -303,27 +307,6 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
                       ? bookingDetail.description
                       : "Không có"}
                   </p>
-                  <div className="flex flex-col mt-2 gap-1">
-                    <div>Thời gian hẹn:</div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      <div className="font-normal text-sm">
-                        {FormatDateTime(bookingDetail.startDate)}
-                      </div>
-                      <ArrowRight className="w-4 h-4" />
-                      <div className="font-normal text-sm">
-                        {FormatDateTime(bookingDetail.endDate)}
-                      </div>
-                    </div>
-                    {bookingDetail.status === "SUCCESSED" && (
-                      <p className="text-green-500">
-                        Hoàn thành vào lúc:{" "}
-                        <span className="list-inside font-normal truncate">
-                          {FormatDateTime(bookingDetail.updatedAt)}
-                        </span>
-                      </p>
-                    )}
-                  </div>
                 </div>
               ) : (
                 <ConfigProvider
@@ -371,22 +354,30 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
                         {errors.description.message}
                       </p>
                     )}
-                    <div className="flex flex-col gap-2 mt-2">
-                      <div>Thời gian hẹn:</div>
-                      <div className="flex gap-1 font-normal items-center text-sm">
-                        <Calendar className="w-4 h-4" />
-                        <div>
-                          {FormatDateTime(bookingDetail.startDate)} -{" "}
-                          {FormatDateTime(bookingDetail.endDate)}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right font-normal text-sm text-[#a3a3a3]">
-                      {calculateDateDifference(bookingDetail.createdAt)}
-                    </div>
                   </form>
                 </ConfigProvider>
               )}
+              <div className="flex flex-col mt-2 gap-1">
+                <div>Thời gian hẹn:</div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <div className="font-normal text-sm">
+                    {FormatDateTime(bookingDetail.startDate)}
+                  </div>
+                  <ArrowRight className="w-4 h-4" />
+                  <div className="font-normal text-sm">
+                    {FormatDateTime(bookingDetail.endDate)}
+                  </div>
+                </div>
+                {bookingDetail.status === "SUCCESSED" && (
+                  <p className="text-green-500">
+                    Hoàn thành vào lúc:{" "}
+                    <span className="list-inside font-normal truncate">
+                      {FormatDateTime(bookingDetail.updatedAt)}
+                    </span>
+                  </p>
+                )}
+              </div>
               <div className="text-right font-normal text-sm text-[#a3a3a3]">
                 {calculateDateDifference(bookingDetail.createdAt)}
               </div>

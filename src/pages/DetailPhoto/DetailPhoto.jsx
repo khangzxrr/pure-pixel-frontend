@@ -179,16 +179,6 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
     }
   };
 
-  const handleNextButtonOnClick = () => {
-    if (nextPhotoData?.objects.length > 0) {
-      setIsOriginalPhotoLoaded(false);
-      setIsThumbnailPhotoLoaded(false);
-
-      const nextPhoto = nextPhotoData.objects[0];
-
-      setCurrentPhoto(nextPhoto);
-    }
-  };
   const handleFullScreen = () => {
     if (imageRef?.current?.requestFullscreen) {
       imageRef?.current?.requestFullscreen();
@@ -198,6 +188,17 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
     } else if (imageRef?.current?.msRequestFullscreen) {
       /* IE11 */
       imageRef?.current?.msRequestFullscreen();
+    }
+  };
+
+  const handleNextButtonOnClick = () => {
+    if (nextPhotoData?.objects.length > 0) {
+      setIsOriginalPhotoLoaded(false);
+      setIsThumbnailPhotoLoaded(false);
+
+      const nextPhoto = nextPhotoData.objects[0];
+
+      setCurrentPhoto(nextPhoto);
     }
   };
   const handlePreviousButtonOnClick = () => {

@@ -5,8 +5,7 @@ const ChartDashboardDonut = ({ dashBoardData }) => {
   const revenueFromSellingPhoto = dashBoardData?.revenueFromSellingPhoto;
   const revenueFromUpgradePackage = dashBoardData?.revenueFromUpgradePackage;
   return (
-    <div className="px-5 grid lg:grid-cols-3 grid-cols-1 gap-8">
-      <div className="col-span-1 bg-[#32353b]  py-2 rounded-sm"></div>
+    <div className="px-5 grid lg:grid-cols-2 grid-cols-1 gap-8">
       <div className="col-span-1 bg-[#32353b]  py-2 rounded-sm"></div>
       <div className="col-span-1 bg-[#32353b]  py-2 rounded-sm">
         <ChartDashboardRevenue

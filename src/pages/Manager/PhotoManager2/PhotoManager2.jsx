@@ -24,6 +24,7 @@ import { getData } from "../../../apis/api";
 import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButonTable";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
 import RefreshButton from "../../../components/ComButton/RefreshButton";
+import { FaCheckSquare } from "react-icons/fa";
 
 const PhotoManager2 = () => {
   const queryClient = useQueryClient();
@@ -195,7 +196,7 @@ const PhotoManager2 = () => {
       dataIndex: "title",
       ...getColumnSearchProps("title", "Tên ảnh"),
 
-      render: (title) => <div className="truncate max-w-[200px]">{title}</div>,
+      render: (title) => <div className="">{title}</div>,
     },
     {
       title: "Người dùng",
@@ -216,6 +217,17 @@ const PhotoManager2 = () => {
       onFilter: (value, record) => record.photoType === value,
     },
     {
+      title: "Ảnh bán",
+      dataIndex: "isSell",
+      render: (_, data) => (
+        <div className="truncate w-[200px]">
+          {data?.photoSellings?.length > 0 ? (
+            <FaCheckSquare className="text-green-500 text-2xl" />
+          ) : null}
+        </div>
+      ),
+    },
+    {
       title: "Trạng thái",
       dataIndex: "statuses",
       filters: [
@@ -228,10 +240,16 @@ const PhotoManager2 = () => {
 
       render: (_, data) => (
         <div className="truncate w-[200px]">
-          {data?.status === "PENDING" && "Đang chờ"}
-          {data?.status === "PARSED" && "Hoạt động"}
-          {data?.status === "DUPLICATED" && "Bị trùng lặp"}
-          {data?.status === "BAN" && "Khóa"}
+          {data?.status === "PENDING" && (
+            <div className="text-yellow-500">Đang chờ</div>
+          )}
+          {data?.status === "PARSED" && (
+            <div className="text-green-500">Hoạt động</div>
+          )}
+          {data?.status === "DUPLICATED" && (
+            <div className="text-blue-500">Bị trùng lặp</div>
+          )}
+          {data?.status === "BAN" && <div className="text-red-500">Khóa</div>}
         </div>
       ),
     },
