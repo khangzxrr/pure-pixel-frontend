@@ -63,7 +63,7 @@ const TablePhotoshootOfPhotographer = ({ data }) => {
   return (
     <div className="bg-[#32353b] rounded-sm">
       <div className="flex items-center justify-center p-4 font-bold text-[#eee]">
-        Danh sách xếp hạng các gói dịch vụ được đặt nhiều nhất
+        Danh sách xếp hạng các gói dịch vụ
       </div>
       <Table
         // loading={isLoading}

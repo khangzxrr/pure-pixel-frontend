@@ -120,11 +120,10 @@ export const TableServicePackage = forwardRef((props, ref) => {
         <div className="flex gap-2 items-center ">
           {record?.user?.avatar && (
             <div className="size-10 flex items-center justify-center rounded-full overflow-hidden">
-              <Image
-                wrapperClassName="w-full h-full object-cover object-center flex items-center justify-center "
+              <img
+                className="w-full h-full object-cover bg-[#eee]"
                 src={record?.user?.avatar}
                 alt={record?.user?.avatar}
-                preview={{ mask: "Xem ảnh" }}
               />
             </div>
           )}
