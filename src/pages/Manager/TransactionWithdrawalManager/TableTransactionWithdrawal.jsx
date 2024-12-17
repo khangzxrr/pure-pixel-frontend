@@ -43,14 +43,14 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
     getColumnApprox,
   } = useColumnFilters();
   const columns = [
-    {
-      title: "ID giao dịch",
-      width: 50,
-      dataIndex: "id",
-      key: "id",
-      sorter: (a, b) => a?.id?.localeCompare(b?.id),
-      ...getColumnSearchProps("id", "ID giao dịch"),
-    },
+    // {
+    //   title: "ID giao dịch",
+    //   width: 50,
+    //   dataIndex: "id",
+    //   key: "id",
+    //   sorter: (a, b) => a?.id?.localeCompare(b?.id),
+    //   ...getColumnSearchProps("id", "ID giao dịch"),
+    // },
     {
       title: "Người yêu cầu",
       width: 80,
@@ -78,7 +78,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
       render: (_, record) => <div>{formatCurrency(record.amount)}</div>,
     },
     {
-      title: "Số dư ví",
+      title: "Số dư ví sau khi rút",
       width: 80,
       dataIndex: "walletBalance",
       key: "walletBalance",
@@ -110,13 +110,15 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
       dataIndex: "status",
       key: "status",
       filters: [
-        { text: "Đã thanh toán", value: "Paid" },
-        { text: "Chưa thanh toán", value: "UnPaid" },
-        { text: "Đã hủy", value: "Faied" },
-        { text: "Hết hạn", value: "OverDue" },
+        // SUCCESS, FAILED, PENDING, CANCEL, EXPIRED
+        { text: "Đã xử lý", value: "SUCCESS" },
+        { text: "Chưa xử lý", value: "PENDING" },
+        { text: "Đã hủy", value: "CANCEL" },
+        { text: "Hết hạn", value: "EXPIRED" },
+        { text: "Thất bại", value: "FAILED" },
       ],
       onFilter: (value, record) => record.status === value,
-      sorter: (a, b) => a?.status?.localeCompare(b?.status),
+      // sorter: (a, b) => a?.status?.localeCompare(b?.status),
       // ...getColumnSearchProps("method", "Thanh toán bằng"),
       render: (_, record) => (
         <div>
@@ -151,7 +153,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
   const reloadData = () => {
     table.handleOpenLoading();
     getData(
-      "manager/transaction?limit=9999&page=0&types=WITHDRAWAL&orderByCreatedAt=desc",
+      "manager/transaction?limit=9999&page=0&types=WITHDRAWAL&orderByCreatedAt=desc"
     )
       .then((e) => {
         setData(e?.data?.objects);

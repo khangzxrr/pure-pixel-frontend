@@ -24,6 +24,7 @@ const PhotographerDetailStats = () => {
 
   const { fromDate, toDate, setFromDateState, setToDateState } =
     UseECommerceStore();
+
   // const toDate = new Date();
   // const fromDate = new Date(toDate.getTime() - 7 * 24 * 60 * 60 * 1000);
   const fromDateCustomize = "2024-10-01T01:30:14.761+07:00";
@@ -57,7 +58,11 @@ const PhotographerDetailStats = () => {
   };
   return (
     <>
-      <div className="flex items-center justify-end mx-4">
+      <div className="flex items-center gap-2 justify-end mx-4">
+        <div className=" text-[#eee]">
+          Dữ liệu được thống kê từ ngày {FormatDate(fromDate)} -{" "}
+          {FormatDate(toDate)}
+        </div>
         <RefreshButton onClick={() => handleOnRefresh()} />
       </div>
 
