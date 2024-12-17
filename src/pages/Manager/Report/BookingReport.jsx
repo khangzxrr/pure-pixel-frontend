@@ -47,8 +47,6 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
     totalBillItem,
     photos,
   } = bookingDetail || {};
-  console.log("bookingDetail", bookingDetail && originalPhotoshootPackage.user);
-  console.log("selectedData", selectedData);
   const updateBookingPackageStatus = useMutation({
     mutationFn: ({ bookingId, status }) =>
       ManagerReportApi.updateBooking(bookingId, { status }),

@@ -13,6 +13,7 @@ import { notificationApi } from "../../Notification/Notification";
 import { FaDotCircle } from "react-icons/fa";
 import PhotoListByMap from "./components/PhotoListByMap";
 import usePhotoMapStore from "../../states/UsePhotoMapStore";
+import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN; // Set your mapbox token here
 
@@ -47,10 +48,11 @@ export default function PhotoMap() {
     setIsFromPhotoDetailPage,
   } = usePhotoMapStore(); // Use Zustand store
   const [isAddNewPhotoList, setIsAddNewPhotoList] = useState(false);
+  const { setBeforeRoute } = useBeforeRouteDetailPhoto();
   const [totalPage, setTotalPage] = useState(1);
   const [selectedPhotoRatio, setSelectedPhotoRatio] = useState(0);
   const [currentLocate, setCurrentLocate] = useState(null);
-  const limit = 20; // Set limit to 10
+  const limit = 88; // Set limit to 10
   const [page, setPage] = useState(1); // Set page to 0
 
   const [isStopped, setIsStopped] = useState(true);
@@ -357,6 +359,7 @@ export default function PhotoMap() {
             <div
               className="flex flex-col h-full cursor-pointer"
               onClick={() => {
+                setBeforeRoute("/explore/photo-map");
                 popupDetail.handleOpen();
                 setIsFromPhotoDetailPage(false);
                 setIsStopped(true);

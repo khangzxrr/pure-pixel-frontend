@@ -4,6 +4,7 @@ import { getData, postData, putData } from "../../apis/api";
 import { message } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
+import { notificationApi } from "../../Notification/Notification";
 
 export default function PhotoManagementModal({ close, id, data, callData }) {
   const queryClient = useQueryClient();
@@ -115,15 +116,22 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
       pricetags: pricetags,
     })
       .then((response) => {
-        // console.log("Upload thành công:", response);
-        message.success("Đã lưu thông tin thành công!");
+        notificationApi(
+          "success",
+          "Chỉnh sửa thành công",
+          "Đã lưu thông tin ảnh bán thành công!"
+        );
         queryClient.invalidateQueries({ queryKey: ["my-photo"] });
         callData();
         close();
       })
       .catch((error) => {
         console.error("Lỗi khi upload:", error);
-        message.error("Có lỗi xảy ra khi lưu thông tin.");
+        notificationApi(
+          "error",
+          "Chỉnh sửa thất bại",
+          "Có lỗi xảy ra khi lưu thông tin!"
+        );
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -166,12 +174,13 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
                 <div className="space-y-4">
                   <h3 className="text-lg text-gray-100">Thông tin bức ảnh</h3>
 
-                  <div className="space-y-4">
+                  {/* <div className="space-y-4">
                     <div>
                       <label className="block text-sm text-gray-400 mb-1">
                         Tựa đề
                       </label>
                       <input
+                        disable={true}
                         type="text"
                         value={photoInfo.title}
                         onChange={(e) =>
@@ -213,8 +222,11 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
                         </p>
                       )}
                     </div>
-                  </div>
-
+                  </div> */}
+                  <p>{photoInfo?.title}</p>
+                  <p className="font-normal text-sm text-gray-300">
+                    {photoInfo?.description}
+                  </p>
                   {/* Camera Specifications */}
                   <ExifList exifData={data.exif} />
                 </div>

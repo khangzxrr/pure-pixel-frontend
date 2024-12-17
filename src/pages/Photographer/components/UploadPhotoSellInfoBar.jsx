@@ -92,7 +92,7 @@ export default function UploadPhotoSellInfoBar({ reference, selectedPhoto }) {
     mode: "onChange", // Enable validation onSubmit
     reValidateMode: "onChange", // Revalidate onChange
   });
-  console.log("errors", errors);
+  // console.log("errors", errors);
   const updatePhotos = useMutation({
     mutationKey: "update-photo",
     mutationFn: async (photos) => await PhotoApi.updatePhotos(photos),

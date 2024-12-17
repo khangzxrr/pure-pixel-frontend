@@ -73,6 +73,20 @@ export default function BookingModal({ photoPackage, onClose }) {
             </span>
           );
           break;
+        case "No PhotoshootPackage found":
+          errorMessage = (
+            <span
+              onClick={(e) => {
+                e.preventDefault(); // Prevent default behavior (if applicable)
+                e.stopPropagation(); // Prevent event from propagating to parent elements
+                navigate("/explore/booking-package");
+              }}
+              className="cursor-pointer hover:opacity-85"
+            >
+              Gói chụp này đã bị xóa (nhấn vào đây để xem các gói chụp khác)
+            </span>
+          );
+          break;
         default:
           errorMessage = error.response?.data?.message || errorMessage;
           break;
@@ -151,7 +165,7 @@ export default function BookingModal({ photoPackage, onClose }) {
   const canlendarChange = (date, dateString) => {
     if (date && date[0]) setStartDateTime(date[0]);
 
-    console.log(date, dateString);
+    // console.log(date, dateString);
   };
   return (
     <ConfigProvider
