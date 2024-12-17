@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import formatPrice from "./../../utils/FormatPriceUtils";
+import { bytesToGigabytes } from "../../utils/bytesToGigabytes";
 
 const ChartDashboardRevenue = ({
   nameChart,
@@ -10,6 +11,9 @@ const ChartDashboardRevenue = ({
   nameParam2,
   isMoney = false,
   isRevenue = false,
+  total,
+  isPhoto = false,
+  isUser = false,
 }) => {
   const [series, setSeries] = useState([param1, param2]);
 
@@ -72,6 +76,7 @@ const ChartDashboardRevenue = ({
       </div>
       <div className="text-[#eee] text-center font-bold">
         {isRevenue && formatPrice(param1 + param2)}
+        {isPhoto && bytesToGigabytes(total) + ` GB`}
       </div>
       <div className="">
         <div id="chartDashboardRevenue" className="mx-auto flex justify-center">
@@ -84,8 +89,14 @@ const ChartDashboardRevenue = ({
             <span className="w-3 h-3 rounded-full bg-[#3C50E0]"></span>{" "}
             {nameParam1 || ""}
           </div>
-          <div className="font-bold">
-            {isMoney ? formatPrice(series[0]) : series[0]}
+          <div className="font-bold  ">
+            {isUser && series[0]}
+            {isMoney && formatPrice(series[0])}
+            {isPhoto && (
+              <div className="w-[100px]">
+                {bytesToGigabytes(series[0]) + ` GB`}
+              </div>
+            )}
           </div>
         </div>
 
@@ -95,7 +106,9 @@ const ChartDashboardRevenue = ({
             {nameParam2 || ""}
           </div>
           <div className="font-bold">
-            {isMoney ? formatPrice(series[1]) : series[1]}
+            {isUser && series[1]}
+            {isMoney && formatPrice(series[1])}
+            {isPhoto && bytesToGigabytes(series[1]) + ` GB`}
           </div>
         </div>
       </div>
