@@ -11,7 +11,7 @@ import PhotoExchange from "../../apis/PhotoExchange";
 export default function OrtherNotification({ notification, onClose }) {
   const navigate = useNavigate();
   const referenceId = notification.payload.id;
-
+  console.log("notification", notification);
   const handleNavigate = (referenceType) => {
     switch (referenceType) {
       case "BAN":
@@ -22,6 +22,9 @@ export default function OrtherNotification({ notification, onClose }) {
         break;
       case "UPGRADE_PACKAGE":
         navigate("/profile/userprofile");
+        break;
+      case "SUCCESS_WITHDRAWAL":
+        navigate("/profile/wallet");
         break;
       default:
         break;

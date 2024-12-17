@@ -139,7 +139,12 @@ export const TableReport = forwardRef((props, ref) => {
       filters: [
         { text: "Hình ảnh", value: "PHOTO" },
         { text: "Người dùng", value: "USER" },
-        { text: "Dịch vụ", value: "BOOKING" },
+        { text: "Gói chụp ảnh cho khách", value: "BOOKING" },
+        {
+          text: "Gói chụp ảnh của nhiếp ảnh gia",
+          value: "BOOKING_PHOTOGRAPHER_REPORT_USER",
+        },
+
         // { text: "Bình luận", value: "COMMENT" },
       ],
       onFilter: (value, record) => record.reportType === value,
@@ -350,7 +355,8 @@ export const TableReport = forwardRef((props, ref) => {
         onClose={modalDetail?.handleClose}
         width={800}
       >
-        {selectedData && selectedData?.reportType === "BOOKING" ? (
+        {(selectedData && selectedData?.reportType === "BOOKING") ||
+        selectedData?.reportType === "BOOKING_PHOTOGRAPHER_REPORT_USER" ? (
           <BookingReport
             selectedData={selectedData}
             tableRef={() => {
