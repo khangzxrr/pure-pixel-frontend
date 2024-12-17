@@ -139,9 +139,9 @@ export const TableReport = forwardRef((props, ref) => {
       filters: [
         { text: "Hình ảnh", value: "PHOTO" },
         { text: "Người dùng", value: "USER" },
-        { text: "Gói chụp ảnh cho khách", value: "BOOKING" },
+        { text: "Gói chụp ảnh từ khách", value: "BOOKING" },
         {
-          text: "Gói chụp ảnh của nhiếp ảnh gia",
+          text: "Gói chụp ảnh từ nhiếp ảnh gia",
           value: "BOOKING_PHOTOGRAPHER_REPORT_USER",
         },
 

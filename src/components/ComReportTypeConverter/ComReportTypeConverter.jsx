@@ -8,9 +8,9 @@ function ComReportTypeConverter({ children }) {
       case "USER":
         return "Người dùng";
       case "BOOKING":
-        return "Gói chụp ảnh cho khách";
+        return "Gói chụp ảnh từ khách";
       case "BOOKING_PHOTOGRAPHER_REPORT_USER":
-        return "Gói chụp ảnh của nhiếp ảnh gia";
+        return "Gói chụp ảnh từ n";
       case "COMMENT":
         return "Bình luận";
       case "other":

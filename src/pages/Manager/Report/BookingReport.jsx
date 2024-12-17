@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import ManagerReportApi from "../../../apis/ManagerReportApi";
-import { Modal, Descriptions, Avatar, Divider, List } from "antd";
+import { Modal, Descriptions, Avatar, Divider, List, Popconfirm } from "antd";
 
 import {
   Flag,
@@ -34,7 +34,7 @@ const statusRender = (status) => {
 };
 
 export default function BookingReport({ selectedData, tableRef, onClose }) {
-  const { data: bookingDetail, isPending } = useQuery({
+  const { data: bookingDetail } = useQuery({
     queryKey: ["booking-detail-by-manager", selectedData],
     queryFn: () => ManagerReportApi.getBookingDetail(selectedData.referenceId),
   });
@@ -48,11 +48,71 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
   } = bookingDetail || {};
   console.log("bookingDetail", bookingDetail && originalPhotoshootPackage.user);
   console.log("selectedData", selectedData);
+  const updateBookingPackageStatus = useMutation({
+    mutationFn: ({ bookingId, status }) =>
+      ManagerReportApi.updateBooking(bookingId, { status }),
+    onSuccess: () => {
+      tableRef();
+      onClose();
+    },
+  });
+  const closeReport = useMutation({
+    mutationFn: ({ reportId, updateBody }) =>
+      ManagerReportApi.closeReport(reportId, updateBody),
+    onSuccess: () => {
+      tableRef();
+      onClose();
+    },
+  });
+  const { mutateAsync: closeReportMutateAsync, isPending: isReportPending } =
+    closeReport;
+  const { mutateAsync: updateBookingPackageStatusMutateAsync, isPending } =
+    updateBookingPackageStatus;
+  const handleCloseReport = async () => {
+    try {
+      await closeReportMutateAsync({
+        reportId: selectedData.id,
+        updateBody: {
+          content: "Đã xử lý báo cáo",
+          reportStatus: "CLOSED",
+          reportType: selectedData.reportType,
+          referenceId: selectedData.referenceId,
+        },
+      });
+    } catch (error) {
+      console.error("Error closing report:", error);
+    }
+  };
+  const handleBookingFailed = async () => {
+    try {
+      await updateBookingPackageStatusMutateAsync({
+        bookingId: selectedData.referenceId,
+        status: "FAILED",
+      });
+      handleCloseReport();
+    } catch (error) {
+      console.error("Error closing report:", error);
+    }
+  };
+  const handleBookingClose = async () => {
+    try {
+      await updateBookingPackageStatusMutateAsync({
+        bookingId: selectedData.referenceId,
+        status: "SUCCESSED",
+      });
+      handleCloseReport();
+    } catch (error) {
+      console.error("Error closing report:", error);
+    }
+  };
+
   return (
     <div className=" text-gray-800 p-6 flex flex-col gap-3  max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 flex items-center">
         <Flag className="mr-2 text-red-500" />
-        Chi tiết báo cáo
+        {selectedData.reportType === "BOOKING_PHOTOGRAPHER_REPORT_USER"
+          ? "Báo cáo của nhiếp ảnh gia cho khách"
+          : "Báo cáo của khách cho nhiếp ảnh gia"}
       </h2>
 
       <div className="space-y-6">
@@ -80,12 +140,12 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
                 alt={selectedData?.user?.avatar}
               />
               <div className="flex flex-col">
-                <p>{originalPhotoshootPackage?.user?.name}</p>
+                <p>{selectedData?.user?.name}</p>
                 <p className="text-gray-500">
                   {selectedData.reportType ===
                   "BOOKING_PHOTOGRAPHER_REPORT_USER"
-                    ? "Khách hàng"
-                    : "Nhiếp ảnh gia"}
+                    ? "Nhiếp ảnh gia"
+                    : "Khách hàng"}
                 </p>
               </div>
             </div>
@@ -149,9 +209,9 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
                     <p className="text-lg font-semibold">
                       {photoshootPackageHistory?.title}
                     </p>
-                    <p className="text-sm text-gray-700 font-light">
+                    {/* <p className="text-sm text-gray-700 font-light">
                       {user?.name}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               </>
@@ -175,13 +235,15 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
                       src={user?.avatar}
                       alt={user?.avatar}
                     />
+
                     <div className="flex flex-col">
                       <p>{user?.name}</p>
+
                       <p className="text-gray-500">
                         {selectedData.reportType ===
                         "BOOKING_PHOTOGRAPHER_REPORT_USER"
-                          ? "Nhiếp ảnh gia"
-                          : "Khách hàng"}
+                          ? "Khách hàng"
+                          : "Nhiếp ảnh gia"}
                       </p>
                     </div>
                   </div>
@@ -297,8 +359,66 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
         </div>
       </div>
       {selectedData.reportStatus === "OPEN" && (
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-100 p-4 rounded-lg"></div>
+        <div
+          className={`grid ${
+            selectedData.reportType === "BOOKING_PHOTOGRAPHER_REPORT_USER"
+              ? "grid-cols-2"
+              : "grid-cols-3"
+          } `}
+        >
+          <div className="flex text-center justify-center">
+            <Popconfirm
+              title="Bạn có chắc chắn muốn đóng báo cáo này không?"
+              onConfirm={() => handleCloseReport()}
+              disabled={isPending || isReportPending}
+            >
+              <p
+                className={`${
+                  isPending || isReportPending
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-gray-700 cursor-pointer"
+                } py-2 px-16 rounded-lg  text-white hover:opacity-80`}
+              >
+                Đóng báo cáo
+              </p>
+            </Popconfirm>
+          </div>
+          <div className="flex text-center justify-center">
+            <Popconfirm
+              title="Bạn có chắc chắn muốn hủy gói chụp này không?"
+              onConfirm={() => handleBookingFailed()}
+              disabled={isPending || isReportPending}
+            >
+              <p
+                className={`${
+                  isPending || isReportPending
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-red-500 cursor-pointer"
+                } py-2 px-16 rounded-lg  text-white hover:opacity-80`}
+              >
+                Hủy gói
+              </p>
+            </Popconfirm>
+          </div>
+          {selectedData.reportType === "BOOKING" && (
+            <div className="flex text-center justify-center">
+              <Popconfirm
+                title="Bạn có chắc chắn muốn kết thúc gói chụp này không?"
+                onConfirm={() => handleBookingClose()}
+                disabled={isPending || isReportPending}
+              >
+                <p
+                  className={`${
+                    isPending || isReportPending
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : "bg-green-500 cursor-pointer"
+                  } py-2 px-16 rounded-lg  text-white hover:opacity-80`}
+                >
+                  Kết thúc gói
+                </p>
+              </Popconfirm>
+            </div>
+          )}
         </div>
       )}
     </div>
