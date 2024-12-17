@@ -85,7 +85,7 @@ const LikeButton = ({ photoId, size = "size-7", reloadData }) => {
   if (errorMessage) {
     notificationApi(
       "error",
-      "Thao tác thất bạn",
+      "Thao tác thất bại",
       "Vui lòng thử lại sau 5 phút"
     );
   }

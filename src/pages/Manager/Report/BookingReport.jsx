@@ -16,6 +16,7 @@ import {
   XCircle,
 } from "lucide-react";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
+import { notificationApi } from "../../../Notification/Notification";
 const statusRender = (status) => {
   switch (status) {
     case "REQUESTED":
@@ -52,8 +53,15 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
     mutationFn: ({ bookingId, status }) =>
       ManagerReportApi.updateBooking(bookingId, { status }),
     onSuccess: () => {
-      tableRef();
-      onClose();
+      notificationApi(
+        "success",
+        "Cập nhật thành công",
+        "Cập nhật gói chụp ảnh thành công"
+      );
+    },
+    onError: (error) => {
+      console.error("Error updating booking status:", error);
+      notificationApi("error", "Cập nhật thất bại", "Vui lòng thử lại!");
     },
   });
   const closeReport = useMutation({
