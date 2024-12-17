@@ -100,12 +100,11 @@ export default function DetailServicePackage({ selected, reload }) {
               <td className="px-4 py-2">
                 <div className="flex gap-2 items-center ">
                   {selected?.user?.avatar && (
-                    <div className="w-20 h-20 flex items-center justify-center overflow-hidden">
-                      <Image
-                        wrapperClassName=" w-20 h-20 object-cover object-center flex items-center justify-center "
+                    <div className="size-10 flex items-center justify-center rounded-full overflow-hidden">
+                      <img
+                        className=" w-full h-full object-cover  "
                         src={selected?.user?.avatar}
                         alt={selected?.user?.avatar}
-                        preview={{ mask: "Xem ảnh" }}
                       />
                     </div>
                   )}
