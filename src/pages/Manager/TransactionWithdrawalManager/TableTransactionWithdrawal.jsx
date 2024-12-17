@@ -26,6 +26,7 @@ import { FaWallet } from "react-icons/fa";
 import ComStatusWalletConverter from "../../../components/ComStatusConverter/ComStatusWalletConverter";
 import ComCard from "./../../../components/ComCard/ComCard";
 import RefreshButton from "../../../components/ComButton/RefreshButton";
+import WithdrawalProcessingModal from "./withdrawalProcessingModal";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -44,6 +45,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
   const modal = useModalState();
   const modalDetail = useModalState();
   const modalEdit = useModalState();
+  const modalWithDrawal = useModalState();
   const { notificationApi } = useNotification();
 
   const {
@@ -178,28 +180,30 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
     {
       label: "Xác nhận đã chuyển tiền",
       onClick: (e) => {
-        Modal.confirm({
-          title: "Xác nhận đã chuyển tiền",
-          content: "Bạn có chắc đã chuyển tiền cho người dùng?",
-          okText: "Đóng báo cáo",
-          okType: "primary",
-          cancelText: "Hủy",
-          onOk: () => {
-            patchData(`manager/transaction`, `${e.id}`, {
-              status: "SUCCESS",
-            })
-              .then((e) => {
-                // console.log("11111", e);
-                notificationApi("success", "Thành công", "Đã đổi trạng thái");
+        // Modal.confirm({
+        //   title: "Xác nhận đã chuyển tiền",
+        //   content: "Bạn có chắc đã chuyển tiền cho người dùng?",
+        //   okText: "Đóng báo cáo",
+        //   okType: "primary",
+        //   cancelText: "Hủy",
+        //   onOk: () => {
+        //     patchData(`manager/transaction`, `${e.id}`, {
+        //       status: "SUCCESS",
+        //     })
+        //       .then((e) => {
+        //         // console.log("11111", e);
+        //         notificationApi("success", "Thành công", "Đã đổi trạng thái");
 
-                reloadData();
-              })
-              .catch((error) => {
-                notificationApi("error", "Không thành công", "Lỗi");
-                console.log("error", error);
-              });
-          },
-        });
+        //         reloadData();
+        //       })
+        //       .catch((error) => {
+        //         notificationApi("error", "Không thành công", "Lỗi");
+        //         console.log("error", error);
+        //       });
+        //   },
+        // });
+        setSelectedData(e);
+        modalWithDrawal.handleOpen();
       },
     },
   ];
@@ -288,6 +292,17 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
           selectedData={selectedData}
           tableRef={reloadData}
           onClose={modalEdit?.handleClose}
+        />
+      </ComModal>
+      <ComModal
+        isOpen={modalWithDrawal?.isModalOpen}
+        onClose={modalWithDrawal?.handleClose}
+        width={800}
+      >
+        <WithdrawalProcessingModal
+          selectedData={selectedData}
+          tableRef={reloadData}
+          onClose={modalWithDrawal?.handleClose}
         />
       </ComModal>
     </div>

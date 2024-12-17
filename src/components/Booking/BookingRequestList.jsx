@@ -156,8 +156,8 @@ const BookingRequestList = () => {
           onClose={popupReport.handleClose}
           tile="Báo cáo bài viết"
           id={selectedBooking}
-          // reportType =USER, PHOTO, BOOKING, COMMENT;
-          reportType={"BOOKING"}
+          // reportType =USER, PHOTO, BOOKING, BOOKING_PHOTOGRAPHER_REPORT_USER, COMMENT;
+          reportType={"BOOKING_PHOTOGRAPHER_REPORT_USER"}
         />
       )}
     </div>

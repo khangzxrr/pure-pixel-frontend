@@ -16,22 +16,7 @@ import ComDateConverter from "../../../components/ComDateConverter/ComDateConver
 import ComButton from "../../../components/ComButton/ComButton";
 import { patchData, postData } from "../../../apis/api";
 import { useNotification } from "../../../Notification/Notification";
-const reportDetails = {
-  id: "REP12345",
-  type: "content",
-  reportedUser: "johndoe",
-  reportedDate: "2023-05-15",
-  reportedTime: "14:30",
-  content:
-    "This is the reported content that violates community guidelines. It contains inappropriate language and misleading information that could harm our community members.",
-  imageUrl:
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-Hfz6ty7NWs5SN8YKpxVs3TVkffbzeG.png",
-  views: 1250,
-  reports: 15,
-  comments: 8,
-  status: "pending",
-  reasons: ["Hate speech", "Misinformation", "Harassment"],
-};
+
 export default function DetailReport({ selected, tableRef, onClose }) {
   const { notificationApi } = useNotification();
 
