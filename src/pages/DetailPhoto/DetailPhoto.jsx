@@ -170,7 +170,15 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
 
     queryClient.invalidateQueries(["getPhotoDetail", currentPhoto.id]);
   };
+  const regex = new RegExp(
+    "^(\\/user\\/[a-zA-Z0-9-]+\\/photos|\\/explore\\/camera-model\\/[a-zA-Z0-9-]+|\\/profile\\/my-photos\\/?)$"
+  );
 
+  const isDisableChangePhoto =
+    !beforeRoute ||
+    (typeof beforeRoute === "string" && regex.test(beforeRoute));
+
+  // console.log("isDisableChangePhoto", beforeRoute, isDisableChangePhoto);
   const handleGoBack = () => {
     if (beforeRoute === "") {
       navigate("/");
@@ -244,6 +252,12 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
       console.error("Error fetching address:", error);
     },
   });
+  // useEffect(() => {
+  //   if (beforeRoute) {
+  //     const isDisableChangePhoto = regex.test(beforeRoute);
+  //     console.log("isDisableChangePhoto:", isDisableChangePhoto);
+  //   }
+  // }, [beforeRoute]);
   useEffect(() => {
     if (currentPhoto?.exif?.longitude && currentPhoto?.exif?.latitude) {
       searchByCoordinate.mutate({
@@ -368,30 +382,35 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                   className="w-0 h-0"
                 />
               </div>
+              {!isDisableChangePhoto && (
+                <button
+                  style={{
+                    display:
+                      previousPhotoData?.objects.length === 0 ? "none" : null,
+                  }}
+                  onClick={() => handlePreviousButtonOnClick()}
+                  className="absolute md:top-1/2 top-[27%] left-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
+                >
+                  <Icon>
+                    <path d="M15 18l-6-6 6-6" />
+                  </Icon>
+                </button>
+              )}
 
-              <button
-                style={{
-                  display:
-                    previousPhotoData?.objects.length === 0 ? "none" : null,
-                }}
-                onClick={() => handlePreviousButtonOnClick()}
-                className="absolute md:top-1/2 top-[27%] left-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
-              >
-                <Icon>
-                  <path d="M15 18l-6-6 6-6" />
-                </Icon>
-              </button>
-              <button
-                style={{
-                  display: nextPhotoData?.objects.length === 0 ? "none" : null,
-                }}
-                onClick={() => handleNextButtonOnClick()}
-                className="absolute md:top-1/2 top-[27%] right-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
-              >
-                <Icon>
-                  <path d="M9 18l6-6-6-6" />
-                </Icon>
-              </button>
+              {!isDisableChangePhoto && (
+                <button
+                  style={{
+                    display:
+                      nextPhotoData?.objects.length === 0 ? "none" : null,
+                  }}
+                  onClick={() => handleNextButtonOnClick()}
+                  className="absolute md:top-1/2 top-[27%] right-4 transform -translate-y-1/2 text-white p-2 rounded-full bg-slate-300 bg-opacity-50 transition duration-300 ease-in-out hover:bg-opacity-75 hover:scale-110"
+                >
+                  <Icon>
+                    <path d="M9 18l6-6-6-6" />
+                  </Icon>
+                </button>
+              )}
             </div>
 
             {/* Right side - Details */}

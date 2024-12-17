@@ -20,8 +20,8 @@ const statuses = [
   { label: "Chờ xác nhận", value: "REQUESTED", color: "#FFA500" }, // Orange
   { label: "Đang thực hiện", value: "ACCEPTED", color: "#007BFF" }, // Blue
   { label: "Hoàn thành", value: "SUCCESSED", color: "#28A745" }, // Green
-  { label: "Đã hủy", value: "DENIED", color: "#DC3545" }, // Red
-  { label: "Thất bại", value: "FAILED", color: "#6C757D" }, // Gray
+  { label: "Từ chối", value: "DENIED", color: "#DC3545" }, // Red
+  { label: "Đã huỷ", value: "FAILED", color: "#6C757D" }, // Gray
 ];
 
 const getTextColor = (status) => {
