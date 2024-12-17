@@ -9,7 +9,7 @@ const MyPhotoshootPackageDetailInfo = ({
   setIsUpdatePhotoshootPackageModal,
   setSelectedUpdatePhotoshootPackage,
 }) => {
-  console.log("photoshootPackage", photoshootPackage);
+  // console.log("photoshootPackage", photoshootPackage);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 rounded-lg gap-5 bg-[#292b2f] overflow-hidden">

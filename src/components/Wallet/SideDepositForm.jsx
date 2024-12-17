@@ -95,7 +95,7 @@ export default function SideDepositForm({
       setSelectDeposit(0);
     },
     onProgress: () => {
-      console.log("Loading...");
+      // console.log("Loading...");
     },
     onError: (error) => {
       console.error("Error posting comment:", error);

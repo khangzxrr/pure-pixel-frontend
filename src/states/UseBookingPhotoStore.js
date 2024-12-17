@@ -78,13 +78,13 @@ const useBookingPhotoStore = create(
 
     updatePhotoPropertyById: (id, key, value) => {
       set((state) => {
-        console.log("updatePhotoPropertyById", id, key, value);
+        // console.log("updatePhotoPropertyById", id, key, value);
 
         const index = state.photoIdHashmap[id];
-        console.log("index", index, state.photoIdHashmap, id);
+        // console.log("index", index, state.photoIdHashmap, id);
 
         if (index !== undefined && state.photoArray[index]) {
-          console.log("updatePhotoPropertyById", state.photoArray[index]);
+          // console.log("updatePhotoPropertyById", state.photoArray[index]);
 
           state.photoArray[index][key] = value;
           // state.selectedPhoto[key] = value;
@@ -100,12 +100,12 @@ const useBookingPhotoStore = create(
     },
     setPhotoUploadResponse: (uid, response) =>
       set((state) => {
-        console.log(response);
+        // console.log(response);
 
         const index = state.uidHashmap[uid];
 
         if (index === undefined) {
-          console.warn(`Photo with uid ${uid} not found.`);
+          // console.warn(`Photo with uid ${uid} not found.`);
           return state; // Exit if uid is not found
         }
 
@@ -144,7 +144,7 @@ const useBookingPhotoStore = create(
           state.uidHashmap[uid] !== undefined ||
           state.photoIdHashmap[uid] !== undefined
         ) {
-          console.warn(`Photo with uid ${uid} already exists.`);
+          // console.warn(`Photo with uid ${uid} already exists.`);
           return state; // Return the current state without making any changes
         }
 
@@ -281,7 +281,7 @@ const useBookingPhotoStore = create(
         const previousIndex = (currentIndex - 1 + uids.length) % uids.length;
         const previousUid = uids[previousIndex];
 
-        console.log("setPrevious", currentIndex, previousIndex, previousUid);
+        // console.log("setPrevious", currentIndex, previousIndex, previousUid);
 
         // Return the new selected UID
         return { selectedPhoto: previousUid };
@@ -304,7 +304,7 @@ const useBookingPhotoStore = create(
         const nextIndex = (currentIndex + 1) % uids.length;
         const nextUid = uids[nextIndex];
 
-        console.log("setNext", currentIndex, nextIndex, nextUid);
+        // console.log("setNext", currentIndex, nextIndex, nextUid);
 
         // Return the new selected UID
         return { selectedPhoto: nextUid };

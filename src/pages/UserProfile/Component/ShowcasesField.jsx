@@ -41,7 +41,7 @@ export default function ShowcasesField({
         );
         return;
       }
-      console.log("newFile.status", newFile.status);
+      // console.log("newFile.status", newFile.status);
       // Add the new file to the current showcases list
       if (newFile.status === "done") {
         setShowcases((prevShowcases) => {

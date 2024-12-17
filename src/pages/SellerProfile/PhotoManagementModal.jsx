@@ -115,7 +115,7 @@ export default function PhotoManagementModal({ close, id, data, callData }) {
       pricetags: pricetags,
     })
       .then((response) => {
-        console.log("Upload thành công:", response);
+        // console.log("Upload thành công:", response);
         message.success("Đã lưu thông tin thành công!");
         queryClient.invalidateQueries({ queryKey: ["my-photo"] });
         callData();

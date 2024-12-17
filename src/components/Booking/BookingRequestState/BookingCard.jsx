@@ -13,7 +13,6 @@ import { Dropdown, Popconfirm, Tooltip } from "antd";
 import { useNotification } from "../../../Notification/Notification";
 import ChatButton from "../../ChatButton/ChatButton";
 import calculateDateDifference from "../../../utils/calculateDateDifference";
-yyy;
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 const statuses = [
