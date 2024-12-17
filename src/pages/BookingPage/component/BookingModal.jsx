@@ -165,7 +165,7 @@ export default function BookingModal({ photoPackage, onClose }) {
   const canlendarChange = (date, dateString) => {
     if (date && date[0]) setStartDateTime(date[0]);
 
-    console.log(date, dateString);
+    // console.log(date, dateString);
   };
   return (
     <ConfigProvider

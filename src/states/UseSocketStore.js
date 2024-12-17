@@ -33,11 +33,11 @@ const useSocketStore = create(
         socket.emit("join-photo-process-notification-room");
 
         socket.on("finish-process-photos", (data) => {
-          console.log(
-            "finish-process-photos",
-            data,
-            useUploadPhotoStore.getState(),
-          );
+          // console.log(
+          //   "finish-process-photos",
+          //   data,
+          //   useUploadPhotoStore.getState(),
+          // );
 
           // message.info({
           //   content: `Đã xử lý ảnh ${data.title} thành công! Giờ bạn có thể xem và tương tác với ảnh`,
@@ -48,7 +48,7 @@ const useSocketStore = create(
             `Đã xử lý ảnh ${data.title} thành công! Giờ bạn có thể xem và tương tác với ảnh`,
             "",
             "unlimit",
-            "finish-process-photos",
+            "finish-process-photos"
           );
           // Access the function dynamically
           useUploadPhotoStore
@@ -60,7 +60,7 @@ const useSocketStore = create(
         });
       }
     },
-  })),
+  }))
 );
 
 export default useSocketStore;
