@@ -99,7 +99,9 @@ export default function SideWithdrawalForm({
         case "NotEnoughBalanceException":
           message = "Số dư không đủ để thực hiện giao dịch";
           break;
-
+        case "ExistPendingWithdrawalException":
+          message = "Bạn đã có yêu cầu rút tiền đang chờ xử lý";
+          break;
         default:
           message = "Yêu cầu rút tiền thất bại, thử lại sau";
           break;

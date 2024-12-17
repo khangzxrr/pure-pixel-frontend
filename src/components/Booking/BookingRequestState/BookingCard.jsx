@@ -117,16 +117,18 @@ const BookingCard = ({ booking, status, reportBooking }) => {
             <div className="text-sm ">{booking.user.name}</div>
 
             <ChatButton userId={booking.user.id} />
-            <Tooltip title="Báo cáo gói chụp">
-              <AiOutlineExclamationCircle
-                className="w-5 h-5 ml-2 hover:opacity-80 z-20"
-                onClick={(e) => {
-                  e.preventDefault(); // Prevent default behavior (if applicable)
-                  e.stopPropagation();
-                  reportBooking(booking.id);
-                }}
-              />
-            </Tooltip>
+            {booking.status === "ACCEPTED" && (
+              <Tooltip title="Báo cáo gói chụp">
+                <AiOutlineExclamationCircle
+                  className="w-5 h-5 ml-2 hover:opacity-80 z-20"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default behavior (if applicable)
+                    e.stopPropagation();
+                    reportBooking(booking.id);
+                  }}
+                />
+              </Tooltip>
+            )}
           </div>
           <div className="flex flex-col gap-1 mt-2">
             <div>Ghi chú:</div>

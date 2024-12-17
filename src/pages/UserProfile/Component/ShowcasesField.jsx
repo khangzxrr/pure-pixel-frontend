@@ -80,7 +80,7 @@ export default function ShowcasesField({
       });
     },
     onError: (error) => {
-      console.log(error);
+      // console.log(error);
       notificationApi(
         "error",
         "Cập nhật gói chụp thất bại",

@@ -54,10 +54,6 @@ export default function UpdatePhotoshootPackage({ onClose }) {
   });
   console.log(photoshootPackageShowcases && photoshootPackageShowcases);
   const { notificationApi } = useNotification();
-  const [thumbnail, setThumbnail] = useState();
-  const [thumbnailUrl, setThumbnailUrl] = useState(
-    photoshootPackage ? photoshootPackage.thumbnail : ""
-  );
   const [showcases, setShowcases] = useState([]);
   const [showcasesUrl, setShowcasesUrl] = useState(
     photoshootPackageShowcases ? photoshootPackageShowcases.objects : []
@@ -87,7 +83,6 @@ export default function UpdatePhotoshootPackage({ onClose }) {
         price: photoshootPackage.price || "",
         description: photoshootPackage.description || "",
       });
-      setThumbnailUrl(photoshootPackage.thumbnail || "");
       setShowcasesUrl(photoshootPackage.showcases || []);
       setShowcases([]);
     }
@@ -108,9 +103,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
         "Cập nhật thành công",
         "Gói chụp ảnh của bạn đã được cập nhật thành công!"
       );
-      setThumbnail(null);
       setShowcases([]);
-      setThumbnailUrl();
       setShowcasesUrl([]);
       queryClient.invalidateQueries("package-detail-by-photographer");
       queryClient.invalidateQueries("findAllPhotoshootPackages");
@@ -128,23 +121,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
   });
   const { isLoading: isLoadingUpdatePhotoshootPackage } =
     updatePhotoshootPackage;
-  const onThumbnailChange = async (info) => {
-    // console.log("image crop", info.file.originFileObj.size, thumbnail.size);
-    return false;
-  };
-  const beforeUpload = async (file) => {
-    try {
-      // Get the cropped image from the info object
-      // Convert the cropped image to a URL for preview
-      const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(file);
 
-      // Update states with the cropped image
-      setThumbnail(file);
-      setThumbnailUrl(reviewUrl);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const onSubmit = async (data) => {
     // Check if showcasesUrl is valid
     if (!showcasesUrl || showcasesUrl.length === 0) {
@@ -158,7 +135,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
 
     // Update photoshoot package
     try {
-      await updatePhotoshootPackage.mutateAsync({ thumbnail, ...data });
+      await updatePhotoshootPackage.mutateAsync(data);
     } catch (error) {
       console.error("Error updating photoshoot package:", error);
     }
@@ -190,35 +167,7 @@ export default function UpdatePhotoshootPackage({ onClose }) {
         <div className="h-3/5 rounded-lg  gap-5 ">
           <div className="grid grid-cols-1 md:grid-cols-2  bg-[#43474E] rounded-lg">
             <div className="m-2 rounded-none md:rounded-l-lg flex items-center justify-center">
-              <ImgCrop
-                aspect={1 / 1}
-                modalTitle="Chỉnh sửa ảnh bìa"
-                modalWidth={1000}
-                showGrid={true}
-              >
-                <Dragger
-                  beforeUpload={beforeUpload} // Add this line
-                  onChange={onThumbnailChange}
-                  name="thumbnail"
-                  listType="picture-card"
-                  showUploadList={false}
-                  accept=".jpg,.jpeg,.png,.gif,.webp"
-                  style={{
-                    backgroundColor: "#34373e",
-                    // border: "none",
-                  }}
-                >
-                  {/* <button type="button">Đổi ảnh bìa</button> */}
-
-                  <div className="w-full h-[40vh] overflow-hidden flex my-auto">
-                    <img
-                      src={thumbnailUrl}
-                      className="w-full object-cover"
-                      alt="Thumbnail"
-                    />
-                  </div>
-                </Dragger>
-              </ImgCrop>
+              <img src={photoshootPackage?.thumbnail} />
             </div>
 
             <div className="flex flex-col gap-3 py-4 px-6 h-full">
@@ -250,7 +199,6 @@ export default function UpdatePhotoshootPackage({ onClose }) {
                             {...field}
                             onChange={(e) => {
                               field.onChange(e);
-                              setTitle(e.target.value);
                             }}
                             ref={(input) => {
                               if (input) {
