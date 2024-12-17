@@ -58,13 +58,37 @@ export const TableTransaction = forwardRef((props, ref) => {
     getColumnApprox,
   } = useColumnFilters();
   const columns = [
+    // {
+    //   title: "ID giao dịch",
+    //   width: 150,
+    //   dataIndex: "id",
+    //   key: "id",
+    //   // sorter: (a, b) => a?.id?.localeCompare(b?.id),
+    //   ...getColumnSearchProps("id", "ID giao dịch"),
+    // },
     {
-      title: "ID giao dịch",
-      width: 150,
-      dataIndex: "id",
-      key: "id",
-      // sorter: (a, b) => a?.id?.localeCompare(b?.id),
-      ...getColumnSearchProps("id", "ID giao dịch"),
+      title: "Người giao dịch",
+      width: 120,
+      // fixed: "left",
+      dataIndex: "user.name",
+      key: "search",
+      // sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
+      ...getColumnSearchProps("user.name", "Người giao dịch"),
+      render: (_, record) => (
+        <div className=" flex gap-2 items-center ">
+          {record?.user?.avatar && (
+            <div className="size-10 flex items-center justify-center overflow-hidden rounded-full">
+              <Image
+                wrapperClassName=" w-10 bg-[#eee] h-10 object-cover object-center flex items-center justify-center "
+                src={record?.user?.avatar}
+                alt={record?.user?.avatar}
+                preview={{ mask: "Xem ảnh" }}
+              />
+            </div>
+          )}
+          <p>{record?.user?.name}</p>
+        </div>
+      ),
     },
     {
       title: "Loại",
@@ -87,30 +111,7 @@ export const TableTransaction = forwardRef((props, ref) => {
         </div>
       ),
     },
-    {
-      title: "Người giao dịch",
-      width: 120,
-      // fixed: "left",
-      dataIndex: "user.name",
-      key: "user",
-      // sorter: (a, b) => a?.user?.name?.localeCompare(b.user?.name),
-      // ...getColumnSearchProps("user.name", "Người báo cáo"),
-      render: (_, record) => (
-        <div className=" flex gap-2 items-center ">
-          {record?.user?.avatar && (
-            <div className="size-10 flex items-center justify-center overflow-hidden rounded-full">
-              <Image
-                wrapperClassName=" w-10 bg-[#eee] h-10 object-cover object-center flex items-center justify-center "
-                src={record?.user?.avatar}
-                alt={record?.user?.avatar}
-                preview={{ mask: "Xem ảnh" }}
-              />
-            </div>
-          )}
-          <p>{record?.user?.name}</p>
-        </div>
-      ),
-    },
+
     {
       title: "Số tiền",
       width: 100,

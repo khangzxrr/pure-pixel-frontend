@@ -196,6 +196,12 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
             </div>
             {selectedSize && (
               <div className="mt-4 p-4 bg-gray-800 rounded-lg text-white">
+                <div className="text-lg font-normal">
+                  Tiêu đề:{" "}
+                  <span className="font-semibold">
+                    {selectedSize?.photoSellHistory?.title}
+                  </span>
+                </div>
                 <div className="text-lg font-semibold">
                   Chi tiết kích thước:
                 </div>
