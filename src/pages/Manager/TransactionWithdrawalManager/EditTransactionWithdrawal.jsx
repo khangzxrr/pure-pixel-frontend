@@ -13,9 +13,6 @@ import { Upgrade } from "../../../yup/Upgrade";
 export default function EditReport({ selectedReport, onClose, tableRef }) {
   const [disabled, setDisabled] = useState(false);
   const { notificationApi } = useNotification();
-  // console.log("====================================");
-  // console.log(selectedReport);
-  // console.log("====================================");
 
   useEffect(() => {
     setValue("minOrderMonth", selectedReport.minOrderMonth);
