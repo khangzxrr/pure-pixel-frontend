@@ -108,7 +108,7 @@ const AccountManagerPage = () => {
   }, [pagination]);
 
   const columns = [
-    { title: "ID", dataIndex: "id", ...getColumnSearchProps("id", "id") },
+    // { title: "ID", dataIndex: "id", ...getColumnSearchProps("id", "id") },
     {
       title: "Tên",
       dataIndex: "search",
