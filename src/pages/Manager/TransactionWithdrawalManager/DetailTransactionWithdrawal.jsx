@@ -1,4 +1,4 @@
-import { Modal, Typography } from "antd";
+import { Image, Modal, Typography } from "antd";
 import React from "react";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
 import { useNotification } from "../../../Notification/Notification";
@@ -119,28 +119,14 @@ export default function DetailTransactionWithdrawal({
                 },
                 {
                   label: "Ngân hàng:",
-                  value: (
-                    <>
-                      {selectedData?.withdrawalTransaction?.bankInfo?.bankName}
-                    </>
-                  ),
+                  value: <>{selectedData?.withdrawalTransaction?.bankName}</>,
                 },
                 {
                   label: "Số tài khoản:",
                   value: (
                     <>
-                      <p>
-                        {
-                          selectedData?.withdrawalTransaction?.bankInfo
-                            ?.bankNumber
-                        }
-                      </p>
-                      <p>
-                        {
-                          selectedData?.withdrawalTransaction?.bankInfo
-                            ?.bankUsername
-                        }
-                      </p>
+                      <p>{selectedData?.withdrawalTransaction?.bankNumber}</p>
+                      <p>{selectedData?.withdrawalTransaction?.bankUsername}</p>
                     </>
                   ),
                 },
@@ -155,6 +141,22 @@ export default function DetailTransactionWithdrawal({
               ))}
             </tbody>
           </table>
+          <div className="flex flex-col justify-center items-center border w-full rounded-lg my-2 min-h-[200px] bg-gray-500 py-3">
+            {selectedData?.withdrawalTransaction?.successPhotoUrl ? (
+              <div className="w-1/3 flex justify-center items-center overflow-hidden">
+                <Image
+                  src={selectedData?.withdrawalTransaction?.successPhotoUrl}
+                  className="w-full h-full object-contain"
+                  preview={true}
+                />
+              </div>
+            ) : (
+              <div className="text-white w-full text-center font-bold text-xl">
+                Yêu cầu này chưa có minh chứng rút tiền
+              </div>
+            )}
+          </div>
+
           <div className="flex gap-10 mt-10">
             <ComButton
               className={" bg-[#505662] mx-10 w-full"}
