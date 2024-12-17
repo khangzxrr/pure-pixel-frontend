@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-import {
-  Flag,
-  User,
-  Calendar,
-  Clock,
-  Eye,
-  ThumbsDown,
-  MessageSquare,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { Flag, User, Calendar } from "lucide-react";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
 import { Popconfirm, Upload } from "antd";
 import PhotoService from "../../../services/PhotoService";
@@ -39,9 +28,8 @@ export default function WithdrawalProcessingModal({
     try {
       // Get the cropped image from the info object
       // Convert the cropped image to a URL for preview
-      const reviewUrl = await PhotoService.convertArrayBufferToObjectUrl(
-        newFile
-      );
+      const reviewUrl =
+        await PhotoService.convertArrayBufferToObjectUrl(newFile);
 
       // Update states with the cropped image
       setEvidencePhoto(newFile);
