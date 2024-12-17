@@ -14,7 +14,7 @@ const statuses = [
   { label: "Đang thực hiện", value: "ACCEPTED", color: "#007BFF" }, // Blue
   { label: "Hoàn thành", value: "SUCCESSED", color: "#28A745" }, // Green
   { label: "Từ chối", value: "DENIED", color: "#DC3545" }, // Red
-  { label: "Đã hủy", value: "FAILED", color: "#DC3545" },
+  { label: "Đã hủy", value: "FAILED", color: "#737373" },
 ];
 // Theme Configuration
 export const customTheme = {

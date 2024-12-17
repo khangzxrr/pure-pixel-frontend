@@ -80,6 +80,7 @@ const CardDataStatsList = ({ data }) => {
                 nameParam2={"Tổng số nhiếp ảnh gia"}
                 param1={totalCustomer}
                 param2={totalPhotographer}
+                isUser={true}
               />
             </div>
           </div>
