@@ -15,8 +15,11 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
   const [title, setTitle] = useState(photo?.title);
   const [description, setDescription] = useState(photo?.description);
   const [createdAt, setCreatedAt] = useState(photo?.createdAt);
+  const [photoType, setPhotoType] = useState(photo?.photoType);
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
+
+  console.log(photo);
 
   const updatePhoto = useMutation({
     mutationFn: (updateBody) =>
@@ -71,6 +74,7 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
       setIsWatermark(photo.watermark);
       setIsVisibility(photo.visibility);
       setCreatedAt(photo.createdAt);
+      setPhotoType(photo.photoType);
     }
   }, [photo]);
 
@@ -158,11 +162,16 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
             {/* Tiêu đề */}
             <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
               <div className="text-gray-400 flex items-center gap-1">
-                <TbEdit className="text-blue-500 size-4" />
+                {photoType === "RAW" ? (
+                  <TbEdit className="text-blue-500 size-4" />
+                ) : (
+                  <TbEditOff className="text-red-500 size-4" />
+                )}
                 Tiêu đề:
               </div>
               <input
                 type="text"
+                disabled={photoType === "RAW" ? false : true}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="font-bold text-[#eee] bg-transparent border-none outline-none w-full"
@@ -173,11 +182,16 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
             {/* Mô tả */}
             <div className="grid grid-cols-2 items-center py-2 border-b border-gray-500">
               <div className="text-gray-400 flex items-center gap-1">
-                <TbEdit className="text-blue-500 size-4" />
+                {photoType === "RAW" ? (
+                  <TbEdit className="text-blue-500 size-4" />
+                ) : (
+                  <TbEditOff className="text-red-500 size-4" />
+                )}
                 Mô tả:
               </div>
               <textarea
                 value={description}
+                disabled={photoType === "RAW" ? false : true}
                 onChange={(e) => setDescription(e.target.value)}
                 className="text-[#eee] bg-transparent border-none outline-none w-full resize-none"
                 rows={3}
@@ -246,44 +260,48 @@ const UpdatePhotoInManager = ({ photo, onClose, loading }) => {
                 {FormatDate(photo?.createdAt)}
               </div>
             </div>
-            <div className="flex items-center py-2 ">
-              <div className="flex justify-end items-center mx-3 w-full">
-                {isBanned === "BAN" ? (
-                  <button
-                    onClick={() => handleUnBanPhoto()}
-                    className="flex items-center gap-1 px-2 py-1 hover:bg-gray-400 hover:border-gray-400 bg-gray-500 border border-gray-500 rounded-md"
-                  >
-                    <FaLock /> Đã khóa ảnh
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleBanPhoto()}
-                    className="flex items-center gap-1 px-2 py-1 hover:bg-red-400 hover:border-red-400 bg-red-500 border border-red-500 rounded-md"
-                  >
-                    <FaLockOpen /> Khóa ảnh
-                  </button>
-                )}
+            {photoType === "RAW" && (
+              <div className="flex items-center py-2 ">
+                <div className="flex justify-end items-center mx-3 w-full">
+                  {isBanned === "BAN" ? (
+                    <button
+                      onClick={() => handleUnBanPhoto()}
+                      className="flex items-center gap-1 px-2 py-1 hover:bg-gray-400 hover:border-gray-400 bg-gray-500 border border-gray-500 rounded-md"
+                    >
+                      <FaLock /> Đã khóa ảnh
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleBanPhoto()}
+                      className="flex items-center gap-1 px-2 py-1 hover:bg-red-400 hover:border-red-400 bg-red-500 border border-red-500 rounded-md"
+                    >
+                      <FaLockOpen /> Khóa ảnh
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          <div className="flex">
-            <button
-              onClick={() => handleUpdatePhoto()}
-              className="bg-[#eee] w-full flex items-center justify-center text-[#202225] hover:bg-[#9d9d9d] font-bold py-2 rounded-md"
-            >
-              {isLoading ? (
-                <LoadingOval
-                  size={"22"}
-                  color={"#202225"}
-                  strongWidth={5}
-                  secondaryColor={"#eee"}
-                />
-              ) : (
-                "Lưu chỉnh sửa"
-              )}
-            </button>
-          </div>
+          {photoType === "RAW" && (
+            <div className="flex">
+              <button
+                onClick={() => handleUpdatePhoto()}
+                className="bg-[#eee] w-full flex items-center justify-center text-[#202225] hover:bg-[#9d9d9d] font-bold py-2 rounded-md"
+              >
+                {isLoading ? (
+                  <LoadingOval
+                    size={"22"}
+                    color={"#202225"}
+                    strongWidth={5}
+                    secondaryColor={"#eee"}
+                  />
+                ) : (
+                  "Lưu chỉnh sửa"
+                )}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
