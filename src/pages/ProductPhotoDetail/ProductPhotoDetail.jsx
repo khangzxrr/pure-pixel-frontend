@@ -19,7 +19,8 @@ import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModa
 import { notificationApi } from "../../Notification/Notification";
 import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
 import PhotoExchange from "../../apis/PhotoExchange";
-import CountdownTimer from "../../components/ComUpgrade/CountDownTimer";
+import CountDownTimerForProductPhotoDetail from "./CountDownTimerForProductPhotoDetail";
+
 function calculateTimeFromNow(dateString) {
   const startDate = new Date(dateString);
   const now = new Date();
@@ -644,7 +645,7 @@ const ProductPhotoDetail = () => {
                               Đang chờ thanh toán...
                             </div>
                           )}
-                          <CountdownTimer />
+                          <CountDownTimerForProductPhotoDetail />
                         </div>
                       )}
                     </div>
