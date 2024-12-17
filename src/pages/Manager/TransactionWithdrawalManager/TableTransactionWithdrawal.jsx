@@ -1,32 +1,20 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { useTableState } from "../../../hooks/useTableState";
 import { useModalState } from "../../../hooks/useModalState";
 import ComTable from "../../../components/ComTable/ComTable";
 import useColumnFilters from "../../../components/ComTable/utils";
-import { Image, Modal, Tooltip } from "antd";
-import { deleteData, getData, patchData, putData } from "../../../apis/api";
+import { getData } from "../../../apis/api";
 import ComMenuButonTable from "../../../components/ComMenuButonTable/ComMenuButonTable";
 import { useNotification } from "../../../Notification/Notification";
-import ComConfirmDeleteModal from "../../../components/ComConfirmDeleteModal/ComConfirmDeleteModal";
 import ComModal from "../../../components/ComModal/ComModal";
 import DetailTransactionWithdrawal from "./DetailTransactionWithdrawal";
 import EditUpgrede from "./EditTransactionWithdrawal";
-import ComReportTypeConverter from "../../../components/ComReportTypeConverter/ComReportTypeConverter";
-import ComReportStatusConverter from "../../../components/ComReportStatusConverter/ComReportStatusConverter";
-import ComReportConverter from "../../../components/ComReportConverter/ComReportConverter";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
-import { Link } from "react-router-dom";
-import ComTypeWalletConverter from "../../../components/ComStatusConverter/ComTypeWalletConverter";
-import { FaWallet } from "react-icons/fa";
 import ComStatusWalletConverter from "../../../components/ComStatusConverter/ComStatusWalletConverter";
 import ComCard from "./../../../components/ComCard/ComCard";
 import RefreshButton from "../../../components/ComButton/RefreshButton";
-import WithdrawalProcessingModal from "./withdrawalProcessingModal";
+import WithdrawalProcessingModal from "./WithdrawalProcessingModal";
+
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -210,7 +198,7 @@ export const TableTransactionWithdrawal = forwardRef((props, ref) => {
   const reloadData = () => {
     table.handleOpenLoading();
     getData(
-      "manager/transaction?limit=9999&page=0&types=WITHDRAWAL&orderByCreatedAt=desc"
+      "manager/transaction?limit=9999&page=0&types=WITHDRAWAL&orderByCreatedAt=desc",
     )
       .then((e) => {
         setData(e?.data?.objects);
