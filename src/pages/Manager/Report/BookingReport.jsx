@@ -16,21 +16,31 @@ import {
   XCircle,
 } from "lucide-react";
 import ComDateConverter from "../../../components/ComDateConverter/ComDateConverter";
+const statusRender = (status) => {
+  switch (status) {
+    case "REQUESTED":
+      return <p className="text-[#FFA500]">Đang yêu cầu</p>;
+    case "ACCEPTED":
+      return <p className="text-[#007BFF]">Đang thực hiện</p>;
+    case "SUCCESSED":
+      return <p className="text-[#28A745]">Đã hoàn thành</p>;
+    case "DENIED":
+      return <p className="text-[#DC3545]">Bị từ chối yêu cầu</p>;
+    case "FAILED":
+      return <p className="text-[#FFA500]">Đã bị hủy yêu cầu</p>;
+    default:
+      return <p className="text-[#FFA500]">{status}</p>;
+  }
+};
 
 export default function BookingReport({ selectedData, tableRef, onClose }) {
   const { data: bookingDetail, isPending } = useQuery({
     queryKey: ["booking-detail-by-manager", selectedData],
     queryFn: () => ManagerReportApi.getBookingDetail(selectedData.referenceId),
   });
-  const {
-    user,
-    originalPhotoshootPackage,
-    photoshootPackageHistory,
-    billItems,
-    totalBillItem,
-    photos,
-  } = bookingDetail || {};
-  console.log("bookingDetail", bookingDetail);
+  const { user, photoshootPackageHistory, billItems, totalBillItem, photos } =
+    bookingDetail || {};
+  console.log("bookingDetail", bookingDetail && bookingDetail);
   console.log("selectedData", selectedData);
   return (
     <div className=" text-gray-800 p-6 flex flex-col gap-3  max-w-3xl mx-auto">
@@ -111,45 +121,77 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
             <div className="mb-3">
               <>
                 <p className="font-semibold mb-4">Gói chụp</p>
+                <p className=" text-right">
+                  {statusRender(bookingDetail?.status)}
+                </p>
+
                 <div className=" flex gap-4 items-center mb-4">
                   <img
                     className="w-9 h-9 rounded-full object-cover bg-[#eee]"
                     src={photoshootPackageHistory?.thumbnail}
                     alt={photoshootPackageHistory?.thumbnail}
                   />
-                  <p className="text-lg font-semibold ">
-                    {photoshootPackageHistory?.title}
-                  </p>
+                  <div className="flex flex-col">
+                    <p className="text-lg font-semibold">
+                      {photoshootPackageHistory?.title}
+                    </p>
+                    <p className="text-sm text-gray-700 font-light">
+                      {user?.name}
+                    </p>
+                  </div>
                 </div>
               </>
             </div>
             <p className="text-lg font-semibold ">
               {photoshootPackageHistory?.price.toLocaleString()} vnd
             </p>
-            <p className="text-gray-700 bg-white p-2 rounded border border-gray-200">
+            <p className="text-gray-700 bg-[#eee] p-2 rounded border border-gray-200">
               {photoshootPackageHistory?.subtitle}
             </p>
           </div>
-          <div className="bg-gray-100 p-4 rounded-lg">
-            {/* <h3 className="text-lg font-semibold mb-3">Nội dung báo cáo</h3> */}
-            <div className="mb-4">
-              <>
-                <p className="font-semibold mb-4">Người bị báo cáo</p>
-                <div className=" flex gap-4 items-center mb-4">
-                  <img
-                    className="w-9 h-9 rounded-full object-cover bg-[#eee]"
-                    src={originalPhotoshootPackage?.user?.avatar}
-                    alt={originalPhotoshootPackage?.user?.avatar}
-                  />
-                  <span>{originalPhotoshootPackage?.user?.name}</span>
-                </div>
-              </>
+          {selectedData.reportType === "BOOKING_PHOTOGRAPHER_REPORT_USER" ? (
+            <div className="bg-gray-100 p-4 rounded-lg">
+              {/* <h3 className="text-lg font-semibold mb-3">Nội dung báo cáo</h3> */}
+              <div className="mb-4">
+                <>
+                  <p className="font-semibold mb-4">Người bị báo cáo</p>
+                  <div className=" flex gap-4 items-center mb-4">
+                    <img
+                      className="w-9 h-9 rounded-full object-cover bg-[#eee]"
+                      src={user?.avatar}
+                      alt={user?.avatar}
+                    />
+                    <span>{user?.name}</span>
+                  </div>
+                </>
+              </div>
+              <p className="text-lg font-normal">Nội dung báo cáo:</p>
+              <p className="text-gray-700 bg-white p-3 rounded border border-gray-200">
+                {selectedData.content}
+              </p>
             </div>
-            <p className="text-lg font-normal">Nội dung báo cáo:</p>
-            <p className="text-gray-700 bg-white p-3 rounded border border-gray-200">
-              {selectedData.content}
-            </p>
-          </div>
+          ) : (
+            <div className="bg-gray-100 p-4 rounded-lg">
+              {/* <h3 className="text-lg font-semibold mb-3">Nội dung báo cáo</h3> */}
+              <div className="mb-4">
+                <>
+                  <p className="font-semibold mb-4">Người bị báo cáo</p>
+                  <div className=" flex gap-4 items-center mb-4">
+                    <img
+                      className="w-9 h-9 rounded-full object-cover bg-[#eee]"
+                      src={photoshootPackageHistory?.user?.avatar}
+                      alt={photoshootPackageHistory?.user?.avatar}
+                    />
+                    <span>{photoshootPackageHistory?.user?.name}</span>
+                  </div>
+                </>
+              </div>
+              <p className="text-lg font-normal">Nội dung báo cáo:</p>
+              <p className="text-gray-700 bg-white p-3 rounded border border-gray-200">
+                {selectedData.content}
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex flex-col border bg-[#f3f4f6]  rounded-lg overflow-y-auto">
@@ -234,6 +276,10 @@ export default function BookingReport({ selectedData, tableRef, onClose }) {
 
       <div>
         <h3 className="text-lg font-semibold">Danh sách ảnh</h3>
+        {!photos ||
+          (!photos.length > 0 && (
+            <div className="m-3 text-gray-600">Chưa có ảnh trong gói chụp</div>
+          ))}
         <div
           style={{
             display: "grid",

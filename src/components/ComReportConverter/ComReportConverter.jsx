@@ -63,6 +63,15 @@ function ComReportConverter({ children }) {
             </span>
           </div>
         );
+      case "BOOKING_PHOTOGRAPHER_REPORT_USER":
+        return (
+          <div>
+            Khách của gói chụp{" "}
+            <span className="font-semibold text-white">
+              {data?.referencedBooking?.photoshootPackageHistory?.title}
+            </span>
+          </div>
+        );
       case "COMMENT":
         return "Bình luận";
       case "other":

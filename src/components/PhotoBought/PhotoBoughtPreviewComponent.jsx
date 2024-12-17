@@ -162,7 +162,6 @@ const PhotoBoughtPreviewComponent = ({ photoData, photoBoughtId }) => {
             >
               {photoDetail?.title}
             </h1>
-
             <p
               className="m-2 font-normal text-gray-200"
               style={{ wordBreak: "break-all", overflowWrap: "break-word" }}
