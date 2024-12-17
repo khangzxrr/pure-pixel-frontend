@@ -24,7 +24,7 @@ export default function WithdrawalProcessingModal({
   const [reason, setReason] = useState("");
   const [evidencePhoto, setEvidencePhoto] = useState(""); //evidence to proof that the system have been make transfer for withdrawal
   const [evidencePhotoUrl, setEvidencePhotoUrl] = useState("");
-  console.log(selectedData);
+  // console.log(selectedData);
   const acceptWithdrawal = useMutation({
     mutationFn: ({ transactionId, photo }) =>
       ManageTracsaction.acceptWithdrawal(transactionId, photo),
@@ -63,7 +63,7 @@ export default function WithdrawalProcessingModal({
     }
   };
   const handleWithDrawal = async () => {
-    console.log(selectedData.id, evidencePhoto);
+    // console.log(selectedData.id, evidencePhoto);
     try {
       await acceptWithdrawalMutate({
         transactionId: selectedData.id,

@@ -102,7 +102,7 @@ const ChartTotalUsedCameraByBrand = () => {
         <div className="p-3 text-[#eee] font-bold text-center">
           Số lượng người dùng sử dụng máy ảnh
           <span className="text-blue-400"> {nameCameraByBrand || ""} </span>
-          theo tên mã theo tên mã theo tên mã
+          theo tên mã máy
         </div>
       )}
 

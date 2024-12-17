@@ -94,7 +94,7 @@ export default function UpdateProfileModal({ userData }) {
     //   }
     // });
 
-    console.log(data);
+    // console.log(data);
 
     // Call the mutation function with the updated data
     updateProfile.mutate(data);

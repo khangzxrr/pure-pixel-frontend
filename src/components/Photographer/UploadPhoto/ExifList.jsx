@@ -9,7 +9,7 @@ const ExifList = ({ exifData, cameraId, onClose }) => {
   if (!exifData) {
     return <div className="text-[#d7d7d8]">Không có dữ liệu của tấm ảnh</div>;
   }
-  console.log("check", cameraId && cameraId);
+  // console.log("check", cameraId && cameraId);
   const fields = [
     {
       label: "Mẫu máy",

@@ -66,7 +66,7 @@ export default function UpgradePaymentModal() {
       setIsDisable(false);
       setDisableWalletPayment(false);
       setDisableSePayPayment(false);
-      console.log("Error:", error.response.data.message);
+      // console.log("Error:", error.response.data.message);
       let message;
       switch (error.response.data.message) {
         case "UserHasActivatedUpgradePackage":
@@ -109,7 +109,7 @@ export default function UpgradePaymentModal() {
   useEffect(() => {
     // Success and expiration logic
     if (isUpgradePaymentModal && transactionDetail) {
-      console.log("transactionUpgrade", transactionDetail);
+      // console.log("transactionUpgrade", transactionDetail);
       if (transactionDetail.status === "SUCCESS") {
         queryClient.invalidateQueries({
           queryKey: "upgrade-package-list",

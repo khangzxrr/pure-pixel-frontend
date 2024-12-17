@@ -359,7 +359,7 @@ const PhotoManager2 = () => {
   // }));
 
   const onChange = (filters, sorter, extra) => {
-    console.log("params", filters, sorter, extra);
+    // console.log("params", filters, sorter, extra);
   };
 
   // const handlePageClick = (pageNumber) => {

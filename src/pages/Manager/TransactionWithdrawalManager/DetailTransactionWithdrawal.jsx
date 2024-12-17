@@ -18,7 +18,7 @@ export default function DetailTransactionWithdrawal({
   reloadData,
   onClose,
 }) {
-  console.log(selectedData);
+  // console.log(selectedData);
   const { notificationApi } = useNotification();
 
   return (

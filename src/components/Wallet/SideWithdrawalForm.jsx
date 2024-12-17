@@ -91,7 +91,7 @@ export default function SideWithdrawalForm({
       closeNav();
     },
     onProgress: () => {
-      console.log("Loading...");
+      // console.log("Loading...");
     },
     onError: (error) => {
       let message;

@@ -2,7 +2,7 @@ import http, { timeoutHttpClient } from "../configs/Http";
 const customHttp = timeoutHttpClient(300000);
 
 const acceptWithdrawal = async (transactionId, photo) => {
-  console.log("transactionId", transactionId, photo);
+  // console.log("transactionId", transactionId, photo);
   const formData = new FormData();
 
   formData.append("photo", photo);
