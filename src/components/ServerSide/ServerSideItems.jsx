@@ -3,6 +3,7 @@ import { FiUpload } from "react-icons/fi";
 import { BiSolidMessageDetail } from "react-icons/bi";
 import { TbCameraUp } from "react-icons/tb";
 import { MdHomeFilled } from "react-icons/md";
+import { FaBookOpen } from "react-icons/fa";
 
 const ServerSideItems = [
   {
@@ -57,6 +58,13 @@ const ServerSideItems = [
     link: "/message",
     authen: true,
     icon: <BiSolidMessageDetail className="text-3xl" />,
+  },
+  {
+    id: "policy",
+    name: "Chính sách",
+    link: "/policy",
+
+    icon: <FaBookOpen className="text-3xl" />,
   },
 ];
 export default ServerSideItems;

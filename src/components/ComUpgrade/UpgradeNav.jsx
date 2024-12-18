@@ -5,6 +5,7 @@ import UserProfileApi from "../../apis/UserProfile";
 import { useQuery } from "@tanstack/react-query";
 import { useKeycloak } from "@react-keycloak/web";
 import { RiLogoutBoxLine } from "react-icons/ri";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const UpgradeNav = () => {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ const UpgradeNav = () => {
     cacheTime: 300000,
   });
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   const handleLogout = () => keycloak.logout();
 
@@ -42,7 +46,7 @@ const UpgradeNav = () => {
               <img
                 src={data?.avatar}
                 alt=""
-                className="size-full object-cover"
+                className="size-full object-cover bg-[#eee]"
               />
             </div>
             <div>{data?.name}</div>

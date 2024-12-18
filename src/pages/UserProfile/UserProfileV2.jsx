@@ -132,14 +132,14 @@ const UserProfileV2 = () => {
                   <h2 className="text-xl font-bold max-w-[50px] md:max-w-full ">
                     {data?.photographer.name}
                   </h2>
-                  {data?.photographer.location && (
+                  {/* {data?.photographer.location && (
                     <div className="font-normal">
                       Đến từ:{" "}
                       <span className="font-semibold">
                         {data?.photographer.location}
                       </span>
                     </div>
-                  )}
+                  )} */}
 
                   {data?.photographer.quote && (
                     <div className="font-normal text-sm hidden md:block">
