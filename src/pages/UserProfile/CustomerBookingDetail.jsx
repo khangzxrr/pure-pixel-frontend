@@ -218,7 +218,9 @@ const CustomerBookingDetail = () => {
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
       // Render a completed state
-      return <span className="text-red-500">Gói đã hết hạn tải về</span>;
+      return (
+        <span className="text-red-500">Nhiếp ảnh gia đã có thể xoá ảnh</span>
+      );
     } else {
       // Render a countdown
       return (
@@ -282,8 +284,8 @@ const CustomerBookingDetail = () => {
               {bookingDetail.status === "SUCCESSED" && (
                 <div className="font-normal text-center">
                   <p className=" p-2 rounded-md bg-[#3f4143]">
-                    Các ảnh sẽ tự động xóa vào : {FormatDateTime(expiredAt)}{" "}
-                    (Còn lại{" "}
+                    Nhiếp ảnh gia sẽ được xoá ảnh vào:{" "}
+                    {FormatDateTime(expiredAt)} (Còn lại{" "}
                     <span>
                       <Countdown
                         date={Date.now() + countTimeToDownload}
