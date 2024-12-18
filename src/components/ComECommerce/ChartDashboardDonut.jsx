@@ -14,7 +14,7 @@ const ChartDashboardDonut = ({ dashBoardData }) => {
         <ChartDashboardRevenue
           nameChart={"Thống kê tổng dung lượng đã sử dụng"}
           nameParam1={"Dung lượng ảnh"}
-          nameParam2={"Dung lượng của gói dịch vụ"}
+          nameParam2={"Dung lượng ảnh trong gói dịch vụ"}
           param1={totalBookingSize}
           param2={totalPhotoSize}
           total={totalSize}

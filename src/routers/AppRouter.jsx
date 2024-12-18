@@ -67,6 +67,7 @@ import ECommerce from "./../pages/Admin/ECommerce";
 import ComTotalUsers from "../components/ComECommerce/ComTotalUsers";
 import PhotographerDetailStats from "../components/ComECommerce/PhotographerDetailStats";
 import LoadingPage from "../pages/LoadingPage";
+import PolicyPage from "./../pages/PolicyPage/PolicyPage";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -86,6 +87,7 @@ export const AppRouter = createBrowserRouter([
             path: "upgrade",
             element: <UpgradeToPtgPage />,
           },
+          { path: "policy", element: <PolicyPage /> },
           {
             path: "following",
             element: <Following />,
