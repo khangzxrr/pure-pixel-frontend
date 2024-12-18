@@ -7,7 +7,12 @@ import { useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { notificationApi } from "../../../Notification/Notification";
 
-export default function UploadBookingPhotoCard({ enableUpdate, photo, index }) {
+export default function UploadBookingPhotoCard({
+  enableUpdate,
+  photo,
+  index,
+  isAbleDelete,
+}) {
   const { bookingId } = useParams();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -94,7 +99,7 @@ export default function UploadBookingPhotoCard({ enableUpdate, photo, index }) {
         </div>
       )}
 
-      {enableUpdate && photo.status === "done" && (
+      {isAbleDelete && photo.status === "done" && (
         <div className="h-8 w-8 absolute top-2 right-2 grid place-items-center z-20 bg-red-300 bg-opacity-30 backdrop-blur-md rounded-full">
           <Tooltip title="Xóa ảnh này" color="red">
             <DeleteOutlined
