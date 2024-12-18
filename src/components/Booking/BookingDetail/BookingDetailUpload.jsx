@@ -27,6 +27,13 @@ export default function UploadBookingPhoto({ bookingDetail }) {
 
   const { notificationApi } = useNotification();
   const enableUpdate = bookingDetail.status === "ACCEPTED";
+
+  const daysAgo30 = new Date(new Date().setDate(new Date().getDate() - 30));
+  const isAbleDelete =
+    bookingDetail.status === "ACCEPTED" ||
+    (bookingDetail.status === "SUCCESSED" &&
+      new Date(bookingDetail.updatedAt) < daysAgo30);
+
   const selectedPhotoRef = useRef({});
 
   //use keycloak to trigger refresh component when new token comes
@@ -236,6 +243,7 @@ export default function UploadBookingPhoto({ bookingDetail }) {
                 photo={photo}
                 index={index}
                 enableUpdate={enableUpdate}
+                isAbleDelete={isAbleDelete}
               />
             </div>
           ))}

@@ -28,6 +28,7 @@ import Countdown from "react-countdown";
 import useBookingPhotoStore from "../../../states/UseBookingPhotoStore";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { PhotoShootUpdateInput } from "../../../yup/PhotoShootUpdateInput";
+import { FormatDate } from "../../../utils/FormatDate";
 
 dayjs.locale("vi");
 const statusRender = (status) => {
@@ -187,7 +188,7 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
       // Render a completed state
-      return <span className="text-red-500">Gói đã hết hạn tải về</span>;
+      return <span className="text-green-500">Bạn đã có thể xoá được ảnh</span>;
     } else {
       // Render a countdown
       return (
@@ -219,7 +220,7 @@ const BookingDetailInfo = ({ bookingDetail, reportBooking }) => {
           {bookingDetail.status === "SUCCESSED" && (
             <div className="font-normal text-center">
               <p className=" p-2 rounded-md bg-[#3f4143]">
-                Các ảnh sẽ tự động xóa vào : {FormatDateTime(expiredAt)} (
+                Bạn sẽ được xoá ảnh vào: {FormatDate(expiredAt)} (
                 <span>
                   <Countdown
                     date={Date.now() + countTimeToDownload}
