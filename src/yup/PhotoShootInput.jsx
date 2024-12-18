@@ -10,7 +10,7 @@ export const photoShootInput = yup.object().shape({
     .min(2, "Bạn cần chọn cả ngày bắt đầu và ngày kết thúc") // Ensure there are exactly two dates
     .test(
       "start-date-check",
-      "Ngày bắt đầu phải sau ngày hiện tại ít nhất 24 giờ",
+      "Ngày bắt đầu phải sau ngày hiện tại phải trên 24 giờ trở đi",
 
       (value) => {
         const currentDate = dayjs();
