@@ -10,6 +10,7 @@ const ServerSideItem = ({
   isNotification,
   onNotificationClick,
   name,
+  badge,
 }) => {
   const location = useLocation();
   const { activeLinkServer, setActiveLinkServer } = UseServerSideStore();
@@ -82,6 +83,9 @@ const ServerSideItem = ({
       }`}
     >
       {icon}
+      {badge && (
+        <div className="absolute top-0 right-0 size-3 bg-red-500 rounded-full"></div>
+      )}
       {isHovered && name && (
         <div
           className={`absolute left-full ml-[14px] whitespace-nowrap bg-[#202225] text-[#eee] font-semibold text-sm px-4 py-[6px] rounded-md shadow-lg z-50

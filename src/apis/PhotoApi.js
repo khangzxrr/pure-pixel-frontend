@@ -88,7 +88,8 @@ const uploadPhoto = async (file, onUploadProgress) => {
     headers: {
       "Content-Type": "multipart/form-data",
     },
-    timeout: 30000,
+    // large photos over a slow uplink, several at once, easily take minutes
+    timeout: 600000,
     onUploadProgress,
   });
 

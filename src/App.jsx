@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/vi"; // Import locale tiếng Việt
 import ChatProvider from "./components/ChatComponent/ChatProvider";
 import OneSignal from "react-onesignal";
+import ComThanksModal from "./components/ComThanksModal/ComThanksModal";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,6 +62,7 @@ function App() {
       >
         <ToastContainer />
         <ConfigProvider locale={locale}>
+          <ComThanksModal />
           <NotificationProvider>
             <ChatProvider>
               <RouterProvider router={AppRouter} />

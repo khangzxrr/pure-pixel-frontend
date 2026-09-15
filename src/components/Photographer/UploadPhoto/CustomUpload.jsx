@@ -52,7 +52,8 @@ export default function CustomUpload() {
 
   //handle exception from api response
   const handleException = (file, e) => {
-    switch (e && e.response.data.message) {
+    // timeouts and network errors have no response, they fall through to default
+    switch (e?.response?.data?.message) {
       case "RunOutPhotoQuotaException":
         notificationApi(
           "error",
@@ -291,7 +292,7 @@ export default function CustomUpload() {
     }
 
     if (info.file.status === "error") {
-      switch (info.file.error.response.data.message) {
+      switch (info.file.error?.response?.data?.message) {
         case "RunOutPhotoQuotaException":
           message.error(
             "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"

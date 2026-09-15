@@ -276,7 +276,7 @@ export default function UploadPhotoSell({ formRef }) {
         formRef.current.resetForm();
         onSuccess(response);
       } catch (error) {
-        onError(e);
+        onError(error);
       }
     } catch (e) {
       handleException(file, e);
@@ -301,7 +301,7 @@ export default function UploadPhotoSell({ formRef }) {
     }
 
     if (info.file.status === "error") {
-      switch (info.file.error.response.data.message) {
+      switch (info.file.error?.response?.data?.message) {
         case "RunOutPhotoQuotaException":
           message.error(
             "Bạn đã tải lên vượt quá dung lượng của gói nâng cấp, vui lòng nâng cấp thêm để tăng dung lượng lưu trữ"

@@ -195,7 +195,7 @@ export default function PhotoCard({ photo }) {
       // console.log("uploadPhoto", file);
       return timeout(
         PhotoApi.uploadPhoto(file, onUploadProgress),
-        3000 // 5-minute timeout
+        600000 // 10-minute timeout, same as the first upload attempt
       );
     },
     onError: (e) => {

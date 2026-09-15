@@ -68,6 +68,8 @@ import ComTotalUsers from "../components/ComECommerce/ComTotalUsers";
 import PhotographerDetailStats from "../components/ComECommerce/PhotographerDetailStats";
 import LoadingPage from "../pages/LoadingPage";
 import PolicyPage from "./../pages/PolicyPage/PolicyPage";
+import ChangeLogPage from "../pages/ChangeLog/ChangeLogPage";
+import ChangeLogManager from "../pages/Manager/ChangeLog/ChangeLogManager";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -88,6 +90,7 @@ export const AppRouter = createBrowserRouter([
             element: <UpgradeToPtgPage />,
           },
           { path: "policy", element: <PolicyPage /> },
+          { path: "changelog", element: <ChangeLogPage /> },
           {
             path: "following",
             element: <Following />,
@@ -426,6 +429,10 @@ export const AppRouter = createBrowserRouter([
           {
             path: "/admin/blog",
             element: <BlogManager />,
+          },
+          {
+            path: "/admin/changelog",
+            element: <ChangeLogManager />,
           },
           {
             path: "/admin/service-package",

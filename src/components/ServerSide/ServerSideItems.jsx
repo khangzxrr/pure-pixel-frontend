@@ -1,4 +1,4 @@
-import { FaCompass, FaBell } from "react-icons/fa6";
+import { FaCompass, FaBell, FaClockRotateLeft } from "react-icons/fa6";
 import { FiUpload } from "react-icons/fi";
 import { BiSolidMessageDetail } from "react-icons/bi";
 import { TbCameraUp } from "react-icons/tb";
@@ -58,6 +58,12 @@ const ServerSideItems = [
     link: "/message",
     authen: true,
     icon: <BiSolidMessageDetail className="text-3xl" />,
+  },
+  {
+    id: "changelog",
+    name: "Cập nhật",
+    link: "/changelog",
+    icon: <FaClockRotateLeft className="text-3xl" />,
   },
   {
     id: "policy",
