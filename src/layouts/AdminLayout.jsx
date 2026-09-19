@@ -81,6 +81,12 @@ const navigation = [
   //   current: false,
   // },
   {
+    name: "Nhật ký cập nhật",
+    href: "/admin/changelog",
+    icon: DocumentDuplicateIcon,
+    current: false,
+  },
+  {
     name: "Giao dịch",
     href: "/admin/transaction",
     icon: ChartPieIcon,
