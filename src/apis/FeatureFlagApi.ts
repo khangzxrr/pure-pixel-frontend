@@ -1,6 +1,7 @@
 import http from "../configs/Http";
 
-export type FeatureFlags = { booking: boolean };
+// registration mirrors the Keycloak realm "User registration" switch
+export type FeatureFlags = { booking: boolean; registration: boolean };
 
 const getFeatureFlags = async (): Promise<FeatureFlags> => {
   const response = await http.get<FeatureFlags>("/feature-flags");
