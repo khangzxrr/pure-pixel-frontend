@@ -102,7 +102,6 @@ const CameraPhoto = ({ nameCamera }: CameraPhotoProps) => {
       </ComModal>
       {selectedImage && (
         <DetailedPhotoView
-          idImg={selectedImage.id}
           photo={selectedImage}
           onClose={() => {
             navigate(`/explore/camera-model/${cameraId}`);
@@ -112,7 +111,6 @@ const CameraPhoto = ({ nameCamera }: CameraPhotoProps) => {
             navigate(`/explore/photo-map`);
             setSelectedImage(null);
           }}
-          listImg={photoList}
         />
       )}
 

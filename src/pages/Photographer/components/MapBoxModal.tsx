@@ -10,12 +10,20 @@ import Map, {
 import { IoLocationSharp } from "react-icons/io5";
 import { useMutation } from "@tanstack/react-query";
 import { SearchBox } from "@mapbox/search-js-react";
+import type { SearchBoxProps } from "@mapbox/search-js-react/dist/components/SearchBox";
 import MapBoxApi from "../../../apis/MapBoxApi";
 import { notificationApi } from "../../../Notification/Notification";
 import { FaDotCircle } from "react-icons/fa";
 import useSellPhotoStore from "../../../states/UseSellPhotoState";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN; // Set your mapbox token here
+
+// @mapbox/search-js-react ships its own (older) @types/react, which makes its
+// ForwardRefExoticComponent an invalid JSX element type under this project's
+// React types; re-typing it against this project's React keeps it usable as JSX.
+const SearchBoxField = SearchBox as unknown as (
+  props: SearchBoxProps,
+) => JSX.Element;
 
 type Coordinates = { latitude: number; longitude: number };
 type SelectedLocate = Coordinates & { title?: string };
@@ -254,7 +262,7 @@ export default function MapBoxModal() {
                 </div>
               </div>
             </Tooltip>
-            <SearchBox
+            <SearchBoxField
               accessToken={MAPBOX_TOKEN}
               onRetrieve={handleRetrieve} // Handle the selection of a suggestion
               options={{

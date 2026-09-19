@@ -158,8 +158,12 @@ export default function UpdatePhotoModal() {
   const handleFinish = async (data: UpdatePhotoInput) => {
     // Clone the data to avoid mutating the original object
     // (the validated values keep every photo field the form started from)
+    // gps is dropped here and recomputed below in the proper { latitude, longitude } shape
+    const { gps: _defaultGps, ...defaultsWithoutGps } = getDefaultPhoto(
+      selectedUpdatePhoto,
+    );
     const updatedData: UpdatePhotoBody = {
-      ...getDefaultPhoto(selectedUpdatePhoto),
+      ...defaultsWithoutGps,
       ...data,
       categoryIds: data.categoryIds?.filter(isString),
       photoTags: data.photoTags?.filter(isString),
@@ -224,7 +228,6 @@ export default function UpdatePhotoModal() {
           Select: {
             colorBgContainer: "#292b2f",
             colorBorder: "#4c4e52",
-            activeBorderColor: "#e0e0e0",
             colorPrimaryHover: "#e0e0e0",
             colorPrimary: "#292b2f",
             controlItemBgActive: "#e3e3e3",

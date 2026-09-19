@@ -12,7 +12,7 @@ const TextWithShowMore = ({ description }) => {
   return (
     <div
       className={`${showFullText ? " cursor-pointer hover:opacity-90" : ""}`}
-      onClick={showFullText ? toggleShowMore : ""}
+      onClick={showFullText ? toggleShowMore : undefined}
     >
       {isLongText && !showFullText
         ? description?.slice(0, 100) + "..." // Show first 100 characters

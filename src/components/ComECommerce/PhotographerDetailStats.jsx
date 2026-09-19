@@ -79,7 +79,7 @@ const PhotographerDetailStats = () => {
           </p>
         </div>
       )}
-      {!isLoading && !isFetching && (
+      {!isLoading && !isFetching && !isError && (
         <div className="grid grid-cols-1 md:grid-cols-8 gap-4 p-4">
           <div className="col-span-2 flex flex-col gap-4">
             <div

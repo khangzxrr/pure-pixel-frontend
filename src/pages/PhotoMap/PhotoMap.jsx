@@ -91,9 +91,13 @@ export default function PhotoMap() {
     mutationFn: ({ longitude, latitude }) =>
       MapBoxApi.getAddressByCoordinate(longitude, latitude),
     onSuccess: (data) => {
-      setSelectedPhoto({
-        ...sel,
-        address: data.features[0].properties.full_address,
+      const currentSelectedPhoto = usePhotoMapStore.getState().selectedPhoto;
+      if (!currentSelectedPhoto) return;
+      usePhotoMapStore.setState({
+        selectedPhoto: {
+          ...currentSelectedPhoto,
+          address: data.features[0]?.properties?.full_address,
+        },
       });
     },
     onError: (error) => {},
@@ -179,6 +183,17 @@ export default function PhotoMap() {
     }
   };
   const backToCurrentLocate = () => {
+    if (!currentLocate) {
+      notificationApi(
+        "info",
+        "Thông báo",
+        "Vui lòng cho phép vị trí để có trải nghiệm tốt hơn",
+        "",
+        0,
+        "get-current-location-noti"
+      );
+      return;
+    }
     if (
       currentLocate.latitude === viewState.latitude &&
       currentLocate.longitude === viewState.longitude

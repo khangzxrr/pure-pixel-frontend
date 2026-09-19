@@ -102,7 +102,7 @@ const NewfeedCard = ({
     <>
       {selectedImage && (
         <DetailedPhotoView
-          idImg={selectedImage}
+          photo={ListPhotos.find((p) => p.id === selectedImage)}
           onClose={() => {
             navigate(`/home/newfeed`);
             setSelectedImage(null);
@@ -111,7 +111,6 @@ const NewfeedCard = ({
             navigate(`/explore/photo-map`);
             setSelectedImage(null);
           }}
-          listImg={ListPhotos}
         />
       )}
 

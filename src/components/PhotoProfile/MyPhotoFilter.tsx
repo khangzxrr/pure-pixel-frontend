@@ -79,7 +79,7 @@ const MyPhotoFilter = () => {
               >
                 <div className="py-1">
                   {filterByDateList.map((item) => (
-                    <MenuItem key={item.id} className="hover:cursor-pointer">
+                    <MenuItem key={item.id}>
                       <div
                         onClick={() =>
                           handleFilterMyPhotoDate(item.name, item.param)
@@ -110,7 +110,7 @@ const MyPhotoFilter = () => {
               >
                 <div className="py-1">
                   {filterByUpVoteList.map((item) => (
-                    <MenuItem key={item.id} className="hover:cursor-pointer">
+                    <MenuItem key={item.id}>
                       <div
                         onClick={() =>
                           handleFilterMyUpVote(item.name, item.param)
@@ -121,7 +121,7 @@ const MyPhotoFilter = () => {
                       </div>
                     </MenuItem>
                   ))}
-                  <MenuItem className="hover:cursor-pointer">
+                  <MenuItem>
                     <div
                       onClick={() => handleFilterMyUpVote("", "")}
                       className="block px-4 py-2 text-sm text-red-500 data-[focus]:bg-red-500 data-[focus]:text-[#eee] transition-colors duration-200 ease-in-out"
