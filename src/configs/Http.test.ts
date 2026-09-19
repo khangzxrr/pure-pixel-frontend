@@ -5,6 +5,8 @@ import { server } from "../test/server";
 const auth = vi.hoisted(() => ({
   isLoggedIn: vi.fn(() => false),
   getToken: vi.fn(() => "token-1"),
+  updateToken: vi.fn(async (): Promise<boolean | undefined> => false),
+  forceRefreshToken: vi.fn(async (): Promise<boolean | undefined> => true),
 }));
 
 vi.mock("../services/Keycloak", () => ({ default: auth }));
@@ -86,5 +88,67 @@ describe("Http clients", () => {
     await expect(logRequestError("HTTP error: ")(error)).rejects.toBe(error);
     expect(log).toHaveBeenCalledWith("HTTP error: ", error);
     log.mockRestore();
+  });
+});
+
+describe("Http clients token refresh", () => {
+  beforeEach(() => {
+    auth.isLoggedIn.mockReturnValue(true);
+    auth.getToken.mockReturnValue("token-1");
+    auth.updateToken.mockReset().mockResolvedValue(false);
+    auth.forceRefreshToken.mockReset();
+  });
+
+  const unauthorizedUntilRefreshed = () => {
+    const seen: (string | null)[] = [];
+    server.use(
+      mswHttp.get("http://api.test/secure", ({ request }) => {
+        const authorization = request.headers.get("authorization");
+        seen.push(authorization);
+        return authorization === "Bearer token-2"
+          ? HttpResponse.json({ ok: true })
+          : new HttpResponse(null, { status: 401 });
+      }),
+    );
+    return seen;
+  };
+
+  it.each([
+    ["http", () => http],
+    ["timeoutHttpClient", () => timeoutHttpClient(1000)],
+  ])("%s refreshes and retries once on 401", async (_name, client) => {
+    auth.forceRefreshToken.mockImplementation(async () => {
+      auth.getToken.mockReturnValue("token-2");
+      return true;
+    });
+    const seen = unauthorizedUntilRefreshed();
+
+    const response = await client().get("http://api.test/secure");
+
+    expect(response.data).toEqual({ ok: true });
+    expect(seen).toEqual(["Bearer token-1", "Bearer token-2"]);
+    expect(auth.forceRefreshToken).toHaveBeenCalledTimes(1);
+  });
+
+  it("refreshes a token that is about to expire before sending", async () => {
+    auth.updateToken.mockImplementation(async () => {
+      auth.getToken.mockReturnValue("token-2");
+      return true;
+    });
+    const seen = unauthorizedUntilRefreshed();
+
+    await http.get("http://api.test/secure");
+
+    expect(seen).toEqual(["Bearer token-2"]);
+    expect(auth.forceRefreshToken).not.toHaveBeenCalled();
+  });
+
+  it("externalHttp does not refresh on 401", async () => {
+    unauthorizedUntilRefreshed();
+    await expect(
+      externalHttp.get("http://api.test/secure"),
+    ).rejects.toMatchObject({ response: { status: 401 } });
+    expect(auth.forceRefreshToken).not.toHaveBeenCalled();
+    expect(auth.updateToken).not.toHaveBeenCalled();
   });
 });

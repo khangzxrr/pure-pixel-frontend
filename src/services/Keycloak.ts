@@ -24,6 +24,15 @@ const updateToken = async () => {
   }
 };
 
+// always refreshes, whatever the remaining lifetime
+const forceRefreshToken = async () => {
+  try {
+    return await keycloakService.updateToken(-1);
+  } catch {
+    doLogin();
+  }
+};
+
 const hasRole = (roles?: string[]) =>
   roles?.some((role) => keycloakService.hasResourceRole(role));
 
@@ -44,6 +53,7 @@ const UserService = {
   getTokenParsed,
   isLoggedIn,
   updateToken,
+  forceRefreshToken,
   hasRole,
   getUserRoles,
   keycloakService,

@@ -63,6 +63,19 @@ describe("UserService", () => {
     expect(fake.login).toHaveBeenCalled();
   });
 
+  it("force refreshes the token regardless of its remaining lifetime", async () => {
+    fake.updateToken.mockResolvedValue(true);
+    await expect(UserService.forceRefreshToken()).resolves.toBe(true);
+    expect(fake.updateToken).toHaveBeenCalledWith(-1);
+    expect(fake.login).not.toHaveBeenCalled();
+  });
+
+  it("sends the user to login when the forced refresh fails", async () => {
+    fake.updateToken.mockRejectedValue(new Error("refresh token expired"));
+    await expect(UserService.forceRefreshToken()).resolves.toBeUndefined();
+    expect(fake.login).toHaveBeenCalled();
+  });
+
   it("checks client roles", () => {
     fake.hasResourceRole.mockImplementation(
       (role: string) => role === "photographer",

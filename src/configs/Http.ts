@@ -1,18 +1,13 @@
-import axios, { type InternalAxiosRequestConfig } from "axios";
-import UserService from "../services/Keycloak";
+import axios from "axios";
+import { authorizeRequest, refreshAndRetry } from "../services/tokenRefresh";
 
 const JSON_HEADERS = {
   Accept: "application/json",
   "Content-Type": "application/json",
 };
 
-// sends the Keycloak access token with every request once the user is signed in
-export const authorizeRequest = async (config: InternalAxiosRequestConfig) => {
-  if (UserService.isLoggedIn()) {
-    config.headers.Authorization = `Bearer ${UserService.getToken()}`;
-  }
-  return config;
-};
+// re-exported so existing consumers of ./Http keep working
+export { authorizeRequest };
 
 export const logRequestError = (label: string) => (error: unknown) => {
   console.log(label, error);
@@ -26,6 +21,9 @@ const http = axios.create({
   headers: JSON_HEADERS,
 });
 
+http.interceptors.request.use(authorizeRequest, logRequestError("HTTP error: "));
+http.interceptors.response.use((response) => response, refreshAndRetry(http));
+
 // Create timeoutHttpClient with dynamic timeout
 export const timeoutHttpClient = (timeout = 30000) => {
   const instance = axios.create({
@@ -38,6 +36,10 @@ export const timeoutHttpClient = (timeout = 30000) => {
     authorizeRequest,
     logRequestError("TimeoutHttpClient error: "),
   );
+  instance.interceptors.response.use(
+    (response) => response,
+    refreshAndRetry(instance),
+  );
 
   return instance;
 };
@@ -48,7 +50,5 @@ export const externalHttp = axios.create({
   timeout: 30000,
   headers: JSON_HEADERS,
 });
-
-http.interceptors.request.use(authorizeRequest, logRequestError("HTTP error: "));
 
 export default http;

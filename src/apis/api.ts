@@ -3,24 +3,15 @@ import axios, {
   type AxiosRequestConfig,
   type AxiosResponse,
 } from "axios";
-import UserService from "../services/Keycloak";
+import { attachTokenRefresh } from "../services/tokenRefresh";
 
 type RequestHeaders = AxiosRequestConfig["headers"];
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_AXIOS_BASE_URL,
-  withCredentials: true,
-});
-
-api.interceptors.request.use(
-  (config) => {
-    if (UserService.isLoggedIn()) {
-      // Set Authorization header with Bearer token
-      config.headers.Authorization = `Bearer ${UserService.getToken()}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
+const api = attachTokenRefresh(
+  axios.create({
+    baseURL: import.meta.env.VITE_AXIOS_BASE_URL,
+    withCredentials: true,
+  }),
 );
 
 const isUnauthorized = (error: unknown) =>
