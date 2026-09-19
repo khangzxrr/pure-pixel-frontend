@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { LuPlusCircle } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
-import type { KeycloakTokenParsed } from "keycloak-js";
+import type { KeycloakTokenParsed } from "../../services/authTypes";
 import UserApi from "../../apis/UserApi";
 import CreateNewsModal from "./CreateNewsModal";
 

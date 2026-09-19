@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { KeycloakTokenParsed } from "keycloak-js";
+import type { KeycloakTokenParsed } from "../../services/authTypes";
 import StorageBar from "./StorageBar";
 import UserApi from "../../apis/UserApi";
 import { useQuery } from "@tanstack/react-query";
