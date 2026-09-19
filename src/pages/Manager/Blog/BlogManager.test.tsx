@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 import { screen, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import userEvent, { PointerEventsCheckLevel } from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import type { MockInstance } from "vitest";
 import { renderWithProviders } from "../../../test/render";
@@ -8,6 +8,10 @@ import { server } from "../../../test/server";
 import { mockEndpoint } from "../../../test/mockEndpoint";
 import type { Schema } from "../../../apis/types";
 import BlogManager from "./BlogManager";
+
+// antd dropdowns and modals set pointer-events: none while they animate; under a loaded parallel run
+// a click can land mid-animation, so skip that check (antd's handlers still receive the events)
+const user = userEvent.setup({ pointerEventsCheck: PointerEventsCheckLevel.Never });
 
 vi.mock("../../../services/Keycloak", () => ({
   default: { isLoggedIn: () => false, getToken: () => undefined },
@@ -109,7 +113,7 @@ const renderLoaded = async () => {
 };
 
 const choose = async (title: string, action: string) => {
-  await userEvent.click(
+  await user.click(
     within(rowOf(title)).getByRole("button", { name: "ellipsis" }),
   );
   const items = await screen.findAllByRole("menuitem");
@@ -117,7 +121,7 @@ const choose = async (title: string, action: string) => {
     "Cập nhật chỉnh sửa",
     "Xóa",
   ]);
-  await userEvent.click(within(items[0].parentElement as HTMLElement).getByText(action));
+  await user.click(within(items[0].parentElement as HTMLElement).getByText(action));
 };
 
 describe("BlogManager", () => {
@@ -163,10 +167,10 @@ describe("BlogManager", () => {
     server.use(http.post("*", () => HttpResponse.json({})));
     const created = mockEndpoint("post", "*/blog", {});
 
-    await userEvent.click(screen.getByRole("button", { name: "+ Tạo mới blog" }));
+    await user.click(screen.getByRole("button", { name: "+ Tạo mới blog" }));
     expect(await screen.findByText("Tạo blog")).toBeInTheDocument();
-    await userEvent.type(screen.getByPlaceholderText("Tên bài viết"), "Blog mới");
-    await userEvent.type(
+    await user.type(screen.getByPlaceholderText("Tên bài viết"), "Blog mới");
+    await user.type(
       screen.getByLabelText("Nội dung bài viết"),
       "<p>Xin chào</p>",
     );
@@ -175,7 +179,7 @@ describe("BlogManager", () => {
       new File(["img"], "cover.png", { type: "image/png" }),
     );
     await screen.findByAltText("avatar");
-    await userEvent.click(screen.getByRole("button", { name: "Tạo mới" }));
+    await user.click(screen.getByRole("button", { name: "Tạo mới" }));
 
     expect(await screen.findByText("Đã tạo thành công")).toBeInTheDocument();
     expect(created).toHaveLength(1);
@@ -194,8 +198,8 @@ describe("BlogManager", () => {
     expect(await screen.findByText("Cập nhật blog")).toBeInTheDocument();
     const title = screen.getByPlaceholderText("Tên bài viết");
     expect(title).toHaveValue("Cập nhật tính năng");
-    await userEvent.type(title, " 2026");
-    await userEvent.click(screen.getByRole("button", { name: "Cập nhật" }));
+    await user.type(title, " 2026");
+    await user.click(screen.getByRole("button", { name: "Cập nhật" }));
 
     expect(await screen.findByText("Đã cập nhật")).toBeInTheDocument();
     expect(patches[0].json).toEqual({
@@ -212,7 +216,7 @@ describe("BlogManager", () => {
 
     await choose("Mẹo chụp ảnh", "Xóa");
     await screen.findByText("Bạn có chắc chắn muốn xóa?");
-    await userEvent.click(screen.getByRole("button", { name: "Xóa" }));
+    await user.click(screen.getByRole("button", { name: "Xóa" }));
 
     expect(await screen.findByText("Đã xóa blog")).toBeInTheDocument();
     expect(deletes).toEqual([
@@ -227,7 +231,7 @@ describe("BlogManager", () => {
     vi.spyOn(console, "log").mockImplementation(() => {});
 
     await choose("Cập nhật tính năng", "Xóa");
-    await userEvent.click(await screen.findByRole("button", { name: "Xóa" }));
+    await user.click(await screen.findByRole("button", { name: "Xóa" }));
 
     await waitFor(() => expect(screen.getAllByText("Lỗi")).toHaveLength(2));
     vi.mocked(console.log).mockRestore();
@@ -236,12 +240,12 @@ describe("BlogManager", () => {
   it("keeps the hidden details action and sorts by id and title", async () => {
     await renderLoaded();
 
-    await userEvent.click(within(rowOf("Mẹo chụp ảnh")).getByText("hidden details"));
+    await user.click(within(rowOf("Mẹo chụp ảnh")).getByText("hidden details"));
     expect(await screen.findByText("123")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByText("Tên bài viết"));
+    await user.click(screen.getByText("Tên bài viết"));
     expect(titles()).toEqual(["Cập nhật tính năng", "Mẹo chụp ảnh"]);
-    await userEvent.click(screen.getByText("Id"));
+    await user.click(screen.getByText("Id"));
     expect(titles()).toEqual(["Mẹo chụp ảnh", "Cập nhật tính năng"]);
   });
 

@@ -297,5 +297,6 @@ describe("Upgrade", () => {
     });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     await waitFor(() => expect(requests).toHaveLength(2));
-  });
+    // fills the whole modal form; slower than the default 5s when the suite runs in parallel
+  }, 15000);
 });

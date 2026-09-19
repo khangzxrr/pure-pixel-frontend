@@ -38,7 +38,11 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }: MyPhotoPProps) => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<MyPhoto | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<boolean | null>(null);
-  const [banned, setIsBanned] = useState<string[] | "">([]);
+  // initialize from the store instead of a hardcoded [] so mounting does not
+  // fire a stray fetch with the wrong "banned" filter before the effect below corrects it
+  const [banned, setIsBanned] = useState<string[] | "">(() =>
+    UseMyPhotoFilter.getState().isBanned ? ["BAN"] : ""
+  );
   const { inputValue, setInputValue, setSearchResult } = UseMyPhotoFilter();
   const filterByPhotoDate = UseMyPhotoFilter(
     (state) => state.filterByPhotoDate
@@ -170,7 +174,6 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }: MyPhotoPProps) => {
       {selectedImage && (
         <DetailedPhotoView
           photo={selectedImage}
-          idImg={selectedImage?.id}
           onClose={() => {
             navigate(`/profile/my-photos`);
             setSelectedImage(null);
@@ -179,7 +182,6 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }: MyPhotoPProps) => {
             navigate(`/explore/photo-map`);
             setSelectedImage(null);
           }}
-          listImg={data?.objects}
         />
       )}
       {selectedFilter && (

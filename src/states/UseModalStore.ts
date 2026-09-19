@@ -8,10 +8,12 @@ const isNestedRecord = (value: unknown): value is NestedRecord =>
   typeof value === "object" && value !== null;
 
 // photo being edited in the update photo modal, a copy of the photo plus form fields
+// photoTags here is the plain tag names the form reads/writes, not the API's { name }[] shape
 export type SelectedUpdatePhoto = Partial<
-  Omit<Schema<"SignedPhotoDto">, "exif">
+  Omit<Schema<"SignedPhotoDto">, "exif" | "photoTags">
 > & {
   exif?: { latitude?: number; longitude?: number; [key: string]: unknown };
+  photoTags?: string[];
   isChangeGPS?: boolean;
   address?: string;
   originalPhotoUrl?: string;
