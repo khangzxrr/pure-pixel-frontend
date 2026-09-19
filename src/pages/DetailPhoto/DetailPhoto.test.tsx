@@ -222,7 +222,8 @@ describe("DetailPhoto", () => {
     navigate.mockReset();
     vi.stubEnv("VITE_MAPBOX_TOKEN", "pk.test");
     vi.stubGlobal("Image", FakeImage);
-    HTMLImageElement.prototype.requestFullscreen = requestFullscreen;
+    // fullscreen targets the box around the photo, so stub it on every element
+    HTMLElement.prototype.requestFullscreen = requestFullscreen;
     requestFullscreen.mockReset();
     UsePhotographerFilterStore.setState({
       inputValue: "",
@@ -323,6 +324,11 @@ describe("DetailPhoto", () => {
 
     await userEvent.click(fullScreenButton(container));
     expect(requestFullscreen).toHaveBeenCalledTimes(1);
+    // the element going fullscreen is the visible photo frame, not a hidden duplicate image
+    const fullscreenTarget = requestFullscreen.mock.contexts[0] as HTMLElement;
+    expect(
+      fullscreenTarget.querySelector('[data-testid="blurhash-image"] img'),
+    ).not.toBeNull();
 
     await userEvent.click(nextButton(container));
     expect(await screen.findByText("Đêm thành phố")).toBeInTheDocument();

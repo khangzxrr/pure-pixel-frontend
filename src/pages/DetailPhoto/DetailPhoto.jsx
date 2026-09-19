@@ -12,9 +12,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComReport from "../../components/ComReport/ComReport";
 import LikeButton from "./../../components/ComLikeButton/LikeButton";
 import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
-import { Blurhash } from "react-blurhash";
 import { motion } from "framer-motion";
-import { useParentSize } from "@cutting/use-get-parent-size";
 import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
 import { ConfigProvider, Modal, Skeleton } from "antd";
 import { useKeycloak } from "@react-keycloak/web";
@@ -30,6 +28,7 @@ import Map, { Marker, Popup } from "react-map-gl";
 import { IoLocationSharp } from "react-icons/io5";
 import MapBoxApi from "../../apis/MapBoxApi";
 import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
+import BlurhashImage from "../../components/ComLazyPhoto/BlurhashImage";
 
 const Icon = ({ children, className = "" }) => (
   <svg
@@ -86,7 +85,6 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
   const setActiveTitle = UseUserProfileStore((state) => state.setActiveTitle);
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const ref = useRef(null);
-  const { width, height } = useParentSize(ref);
   const { keycloak } = useKeycloak();
   const queryClient = useQueryClient();
   const userData = UserService.getTokenParsed();
@@ -103,9 +101,6 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
   const meId = userData?.sub;
 
   window.history.replaceState({}, null, `/photo/${currentPhoto.id}`);
-
-  const [isOriginalPhotoLoaded, setIsOriginalPhotoLoaded] = useState(false);
-  const [isThumbnailPhotoLoaded, setIsThumbnailPhotoLoaded] = useState(false);
 
   const { data, isPending, error, isError, isLoading } = useQuery({
     queryKey: ["getPhotoDetail", currentPhoto.id],
@@ -140,14 +135,6 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
   useEffect(() => {
     if (!isPending && data !== currentPhoto) {
       setCurrentPhoto(data);
-
-      const image = new Image();
-      image.src = data?.signedUrl?.url;
-      image.onload = () => onLoadedPhoto();
-
-      const thumbnailImage = new Image();
-      thumbnailImage.src = data?.signedUrl?.thumbnail;
-      thumbnailImage.onload = () => onThumbnailPhotoLoaded();
     }
   }, [data, isPending]);
 
@@ -201,9 +188,6 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
 
   const handleNextButtonOnClick = () => {
     if (nextPhotoData?.objects.length > 0) {
-      setIsOriginalPhotoLoaded(false);
-      setIsThumbnailPhotoLoaded(false);
-
       const nextPhoto = nextPhotoData.objects[0];
 
       setCurrentPhoto(nextPhoto);
@@ -211,25 +195,8 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
   };
   const handlePreviousButtonOnClick = () => {
     if (previousPhotoData?.objects.length > 0) {
-      setIsOriginalPhotoLoaded(false);
-      setIsThumbnailPhotoLoaded(false);
       setCurrentPhoto(previousPhotoData.objects[0]);
     }
-  };
-
-  const heightRatio = currentPhoto.height / height;
-
-  let blurhashWidth = currentPhoto.width / heightRatio;
-  if (blurhashWidth > width) {
-    blurhashWidth = width;
-  }
-
-  const onThumbnailPhotoLoaded = () => {
-    setIsThumbnailPhotoLoaded(true);
-  };
-
-  const onLoadedPhoto = () => {
-    setIsOriginalPhotoLoaded(true);
   };
 
   const handleChatOnClick = () => {
@@ -352,35 +319,18 @@ export default function DetailedPhotoView({ onClose, onCloseToMap, photo }) {
                 ref={ref}
                 className="z-0 flex justify-center items-center md:h-screen h-[50vh] relative"
               >
-                {/* {currentPhoto?.blurHash && (
-                  <Blurhash
-                    className="absolute"
-                    hash={currentPhoto.blurHash}
-                    height={height}
-                    width={blurhashWidth}
+                {/* the fullscreen button enlarges this box; the photo inside keeps its whole frame visible */}
+                <div ref={imageRef} className="w-full h-full">
+                  <BlurhashImage
+                    src={currentPhoto?.signedUrl?.url}
+                    alt={currentPhoto?.title || ""}
+                    blurHash={currentPhoto?.blurHash}
+                    width={currentPhoto?.width}
+                    height={currentPhoto?.height}
+                    className="w-full h-full"
+                    imgClassName="object-contain"
                   />
-                )} */}
-
-                <img
-                  src={
-                    isOriginalPhotoLoaded ? currentPhoto?.signedUrl?.url : ""
-                  }
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: isThumbnailPhotoLoaded ? 1 : 0 }}
-                  transition={{ opacity: { delay: 0.1, duration: 0.1 } }}
-                  className="h-auto max-h-screen absolute w-auto"
-                  lazy="lazy"
-                />
-                <img
-                  ref={imageRef}
-                  src={
-                    !isOriginalPhotoLoaded
-                      ? currentPhoto?.signedUrl?.placeholder
-                      : currentPhoto?.signedUrl?.url
-                  }
-                  // alt={currentPhoto.title}
-                  className="w-0 h-0"
-                />
+                </div>
               </div>
               {!isDisableChangePhoto && (
                 <button

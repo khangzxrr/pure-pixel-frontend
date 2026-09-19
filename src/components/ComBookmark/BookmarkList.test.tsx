@@ -144,7 +144,8 @@ describe("BookmarkList", () => {
     const { container } = renderWithProviders(<BookmarkList />);
     await screen.findByText("Trung");
 
-    const card = thumbnailOf(container, "p1").parentElement as HTMLElement;
+    // the thumbnail sits inside BlurhashImage's frame; the share icon lives on the card around it
+    const card = thumbnailOf(container, "p1").closest(".group") as HTMLElement;
     fireEvent.click(card.querySelector("svg") as SVGElement);
 
     const share = await screen.findByRole("button", { name: "share p1 by ph-p1" });

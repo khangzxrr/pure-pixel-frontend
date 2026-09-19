@@ -18,6 +18,7 @@ import UseUserProfileStore from "../../states/UseUserProfileStore";
 import LoginWarningModal from "../../components/ComLoginWarning/LoginWarningModal";
 import { notificationApi } from "../../Notification/Notification";
 import ExifList from "../../components/Photographer/UploadPhoto/ExifList";
+import BlurhashImage from "../../components/ComLazyPhoto/BlurhashImage";
 import PhotoExchange from "../../apis/PhotoExchange";
 import CountDownTimerForProductPhotoDetail from "./CountDownTimerForProductPhotoDetail";
 
@@ -374,15 +375,20 @@ const ProductPhotoDetail = () => {
       <div className="min-h-screen text-white p-2 ">
         <div className=" mx-auto flex flex-col xl:flex-row items-stretch gap-8 xl:max-h-[700px] ">
           <div className="xl:w-2/3 flex-shrink-0 flex  bg-[#505050] justify-center items-center">
-            <div className=" p-4 rounded-lg flex justify-center items-center ">
-              <img
+            <div className=" p-4 rounded-lg flex justify-center items-center w-full">
+              <BlurhashImage
                 src={
                   selectedPricetag?.preview
                     ? selectedPricetag?.preview
                     : purchasedImageUrl
                 }
                 alt={data.title}
-                className=" w-auto h-full transform  scale-[0.95] max-h-[650px] border-4 border-black "
+                blurHash={data.blurHash}
+                width={data.width}
+                height={data.height}
+                // a definite box: the photo is letterboxed inside it by object-contain
+                className="w-full h-[650px] max-h-[70vh] scale-[0.95] border-4 border-black"
+                imgClassName="object-contain"
               />
             </div>
           </div>

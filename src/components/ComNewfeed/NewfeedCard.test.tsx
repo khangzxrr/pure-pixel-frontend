@@ -136,9 +136,12 @@ describe("NewfeedCard", () => {
     });
 
     expect(await screen.findByText("2 giờ trước")).toBeInTheDocument();
-    expect(container.querySelector('img[src="p1-thumb.jpg"]')?.className).toContain("col-span-2");
-    expect(container.querySelector('img[src="p2-thumb.jpg"]')?.className).toContain("h-[150px]");
-    expect(container.querySelector('img[src="p3-thumb.jpg"]')?.className).toContain("h-[150px]");
+    // grid sizing sits on the BlurhashImage frame around each photo
+    const frame = (src: string) =>
+      container.querySelector(`img[src="${src}"]`)?.closest('[data-testid="blurhash-image"]')?.className;
+    expect(frame("p1-thumb.jpg")).toContain("col-span-2");
+    expect(frame("p2-thumb.jpg")).toContain("h-[150px]");
+    expect(frame("p3-thumb.jpg")).toContain("h-[150px]");
   });
 
   it("shows the 4+ photo layout, including the extra-photo overlay, and day-based timestamp", async () => {
@@ -154,7 +157,9 @@ describe("NewfeedCard", () => {
     });
 
     expect(await screen.findByText("2 ngày trước")).toBeInTheDocument();
-    expect(container.querySelector('img[src="p1-thumb.jpg"]')?.className).toContain("row-span-2");
+    expect(
+      container.querySelector('img[src="p1-thumb.jpg"]')?.closest('[data-testid="blurhash-image"]')?.className,
+    ).toContain("row-span-2");
     expect(screen.getByText("+1")).toBeInTheDocument();
   });
 });

@@ -67,9 +67,9 @@ describe("PhotoListByMap", () => {
       behavior: "smooth",
       block: "center",
     });
-    expect(screen.getByAltText("Photo two").parentElement).toHaveClass(
-      "border-2",
-    );
+    // the selected gallery item (an ancestor of the photo) is highlighted
+    expect(screen.getByAltText("Photo two").closest(".border-2")).not.toBeNull();
+    expect(screen.getByAltText("Photo one").closest(".border-2")).toBeNull();
   });
 
   it("selects photos from the gallery and cycles with the arrow buttons", async () => {
