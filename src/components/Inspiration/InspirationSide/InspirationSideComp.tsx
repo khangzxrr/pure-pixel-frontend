@@ -3,9 +3,15 @@ import InspirationSideItemF from "./InspirationSideItemF";
 import InspirationTrendItem from "./InspirationTrendItem";
 import UseInspirationStore from "../../../states/UseInspirationStore";
 import SideBar from "../../Explore/SideBar";
+import { useFeatureFlag } from "../../../hooks/useFeatureFlag";
 
 const InspirationSideComp = () => {
   const { activeItem, setActiveItem } = UseInspirationStore();
+  const bookingEnabled = useFeatureFlag("booking");
+
+  const sideItems = InspirationSideItemF.filter(
+    (item) => bookingEnabled === true || item.link !== "/explore/booking-package",
+  );
 
   const handleClick = (
     id: string | number,
@@ -16,7 +22,7 @@ const InspirationSideComp = () => {
 
   return (
     <SideBar
-      sideItems={InspirationSideItemF}
+      sideItems={sideItems}
       trendItems={InspirationTrendItem}
       activeItem={activeItem}
       isFilterInspiration={true}

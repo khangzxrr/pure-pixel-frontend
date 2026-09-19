@@ -58,4 +58,17 @@ describe("InspirationSideComp", () => {
       isSidebarOpen: true,
     });
   });
+
+  it("lists the photoshoot packages only while booking is on", () => {
+    const { unmount } = renderWithProviders(<InspirationSideComp />, { route: "/explore" });
+    expect(screen.getByText("Các gói chụp ảnh")).toBeInTheDocument();
+    unmount();
+
+    renderWithProviders(<InspirationSideComp />, {
+      route: "/explore",
+      featureFlags: { booking: false },
+    });
+    expect(screen.queryByText("Các gói chụp ảnh")).not.toBeInTheDocument();
+    expect(screen.getByText("Cửa hàng ảnh")).toBeInTheDocument();
+  });
 });

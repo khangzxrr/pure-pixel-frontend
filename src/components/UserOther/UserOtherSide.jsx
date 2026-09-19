@@ -6,6 +6,7 @@ import UserOtherSidebar from "./UserOtherSidebar";
 import { useParams } from "react-router-dom";
 import { IoPersonSharp } from "react-icons/io5";
 import { FaCameraRetro, FaMoneyBillWave } from "react-icons/fa6";
+import { useFeatureFlag } from "../../hooks/useFeatureFlag";
 
 const UserOtherSide = () => {
   const { setUserOtherId, activeItem, setActiveItem, userOtherId } =
@@ -13,6 +14,7 @@ const UserOtherSide = () => {
   const { keycloak } = useKeycloak();
   const userData = UserService.getTokenParsed();
   const { userId } = useParams();
+  const bookingEnabled = useFeatureFlag("booking");
 
   // console.log(userOtherId);
 
@@ -43,6 +45,7 @@ const UserOtherSide = () => {
       title: "Các gói dịch vụ",
       icon: <FaCameraRetro />,
       link: `/user/${userOtherId}/packages`,
+      feature: "booking",
     },
     {
       id: "UO4",
@@ -50,7 +53,7 @@ const UserOtherSide = () => {
       icon: <FaMoneyBillWave />,
       link: `/user/${userOtherId}/selling`,
     },
-  ];
+  ].filter((item) => item.feature !== "booking" || bookingEnabled === true);
   useEffect(() => {
     // console.log("userId", userId, userOtherId);
     if (userId !== undefined) {
