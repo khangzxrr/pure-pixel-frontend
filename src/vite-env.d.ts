@@ -7,7 +7,6 @@ interface ImportMetaEnv {
   readonly VITE_KEYCLOAK_CLIENT_ID: string;
   readonly VITE_MAPBOX_TOKEN: string;
   readonly VITE_ONE_SIGNAL_APP_ID: string;
-  readonly VITE_STREAM_API_KEY: string;
   readonly VITE_SITE_URL: string;
 }
 
