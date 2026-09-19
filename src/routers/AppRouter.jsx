@@ -70,6 +70,7 @@ import LoadingPage from "../pages/LoadingPage";
 import PolicyPage from "./../pages/PolicyPage/PolicyPage";
 import ChangeLogPage from "../pages/ChangeLog/ChangeLogPage";
 import ChangeLogManager from "../pages/Manager/ChangeLog/ChangeLogManager";
+import FeatureRoute from "../components/FeatureGate/FeatureRoute";
 
 export const AppRouter = createBrowserRouter([
   {
@@ -138,11 +139,19 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "booking-package",
-                element: <PhotoshootPackageList />,
+                element: (
+                  <FeatureRoute flag="booking">
+                    <PhotoshootPackageList />
+                  </FeatureRoute>
+                ),
               },
               {
                 path: "booking-package/:photoshootPackageId",
-                element: <PhotoshootPackageDetail />,
+                element: (
+                  <FeatureRoute flag="booking">
+                    <PhotoshootPackageDetail />
+                  </FeatureRoute>
+                ),
               },
               {
                 path: "product-photo/:id",
@@ -231,7 +240,11 @@ export const AppRouter = createBrowserRouter([
                   },
                   {
                     path: "packages",
-                    element: <PackagesUser />,
+                    element: (
+                      <FeatureRoute flag="booking">
+                        <PackagesUser />
+                      </FeatureRoute>
+                    ),
                   },
                   {
                     path: "selling",
@@ -245,7 +258,11 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "booking-package/:photoshootPackageId",
-                element: <PhotoshootPackageDetail />,
+                element: (
+                  <FeatureRoute flag="booking">
+                    <PhotoshootPackageDetail />
+                  </FeatureRoute>
+                ),
               },
             ],
           },
@@ -282,43 +299,59 @@ export const AppRouter = createBrowserRouter([
               {
                 path: "photoshoot-package",
                 element: (
-                  <ProtectRoute checkRoles={["photographer"]}>
-                    <PhotoshootPackageManagementV2 />
-                  </ProtectRoute>
+                  <FeatureRoute flag="booking">
+                    <ProtectRoute checkRoles={["photographer"]}>
+                      <PhotoshootPackageManagementV2 />
+                    </ProtectRoute>
+                  </FeatureRoute>
                 ),
               },
               {
                 path: "photoshoot-package/:photoshootPackageId",
                 element: (
-                  <ProtectRoute checkRoles={["photographer"]}>
-                    {/* <PhotoshootPackageDetail /> */}
-                    <MyPhotoshootPackageDetail />
-                  </ProtectRoute>
+                  <FeatureRoute flag="booking">
+                    <ProtectRoute checkRoles={["photographer"]}>
+                      {/* <PhotoshootPackageDetail /> */}
+                      <MyPhotoshootPackageDetail />
+                    </ProtectRoute>
+                  </FeatureRoute>
                 ),
               },
               {
                 path: "booking-request",
                 element: (
-                  <ProtectRoute checkRoles={["photographer"]}>
-                    <BookingRequestList />
-                  </ProtectRoute>
+                  <FeatureRoute flag="booking">
+                    <ProtectRoute checkRoles={["photographer"]}>
+                      <BookingRequestList />
+                    </ProtectRoute>
+                  </FeatureRoute>
                 ),
               },
               {
                 path: "booking-request/:bookingId",
                 element: (
-                  <ProtectRoute checkRoles={["photographer"]}>
-                    <BookingDetail />
-                  </ProtectRoute>
+                  <FeatureRoute flag="booking">
+                    <ProtectRoute checkRoles={["photographer"]}>
+                      <BookingDetail />
+                    </ProtectRoute>
+                  </FeatureRoute>
                 ),
               },
               {
                 path: "customer-booking",
-                element: <CustomerBooking />,
+                element: (
+                  <FeatureRoute flag="booking">
+                    <CustomerBooking />
+                  </FeatureRoute>
+                ),
               },
               {
                 path: "customer-booking/:bookingId",
-                element: <CustomerBookingDetail />,
+                element: (
+                  <FeatureRoute flag="booking">
+                    <CustomerBookingDetail />
+                  </FeatureRoute>
+                ),
               },
 
               {
@@ -343,7 +376,11 @@ export const AppRouter = createBrowserRouter([
               },
               {
                 path: "create-booking-package",
-                element: <CreateBookingPackage />,
+                element: (
+                  <FeatureRoute flag="booking">
+                    <CreateBookingPackage />
+                  </FeatureRoute>
+                ),
               },
             ],
           },
@@ -436,7 +473,11 @@ export const AppRouter = createBrowserRouter([
           },
           {
             path: "/admin/service-package",
-            element: <ServicePackageManager />,
+            element: (
+              <FeatureRoute flag="booking">
+                <ServicePackageManager />
+              </FeatureRoute>
+            ),
           },
           {
             path: "/admin/camera",

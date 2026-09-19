@@ -12,6 +12,9 @@ type ProviderOptions = {
   // route pattern to mount the component under so useParams works, e.g. "/photo/:id"
   path?: string;
   queryClient?: QueryClient;
+  // feature flags the app reads from GET /feature-flags, pre-loaded under the ["feature-flags"]
+  // query key so layouts never render their loading state; pass null to leave them unloaded
+  featureFlags?: { booking: boolean } | null;
 };
 
 // a fresh client per test: no retries, so failed requests surface immediately
@@ -31,9 +34,14 @@ export function renderWithProviders(
     route = "/",
     path,
     queryClient = createTestQueryClient(),
+    featureFlags = { booking: true },
     ...options
   }: ProviderOptions & Omit<RenderOptions, "wrapper"> = {},
 ) {
+  if (featureFlags && queryClient.getQueryData(["feature-flags"]) === undefined) {
+    queryClient.setQueryData(["feature-flags"], featureFlags);
+  }
+
   function Wrapper({ children }: { children: ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>

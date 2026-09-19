@@ -179,4 +179,34 @@ describe("AdminLayout", () => {
 
     expect(upgradeLinks[0]).toHaveAttribute("href", "/admin/upgrade");
   });
+
+  it("shows the service package link only while booking is on", async () => {
+    const { AdminLayout } = await loadAdminLayout();
+    const servicePackageLinks = () =>
+      screen
+        .queryAllByText(/Gói dịch vụ/)
+        .map((element) => element.closest("a"))
+        .filter((link): link is HTMLAnchorElement => !!link);
+
+    const { unmount } = renderWithProviders(
+      <AdminLayout>
+        <div>admin child</div>
+      </AdminLayout>,
+      { route: "/admin/Dashboard" },
+    );
+    await screen.findByText("Admin User");
+    expect(servicePackageLinks()[0]).toHaveAttribute("href", "/admin/service-package");
+    unmount();
+
+    renderWithProviders(
+      <AdminLayout>
+        <div>admin child</div>
+      </AdminLayout>,
+      { route: "/admin/Dashboard", featureFlags: { booking: false } },
+    );
+    await screen.findByText("Admin User");
+    await userEvent.click(screen.getByRole("button", { name: "Open sidebar" }));
+    expect(servicePackageLinks()).toHaveLength(0);
+    expect(screen.getAllByText("Thống kê").length).toBeGreaterThan(0);
+  });
 });
