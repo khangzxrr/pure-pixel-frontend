@@ -19,6 +19,7 @@ import { Skeleton } from "antd";
 import "./Explore.css";
 import BlogNav from "../Blog/BlogNav";
 import type { ResponseOf } from "../../apis/types";
+import FeatureGate from "../FeatureGate/FeatureGate";
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -167,12 +168,14 @@ const Explore = () => {
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                <button
-                  onClick={handleRegister}
-                  className="bg-[#eee] text-gray-500 hover:bg-[#b8b8b8] transition-colors duration-200 rounded-md px-5 py-1"
-                >
-                  Đăng ký
-                </button>
+                <FeatureGate flag="registration">
+                  <button
+                    onClick={handleRegister}
+                    className="bg-[#eee] text-gray-500 hover:bg-[#b8b8b8] transition-colors duration-200 rounded-md px-5 py-1"
+                  >
+                    Đăng ký
+                  </button>
+                </FeatureGate>
                 <button
                   onClick={handleLogin}
                   className="outline outline-1 outline-[#eee] hover:bg-[#5f5f5f91] transition-colors duration-200 text-[#eee] rounded-md px-5 py-1"

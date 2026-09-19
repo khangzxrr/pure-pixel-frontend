@@ -30,14 +30,14 @@ vi.mock("@react-keycloak/web", async () => {
   };
 });
 
-const renderNav = () =>
+const renderNav = (featureFlags?: { registration?: boolean }) =>
   renderWithProviders(
     <Routes>
       <Route path="/upgrade" element={<UpgradeNav />} />
       <Route path="/" element={<div>home-page</div>} />
       <Route path="/profile" element={<div>profile-page</div>} />
     </Routes>,
-    { route: "/upgrade" },
+    { route: "/upgrade", featureFlags },
   );
 
 describe("UpgradeNav", () => {
@@ -101,5 +101,13 @@ describe("UpgradeNav", () => {
     await userEvent.click(await screen.findByText("Về trang chủ"));
 
     expect(await screen.findByText("home-page")).toBeInTheDocument();
+  });
+
+  it("hides register when Keycloak registration is off", async () => {
+    mockEndpoint("get", "*/me", null);
+    renderNav({ registration: false });
+
+    expect(await screen.findByText("Đăng nhập")).toBeInTheDocument();
+    expect(screen.queryByText("Đăng ký")).not.toBeInTheDocument();
   });
 });

@@ -17,6 +17,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import DetailedPhotoView from "../../pages/DetailPhoto/DetailPhoto";
 import { useNavigate } from "react-router-dom";
 import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
+import BlurhashImage from "../ComLazyPhoto/BlurhashImage";
 
 type NewfeedCardProps = {
   // passed by NewfeedLayout, not rendered
@@ -190,22 +191,29 @@ const NewfeedCard = ({
 
         <div className="grid gap-1 bg-black hover:cursor-pointer">
           {ListPhotos.length === 1 && (
-            <img
+            <BlurhashImage
               key={ListPhotos[0].id}
               src={ListPhotos[0].signedUrl.thumbnail}
               alt=""
-              className="w-full h-auto object-contain"
+              blurHash={ListPhotos[0].blurHash}
+              width={ListPhotos[0].width}
+              height={ListPhotos[0].height}
+              className="w-full h-auto"
+              imgClassName="object-contain"
               onClick={() => handleOnClick(ListPhotos[0].id)}
             />
           )}
           {ListPhotos.length === 2 && (
             <div className="grid grid-cols-2 gap-1">
               {ListPhotos.map((photo) => (
-                <img
+                <BlurhashImage
                   key={photo.id}
                   src={photo.signedUrl.thumbnail}
                   alt=""
-                  className="w-full h-full object-cover"
+                  blurHash={photo.blurHash}
+                  width={photo.width}
+                  height={photo.height}
+                  className="w-full h-full"
                   onClick={() => handleOnClick(photo.id)}
                 />
               ))}
@@ -213,19 +221,25 @@ const NewfeedCard = ({
           )}
           {ListPhotos.length === 3 && (
             <div className="grid grid-cols-2 gap-1">
-              <img
+              <BlurhashImage
                 key={ListPhotos[0].id}
                 src={ListPhotos[0].signedUrl.thumbnail}
                 alt=""
-                className="col-span-2 w-full h-[300px] object-cover"
+                blurHash={ListPhotos[0].blurHash}
+                width={ListPhotos[0].width}
+                height={ListPhotos[0].height}
+                className="col-span-2 w-full h-[300px]"
                 onClick={() => handleOnClick(ListPhotos[0].id)}
               />
               {ListPhotos.slice(1).map((photo) => (
-                <img
+                <BlurhashImage
                   key={photo.id}
                   src={photo.signedUrl.thumbnail}
                   alt=""
-                  className="w-full h-[150px] object-cover"
+                  blurHash={photo.blurHash}
+                  width={photo.width}
+                  height={photo.height}
+                  className="w-full h-[150px]"
                   onClick={() => handleOnClick(photo.id)}
                 />
               ))}
@@ -233,26 +247,35 @@ const NewfeedCard = ({
           )}
           {ListPhotos.length >= 4 && (
             <div className="grid grid-cols-2 gap-1">
-              <img
+              <BlurhashImage
                 key={ListPhotos[0].id}
                 src={ListPhotos[0].signedUrl.thumbnail}
                 alt=""
-                className="row-span-2 w-full h-[300px] object-cover"
+                blurHash={ListPhotos[0].blurHash}
+                width={ListPhotos[0].width}
+                height={ListPhotos[0].height}
+                className="row-span-2 w-full h-[300px]"
               />
               {ListPhotos.slice(1, 4).map((photo) => (
-                <img
+                <BlurhashImage
                   key={photo.id}
                   src={photo.signedUrl.thumbnail}
                   alt=""
-                  className="w-full h-[150px] object-cover"
+                  blurHash={photo.blurHash}
+                  width={photo.width}
+                  height={photo.height}
+                  className="w-full h-[150px]"
                 />
               ))}
               {ListPhotos.length > 4 && (
                 <div className="relative">
-                  <img
+                  <BlurhashImage
                     src={ListPhotos[4].signedUrl.thumbnail}
                     alt=""
-                    className="w-full h-[150px] object-cover"
+                    blurHash={ListPhotos[4].blurHash}
+                    width={ListPhotos[4].width}
+                    height={ListPhotos[4].height}
+                    className="w-full h-[150px]"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-2xl font-bold">
                     +{ListPhotos.length - 4}
