@@ -10,7 +10,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDeleteOutline, MdOutlineReport } from "react-icons/md";
-import type { KeycloakTokenParsed } from "keycloak-js";
+import type { KeycloakTokenParsed } from "../../services/authTypes";
 import UserApi from "../../apis/UserApi";
 import type { Schema } from "../../apis/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

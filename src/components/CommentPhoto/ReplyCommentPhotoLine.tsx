@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FiSend } from "react-icons/fi";
 import { useState } from "react";
-import type { KeycloakTokenParsed } from "keycloak-js";
+import type { KeycloakTokenParsed } from "../../services/authTypes";
 import CommentApi from "../../apis/CommentApi";
 import type { Schema } from "../../apis/types";
 import CommentDropdownAction from "./CommentDropdownAction";

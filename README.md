@@ -80,9 +80,9 @@ yarn dev       # start the dev server at http://localhost:3000
 
 | Variable | Description |
 | --- | --- |
-| `VITE_KEYCLOAK_URL` | Keycloak server URL |
-| `VITE_KEYCLOAK_REALM` | Keycloak realm |
-| `VITE_KEYCLOAK_CLIENT_ID` | Keycloak client ID |
+| `VITE_OIDC_AUTHORITY` | Authentik OIDC issuer/authority URL (e.g. `https://auth.example.com/application/o/purepixel/`) |
+| `VITE_OIDC_CLIENT_ID` | Authentik OIDC client ID |
+| `VITE_AUTH_REGISTER_URL` | Authentik enrollment flow URL used for user registration |
 | `VITE_AXIOS_BASE_URL` | Backend REST base URL |
 | `VITE_WEBSOCKET_UPLOAD_PHOTO` | Backend Socket.IO gateway for photo-processing events |
 | `VITE_ONE_SIGNAL_APP_ID` | OneSignal app ID for web push (only used outside localhost) |

@@ -1,4 +1,4 @@
-import type { KeycloakTokenParsed } from "keycloak-js";
+import type { KeycloakTokenParsed } from "../../services/authTypes";
 import Sidebar, {
   type SideItem,
   type SideItemClickHandler,
