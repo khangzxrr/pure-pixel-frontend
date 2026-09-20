@@ -151,4 +151,19 @@ describe("UserOtherSide", () => {
       redirectUri: "https://purepixel.io.vn",
     });
   });
+
+  it("hides the packages section when booking is turned off", async () => {
+    renderWithProviders(<UserOtherSide />, {
+      route: "/user/u77/photos",
+      path: "/user/:userId/photos",
+      featureFlags: { booking: false },
+    });
+
+    expect(await screen.findByText("viewer Viewer")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Hồ sơ::\/user\/u77\/photos/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Các gói dịch vụ/ })).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Các ảnh đang bán::\/user\/u77\/selling/ }),
+    ).toBeInTheDocument();
+  });
 });

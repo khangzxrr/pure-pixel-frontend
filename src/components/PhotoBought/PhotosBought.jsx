@@ -9,6 +9,7 @@ import { ConfigProvider, Pagination } from "antd";
 import LoadingSpinner from "./../LoadingSpinner/LoadingSpinner";
 import { MdImageNotSupported } from "react-icons/md";
 import UserProfileApi from "../../apis/UserProfile";
+import BlurhashImage from "../ComLazyPhoto/BlurhashImage";
 
 const PhotosBought = () => {
   const userData = UserService.getTokenParsed();
@@ -99,11 +100,15 @@ const PhotosBought = () => {
                 className="group relative w-full h-[300px] overflow-hidden rounded-lg"
                 key={photo.id}
               >
-                <img
+                <BlurhashImage
                   onClick={() => navigate(`/profile/photo-bought/${photo.id}`)}
                   src={`${photo.signedUrl.thumbnail}`}
                   alt=""
-                  className="w-full h-full object-cover hover:cursor-pointer group-hover:scale-110 transition-all duration-300"
+                  blurHash={photo.blurHash}
+                  width={photo.width}
+                  height={photo.height}
+                  className="w-full h-full hover:cursor-pointer"
+                  imgClassName="group-hover:scale-110 transition-all duration-300"
                 />
                 <div className="absolute bottom-0 w-full h-[50px] bg-[rgba(0,0,0,0.75)]">
                   <div className="flex items-center justify-between h-full px-2">

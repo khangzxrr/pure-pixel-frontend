@@ -8,6 +8,7 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import { ConfigProvider, Pagination } from "antd";
 import UseSellingPhotoStore from "../../states/UseSellingPhotoStore";
+import BlurhashImage from "../ComLazyPhoto/BlurhashImage";
 
 const SellingPhotoList = () => {
   const navigate = useNavigate();
@@ -114,10 +115,13 @@ const SellingPhotoList = () => {
                       }
                       className="h-[320px] overflow-hidden rounded-lg"
                     >
-                      <img
-                        className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+                      <BlurhashImage
+                        className="w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-110"
                         src={photo.signedUrl.thumbnail} // Cần thêm URL của ảnh
                         alt={photo.title || "Ảnh"}
+                        blurHash={photo.blurHash}
+                        width={photo.width}
+                        height={photo.height}
                       />
                     </div>
                     <div className="absolute bottom-0 left-0 w-full rounded-b-lg bg-black bg-opacity-50 text-white text-center py-2 transition-opacity duration-300 backdrop-blur-md">

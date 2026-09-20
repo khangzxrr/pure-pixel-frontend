@@ -154,4 +154,17 @@ describe("UseProfileSide", () => {
     expect(screen.getByTestId("name")).toHaveTextContent("no profile");
     expect(screen.getByRole("button", { name: "Hồ sơ" })).toBeInTheDocument();
   });
+
+  it("hides the booking tools when booking is turned off", async () => {
+    session.roles = ["photographer"];
+    respondWithProfile();
+    renderWithProviders(<UseProfileSide />, { featureFlags: { booking: false } });
+
+    await screen.findByText("Minh");
+    for (const title of ["Quản lý gói chụp", "Yêu cầu chụp của khách", "Yêu cầu chụp của tôi"]) {
+      expect(screen.queryByRole("button", { name: title })).not.toBeInTheDocument();
+    }
+    expect(screen.getByRole("button", { name: "Cửa hàng của tôi" })).toBeInTheDocument();
+    expect(screen.getAllByRole("listitem")).toHaveLength(5);
+  });
 });

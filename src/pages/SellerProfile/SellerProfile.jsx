@@ -15,6 +15,7 @@ import UserProfileApi from "../../apis/UserProfile";
 import { FaSearch } from "react-icons/fa";
 import DropdownSeller from "./DropdownSeller";
 import { FaImages } from "react-icons/fa6";
+import BlurhashImage from "../../components/ComLazyPhoto/BlurhashImage";
 function formatCurrency(number) {
   // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
   if (typeof number === "number") {
@@ -180,11 +181,13 @@ const SellerProfile = () => {
                     }}
                     className="rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-100 hover:shadow-lg cursor-pointer"
                   >
-                    <img
+                    <BlurhashImage
                       src={product.signedUrl.thumbnail}
                       alt={product?.photoSellings[0]?.description}
-                      className="w-full h-[300px] object-cover pointer-events-none"
-                      draggable="false" // Ngăn người dùng kéo ảnh
+                      blurHash={product.blurHash}
+                      width={product.width}
+                      height={product.height}
+                      className="w-full h-[300px] pointer-events-none"
                     />
                     <div className="p-4">
                       <div className="flex justify-between">

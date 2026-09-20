@@ -41,6 +41,7 @@ import { PackageIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import UserProfileApi from "../apis/UserProfile";
 import UserService from "../services/Keycloak";
+import { useFeatureFlag } from "../hooks/useFeatureFlag";
 const user = UserService.getTokenParsed();
 const roles = user?.resource_access?.purepixel?.roles || []; // Lấy danh sách vai trò
 // console.log(roles);
@@ -97,6 +98,7 @@ const navigation = [
     href: "/admin/service-package",
     icon: PackageIcon,
     current: false,
+    feature: "booking",
   },
   {
     name: "Máy ảnh",
@@ -131,6 +133,10 @@ export default function AdminLayout({ children }) {
   const currentPath = location.pathname;
   const [activeCategory, setActiveCategory] = useState(null);
   const { keycloak } = useKeycloak();
+  const bookingEnabled = useFeatureFlag("booking");
+  const filteredNavigation = navigation.filter(
+    (item) => item.feature !== "booking" || bookingEnabled === true,
+  );
 
   const handleLogout = () => keycloak.logout();
 
@@ -195,7 +201,7 @@ export default function AdminLayout({ children }) {
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">
-                        {navigation.map((item) => (
+                        {filteredNavigation.map((item) => (
                           <li key={item.name}>
                             {!item.children ? (
                               <Link
@@ -298,7 +304,7 @@ export default function AdminLayout({ children }) {
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => (
+                    {filteredNavigation.map((item) => (
                       <li key={item.name}>
                         {!item.children ? (
                           <Link

@@ -5,6 +5,7 @@ import viVN from "antd/es/locale/vi_VN";
 import type { ReactElement, ReactNode } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { NotificationProvider } from "../Notification/Notification";
+import type { FeatureFlags } from "../apis/FeatureFlagApi";
 
 type ProviderOptions = {
   // URL the router starts at, e.g. "/photo/123"
@@ -12,6 +13,10 @@ type ProviderOptions = {
   // route pattern to mount the component under so useParams works, e.g. "/photo/:id"
   path?: string;
   queryClient?: QueryClient;
+  // feature flags the app reads from GET /feature-flags, pre-loaded under the ["feature-flags"]
+  // query key so layouts never render their loading state; flags not given are on,
+  // pass null to leave them unloaded
+  featureFlags?: Partial<FeatureFlags> | null;
 };
 
 // a fresh client per test: no retries, so failed requests surface immediately
@@ -31,9 +36,18 @@ export function renderWithProviders(
     route = "/",
     path,
     queryClient = createTestQueryClient(),
+    featureFlags = {},
     ...options
   }: ProviderOptions & Omit<RenderOptions, "wrapper"> = {},
 ) {
+  if (featureFlags && queryClient.getQueryData(["feature-flags"]) === undefined) {
+    queryClient.setQueryData<FeatureFlags>(["feature-flags"], {
+      booking: true,
+      registration: true,
+      ...featureFlags,
+    });
+  }
+
   function Wrapper({ children }: { children: ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>

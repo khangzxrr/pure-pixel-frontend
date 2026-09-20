@@ -7,6 +7,8 @@ import { FiShare2 } from "react-icons/fi";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import UseUserOtherStore from "../../states/UseUserOtherStore";
+import { useFeatureFlag } from "../../hooks/useFeatureFlag";
+import BlurhashImage from "../../components/ComLazyPhoto/BlurhashImage";
 
 export default function DetailUser({ id, data }) {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ export default function DetailUser({ id, data }) {
   const [photos, setPhotos] = useState([]);
   const [page, setPage] = useState(0);
   const [numberPhoto, setNumberPhoto] = useState(0);
+  const bookingEnabled = useFeatureFlag("booking");
   const setNameUserOther = UseUserOtherStore((state) => state.setNameUserOther);
   const handleButtonClick = (buttonIndex) => {
     setSelectedButton(buttonIndex);
@@ -71,6 +74,16 @@ export default function DetailUser({ id, data }) {
   }, []);
   useEffect(() => {
     setDataUser(data);
+    const loadInitialData = async () => {
+      const initialProducts = await getPhotos(page);
+      setPhotos([...photos, ...initialProducts]);
+    };
+    loadInitialData();
+  }, [id]);
+
+  // packages only exist with the booking feature; the flag may arrive after the first render
+  useEffect(() => {
+    if (bookingEnabled !== true) return;
     getData(`/photoshoot-package/photographer/${id}?limit=10&page=0`)
       .then((e) => {
         setPackage(e?.data?.objects);
@@ -78,12 +91,14 @@ export default function DetailUser({ id, data }) {
       .catch((error) => {
         console.log(error);
       });
-    const loadInitialData = async () => {
-      const initialProducts = await getPhotos(page);
-      setPhotos([...photos, ...initialProducts]);
-    };
-    loadInitialData();
-  }, [id]);
+  }, [id, bookingEnabled]);
+
+  // the packages tab (1) is the default; without booking fall back to the photos tab
+  useEffect(() => {
+    if (bookingEnabled === false && selectedButton === 1) {
+      setSelectedButton(2);
+    }
+  }, [bookingEnabled, selectedButton]);
 
   const getPhotos = async (page) => {
     try {
@@ -169,23 +184,25 @@ export default function DetailUser({ id, data }) {
       {/* Navigation */}
       <div className="mx-3 bg-[#424242] rounded-lg pl-2 pt-2 ">
         <div className="flex border-b mx-2 mt-2 border-gray-800 bg-[#232325] rounded-lg p-1">
-          <button
-            className={`rounded-lg flex-1 py-2 px-4 text-center font-medium ${
-              selectedButton === 1
-                ? "bg-[#fefefe] bg-opacity-10"
-                : "bg-transparent"
-            }`}
-            onClick={() => handleButtonClick(1)}
-          >
-            Dịch vụ
-            <span
-              className={`ml-1 px-1.5 py-1 rounded-lg text-xs ${
-                selectedButton === 1 ? "bg-[#b7b7b7]" : "bg-[#2c2c2c]"
+          {bookingEnabled === true && (
+            <button
+              className={`rounded-lg flex-1 py-2 px-4 text-center font-medium ${
+                selectedButton === 1
+                  ? "bg-[#fefefe] bg-opacity-10"
+                  : "bg-transparent"
               }`}
+              onClick={() => handleButtonClick(1)}
             >
-              {packages.length}
-            </span>
-          </button>
+              Dịch vụ
+              <span
+                className={`ml-1 px-1.5 py-1 rounded-lg text-xs ${
+                  selectedButton === 1 ? "bg-[#b7b7b7]" : "bg-[#2c2c2c]"
+                }`}
+              >
+                {packages.length}
+              </span>
+            </button>
+          )}
           <button
             className={`rounded-lg flex-1 py-2 px-4 text-center font-medium ${
               selectedButton === 2
@@ -222,7 +239,7 @@ export default function DetailUser({ id, data }) {
           </button>
         </div>
         {/* Packages */}
-        {selectedButton === 1 && (
+        {selectedButton === 1 && bookingEnabled === true && (
           <div className="ml-4">
             <h2 className="text-2xl font-bold mb-2 text-center px-8 py-4">
               Các gói của chúng tôi
@@ -306,10 +323,13 @@ export default function DetailUser({ id, data }) {
                     key={photo.id}
                     className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
                   >
-                    <img
+                    <BlurhashImage
                       src={photo.signedUrl.thumbnail}
                       alt={`Photo ${photo.id}`}
-                      className="w-full h-auto object-cover"
+                      blurHash={photo.blurHash}
+                      width={photo.width}
+                      height={photo.height}
+                      className="w-full h-auto aspect-square"
                       onClick={() => handlePhotoOnClick(photo)}
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 backdrop-blur-sm text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center h-16 ">
