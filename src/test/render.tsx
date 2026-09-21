@@ -1,10 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, type RenderOptions } from "@testing-library/react";
-import { ConfigProvider } from "antd";
+import { App as AntdApp, ConfigProvider } from "antd";
 import viVN from "antd/es/locale/vi_VN";
 import type { ReactElement, ReactNode } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { NotificationProvider } from "../Notification/Notification";
+import { antdTheme } from "../theme/antdTheme";
+import AntdAppBridge from "../theme/AntdAppBridge";
 import type { FeatureFlags } from "../apis/FeatureFlagApi";
 
 type ProviderOptions = {
@@ -51,8 +53,10 @@ export function renderWithProviders(
   function Wrapper({ children }: { children: ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>
-        <ConfigProvider locale={viVN}>
-          <NotificationProvider>
+        <ConfigProvider locale={viVN} theme={antdTheme}>
+          <AntdApp component={false}>
+            <AntdAppBridge />
+            <NotificationProvider>
             <MemoryRouter
               initialEntries={[route]}
               // opt into v7 behaviour to silence the upgrade warnings in test output
@@ -66,7 +70,8 @@ export function renderWithProviders(
                 children
               )}
             </MemoryRouter>
-          </NotificationProvider>
+            </NotificationProvider>
+          </AntdApp>
         </ConfigProvider>
       </QueryClientProvider>
     );

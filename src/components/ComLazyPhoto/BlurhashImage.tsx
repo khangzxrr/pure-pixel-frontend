@@ -14,6 +14,11 @@ type BlurhashImageProps = {
   blurHash?: string | null;
   width?: number | null;
   height?: number | null;
+  /**
+   * "intrinsic" reserves the photo's own aspect ratio (feed);
+   * "fill" ignores it and fills the caller's fixed frame (cropped product cards).
+   */
+  ratio?: "intrinsic" | "fill";
   className?: string;
   imgClassName?: string;
   onClick?: MouseEventHandler<HTMLElement>;
@@ -27,6 +32,7 @@ const BlurhashImage = ({
   blurHash,
   width,
   height,
+  ratio = "intrinsic",
   className,
   imgClassName,
   onClick,
@@ -35,7 +41,8 @@ const BlurhashImage = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
-  const hasAspectRatio = !!width && !!height && width > 0 && height > 0;
+  const hasAspectRatio =
+    ratio === "intrinsic" && !!width && !!height && width > 0 && height > 0;
   const pixels = useMemo<Uint8ClampedArray | null>(() => {
     if (!blurHash) return null;
     try {
@@ -78,7 +85,7 @@ const BlurhashImage = ({
     <div
       data-testid="blurhash-image"
       data-state={state}
-      className={`relative overflow-hidden bg-neutral-800 ${className ?? ""}`}
+      className={`relative overflow-hidden bg-surface-elevated ${className ?? ""}`}
       style={wrapperStyle}
       onClick={onClick}
     >
@@ -91,6 +98,24 @@ const BlurhashImage = ({
           height={32}
           className="absolute inset-0 w-full h-full"
         />
+      )}
+      {state === "error" && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 flex items-center justify-center text-ink-disabled"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className="h-8 w-8"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <circle cx="9" cy="10" r="1.5" />
+            <path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5" />
+          </svg>
+        </div>
       )}
       <img
         ref={imgRef}

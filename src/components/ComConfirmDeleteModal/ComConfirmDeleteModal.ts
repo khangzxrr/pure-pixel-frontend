@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Modal } from "antd";
+import { appModal } from "../../theme/antdApp";
 import { deleteData, putData } from "../../apis/api";
 
 // asks for confirmation, then deletes `${apiPath}/${id}` (or marks it Deleted with put)
@@ -13,7 +13,7 @@ const ComConfirmDeleteModal = async (
   put?: boolean,
 ) => {
   if (put) {
-    Modal.confirm({
+    appModal().confirm({
       title: "Xác nhận xóa",
       content: message,
       okText: "Xóa",
@@ -34,7 +34,7 @@ const ComConfirmDeleteModal = async (
       },
     });
   } else {
-    Modal.confirm({
+    appModal().confirm({
       title: "Xác nhận xóa",
       content: message,
       okText: "Xóa",

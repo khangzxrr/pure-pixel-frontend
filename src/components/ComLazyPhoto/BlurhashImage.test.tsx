@@ -164,7 +164,7 @@ describe("BlurhashImage", () => {
     expect(decode).not.toHaveBeenCalled();
     expect(screen.queryByTestId("blurhash-placeholder")).not.toBeInTheDocument();
     expect(wrapper()).toHaveAttribute("data-state", "loading");
-    expect(wrapper()).toHaveClass("bg-neutral-800");
+    expect(wrapper()).toHaveClass("bg-surface-elevated");
   });
 
   it("uses a neutral placeholder when the hash cannot be decoded", () => {

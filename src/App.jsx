@@ -6,8 +6,10 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 import UserService from "./services/Keycloak";
-import { ConfigProvider } from "antd";
+import { App as AntdApp, ConfigProvider } from "antd";
 import locale from "antd/es/locale/vi_VN"; // Import locale tiếng Việt cho antd
+import { antdTheme } from "./theme/antdTheme";
+import AntdAppBridge from "./theme/AntdAppBridge";
 import { NotificationProvider } from "./Notification/Notification";
 import dayjs from "dayjs";
 import "dayjs/locale/vi"; // Import locale tiếng Việt
@@ -61,13 +63,17 @@ function App() {
         }}
       >
         <ToastContainer />
-        <ConfigProvider locale={locale}>
-          <ComThanksModal />
-          <NotificationProvider>
-            <ChatProvider>
-              <RouterProvider router={AppRouter} />
-            </ChatProvider>
-          </NotificationProvider>
+        {/* the app's only ConfigProvider: locale + the dark token theme for every antd surface */}
+        <ConfigProvider locale={locale} theme={antdTheme}>
+          <AntdApp component={false}>
+            <AntdAppBridge />
+            <ComThanksModal />
+            <NotificationProvider>
+              <ChatProvider>
+                <RouterProvider router={AppRouter} />
+              </ChatProvider>
+            </NotificationProvider>
+          </AntdApp>
         </ConfigProvider>
         <ReactQueryDevtools buttonPosition="bottom-left" />
       </ReactKeycloakProvider>
