@@ -7,6 +7,7 @@ import UserApi from "../apis/UserApi";
 import UseCameraStore from "../states/UseCameraStore";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import UserService from "../services/Keycloak";
+import FeatureGate from "../components/FeatureGate/FeatureGate";
 
 const SidebarLayout = ({
   isSidebarOpen,
@@ -132,12 +133,14 @@ const SidebarLayout = ({
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                <button
-                  onClick={onRegister}
-                  className="bg-[#eee] text-gray-500 hover:bg-[#b8b8b8] transition-colors duration-200 rounded-md px-5 py-1"
-                >
-                  Đăng ký
-                </button>
+                <FeatureGate flag="registration">
+                  <button
+                    onClick={onRegister}
+                    className="bg-[#eee] text-gray-500 hover:bg-[#b8b8b8] transition-colors duration-200 rounded-md px-5 py-1"
+                  >
+                    Đăng ký
+                  </button>
+                </FeatureGate>
                 <button
                   onClick={onLogin}
                   className="outline outline-1 outline-[#eee] hover:bg-[#5f5f5f91] transition-colors duration-200 text-[#eee] rounded-md px-5 py-1"

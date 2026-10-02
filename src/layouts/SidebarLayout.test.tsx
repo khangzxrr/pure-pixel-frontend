@@ -31,10 +31,12 @@ const renderSidebarLayout = ({
   route = "/",
   parentPath = "/",
   props = {},
+  featureFlags,
 }: {
   route?: string;
   parentPath?: string;
   props?: Partial<React.ComponentProps<typeof SidebarLayout>>;
+  featureFlags?: { registration?: boolean };
 } = {}) => {
   const defaultProps: React.ComponentProps<typeof SidebarLayout> = {
     isSidebarOpen: false,
@@ -58,7 +60,7 @@ const renderSidebarLayout = ({
       </Route>
       <Route path="/profile/userprofile" element={<div>profile page</div>} />
     </Routes>,
-    { route },
+    { route, featureFlags },
   );
 
   return { ...result, props: mergedProps };
@@ -161,5 +163,15 @@ describe("SidebarLayout", () => {
     await waitFor(() => expect(toggleSidebar).toHaveBeenCalledWith(true));
 
     unmount();
+  });
+
+  it("hides the register button when Keycloak registration is off", () => {
+    renderSidebarLayout({
+      props: { isSidebarOpen: true, userData: undefined },
+      featureFlags: { registration: false },
+    });
+
+    expect(screen.queryByRole("button", { name: "Đăng ký" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Đăng nhập" })).toBeInTheDocument();
   });
 });

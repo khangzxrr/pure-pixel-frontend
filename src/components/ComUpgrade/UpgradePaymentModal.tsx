@@ -131,7 +131,7 @@ export default function UpgradePaymentModal() {
         // and { queryKey: "check-migrate-package-fee" }: string keys never match array keys, so nothing was invalidated
         //loop only navigate when getting new token
         const updateTokenInterval = setInterval(() => {
-          keycloak.updateToken(-1).then((refreshed) => {
+          keycloak.updateToken(-1).then((refreshed: boolean) => {
             if (refreshed) {
               clearInterval(updateTokenInterval);
               startFireworks();

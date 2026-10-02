@@ -1,7 +1,12 @@
 <html>
   <body>
     <script>
-      parent.postMessage(location.href, location.origin);
+      // Mimics oidc-client-ts's IFrameWindow.notifyParent(), which is what
+      // UserManager.signinSilentCallback() posts from within the silent iframe.
+      parent.postMessage(
+        { source: "oidc-client", url: location.href, keepOpen: false },
+        location.origin,
+      );
     </script>
   </body>
 </html>

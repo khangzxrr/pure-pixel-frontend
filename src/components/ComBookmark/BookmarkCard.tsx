@@ -4,6 +4,7 @@ import UsePhotographerFilterStore from "../../states/UsePhotographerFilterStore"
 import UseUserOtherStore from "../../states/UseUserOtherStore";
 import { FiShare2 } from "react-icons/fi";
 import type { Schema } from "../../apis/types";
+import BlurhashImage from "../ComLazyPhoto/BlurhashImage";
 
 type BookmarkCardProps = {
   photoBookmark: Schema<"SignedPhotoDto">;
@@ -22,10 +23,13 @@ const BookmarkCard = ({ photoBookmark, onClick, onShare }: BookmarkCardProps) =>
   return (
     <div>
       <div className="relative group h-[300px] bg-[#202225] rounded-lg overflow-hidden">
-        <img
+        <BlurhashImage
           src={photoBookmark.signedUrl.thumbnail}
           alt=""
-          className="w-full h-full object-cover"
+          blurHash={photoBookmark.blurHash}
+          width={photoBookmark.width}
+          height={photoBookmark.height}
+          className="w-full h-full"
           onClick={onClick}
         />
         <div className="absolute flex items-center justify-between  gap-1 bottom-0 left-0 w-full p-2 bg-black/30 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition duration-200 ease-in">

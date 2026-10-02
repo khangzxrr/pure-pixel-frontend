@@ -21,6 +21,7 @@ import { ConfigProvider, Pagination } from "antd";
 import UpdateDropdown from "./UpdateDropdown";
 import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
 import type { Schema } from "../../apis/types";
+import BlurhashImage from "../ComLazyPhoto/BlurhashImage";
 
 type MyPhotoPProps = {
   page: number;
@@ -296,10 +297,13 @@ const MyPhotoP = ({ page, setPage, itemsPerPage }: MyPhotoPProps) => {
                 className="relative group hover:cursor-pointer"
               >
                 <div className="w-full h-[320px] overflow-hidden">
-                  <img
-                    className="w-full h-full object-cover"
+                  <BlurhashImage
+                    className="w-full h-full"
                     src={photo.signedUrl.thumbnail}
                     alt={photo.title || "Ảnh"}
+                    blurHash={photo.blurHash}
+                    width={photo.width}
+                    height={photo.height}
                     onClick={() => handleOnClick(photo)}
                   />
                 </div>

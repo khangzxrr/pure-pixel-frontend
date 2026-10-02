@@ -116,6 +116,19 @@ describe("Explore", () => {
       expect(screen.getByText("inspiration side")).toBeInTheDocument();
     });
 
+    it("hides sign up when Keycloak registration is off", async () => {
+      server.use(http.get("*/me", () => new HttpResponse(null, { status: 401 })));
+      const { queryClient } = renderWithProviders(<Explore />, {
+        featureFlags: { registration: false },
+      });
+
+      await waitFor(() =>
+        expect(queryClient.getQueryState(["me"])?.status).toBe("error"),
+      );
+      expect(screen.getByRole("button", { name: "Đăng nhập" })).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Đăng ký" })).not.toBeInTheDocument();
+    });
+
     it("shows a skeleton while a signed-in profile loads", async () => {
       signIn([]);
       server.use(

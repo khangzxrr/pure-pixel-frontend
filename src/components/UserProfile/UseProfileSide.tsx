@@ -16,6 +16,7 @@ import { MdOutlinePhotoFilter } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 import UserApi from "../../apis/UserApi";
 import type { SideItem, SideItemClickHandler } from "../Sidebar/Sidebar";
+import { useFeatureFlag } from "../../hooks/useFeatureFlag";
 
 const UserProfileSideItems: SideItem<string>[] = [
   {
@@ -100,9 +101,12 @@ const UseProfileSide = () => {
     }
   }, [roles]);
 
+  const bookingEnabled = useFeatureFlag("booking");
+  const bookingItemIds = new Set(["booking", "booking-request", "customer-booking"]);
+
   const filteredSideItems = UserProfileSideItems.filter(
     (item) => isPhotographer || !item.author,
-  );
+  ).filter((item) => bookingEnabled === true || !bookingItemIds.has(item.id));
   const { data } = useQuery({
     queryKey: ["me"],
     queryFn: () => UserApi.getApplicationProfile(),

@@ -2,6 +2,7 @@ import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
 import usePhotoMapStore from "../../../states/UsePhotoMapStore";
 import { useEffect, useRef } from "react";
 import { set } from "lodash";
+import BlurhashImage from "../../../components/ComLazyPhoto/BlurhashImage";
 
 const PhotoListByMap = ({
   page,
@@ -80,7 +81,7 @@ const PhotoListByMap = ({
           photoList.map((photo) => (
             <div
               key={photo.id}
-              className={`flex h-28 w-auto cursor-pointer text-black rounded-md ${
+              className={`flex h-28 w-auto cursor-pointer text-black rounded-md overflow-hidden ${
                 photo.id === selectedPhoto?.id
                   ? "border-2 border-gray-200 transition duration-300"
                   : ""
@@ -88,11 +89,13 @@ const PhotoListByMap = ({
               onClick={() => handleSelectPhoto(photo)}
               ref={(el) => (photoRefs.current[photo.id] = el)} // Set the ref for each photo
             >
-              <img
-                className="w-auto rounded-sm"
+              <BlurhashImage
+                className="h-full w-auto"
                 src={photo.signedUrl.thumbnail}
                 alt={photo.title}
-                style={{ maxWidth: "none" }}
+                blurHash={photo.blurHash}
+                width={photo.width}
+                height={photo.height}
               />
             </div>
           ))}

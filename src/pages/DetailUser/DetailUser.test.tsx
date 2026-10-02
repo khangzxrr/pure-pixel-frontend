@@ -137,4 +137,57 @@ describe("DetailUser", () => {
     expect(UseUserOtherStore.getState().nameUserOther).toBe("Tran Thi B");
     expect(UseUserOtherStore.getState().userOtherId).toBe("user-2");
   });
+
+  const onePhoto = () =>
+    photoResponse(
+      [
+        {
+          id: "photo-9",
+          signedUrl: { thumbnail: "/photo9.jpg" },
+          photographer: { name: "Nguyen Van A", avatar: "/avatar.jpg" },
+          _count: { votes: 5 },
+        },
+      ],
+      1,
+    );
+  const photoRequests = () =>
+    getDataMock.mock.calls.filter(([url]) => String(url).includes("/photo/public"));
+
+  it("loads the photos once when the booking flag arrives after the first render", async () => {
+    getDataMock.mockImplementation((url: string) =>
+      Promise.resolve(url.includes("/photoshoot-package/") ? packageResponse([]) : onePhoto()),
+    );
+
+    renderWithProviders(
+      <DetailUser id="user-1" data={{ id: "user-1", name: "Nguyen Van A" }} />,
+      { featureFlags: null },
+    );
+
+    expect(await screen.findByText("Hiện tại chưa có dịch vụ nào")).toBeInTheDocument();
+    expect(photoRequests()).toHaveLength(1);
+    await userEvent.click(screen.getByRole("button", { name: /Hình ảnh/ }));
+    expect(await screen.findAllByAltText("Photo photo-9")).toHaveLength(1);
+  });
+
+  it("hides the packages tab and does not load packages when booking is turned off", async () => {
+    getDataMock.mockImplementation(() => Promise.resolve(onePhoto()));
+
+    renderWithProviders(
+      <DetailUser
+        id="user-1"
+        data={{ id: "user-1", name: "Nguyen Van A", cover: "/cover.jpg", avatar: "/avatar.jpg", quote: "hi" }}
+      />,
+      { featureFlags: { booking: false } },
+    );
+
+    expect(screen.getByText("Nguyen Van A")).toBeInTheDocument();
+    await waitFor(() => expect(getDataMock).toHaveBeenCalled());
+    expect(screen.queryByRole("button", { name: /Dịch vụ/ })).not.toBeInTheDocument();
+    expect(screen.queryByText("Hiện tại chưa có dịch vụ nào")).not.toBeInTheDocument();
+    expect(
+      getDataMock.mock.calls.some(([url]) => String(url).includes("/photoshoot-package/")),
+    ).toBe(false);
+    // the photos tab takes over as the default tab
+    expect(await screen.findByAltText("Photo photo-9")).toBeInTheDocument();
+  });
 });

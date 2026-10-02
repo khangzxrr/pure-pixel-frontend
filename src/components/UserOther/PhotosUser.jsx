@@ -15,6 +15,7 @@ import { useModalState } from "../../hooks/useModalState";
 import ComModal from "../ComModal/ComModal";
 import ComSharePhoto from "../ComSharePhoto/ComSharePhoto";
 import useBeforeRouteDetailPhoto from "../../states/UseBeforeRouteDetailPhoto";
+import BlurhashImage from "../ComLazyPhoto/BlurhashImage";
 
 const PhotosUser = () => {
   const { userId } = useParams();
@@ -133,10 +134,13 @@ const PhotosUser = () => {
                   key={photo.id}
                   className="group relative overflow-hidden hover:cursor-pointer hover:shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-shadow duration-300"
                 >
-                  <img
+                  <BlurhashImage
                     src={photo.signedUrl.thumbnail}
                     alt={`Photo ${photo.id}`}
-                    className="w-full h-auto object-cover"
+                    blurHash={photo.blurHash}
+                    width={photo.width}
+                    height={photo.height}
+                    className="w-full h-auto aspect-square"
                     onClick={() => {
                       handleOnClick(photo);
                       // console.log("PtUser", photo.id);

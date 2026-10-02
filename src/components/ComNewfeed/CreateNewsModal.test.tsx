@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { KeycloakTokenParsed } from "keycloak-js";
+import type { KeycloakTokenParsed } from "../../services/authTypes";
 import { act } from "react";
 import { renderWithProviders } from "../../test/render";
 import { mockEndpoint } from "../../test/mockEndpoint";

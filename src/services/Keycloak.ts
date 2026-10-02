@@ -1,12 +1,12 @@
-import Keycloak from "keycloak-js";
+import { AuthentikClient } from "./AuthentikClient";
 
-const keycloakService = new Keycloak({
-  url: import.meta.env.VITE_KEYCLOAK_URL,
-  realm: import.meta.env.VITE_KEYCLOAK_REALM,
-  clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+const keycloakService = new AuthentikClient({
+  authority: import.meta.env.VITE_OIDC_AUTHORITY,
+  clientId: import.meta.env.VITE_OIDC_CLIENT_ID,
+  registerUrl: import.meta.env.VITE_AUTH_REGISTER_URL,
 });
 
-const doLogin = keycloakService.login;
+const doLogin = () => keycloakService.login();
 
 const getToken = () => keycloakService.token;
 
@@ -37,10 +37,7 @@ const hasRole = (roles?: string[]) =>
   roles?.some((role) => keycloakService.hasResourceRole(role));
 
 const getUserRoles = () => {
-  if (
-    !keycloakService.tokenParsed ||
-    !keycloakService.tokenParsed.realm_access
-  ) {
+  if (!keycloakService.tokenParsed) {
     return [];
   }
   return keycloakService.resourceAccess;

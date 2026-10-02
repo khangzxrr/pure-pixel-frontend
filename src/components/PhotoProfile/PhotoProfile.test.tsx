@@ -11,7 +11,7 @@ vi.mock("../../services/Keycloak", () => ({
 const userData = {
   email: "an@example.com",
   resource_access: { purepixel: { roles: ["photographer"] } },
-} as unknown as import("keycloak-js").KeycloakTokenParsed;
+} as unknown as import("../../services/authTypes").KeycloakTokenParsed;
 
 describe("PhotoProfile", () => {
   it("shows the profile info, storage bar for photographers, and opens follower/following modals", async () => {

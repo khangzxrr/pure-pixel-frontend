@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState, type MouseEvent } from "react";
 import { IoCloseSharp } from "react-icons/io5";
-import type { KeycloakTokenParsed } from "keycloak-js";
+import type { KeycloakTokenParsed } from "../../services/authTypes";
 import UserApi from "../../apis/UserApi";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { FaCaretDown, FaEarthAsia, FaImages, FaLock } from "react-icons/fa6";

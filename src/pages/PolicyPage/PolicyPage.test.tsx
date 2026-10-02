@@ -72,4 +72,13 @@ describe("PolicyPage", () => {
 
     expect(await screen.findByText("ĐIỀU KHOẢN SỬ DỤNG")).toBeInTheDocument();
   });
+
+  it("hides register when Keycloak registration is off", async () => {
+    mockEndpoint("get", "*/me", () => new Response(null, { status: 401 }));
+
+    renderWithProviders(<PolicyPage />, { featureFlags: { registration: false } });
+
+    expect(await screen.findByText("Đăng nhập")).toBeInTheDocument();
+    expect(screen.queryByText("Đăng ký")).not.toBeInTheDocument();
+  });
 });

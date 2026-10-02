@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useKeycloak } from "@react-keycloak/web";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import FeatureGate from "../FeatureGate/FeatureGate";
 
 const UpgradeNav = () => {
   const navigate = useNavigate();
@@ -59,12 +60,14 @@ const UpgradeNav = () => {
         </div>
       ) : (
         <div className="flex items-center gap-3">
-          <div
-            onClick={handleRegister}
-            className="flex items-center px-2 py-1 bg-[#eee] transition duration-200 hover:cursor-pointer hover:bg-[#a6a6a6] text-[#202225] rounded-lg"
-          >
-            Đăng ký
-          </div>
+          <FeatureGate flag="registration">
+            <div
+              onClick={handleRegister}
+              className="flex items-center px-2 py-1 bg-[#eee] transition duration-200 hover:cursor-pointer hover:bg-[#a6a6a6] text-[#202225] rounded-lg"
+            >
+              Đăng ký
+            </div>
+          </FeatureGate>
           <div
             onClick={handleLogin}
             className="flex items-center px-2 py-1 border text-[#eee] rounded-lg hover:bg-[#4f4f4f] transition duration-200 hover:cursor-pointer"
